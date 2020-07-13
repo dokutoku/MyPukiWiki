@@ -1,0 +1,31 @@
+/wiki
+/attach
+/backup
+/cache
+/counter
+/diff
+
+/attach/*.[0-9]
+/attach/*.log
+/backup/*.gz
+/cache/*.ref
+/cache/*.rel
+/counter/*.count
+/counter/*.db
+
+/diff/*.txt
+/wiki/*.txt
+/wiki.en/*.txt
+
+/nbproject/**
+/.vscode/
+
+# Composer files
+/vendor/
+
+# Log
+/log/
+/updateslog/
+/node_modules/
+/package-lock.json
+
