@@ -51,20 +51,20 @@ function exist_plugin($name)
 
 // Check if plugin API 'action' exists
 function exist_plugin_action($name) {
-	return	function_exists('plugin_' . $name . '_action') ? TRUE : exist_plugin($name) ?
-		function_exists('plugin_' . $name . '_action') : FALSE;
+	return	(function_exists('plugin_' . $name . '_action')) ? (TRUE) : ((exist_plugin($name)) ?
+		(function_exists('plugin_' . $name . '_action')) : (FALSE));
 }
 
 // Check if plugin API 'convert' exists
 function exist_plugin_convert($name) {
-	return	function_exists('plugin_' . $name . '_convert') ? TRUE : exist_plugin($name) ?
-		function_exists('plugin_' . $name . '_convert') : FALSE;
+	return	(function_exists('plugin_' . $name . '_convert')) ? (TRUE) : ((exist_plugin($name)) ?
+		(function_exists('plugin_' . $name . '_convert')) : (FALSE));
 }
 
 // Check if plugin API 'inline' exists
 function exist_plugin_inline($name) {
-	return	function_exists('plugin_' . $name . '_inline') ? TRUE : exist_plugin($name) ?
-		function_exists('plugin_' . $name . '_inline') : FALSE;
+	return	(function_exists('plugin_' . $name . '_inline')) ? (TRUE) : ((exist_plugin($name)) ?
+		(function_exists('plugin_' . $name . '_inline')) : (FALSE));
 }
 
 // Call 'init' function for the plugin
