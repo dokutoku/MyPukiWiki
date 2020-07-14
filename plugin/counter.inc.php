@@ -25,7 +25,7 @@ $plugin_counter_db_options = null;
 define('PLUGIN_COUNTER_DB_TABLE_NAME_PREFIX', '');
 
 if (PLUGIN_COUNTER_USE_DB) {
-	ini_set('default_socket_timeout', 2);
+	ini_set('default_socket_timeout', '2');
 }
 
 // Report one

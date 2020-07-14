@@ -20,9 +20,9 @@ define('S_COPYRIGHT',
 /////////////////////////////////////////////////
 // Session security options
 
-ini_set('session.use_strict_mode', 1);
-ini_set('session.use_cookies', 1);
-ini_set('session.use_only_cookies', 1);
+ini_set('session.use_strict_mode', '1');
+ini_set('session.use_cookies', '1');
+ini_set('session.use_only_cookies', '1');
 
 /////////////////////////////////////////////////
 // Init server variables
