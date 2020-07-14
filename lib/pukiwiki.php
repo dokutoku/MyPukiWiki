@@ -15,6 +15,8 @@ if (! defined('DATA_HOME')) define('DATA_HOME', '');
 
 if (! defined('LIB_DIR')) define('LIB_DIR', '');
 
+assert(version_compare(PHP_VERSION, '7.2.0') >= 0);
+
 require(LIB_DIR . 'func.php');
 require(LIB_DIR . 'file.php');
 require(LIB_DIR . 'plugin.php');
