@@ -1039,6 +1039,8 @@ function get_ticketlink_jira_projects()
 
 function init_autoticketlink_def_page()
 {
+	global $ticket_jira_default_site;
+
 	$autoticketlink_def_page = get_autoticketlink_def_page();
 	if (is_page($autoticketlink_def_page)) {
 		return;
