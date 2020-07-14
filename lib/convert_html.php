@@ -550,11 +550,11 @@ class TableCell extends Element
 
 		if ($text != '' && $text{0} == '#') {
 			// Try using Div class for this $text
-			$obj = & Factory_Div($this, $text);
+			$obj = Factory_Div($this, $text);
 			if (is_a($obj, 'Paragraph'))
 				$obj = $obj->elements[0];
 		} else {
-			$obj = & Factory_Inline($text);
+			$obj = Factory_Inline($text);
 		}
 
 		$this->insert($obj);
