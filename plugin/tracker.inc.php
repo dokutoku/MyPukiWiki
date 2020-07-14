@@ -1215,7 +1215,7 @@ class Tracker_list
 		{
 			if (preg_match('/^\|(.+)\|[hHfFcC]$/',$line))
 			{
-				$source .= preg_replace_callback('/\[([^\[\]]+)\]/',array(&$this,'replace_title'),$line);
+				$source .= preg_replace_callback('/\[([^\[\]]+)\]/',array($this,'replace_title'),$line);
 			}
 			else
 			{
@@ -1237,7 +1237,7 @@ class Tracker_list
 					continue;
 				}
 				$this->pipe = ($line{0} == '|' or $line{0} == ':');
-				$source .= preg_replace_callback('/\[([^\[\]]+)\]/',array(&$this,'replace_item'),$line);
+				$source .= preg_replace_callback('/\[([^\[\]]+)\]/',array($this,'replace_item'),$line);
 			}
 		}
 		return convert_html($source);

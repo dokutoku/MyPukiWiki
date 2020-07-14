@@ -249,7 +249,7 @@ function links_delete($page, $del)
 	}
 }
 
-function & links_get_objects($page, $refresh = FALSE)
+function links_get_objects($page, $refresh = FALSE)
 {
 	static $obj;
 

@@ -220,9 +220,9 @@ class line_diff
 	{
 		$arr = array();
 		if ($this->reverse) { // 姑息な…
-			$_x = 'y'; $_y = 'x'; $_m = $this->n; $arr1 =& $this->arr2; $arr2 =& $this->arr1;
+			$_x = 'y'; $_y = 'x'; $_m = $this->n; $arr1 = $this->arr2; $arr2 = $this->arr1;
 		} else {
-			$_x = 'x'; $_y = 'y'; $_m = $this->m; $arr1 =& $this->arr1; $arr2 =& $this->arr2;
+			$_x = 'x'; $_y = 'y'; $_m = $this->m; $arr1 = $this->arr1; $arr2 = $this->arr2;
 		}
 
 		$x = $y = 1;

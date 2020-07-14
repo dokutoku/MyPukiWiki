@@ -118,7 +118,7 @@ class InlineConverter
 		$this->result = array();
 
 		$string = preg_replace_callback('/' . $this->pattern . '/x',
-			array(& $this, 'replace'), $string);
+			array($this, 'replace'), $string);
 
 		$arr = explode("\x08", make_line_rules(htmlsc($string)));
 		$retval = '';
@@ -153,7 +153,7 @@ class InlineConverter
 		return $arr;
 	}
 
-	function & get_converter(& $arr)
+	function get_converter(& $arr)
 	{
 		foreach (array_keys($this->converters) as $start) {
 			if ($arr[$start] == $arr[0])

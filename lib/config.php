@@ -9,7 +9,7 @@
 /*
  * $obj = new Config('plugin/plugin_name/')
  * $obj->read();
- * $array = & $obj->get($title);
+ * $array = $obj->get($title);
  * $array[] = array(4, 5, 6);		// Add - directly
  * $obj->add($title, array(4, 5, 6));	// Add - method of Config object
  * $array = array(1=>array(1, 2, 3));		// Replace - directly
@@ -89,28 +89,28 @@ class Config
 	}
 
 	// Get an array
-	function & get($title)
+	function get($title)
 	{
-		$obj = & $this->get_object($title);
+		$obj = $this->get_object($title);
 		return $obj->values;
 	}
 
 	// Set an array (Override)
 	function put($title, $values)
 	{
-		$obj         = & $this->get_object($title);
+		$obj         = $this->get_object($title);
 		$obj->values = $values;
 	}
 
 	// Add a line
 	function add($title, $value)
 	{
-		$obj = & $this->get_object($title);
+		$obj = $this->get_object($title);
 		$obj->values[] = $value;
 	}
 
 	// Get an object (or create it)
-	function & get_object($title)
+	function get_object($title)
 	{
 		if (! isset($this->objs[$title]))
 			$this->objs[$title] = new ConfigTable('*' . trim($title) . "\n");
@@ -202,7 +202,7 @@ class ConfigTable_Direct extends ConfigTable
 	function add_value($line)
 	{
 		$level = strspn($line, '-');
-		$arr   = & $this->values;
+		$arr   = $this->values;
 		for ($n = 2; $n <= $level; $n++)
 			$arr = & $arr[$this->_keys[$n]];
 		$arr[] = trim(substr($line, $level));
@@ -214,7 +214,7 @@ class ConfigTable_Direct extends ConfigTable
 		$root   = ($values === NULL);
 		if ($root) {
 			$retval = join('', $this->before);
-			$values = & $this->values;
+			$values = $this->values;
 		}
 		foreach ($values as $key=>$value) {
 			if (is_array($value)) {

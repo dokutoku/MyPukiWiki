@@ -256,8 +256,8 @@ class ShowRSS_XML
 		}
 		// Parsing
 		$xml_parser = xml_parser_create($utf8);
-		xml_set_element_handler($xml_parser, array(& $this, 'start_element'), array(& $this, 'end_element'));
-		xml_set_character_data_handler($xml_parser, array(& $this, 'character_data'));
+		xml_set_element_handler($xml_parser, array($this, 'start_element'), array($this, 'end_element'));
+		xml_set_character_data_handler($xml_parser, array($this, 'character_data'));
 		if (! xml_parse($xml_parser, $buf, 1)) {
 			return sprintf('XML error: %s at line %d in %s',
 				xml_error_string(xml_get_error_code($xml_parser)),
@@ -300,7 +300,7 @@ class ShowRSS_XML
 	{
 		if ($this->is_item === FALSE || $name !== $this->is_item) return;
 
-		$item = array_map(array(& $this, 'escape'), $this->item);
+		$item = array_map(array($this, 'escape'), $this->item);
 		$this->item = array();
 
 		if (isset($item['DC:DATE'])) {

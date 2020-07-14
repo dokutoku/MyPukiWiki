@@ -820,7 +820,7 @@ class AttachFiles
 		$files = array();
 		foreach (array_keys($this->files) as $file) {
 			if (isset($this->files[$file][0])) {
-				$files[$file] = & $this->files[$file][0];
+				$files[$file] = $this->files[$file][0];
 			}
 		}
 		uasort($files, array('AttachFile', 'datecomp'));
