@@ -1236,7 +1236,7 @@ class Tracker_list
 					// Ignore empty line
 					continue;
 				}
-				$this->pipe = ($line{0} == '|' or $line{0} == ':');
+				$this->pipe = ($line[0] == '|' or $line[0] == ':');
 				$source .= preg_replace_callback('/\[([^\[\]]+)\]/',array($this,'replace_item'),$line);
 			}
 		}
