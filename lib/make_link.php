@@ -850,7 +850,7 @@ function make_pagelink($page, $alias = '', $anchor = '', $refer = '', $isautolin
 
 	$page_filetime = fast_get_filetime($page);
 	$is_page = $page_filetime !== 0;
-	if (! isset($related[$page]) && $page !== $vars['page'] && is_page)
+	if (! isset($related[$page]) && $page !== $vars['page'] && $is_page)
 		$related[$page] = $page_filetime;
 
 	if ($isautolink || $is_page) {
