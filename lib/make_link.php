@@ -793,6 +793,9 @@ class Link_autoalias extends Link
 		$this->forceignorepages = explode("\t", trim($forceignorepages));
 		$this->alias = '';
 	}
+	function __construct()
+	{
+	}
 	function get_pattern()
 	{
 		return isset($this->auto) ? '(' . $this->auto . ')' : FALSE;
@@ -827,6 +830,9 @@ class Link_autoalias_a extends Link_autoalias
 	function Link_autoalias_a($start)
 	{
 		parent::Link_autoalias($start);
+	}
+	function __construct()
+	{
 	}
 	function get_pattern()
 	{
