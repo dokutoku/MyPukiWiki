@@ -103,7 +103,7 @@ function join_array($glue, $pieces)
 }
 
 // mb_detect_encoding -- 文字エンコーディングを検出する
-function mb_detect_encoding($str, $encoding_list = '')
+function mb_detect_encoding($str, $encoding_list = '', $strict = false)
 {
 	static $codes = array(0=>'ASCII', 1=>'EUC-JP', 2=>'SJIS', 3=>'JIS', 4=>'UTF-8');
 
