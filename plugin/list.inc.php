@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // list.inc.php
 // Copyright 2003-2017 PukiWiki Development Team
@@ -13,20 +13,25 @@ function plugin_list_action()
 	// Redirected from filelist plugin?
 	$filelist = (isset($vars['cmd']) && $vars['cmd'] === 'filelist');
 
-	return array(
+	return [
 		'msg'=>$filelist ? $_title_filelist : $_title_list,
-		'body'=>plugin_list_getlist($filelist));
+		'body'=>plugin_list_getlist($filelist), ];
 }
 
 // Get a list
-function plugin_list_getlist($withfilename = FALSE)
+function plugin_list_getlist($withfilename = false)
 {
 	global $non_list, $whatsnew;
 
-	$pages = array_diff(get_existpages(), array($whatsnew));
-	if (! $withfilename)
-		$pages = array_diff($pages, preg_grep('/' . $non_list . '/S', $pages));
-	if (empty($pages)) return '';
+	$pages = array_diff(get_existpages(), [$whatsnew]);
+
+	if (!$withfilename) {
+		$pages = array_diff($pages, preg_grep('/'.$non_list.'/S', $pages));
+	}
+
+	if (empty($pages)) {
+		return '';
+	}
 
 	return page_list($pages, 'read', $withfilename);
 }

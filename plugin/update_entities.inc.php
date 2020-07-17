@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone
 // update_entities.inc.php
 // Copyright 2003-2017 PukiWiki Development Team
@@ -11,15 +11,15 @@
 define('W3C_XHTML_DTD_LOCATION', 'http://www.w3.org/TR/xhtml1/DTD/');
 
 // メッセージ設定
-function plugin_update_entities_init()
+function plugin_update_entities_init() : void
 {
-	$messages = array(
-		'_entities_messages'=>array(
-			'title_update'  => 'キャッシュ更新',
-			'msg_adminpass' => '管理者パスワード',
-			'btn_submit'    => '実行',
-			'msg_done'      => 'キャッシュの更新が完了しました。',
-			'msg_usage'     => '
+	$messages = [
+		'_entities_messages'=>[
+			'title_update'=>'キャッシュ更新',
+			'msg_adminpass'=>'管理者パスワード',
+			'btn_submit'=>'実行',
+			'msg_done'=>'キャッシュの更新が完了しました。',
+			'msg_usage'=>'
 * 処理内容
 
 :文字実体参照にマッチする正規表現パターンのキャッシュを更新|
@@ -31,8 +31,8 @@ PHPの持つテーブルおよびW3CのDTDをスキャンして、キャッシ�
 
 * 実行
 管理者パスワードを入力して、[実行]ボタンをクリックしてください。
-'
-		));
+',
+		], ];
 	set_plugin_messages($messages);
 }
 
@@ -42,15 +42,19 @@ function plugin_update_entities_action()
 	global $_entities_messages;
 
 	$script = get_base_uri();
-	if (PKWK_READONLY) die_message('PKWK_READONLY prohibits this');
+
+	if (PKWK_READONLY) {
+		die_message('PKWK_READONLY prohibits this');
+	}
 
 	$msg = $body = '';
-	if (empty($vars['action']) || empty($vars['adminpass']) || ! pkwk_login($vars['adminpass'])) {
-		$msg   = & $_entities_messages['title_update'];
+
+	if (empty($vars['action']) || empty($vars['adminpass']) || !pkwk_login($vars['adminpass'])) {
+		$msg = &$_entities_messages['title_update'];
 		$items = plugin_update_entities_create();
-		$body  = convert_html(sprintf($_entities_messages['msg_usage'], join("\n" . '-', $items)));
+		$body = convert_html(sprintf($_entities_messages['msg_usage'], implode("\n".'-', $items)));
 		$body .= <<<EOD
-<form method="post" action="$script">
+<form method="post" action="{$script}">
  <div>
   <input type="hidden" name="plugin" value="update_entities" />
   <input type="hidden" name="action" value="update" />
@@ -60,60 +64,68 @@ function plugin_update_entities_action()
  </div>
 </form>
 EOD;
-	} else if ($vars['action'] == 'update') {
-		plugin_update_entities_create(TRUE);
-		$msg  = & $_entities_messages['title_update'];
-		$body = & $_entities_messages['msg_done'    ];
+	} elseif ($vars['action'] == 'update') {
+		plugin_update_entities_create(true);
+		$msg = &$_entities_messages['title_update'];
+		$body = &$_entities_messages['msg_done'];
 	} else {
-		$msg  = & $_entities_messages['title_update'];
-		$body = & $_entities_messages['err_invalid' ];
+		$msg = &$_entities_messages['title_update'];
+		$body = &$_entities_messages['err_invalid'];
 	}
-	return array('msg'=>$msg, 'body'=>$body);
+
+	return ['msg'=>$msg, 'body'=>$body];
 }
 
 // Remove &amp; => amp
-function plugin_update_entities_strtr($entity){
-	return strtr($entity, array('&'=>'', ';'=>''));
+function plugin_update_entities_strtr($entity)
+{
+	return strtr($entity, ['&'=>'', ';'=>'']);
 }
 
-function plugin_update_entities_create($do = FALSE)
+function plugin_update_entities_create($do = false)
 {
-	$files = array('xhtml-lat1.ent', 'xhtml-special.ent', 'xhtml-symbol.ent');
-	
+	$files = ['xhtml-lat1.ent', 'xhtml-special.ent', 'xhtml-symbol.ent'];
+
 	$entities = array_map('plugin_update_entities_strtr',
 		array_values(get_html_translation_table(HTML_ENTITIES)));
-	$items   = array('php:html_translation_table');
-	$matches = array();
+	$items = ['php:html_translation_table'];
+	$matches = [];
+
 	foreach ($files as $file) {
-		$source = file(W3C_XHTML_DTD_LOCATION . $file);
+		$source = file(W3C_XHTML_DTD_LOCATION.$file);
 //			or die_message('cannot receive ' . W3C_XHTML_DTD_LOCATION . $file . '.');
-		if (! is_array($source)) {
-			$items[] = 'w3c:' . $file . ' COLOR(red):not found.';
+		if (!is_array($source)) {
+			$items[] = 'w3c:'.$file.' COLOR(red):not found.';
+
 			continue;
 		}
-		$items[] = 'w3c:' . $file;
+		$items[] = 'w3c:'.$file;
+
 		if (preg_match_all('/<!ENTITY\s+([A-Za-z0-9]+)/',
-			join('', $source), $matches, PREG_PATTERN_ORDER))
-		{
+			implode('', $source), $matches, PREG_PATTERN_ORDER)) {
 			$entities = array_merge($entities, $matches[1]);
 		}
 	}
-	if (! $do) return $items;
+
+	if (!$do) {
+		return $items;
+	}
 
 	$entities = array_unique($entities);
 	sort($entities, SORT_STRING);
 	$min = 999;
 	$max = 0;
+
 	foreach ($entities as $entity) {
 		$len = strlen($entity);
 		$max = max($max, $len);
 		$min = min($min, $len);
 	}
 
-	$pattern = "(?=[a-zA-Z0-9]\{$min,$max})" .
+	$pattern = "(?=[a-zA-Z0-9]\\{{$min},{$max}})".
 		get_autolink_pattern_sub($entities, 0, count($entities), 0);
-	$fp = fopen(CACHE_DIR  .'entities.dat', 'w')
-		or die_message('cannot write file ' . CACHE_DIR . 'entities.dat<br />' . "\n" .
+	$fp = fopen(CACHE_DIR.'entities.dat', 'w')
+		|| die_message('cannot write file '.CACHE_DIR.'entities.dat<br />'."\n".
 			'maybe permission is not writable or filename is too long');
 	fwrite($fp, $pattern);
 	fclose($fp);

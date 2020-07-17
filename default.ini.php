@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // default.ini.php
 // Copyright
@@ -12,9 +12,9 @@
 // Skin file
 
 if (defined('TDIARY_THEME')) {
-	define('SKIN_FILE', DATA_HOME . SKIN_DIR . 'tdiary.skin.php');
+	define('SKIN_FILE', DATA_HOME.SKIN_DIR.'tdiary.skin.php');
 } else {
-	define('SKIN_FILE', DATA_HOME . SKIN_DIR . 'pukiwiki.skin.php');
+	define('SKIN_FILE', DATA_HOME.SKIN_DIR.'pukiwiki.skin.php');
 }
 
 /////////////////////////////////////////////////
@@ -110,16 +110,16 @@ $usefacemark = 1;
 //
 /////////////////////////////////////////////////
 // ユーザ定義ルール(コンバート時に置換)
-$line_rules = array(
-	'COLOR\(([^\(\)]*)\){([^}]*)}'	=> '<span style="color:$1">$2</span>',
-	'SIZE\(([^\(\)]*)\){([^}]*)}'	=> '<span style="font-size:$1px">$2</span>',
-	'COLOR\(([^\(\)]*)\):((?:(?!COLOR\([^\)]+\)\:).)*)'	=> '<span style="color:$1">$2</span>',
-	'SIZE\(([^\(\)]*)\):((?:(?!SIZE\([^\)]+\)\:).)*)'	=> '<span class="size$1">$2</span>',
-	'%%%(?!%)((?:(?!%%%).)*)%%%'	=> '<ins>$1</ins>',
-	'%%(?!%)((?:(?!%%).)*)%%'	=> '<del>$1</del>',
-	"'''(?!')((?:(?!''').)*)'''"	=> '<em>$1</em>',
-	"''(?!')((?:(?!'').)*)''"	=> '<strong>$1</strong>',
-);
+$line_rules = [
+	'COLOR\(([^\(\)]*)\){([^}]*)}'=>'<span style="color:$1">$2</span>',
+	'SIZE\(([^\(\)]*)\){([^}]*)}'=>'<span style="font-size:$1px">$2</span>',
+	'COLOR\(([^\(\)]*)\):((?:(?!COLOR\([^\)]+\)\:).)*)'=>'<span style="color:$1">$2</span>',
+	'SIZE\(([^\(\)]*)\):((?:(?!SIZE\([^\)]+\)\:).)*)'=>'<span class="size$1">$2</span>',
+	'%%%(?!%)((?:(?!%%%).)*)%%%'=>'<ins>$1</ins>',
+	'%%(?!%)((?:(?!%%).)*)%%'=>'<del>$1</del>',
+	'\'\'\'(?!\')((?:(?!\'\'\').)*)\'\'\''=>'<em>$1</em>',
+	'\'\'(?!\')((?:(?!\'\').)*)\'\''=>'<strong>$1</strong>',
+];
 
 /////////////////////////////////////////////////
 // フェイスマーク定義ルール(コンバート時に置換)
@@ -128,55 +128,55 @@ $line_rules = array(
 // 文章内にXDなどが入った場合にfacemarkに置換されてしまうので
 // 必要のない方は $usefacemarkを0にしてください。
 
-$facemark_rules = array(
+$facemark_rules = [
 	// Face marks
-	'\s(\:\))'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/smile.png" />',
-	'\s(\:D)'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/bigsmile.png" />',
-	'\s(\:p)'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/huh.png" />',
-	'\s(\:d)'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/huh.png" />',
-	'\s(XD)'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/oh.png" />',
-	'\s(X\()'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/oh.png" />',
-	'\s(;\))'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/wink.png" />',
-	'\s(;\()'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/sad.png" />',
-	'\s(\:\()'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/sad.png" />',
-	'&amp;(smile);'	=> ' <img alt="[$1]" src="' . IMAGE_DIR . 'face/smile.png" />',
-	'&amp;(bigsmile);'=>' <img alt="[$1]" src="' . IMAGE_DIR . 'face/bigsmile.png" />',
-	'&amp;(huh);'	=> ' <img alt="[$1]" src="' . IMAGE_DIR . 'face/huh.png" />',
-	'&amp;(oh);'	=> ' <img alt="[$1]" src="' . IMAGE_DIR . 'face/oh.png" />',
-	'&amp;(wink);'	=> ' <img alt="[$1]" src="' . IMAGE_DIR . 'face/wink.png" />',
-	'&amp;(sad);'	=> ' <img alt="[$1]" src="' . IMAGE_DIR . 'face/sad.png" />',
-	'&amp;(heart);'	=> ' <img alt="[$1]" src="' . IMAGE_DIR . 'face/heart.png" />',
-	'&amp;(worried);'=>' <img alt="[$1]" src="' . IMAGE_DIR . 'face/worried.png" />',
+	'\s(\:\))'=>' <img alt="$1" src="'.IMAGE_DIR.'face/smile.png" />',
+	'\s(\:D)'=>' <img alt="$1" src="'.IMAGE_DIR.'face/bigsmile.png" />',
+	'\s(\:p)'=>' <img alt="$1" src="'.IMAGE_DIR.'face/huh.png" />',
+	'\s(\:d)'=>' <img alt="$1" src="'.IMAGE_DIR.'face/huh.png" />',
+	'\s(XD)'=>' <img alt="$1" src="'.IMAGE_DIR.'face/oh.png" />',
+	'\s(X\()'=>' <img alt="$1" src="'.IMAGE_DIR.'face/oh.png" />',
+	'\s(;\))'=>' <img alt="$1" src="'.IMAGE_DIR.'face/wink.png" />',
+	'\s(;\()'=>' <img alt="$1" src="'.IMAGE_DIR.'face/sad.png" />',
+	'\s(\:\()'=>' <img alt="$1" src="'.IMAGE_DIR.'face/sad.png" />',
+	'&amp;(smile);'=>' <img alt="[$1]" src="'.IMAGE_DIR.'face/smile.png" />',
+	'&amp;(bigsmile);'=>' <img alt="[$1]" src="'.IMAGE_DIR.'face/bigsmile.png" />',
+	'&amp;(huh);'=>' <img alt="[$1]" src="'.IMAGE_DIR.'face/huh.png" />',
+	'&amp;(oh);'=>' <img alt="[$1]" src="'.IMAGE_DIR.'face/oh.png" />',
+	'&amp;(wink);'=>' <img alt="[$1]" src="'.IMAGE_DIR.'face/wink.png" />',
+	'&amp;(sad);'=>' <img alt="[$1]" src="'.IMAGE_DIR.'face/sad.png" />',
+	'&amp;(heart);'=>' <img alt="[$1]" src="'.IMAGE_DIR.'face/heart.png" />',
+	'&amp;(worried);'=>' <img alt="[$1]" src="'.IMAGE_DIR.'face/worried.png" />',
 
 	// Face marks, Japanese style
-	'\s(\(\^\^\))'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/smile.png" />',
-	'\s(\(\^-\^)'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/bigsmile.png" />',
-	'\s(\(\.\.;)'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/oh.png" />',
-	'\s(\(\^_-\))'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/wink.png" />',
-	'\s(\(--;)'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/sad.png" />',
-	'\s(\(\^\^;\))'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/worried.png" />',
-	'\s(\(\^\^;)'	=> ' <img alt="$1" src="' . IMAGE_DIR . 'face/worried.png" />',
+	'\s(\(\^\^\))'=>' <img alt="$1" src="'.IMAGE_DIR.'face/smile.png" />',
+	'\s(\(\^-\^)'=>' <img alt="$1" src="'.IMAGE_DIR.'face/bigsmile.png" />',
+	'\s(\(\.\.;)'=>' <img alt="$1" src="'.IMAGE_DIR.'face/oh.png" />',
+	'\s(\(\^_-\))'=>' <img alt="$1" src="'.IMAGE_DIR.'face/wink.png" />',
+	'\s(\(--;)'=>' <img alt="$1" src="'.IMAGE_DIR.'face/sad.png" />',
+	'\s(\(\^\^;\))'=>' <img alt="$1" src="'.IMAGE_DIR.'face/worried.png" />',
+	'\s(\(\^\^;)'=>' <img alt="$1" src="'.IMAGE_DIR.'face/worried.png" />',
 
 	// Push buttons, 0-9 and sharp (Compatibility with cell phones)
-	'&amp;(pb1);'	=> '[1]',
-	'&amp;(pb2);'	=> '[2]',
-	'&amp;(pb3);'	=> '[3]',
-	'&amp;(pb4);'	=> '[4]',
-	'&amp;(pb5);'	=> '[5]',
-	'&amp;(pb6);'	=> '[6]',
-	'&amp;(pb7);'	=> '[7]',
-	'&amp;(pb8);'	=> '[8]',
-	'&amp;(pb9);'	=> '[9]',
-	'&amp;(pb0);'	=> '[0]',
-	'&amp;(pb#);'	=> '[#]',
+	'&amp;(pb1);'=>'[1]',
+	'&amp;(pb2);'=>'[2]',
+	'&amp;(pb3);'=>'[3]',
+	'&amp;(pb4);'=>'[4]',
+	'&amp;(pb5);'=>'[5]',
+	'&amp;(pb6);'=>'[6]',
+	'&amp;(pb7);'=>'[7]',
+	'&amp;(pb8);'=>'[8]',
+	'&amp;(pb9);'=>'[9]',
+	'&amp;(pb0);'=>'[0]',
+	'&amp;(pb#);'=>'[#]',
 
 	// Other icons (Compatibility with cell phones)
-	'&amp;(zzz);'	=> '[zzz]',
-	'&amp;(man);'	=> '[man]',
-	'&amp;(clock);'	=> '[clock]',
-	'&amp;(mail);'	=> '[mail]',
-	'&amp;(mailto);'=> '[mailto]',
-	'&amp;(phone);'	=> '[phone]',
+	'&amp;(zzz);'=>'[zzz]',
+	'&amp;(man);'=>'[man]',
+	'&amp;(clock);'=>'[clock]',
+	'&amp;(mail);'=>'[mail]',
+	'&amp;(mailto);'=>'[mailto]',
+	'&amp;(phone);'=>'[phone]',
 	'&amp;(phoneto);'=>'[phoneto]',
-	'&amp;(faxto);'	=> '[faxto]',
-);
+	'&amp;(faxto);'=>'[faxto]',
+];

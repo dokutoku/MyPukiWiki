@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // author.inc.php
 // Copyright: 2016 PukiWiki Development Team
@@ -6,4 +6,7 @@
 //
 // author plugin
 
-function plugin_author_convert() { return ''; }
+function plugin_author_convert()
+{
+	return '';
+}

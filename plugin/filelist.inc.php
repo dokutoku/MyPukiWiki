@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // filelist.inc.php
 // Copyright 2003-2017 PukiWiki Development Team

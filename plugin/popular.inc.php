@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone
 // popular.inc.php
 // Copyright
@@ -32,45 +32,53 @@ function plugin_popular_convert()
 	global $vars;
 	global $_popular_plugin_frame, $_popular_plugin_today_frame;
 
-	$max    = PLUGIN_POPULAR_DEFAULT;
+	$max = PLUGIN_POPULAR_DEFAULT;
 	$except = '';
 
 	$array = func_get_args();
-	$today = FALSE;
+	$today = false;
 	$today_param = $array[2];
+
 	switch (func_num_args()) {
-	case 3: if ($today_param && $today_param !== 'false') $today = get_date('Y/m/d');
-	case 2: $except = $array[1];
-	case 1: $max    = (int)$array[0];
+	case 3: if ($today_param && $today_param !== 'false') {
+		$today = get_date('Y/m/d');
 	}
+	// no break
+	case 2: $except = $array[1];
+	// no break
+	case 1: $max = (int) $array[0];
+	}
+
 	if (exist_plugin('counter')) {
 		$counters = plugin_counter_get_popular_list($today, $except, $max);
 	} else {
-		$counters = array();
+		$counters = [];
 	}
 
 	$items = '';
-	if (! empty($counters)) {
-		$items = '<ul class="popular_list">' . "\n";
+
+	if (!empty($counters)) {
+		$items = '<ul class="popular_list">'."\n";
 
 		foreach ($counters as $page=>$count) {
 			$page = substr($page, 1);
 
 			$s_page = htmlsc($page);
+
 			if ($page === $vars['page']) {
 				// No need to link itself, notifies where you just read
 				$attrs = get_page_link_a_attrs($page);
-				$items .= ' <li><span class="' .
-					$attrs['class'] . '" data-mtime="' . $attrs['data_mtime'] .
-					'">' . $s_page . '<span class="counter">(' . $count .
-					')</span></span></li>' . "\n";
+				$items .= ' <li><span class="'.
+					$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].
+					'">'.$s_page.'<span class="counter">('.$count.
+					')</span></span></li>'."\n";
 			} else {
-				$items .= ' <li>' . make_pagelink($page,
-					$s_page . '<span class="counter">(' . $count . ')</span>') .
-					'</li>' . "\n";
+				$items .= ' <li>'.make_pagelink($page,
+					$s_page.'<span class="counter">('.$count.')</span>').
+					'</li>'."\n";
 			}
 		}
-		$items .= '</ul>' . "\n";
+		$items .= '</ul>'."\n";
 	}
 
 	return sprintf($today ? $_popular_plugin_today_frame : $_popular_plugin_frame, count($counters), $items);

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // config.php
 // Copyright 2003-2016 PukiWiki Development Team
@@ -24,38 +24,45 @@ define('PKWK_CONFIG_PREFIX', ':config/');
 // Configuration-page manager
 class Config
 {
-	var $name, $page; // Page name
-	var $objs = array();
+	public $name;
 
-	function Config($name)
+	public $page; // Page name
+
+	public $objs = [];
+
+	public function Config($name) : void
 	{
 		$this->__construct($name);
 	}
-	function __construct($name)
+
+	public function __construct($name)
 	{
 		$this->name = $name;
-		$this->page = PKWK_CONFIG_PREFIX . $name;
+		$this->page = PKWK_CONFIG_PREFIX.$name;
 	}
 
 	// Load the configuration-page
-	function read()
+	public function read()
 	{
-		if (! is_page($this->page)) return FALSE;
+		if (!is_page($this->page)) {
+			return false;
+		}
 
-		$this->objs = array();
-		$obj        = new ConfigTable('');
-		$matches = array();
+		$this->objs = [];
+		$obj = new ConfigTable('');
+		$matches = [];
 
 		foreach (get_source($this->page) as $line) {
-			if ($line == '') continue;
+			if ($line == '') {
+				continue;
+			}
 
-			$head  = $line[0];	// The first letter
+			$head = $line[0];	// The first letter
 			$level = strspn($line, $head);
 
 			if ($level > 3) {
 				$obj->add_line($line);
-
-			} else if ($head == '*') {
+			} elseif ($head == '*') {
 				// Cut fixed-heading anchors
 				$line = preg_replace('/^(\*{1,3}.*)\[#[A-Za-z][\w-]+\](.*)$/', '$1$2', $line);
 
@@ -63,20 +70,21 @@ class Config
 					$this->objs[$obj->title] = $obj;
 					$obj = new ConfigTable($line);
 				} else {
-					if (! is_a($obj, 'ConfigTable_Direct'))
+					if (!is_a($obj, 'ConfigTable_Direct')) {
 						$obj = new ConfigTable_Direct('', $obj);
+					}
 					$obj->set_key($line);
 				}
-				
-			} else if ($head == '-' && $level > 1) {
-				if (! is_a($obj, 'ConfigTable_Direct'))
+			} elseif ($head == '-' && $level > 1) {
+				if (!is_a($obj, 'ConfigTable_Direct')) {
 					$obj = new ConfigTable_Direct('', $obj);
+				}
 				$obj->add_value($line);
-
-			} else if ($head == '|' && preg_match('/^\|(.+)\|\s*$/', $line, $matches)) {
+			} elseif ($head == '|' && preg_match('/^\|(.+)\|\s*$/', $line, $matches)) {
 				// Table row
-				if (! is_a($obj, 'ConfigTable_Sequential'))
+				if (!is_a($obj, 'ConfigTable_Sequential')) {
 					$obj = new ConfigTable_Sequential('', $obj);
+				}
 				// Trim() each table cell
 				$obj->add_value(array_map('trim', explode('|', $matches[1])));
 			} else {
@@ -85,48 +93,54 @@ class Config
 		}
 		$this->objs[$obj->title] = $obj;
 
-		return TRUE;
+		return true;
 	}
 
 	// Get an array
-	function get($title)
+	public function get($title)
 	{
 		$obj = $this->get_object($title);
+
 		return $obj->values;
 	}
 
 	// Set an array (Override)
-	function put($title, $values)
+	public function put($title, $values) : void
 	{
-		$obj         = $this->get_object($title);
+		$obj = $this->get_object($title);
 		$obj->values = $values;
 	}
 
 	// Add a line
-	function add($title, $value)
+	public function add($title, $value) : void
 	{
 		$obj = $this->get_object($title);
 		$obj->values[] = $value;
 	}
 
 	// Get an object (or create it)
-	function get_object($title)
+	public function get_object($title)
 	{
-		if (! isset($this->objs[$title]))
-			$this->objs[$title] = new ConfigTable('*' . trim($title) . "\n");
+		if (!isset($this->objs[$title])) {
+			$this->objs[$title] = new ConfigTable('*'.trim($title)."\n");
+		}
+
 		return $this->objs[$title];
 	}
 
-	function write()
+	public function write() : void
 	{
 		page_write($this->page, $this->toString());
 	}
 
-	function toString()
+	public function toString()
 	{
 		$retval = '';
-		foreach ($this->objs as $title=>$obj)
+
+		foreach ($this->objs as $title=>$obj) {
 			$retval .= $obj->toString();
+		}
+
 		return $retval;
 	}
 }
@@ -134,97 +148,110 @@ class Config
 // Class holds array values
 class ConfigTable
 {
-	var $title  = '';	// Table title
-	var $before = array();	// Page contents (except table ones)
-	var $after  = array();	// Page contents (except table ones)
-	var $values = array();	// Table contents
+	public $title = '';	// Table title
 
-	function ConfigTable($title, $obj = NULL)
+	public $before = [];	// Page contents (except table ones)
+
+	public $after = [];	// Page contents (except table ones)
+
+	public $values = [];	// Table contents
+
+	public function ConfigTable($title, $obj = null) : void
 	{
 		$this->__construct($title, $obj);
 	}
-	function __construct($title, $obj = NULL)
+
+	public function __construct($title, $obj = null)
 	{
-		if ($obj !== NULL) {
-			$this->title  = $obj->title;
+		if ($obj !== null) {
+			$this->title = $obj->title;
 			$this->before = array_merge($obj->before, $obj->after);
 		} else {
-			$this->title  = trim(substr($title, strspn($title, '*')));
+			$this->title = trim(substr($title, strspn($title, '*')));
 			$this->before[] = $title;
 		}
 	}
 
 	// Addi an  explanation
-	function add_line($line)
+	public function add_line($line) : void
 	{
 		$this->after[] = $line;
 	}
 
-	function toString()
+	public function toString()
 	{
-		return join('', $this->before) . join('', $this->after);
+		return implode('', $this->before).implode('', $this->after);
 	}
 }
 
 class ConfigTable_Sequential extends ConfigTable
 {
 	// Add a line
-	function add_value($value)
+	public function add_value($value) : void
 	{
 		$this->values[] = (count($value) == 1) ? $value[0] : $value;
 	}
 
-	function toString()
+	public function toString()
 	{
-		$retval = join('', $this->before);
+		$retval = implode('', $this->before);
+
 		if (is_array($this->values)) {
 			foreach ($this->values as $value) {
-				$value   = is_array($value) ? join('|', $value) : $value;
-				$retval .= '|' . $value . '|' . "\n";
+				$value = is_array($value) ? implode('|', $value) : $value;
+				$retval .= '|'.$value.'|'."\n";
 			}
 		}
-		$retval .= join('', $this->after);
+		$retval .= implode('', $this->after);
+
 		return $retval;
 	}
 }
 
 class ConfigTable_Direct extends ConfigTable
 {
-	var $_keys = array();	// Used at initialization phase
+	public $_keys = [];	// Used at initialization phase
 
-	function set_key($line)
+	public function set_key($line) : void
 	{
 		$level = strspn($line, '*');
 		$this->_keys[$level] = trim(substr($line, $level));
 	}
 
 	// Add a line
-	function add_value($line)
+	public function add_value($line) : void
 	{
 		$level = strspn($line, '-');
-		$arr   = $this->values;
-		for ($n = 2; $n <= $level; $n++)
-			$arr = & $arr[$this->_keys[$n]];
+		$arr = $this->values;
+
+		for ($n = 2; $n <= $level; $n++) {
+			$arr = &$arr[$this->_keys[$n]];
+		}
 		$arr[] = trim(substr($line, $level));
 	}
 
-	function toString($values = NULL, $level = 2)
+	public function toString($values = null, $level = 2)
 	{
 		$retval = '';
-		$root   = ($values === NULL);
+		$root = ($values === null);
+
 		if ($root) {
-			$retval = join('', $this->before);
+			$retval = implode('', $this->before);
 			$values = $this->values;
 		}
+
 		foreach ($values as $key=>$value) {
 			if (is_array($value)) {
-				$retval .= str_repeat('*', $level) . $key . "\n";
+				$retval .= str_repeat('*', $level).$key."\n";
 				$retval .= $this->toString($value, $level + 1);
 			} else {
-				$retval .= str_repeat('-', $level - 1) . $value . "\n";
+				$retval .= str_repeat('-', $level - 1).$value."\n";
 			}
 		}
-		if ($root) $retval .= join('', $this->after);
+
+		if ($root) {
+			$retval .= implode('', $this->after);
+		}
 
 		return $retval;
 	}

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // lookup.inc.php
 // Copyright
@@ -16,29 +16,33 @@ function plugin_lookup_convert()
 	static $id = 0;
 
 	$num = func_num_args();
-	if ($num == 0 || $num > 3) return PLUGIN_LOOKUP_USAGE;
+
+	if ($num == 0 || $num > 3) {
+		return PLUGIN_LOOKUP_USAGE;
+	}
 
 	$args = func_get_args();
 	$interwiki = htmlsc(trim($args[0]));
-	$button    = isset($args[1]) ? trim($args[1])         : '';
-	$button    = ($button != '') ? htmlsc($button)        : 'lookup';
-	$default   = ($num > 2)      ? htmlsc(trim($args[2])) : '';
-	$s_page    = htmlsc($vars['page']);
-	++$id;
+	$button = isset($args[1]) ? trim($args[1]) : '';
+	$button = ($button != '') ? htmlsc($button) : 'lookup';
+	$default = ($num > 2) ? htmlsc(trim($args[2])) : '';
+	$s_page = htmlsc($vars['page']);
+	$id++;
 
 	$script = get_base_uri();
 	$ret = <<<EOD
-<form action="$script" method="post">
+<form action="{$script}" method="post">
  <div>
   <input type="hidden" name="plugin" value="lookup" />
-  <input type="hidden" name="refer"  value="$s_page" />
-  <input type="hidden" name="inter"  value="$interwiki" />
-  <label for="_p_lookup_$id">$interwiki:</label>
-  <input type="text" name="page" id="_p_lookup_$id" size="30" value="$default" />
-  <input type="submit" value="$button" />
+  <input type="hidden" name="refer"  value="{$s_page}" />
+  <input type="hidden" name="inter"  value="{$interwiki}" />
+  <label for="_p_lookup_{$id}">{$interwiki}:</label>
+  <input type="text" name="page" id="_p_lookup_{$id}" size="30" value="{$default}" />
+  <input type="submit" value="{$button}" />
  </div>
 </form>
 EOD;
+
 	return $ret;
 }
 
@@ -46,19 +50,28 @@ function plugin_lookup_action()
 {
 	global $post; // Deny GET method to avlid GET loop
 
-	$page  = isset($post['page'])  ? $post['page']  : '';
+	$page = isset($post['page']) ? $post['page'] : '';
 	$inter = isset($post['inter']) ? $post['inter'] : '';
-	if ($page == '') return FALSE; // Do nothing
-	if ($inter == '') return array('msg'=>'Invalid access', 'body'=>'');
+
+	if ($page == '') {
+		return false;
+	} // Do nothing
+
+	if ($inter == '') {
+		return ['msg'=>'Invalid access', 'body'=>''];
+	}
 
 	$url = get_interwiki_url($inter, $page);
-	if ($url === FALSE) {
+
+	if ($url === false) {
 		$msg = sprintf('InterWikiName "%s" not found', $inter);
 		$msg = htmlsc($msg);
-		return array('msg'=>'Not found', 'body'=>$msg);
+
+		return ['msg'=>'Not found', 'body'=>$msg];
 	}
 
 	pkwk_headers_sent();
-	header('Location: ' . $url); // Publish as GET method
+	header('Location: '.$url); // Publish as GET method
+
 	exit;
 }

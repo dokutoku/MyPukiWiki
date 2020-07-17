@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // $Id: ruby.inc.php,v 1.8 2011/01/25 15:01:01 henoheno Exp $
 //
@@ -13,17 +13,20 @@ define('PLUGIN_RUBY_USAGE', '&ruby(pronunciation){words};');
 
 function plugin_ruby_inline()
 {
-	if (func_num_args() != 2) return PLUGIN_RUBY_USAGE;
+	if (func_num_args() != 2) {
+		return PLUGIN_RUBY_USAGE;
+	}
 
-	list($ruby, $body) = func_get_args();
+	[$ruby, $body] = func_get_args();
 
 	// strip_htmltag() is just for avoiding AutoLink insertion
 	$body = strip_htmltag($body);
 
-	if ($ruby == '' || $body == '') return PLUGIN_RUBY_USAGE;
+	if ($ruby == '' || $body == '') {
+		return PLUGIN_RUBY_USAGE;
+	}
 
-	return '<ruby><rb>' . $body . '</rb>' . '<rp>(</rp>' .
-		'<rt>' .  htmlsc($ruby) . '</rt>' . '<rp>)</rp>' .
+	return '<ruby><rb>'.$body.'</rb>'.'<rp>(</rp>'.
+		'<rt>'.htmlsc($ruby).'</rt>'.'<rp>)</rp>'.
 		'</ruby>';
 }
-?>

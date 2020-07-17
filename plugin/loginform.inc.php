@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone
 // Copyright 2015-2017 PukiWiki Development Team
 // License: GPL v2 or (at your option) any later version
@@ -8,12 +8,13 @@
 function plugin_loginform_inline()
 {
 	$logout_param = '?plugin=basicauthlogout';
-	return '<a href="' . htmlsc(get_base_uri() . $logout_param) . '">Log out</a>';
+
+	return '<a href="'.htmlsc(get_base_uri().$logout_param).'">Log out</a>';
 }
 
 function plugin_loginform_convert()
 {
-	return '<div>' . plugin_basicauthlogout_inline() . '</div>';
+	return '<div>'.plugin_basicauthlogout_inline().'</div>';
 }
 
 function plugin_loginform_action()
@@ -23,48 +24,54 @@ function plugin_loginform_action()
 	$pcmd = isset($_GET['pcmd']) ? $_GET['pcmd'] : '';
 	$url_after_login = isset($_GET['url_after_login']) ? $_GET['url_after_login'] : '';
 	$page_after_login = $page;
+
 	if (!$url_after_login) {
 		$page_after_login = $page;
 	}
-	$action_url = get_base_uri() . '?plugin=loginform'
-		. '&page=' . rawurlencode($page)
-		. ($url_after_login ? '&url_after_login=' . rawurlencode($url_after_login) : '')
-		. ($page_after_login ? '&page_after_login=' . rawurlencode($page_after_login) : '');
+	$action_url = get_base_uri().'?plugin=loginform'
+		.'&page='.rawurlencode($page)
+		.($url_after_login ? '&url_after_login='.rawurlencode($url_after_login) : '')
+		.($page_after_login ? '&page_after_login='.rawurlencode($page_after_login) : '');
 	$username = isset($_POST['username']) ? $_POST['username'] : '';
 	$password = isset($_POST['password']) ? $_POST['password'] : '';
-	$isset_user_credential = $username || $password ;
+	$isset_user_credential = $username || $password;
+
 	if ($username && $password && form_auth($username, $password)) {
 		// Sign in successfully completed
 		form_auth_redirect($url_after_login, $page_after_login);
+
 		exit; // or 'return FALSE;' - Don't double check for FORM_AUTH
 	}
+
 	if ($pcmd === 'logout') {
 		// logout
 		switch ($auth_type) {
 			case AUTH_TYPE_BASIC:
 				header('WWW-Authenticate: Basic realm="Please cancel to log out"');
 				header('HTTP/1.0 401 Unauthorized');
+
 				break;
 			case AUTH_TYPE_FORM:
 			case AUTH_TYPE_EXTERNAL:
 			case AUTH_TYPE_SAML:
 			default:
-				$_SESSION = array();
+				$_SESSION = [];
 				session_regenerate_id(true); // require: PHP5.1+
 				session_destroy();
+
 				break;
 		}
 		$auth_user = '';
-		return array(
-			'msg' => 'Log out',
-			'body' => 'Logged out completely<br>'
-				. '<a href="'. get_page_uri($page) . '">'
-				. $page . '</a>'
-		);
+
+		return [
+			'msg'=>'Log out',
+			'body'=>'Logged out completely<br>'
+				.'<a href="'.get_page_uri($page).'">'
+				.$page.'</a>',
+		];
 	} else {
 		// login
-		ob_start();
-?>
+		ob_start(); ?>
 <style>
   .loginformcontainer {
     text-align: center;
@@ -91,27 +98,27 @@ function plugin_loginform_action()
   }
 </style>
 <div class="loginformcontainer">
-<form name="loginform" class="loginform" action="<?php echo htmlsc($action_url) ?>" method="post">
+<form name="loginform" class="loginform" action="<?php echo htmlsc($action_url); ?>" method="post">
 <div>
 <table style="border:0">
   <tbody>
   <tr>
-    <td class="label"><label for="_plugin_loginform_username"><?php echo htmlsc($_loginform_messages['username']) ?></label></td>
-    <td><input type="text" name="username" value="<?php echo htmlsc($username) ?>" id="_plugin_loginform_username"></td>
+    <td class="label"><label for="_plugin_loginform_username"><?php echo htmlsc($_loginform_messages['username']); ?></label></td>
+    <td><input type="text" name="username" value="<?php echo htmlsc($username); ?>" id="_plugin_loginform_username"></td>
   </tr>
   <tr>
-  <td class="label"><label for="_plugin_loginform_password"><?php echo htmlsc($_loginform_messages['password']) ?></label></td>
+  <td class="label"><label for="_plugin_loginform_password"><?php echo htmlsc($_loginform_messages['password']); ?></label></td>
   <td><input type="password" name="password" id="_plugin_loginform_password"></td>
   </tr>
-<?php if ($isset_user_credential): ?>
+<?php if ($isset_user_credential) { ?>
   <tr>
     <td></td>
-    <td class="errormessage"><?php echo $_loginform_messages['invalid_username_or_password'] ?></td>
+    <td class="errormessage"><?php echo $_loginform_messages['invalid_username_or_password']; ?></td>
   </tr>
-<?php endif ?>
+<?php } ?>
   <tr>
     <td></td>
-    <td class="login-button-container"><input type="submit" value="<?php echo htmlsc($_loginform_messages['login']) ?>" class="loginbutton"></td>
+    <td class="login-button-container"><input type="submit" value="<?php echo htmlsc($_loginform_messages['login']); ?>" class="loginbutton"></td>
   </tr>
   </tbody>
 </table>
@@ -139,9 +146,10 @@ window.addEventListener && window.addEventListener("DOMContentLoaded", function(
 <?php
 		$body = ob_get_contents();
 		ob_end_clean();
-		return array(
-			'msg' => $_loginform_messages['login'],
-			'body' => $body,
-			);
+
+		return [
+			'msg'=>$_loginform_messages['login'],
+			'body'=>$body,
+		];
 	}
 }

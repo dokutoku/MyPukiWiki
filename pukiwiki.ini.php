@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone
 // pukiwiki.ini.php
 // Copyright
@@ -14,27 +14,31 @@
 // PKWK_OPTIMISE - Ignore verbose but understandable checking and warning
 //   If you end testing this PukiWiki, set '1'.
 //   If you feel in trouble about this PukiWiki, set '0'.
-if (! defined('PKWK_OPTIMISE'))
+if (!defined('PKWK_OPTIMISE')) {
 	define('PKWK_OPTIMISE', 0);
+}
 
 /////////////////////////////////////////////////
 // Security settings
 
 // PKWK_READONLY - Prohibits editing and maintain via WWW
 //   NOTE: Counter-related functions will work now (counter, attach count, etc)
-if (! defined('PKWK_READONLY'))
-	define('PKWK_READONLY', 0); // 0 or 1
+if (!defined('PKWK_READONLY')) {
+	define('PKWK_READONLY', 0);
+} // 0 or 1
 
-// PKWK_SAFE_MODE - Prohibits some unsafe(but compatible) functions 
-if (! defined('PKWK_SAFE_MODE'))
+// PKWK_SAFE_MODE - Prohibits some unsafe(but compatible) functions
+if (!defined('PKWK_SAFE_MODE')) {
 	define('PKWK_SAFE_MODE', 0);
+}
 
 // PKWK_DISABLE_INLINE_IMAGE_FROM_URI - Disallow using inline-image-tag for URIs
 //   Inline-image-tag for URIs may allow leakage of Wiki readers' information
 //   (in short, 'Web bug') or external malicious CGI (looks like an image's URL)
 //   attack to Wiki readers, but easy way to show images.
-if (! defined('PKWK_DISABLE_INLINE_IMAGE_FROM_URI'))
+if (!defined('PKWK_DISABLE_INLINE_IMAGE_FROM_URI')) {
 	define('PKWK_DISABLE_INLINE_IMAGE_FROM_URI', 0);
+}
 
 // PKWK_QUERY_STRING_MAX
 //   Max length of GET method, prohibits some worm attack ASAP
@@ -70,13 +74,13 @@ define('UI_LANG', LANG); // 'en' for Internationalized wikisite
 // You may hide these directories (from web browsers)
 // by setting DATA_HOME at index.php.
 
-define('DATA_DIR',      DATA_HOME . 'wiki/'     ); // Latest wiki texts
-define('DIFF_DIR',      DATA_HOME . 'diff/'     ); // Latest diffs
-define('BACKUP_DIR',    DATA_HOME . 'backup/'   ); // Backups
-define('CACHE_DIR',     DATA_HOME . 'cache/'    ); // Some sort of caches
-define('UPLOAD_DIR',    DATA_HOME . 'attach/'   ); // Attached files and logs
-define('COUNTER_DIR',   DATA_HOME . 'counter/'  ); // Counter plugin's counts
-define('PLUGIN_DIR',    DATA_HOME . 'plugin/'   ); // Plugin directory
+define('DATA_DIR', DATA_HOME.'wiki/'); // Latest wiki texts
+define('DIFF_DIR', DATA_HOME.'diff/'); // Latest diffs
+define('BACKUP_DIR', DATA_HOME.'backup/'); // Backups
+define('CACHE_DIR', DATA_HOME.'cache/'); // Some sort of caches
+define('UPLOAD_DIR', DATA_HOME.'attach/'); // Attached files and logs
+define('COUNTER_DIR', DATA_HOME.'counter/'); // Counter plugin's counts
+define('PLUGIN_DIR', DATA_HOME.'plugin/'); // Plugin directory
 
 /////////////////////////////////////////////////
 // Directory settings II (ended with '/')
@@ -100,10 +104,12 @@ switch (LANG) { // or specifiy one
 case 'ja':
 	define('ZONE', 'JST');
 	define('ZONETIME', 9 * 3600); // JST = GMT + 9
+
 	break;
-default  :
+default:
 	define('ZONE', 'GMT');
 	define('ZONETIME', 0);
+
 	break;
 }
 
@@ -125,12 +131,12 @@ $modifier = 'anonymous';
 $modifierlink = 'http://pukiwiki.example.com/';
 
 // Default page name
-$defaultpage  = 'FrontPage';     // Top / Default page
-$whatsnew     = 'RecentChanges'; // Modified page list
+$defaultpage = 'FrontPage';     // Top / Default page
+$whatsnew = 'RecentChanges'; // Modified page list
 $whatsdeleted = 'RecentDeleted'; // Removeed page list
-$interwiki    = 'InterWikiName'; // Set InterWiki definition here
-$aliaspage    = 'AutoAliasName'; // Set AutoAlias definition here
-$menubar      = 'MenuBar';       // Menu
+$interwiki = 'InterWikiName'; // Set InterWiki definition here
+$aliaspage = 'AutoAliasName'; // Set AutoAlias definition here
+$menubar = 'MenuBar';       // Menu
 $rightbar_name = 'RightBar';     // RightBar
 
 /////////////////////////////////////////////////
@@ -230,7 +236,6 @@ $pagereading_config_page = ':config/PageReading';
 // Page name of default pronouncing dictionary, used when converter = 'none'
 $pagereading_config_dict = ':config/PageReading/dict';
 
-
 /////////////////////////////////////////////////
 // Authentication type
 // AUTH_TYPE_NONE, AUTH_TYPE_FORM, AUTH_TYPE_BASIC, AUTH_TYPE_EXTERNAL, ...
@@ -252,50 +257,49 @@ $auth_provider_user_prefix_ldap = 'ldap:';
 $auth_provider_user_prefix_external = 'external:';
 $auth_provider_user_prefix_saml = 'saml:';
 
-
 /////////////////////////////////////////////////
 // User definition
-$auth_users = array(
+$auth_users = [
 	// Username => password
-	'foo'	=> 'foo_passwd', // Cleartext
-	'bar'	=> '{x-php-md5}f53ae779077e987718cc285b14dfbe86', // PHP md5() 'bar_passwd'
-	'hoge'	=> '{SMD5}OzJo/boHwM4q5R+g7LCOx2xGMkFKRVEx',      // LDAP SMD5 'hoge_passwd'
-);
+	'foo'=>'foo_passwd', // Cleartext
+	'bar'=>'{x-php-md5}f53ae779077e987718cc285b14dfbe86', // PHP md5() 'bar_passwd'
+	'hoge'=>'{SMD5}OzJo/boHwM4q5R+g7LCOx2xGMkFKRVEx',      // LDAP SMD5 'hoge_passwd'
+];
 
 // Group definition
-$auth_groups = array(
+$auth_groups = [
 	// Groupname => group members(users)
-	'valid-user' => '', // Reserved 'valid-user' group contains all authenticated users
-	'groupfoobar'	=> 'foo,bar',
-);
+	'valid-user'=>'', // Reserved 'valid-user' group contains all authenticated users
+	'groupfoobar'=>'foo,bar',
+];
 
 /////////////////////////////////////////////////
 // Authentication method
 
-$auth_method_type	= 'pagename';	// By Page name
+$auth_method_type = 'pagename';	// By Page name
 //$auth_method_type	= 'contents';	// By Page contents
 
 /////////////////////////////////////////////////
 // Read auth (0:Disable, 1:Enable)
 $read_auth = 0;
 
-$read_auth_pages = array(
+$read_auth_pages = [
 	// Regex		   Groupname or Username
-	'#PageForAllValidUsers#'	=> 'valid-user',
-	'#HogeHoge#'		=> 'hoge',
-	'#(NETABARE|NetaBare)#'	=> 'foo,bar,hoge',
-);
+	'#PageForAllValidUsers#'=>'valid-user',
+	'#HogeHoge#'=>'hoge',
+	'#(NETABARE|NetaBare)#'=>'foo,bar,hoge',
+];
 
 /////////////////////////////////////////////////
 // Edit auth (0:Disable, 1:Enable)
 $edit_auth = 0;
 
-$edit_auth_pages = array(
+$edit_auth_pages = [
 	// Regex		   Username
-	'#BarDiary#'		=> 'bar',
-	'#HogeHoge#'		=> 'hoge',
-	'#(NETABARE|NetaBare)#'	=> 'foo,bar,hoge',
-);
+	'#BarDiary#'=>'bar',
+	'#HogeHoge#'=>'hoge',
+	'#(NETABARE|NetaBare)#'=>'foo,bar,hoge',
+];
 
 /////////////////////////////////////////////////
 // Search auth
@@ -305,8 +309,8 @@ $search_auth = 0;
 
 /////////////////////////////////////////////////
 // AutoTicketLink
-$ticket_link_sites = array(
-/*
+$ticket_link_sites = [
+	/*
 	array(
 		'key' => 'phpbug',
 		'type' => 'redmine', // type: redmine, jira or git
@@ -326,7 +330,7 @@ $ticket_link_sites = array(
 		'base_url' => 'https://ja.osdn.net/projects/pukiwiki/scm/git/pukiwiki/commits/',
 	),
 */
-);
+];
 // AutoTicketLink - JIRA Default site
 /*
 $ticket_jira_default_site = array(
@@ -340,20 +344,20 @@ $ticket_jira_default_site = array(
 // 0: Disabled
 // 1: Enabled
 $external_link_cushion_page = 0;
-$external_link_cushion = array(
+$external_link_cushion = [
 	// Wait N seconds before jumping to an external site
-	'wait_seconds' => 5,
+	'wait_seconds'=>5,
 	// Internal site domain list
-	'internal_domains' => array(
+	'internal_domains'=>[
 		'localhost',
 		// '*.example.com',
-	),
+	],
 	// Don't show extenal link icons on these domains
-	'silent_external_domains' => array(
+	'silent_external_domains'=>[
 		'pukiwiki.osdn.jp',
 		'pukiwiki.example.com',
-	),
-);
+	],
+];
 
 /////////////////////////////////////////////////
 // Show Topicpath title
@@ -369,10 +373,10 @@ $html_meta_referrer_policy = '';
 
 /////////////////////////////////////////////////
 // Output custom HTTP response headers
-$http_response_custom_headers = array(
+$http_response_custom_headers = [
 	// 'Strict-Transport-Security: max-age=86400',
 	// 'X-Content-Type-Options: nosniff',
-);
+];
 
 /////////////////////////////////////////////////
 // $whatsnew: Max number of RecentChanges
@@ -384,7 +388,7 @@ $maxshow_deleted = 200;
 
 /////////////////////////////////////////////////
 // Page names can't be edit via PukiWiki
-$cantedit = array( $whatsnew, $whatsdeleted );
+$cantedit = [$whatsnew, $whatsdeleted];
 
 /////////////////////////////////////////////////
 // HTTP: Output Last-Modified header
@@ -411,7 +415,7 @@ $do_backup = 1;
 $del_backup = 0;
 
 // Bacukp interval and generation
-$cycle  =   3; // Wait N hours between backup (0 = no wait)
+$cycle = 3; // Wait N hours between backup (0 = no wait)
 $maxage = 120; // Stock latest N backups
 
 // NOTE: $cycle x $maxage / 24 = Minimum days to lost your data
@@ -448,14 +452,14 @@ $proxy_auth_user = 'username';
 $proxy_auth_pass = 'password';
 
 // Hosts that proxy server will not be needed
-$no_proxy = array(
+$no_proxy = [
 	'localhost',	// localhost
 	'127.0.0.0/8',	// loopback
-//	'10.0.0.0/8'	// private class A
-//	'172.16.0.0/12'	// private class B
-//	'192.168.0.0/16'	// private class C
-//	'no-proxy.com',
-);
+	//	'10.0.0.0/8'	// private class A
+	//	'172.16.0.0/12'	// private class B
+	//	'192.168.0.0/16'	// private class C
+	//	'no-proxy.com',
+];
 
 ////////////////////////////////////////////////
 // Mail related settings
@@ -470,7 +474,7 @@ $notify_diff_only = 1;
 $smtp_server = 'localhost';
 
 // Mail recipient (To:) and sender (From:)
-$notify_to   = 'to@example.com';	// To:
+$notify_to = 'to@example.com';	// To:
 $notify_from = 'from@example.com';	// From:
 
 // Subject: ($page = Page name wll be replaced)
@@ -487,7 +491,7 @@ $notify_header = '';
 $smtp_auth = 0;
 
 $pop_server = 'localhost';
-$pop_port   = 110;
+$pop_port = 110;
 $pop_userid = '';
 $pop_passwd = '';
 
@@ -506,20 +510,19 @@ $non_list = '^\:';
 // Search ignored pages
 $search_non_list = 1;
 
-
 // Page redirect rules
-$page_redirect_rules = array(
+$page_redirect_rules = [
 	//'#^FromProject($|(/(.+)$))#' => 'ToProject$1',
 	//'#^FromProject($|(/(.+)$))#' => function($matches) { return 'ToProject' . $matches[1]; },
-);
+];
 
 /////////////////////////////////////////////////
 // Template setting
 
 $auto_template_func = 1;
-$auto_template_rules = array(
-	'((.+)\/([^\/]+))' => '\2/template'
-);
+$auto_template_rules = [
+	'((.+)\/([^\/]+))'=>'\2/template',
+];
 
 /////////////////////////////////////////////////
 // Automatically add fixed heading anchor
@@ -551,97 +554,97 @@ $logging_updates_log_dir = '/var/log/pukiwiki';
 // If you want to to ignore desktop-PC browsers for simple wikisite,
 // copy keitai.ini.php to default.ini.php and customize it.
 
-$agents = array(
-// pattern: A regular-expression that matches device(browser)'s name and version
-// profile: A group of browsers
+$agents = [
+	// pattern: A regular-expression that matches device(browser)'s name and version
+	// profile: A group of browsers
 
-    // Embedded browsers (Rich-clients for PukiWiki)
+	// Embedded browsers (Rich-clients for PukiWiki)
 
 	// Windows CE (Microsoft(R) Internet Explorer 5.5 for Windows(R) CE)
 	// Sample: "Mozilla/4.0 (compatible; MSIE 5.5; Windows CE; sigmarion3)" (sigmarion, Hand-held PC)
-	array('pattern'=>'#\b(?:MSIE [5-9]).*\b(Windows CE)\b#', 'profile'=>'default'),
+	['pattern'=>'#\b(?:MSIE [5-9]).*\b(Windows CE)\b#', 'profile'=>'default'],
 
 	// ACCESS "NetFront" / "Compact NetFront" and thier OEM, expects to be "Mozilla/4.0"
 	// Sample: "Mozilla/4.0 (PS2; PlayStation BB Navigator 1.0) NetFront/3.0" (PlayStation BB Navigator, for SONY PlayStation 2)
 	// Sample: "Mozilla/4.0 (PDA; PalmOS/sony/model crdb/Revision:1.1.19) NetFront/3.0" (SONY Clie series)
 	// Sample: "Mozilla/4.0 (PDA; SL-A300/1.0,Embedix/Qtopia/1.1.0) NetFront/3.0" (SHARP Zaurus)
-	array('pattern'=>'#^(?:Mozilla/4).*\b(NetFront)/([0-9\.]+)#',	'profile'=>'default'),
+	['pattern'=>'#^(?:Mozilla/4).*\b(NetFront)/([0-9\.]+)#',	'profile'=>'default'],
 
-    // Embedded browsers (Non-rich)
+	// Embedded browsers (Non-rich)
 
 	// Windows CE (the others)
 	// Sample: "Mozilla/2.0 (compatible; MSIE 3.02; Windows CE; 240x320 )" (GFORT, NTT DoCoMo)
-	array('pattern'=>'#\b(Windows CE)\b#', 'profile'=>'keitai'),
+	['pattern'=>'#\b(Windows CE)\b#', 'profile'=>'keitai'],
 
 	// ACCESS "NetFront" / "Compact NetFront" and thier OEM
 	// Sample: "Mozilla/3.0 (AveFront/2.6)" ("SUNTAC OnlineStation", USB-Modem for PlayStation 2)
 	// Sample: "Mozilla/3.0(DDIPOCKET;JRC/AH-J3001V,AH-J3002V/1.0/0100/c50)CNF/2.0" (DDI Pocket: AirH" Phone by JRC)
-	array('pattern'=>'#\b(NetFront)/([0-9\.]+)#',	'profile'=>'keitai'),
-	array('pattern'=>'#\b(CNF)/([0-9\.]+)#',	'profile'=>'keitai'),
-	array('pattern'=>'#\b(AveFront)/([0-9\.]+)#',	'profile'=>'keitai'),
-	array('pattern'=>'#\b(AVE-Front)/([0-9\.]+)#',	'profile'=>'keitai'), // The same?
+	['pattern'=>'#\b(NetFront)/([0-9\.]+)#',	'profile'=>'keitai'],
+	['pattern'=>'#\b(CNF)/([0-9\.]+)#',	'profile'=>'keitai'],
+	['pattern'=>'#\b(AveFront)/([0-9\.]+)#',	'profile'=>'keitai'],
+	['pattern'=>'#\b(AVE-Front)/([0-9\.]+)#',	'profile'=>'keitai'], // The same?
 
 	// NTT-DoCoMo, i-mode (embeded Compact NetFront) and FOMA (embedded NetFront) phones
 	// Sample: "DoCoMo/1.0/F501i", "DoCoMo/1.0/N504i/c10/TB/serXXXX" // c以降は可変
 	// Sample: "DoCoMo/2.0 MST_v_SH2101V(c100;TB;W22H12;serXXXX;iccxxxx)" // ()の中は可変
-	array('pattern'=>'#^(DoCoMo)/([0-9\.]+)#',	'profile'=>'keitai'),
+	['pattern'=>'#^(DoCoMo)/([0-9\.]+)#',	'profile'=>'keitai'],
 
 	// Vodafone's embedded browser
 	// Sample: "J-PHONE/2.0/J-T03"	// 2.0は"ブラウザの"バージョン
 	// Sample: "J-PHONE/4.0/J-SH51/SNxxxx SH/0001a Profile/MIDP-1.0 Configuration/CLDC-1.0 Ext-Profile/JSCL-1.1.0"
-	array('pattern'=>'#^(J-PHONE)/([0-9\.]+)#',	'profile'=>'keitai'),
+	['pattern'=>'#^(J-PHONE)/([0-9\.]+)#',	'profile'=>'keitai'],
 
 	// Openwave(R) Mobile Browser (EZweb, WAP phone, etc)
 	// Sample: "OPWV-SDK/62K UP.Browser/6.2.0.5.136 (GUI) MMP/2.0"
-	array('pattern'=>'#\b(UP\.Browser)/([0-9\.]+)#',	'profile'=>'keitai'),
+	['pattern'=>'#\b(UP\.Browser)/([0-9\.]+)#',	'profile'=>'keitai'],
 
 	// Opera, dressing up as other embedded browsers
 	// Sample: "Mozilla/3.0(DDIPOCKET;KYOCERA/AH-K3001V/1.4.1.67.000000/0.1/C100) Opera 7.0" (Like CNF at 'keitai'-mode)
-	array('pattern'=>'#\b(?:DDIPOCKET|WILLCOM)\b.+\b(Opera) ([0-9\.]+)\b#',	'profile'=>'keitai'),
+	['pattern'=>'#\b(?:DDIPOCKET|WILLCOM)\b.+\b(Opera) ([0-9\.]+)\b#',	'profile'=>'keitai'],
 
 	// Planetweb http://www.planetweb.com/
 	// Sample: "Mozilla/3.0 (Planetweb/v1.07 Build 141; SPS JP)" ("EGBROWSER", Web browser for PlayStation 2)
-	array('pattern'=>'#\b(Planetweb)/v([0-9\.]+)#', 'profile'=>'keitai'),
+	['pattern'=>'#\b(Planetweb)/v([0-9\.]+)#', 'profile'=>'keitai'],
 
 	// DreamPassport, Web browser for SEGA DreamCast
 	// Sample: "Mozilla/3.0 (DreamPassport/3.0)"
-	array('pattern'=>'#\b(DreamPassport)/([0-9\.]+)#',	'profile'=>'keitai'),
+	['pattern'=>'#\b(DreamPassport)/([0-9\.]+)#',	'profile'=>'keitai'],
 
 	// Palm "Web Pro" http://www.palmone.com/us/support/accessories/webpro/
 	// Sample: "Mozilla/4.76 [en] (PalmOS; U; WebPro)"
-	array('pattern'=>'#\b(WebPro)\b#',	'profile'=>'keitai'),
+	['pattern'=>'#\b(WebPro)\b#',	'profile'=>'keitai'],
 
 	// ilinx "Palmscape" / "Xiino" http://www.ilinx.co.jp/
 	// Sample: "Xiino/2.1SJ [ja] (v. 4.1; 153x130; c16/d)"
-	array('pattern'=>'#^(Palmscape)/([0-9\.]+)#',	'profile'=>'keitai'),
-	array('pattern'=>'#^(Xiino)/([0-9\.]+)#',	'profile'=>'keitai'),
+	['pattern'=>'#^(Palmscape)/([0-9\.]+)#',	'profile'=>'keitai'],
+	['pattern'=>'#^(Xiino)/([0-9\.]+)#',	'profile'=>'keitai'],
 
 	// SHARP PDA Browser (SHARP Zaurus)
 	// Sample: "sharp pda browser/6.1[ja](MI-E1/1.0) "
-	array('pattern'=>'#^(sharp [a-z]+ browser)/([0-9\.]+)#',	'profile'=>'keitai'),
+	['pattern'=>'#^(sharp [a-z]+ browser)/([0-9\.]+)#',	'profile'=>'keitai'],
 
 	// WebTV
-	array('pattern'=>'#^(WebTV)/([0-9\.]+)#',	'profile'=>'keitai'),
+	['pattern'=>'#^(WebTV)/([0-9\.]+)#',	'profile'=>'keitai'],
 
-    // Desktop-PC browsers
+	// Desktop-PC browsers
 
 	// Opera (for desktop PC, not embedded) -- See BugTrack/743 for detail
 	// NOTE: Keep this pattern above MSIE and Mozilla
 	// Sample: "Opera/7.0 (OS; U)" (not disguise)
 	// Sample: "Mozilla/4.0 (compatible; MSIE 5.0; OS) Opera 6.0" (disguise)
-	array('pattern'=>'#\b(Opera)[/ ]([0-9\.]+)\b#',	'profile'=>'default'),
+	['pattern'=>'#\b(Opera)[/ ]([0-9\.]+)\b#',	'profile'=>'default'],
 
 	// MSIE: Microsoft Internet Explorer (or something disguised as MSIE)
 	// Sample: "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)"
-	array('pattern'=>'#\b(MSIE) ([0-9\.]+)\b#',	'profile'=>'default'),
+	['pattern'=>'#\b(MSIE) ([0-9\.]+)\b#',	'profile'=>'default'],
 
 	// Mozilla Firefox
 	// NOTE: Keep this pattern above Mozilla
 	// Sample: "Mozilla/5.0 (Windows; U; Windows NT 5.0; ja-JP; rv:1.7) Gecko/20040803 Firefox/0.9.3"
-	array('pattern'=>'#\b(Firefox)/([0-9\.]+)\b#',	'profile'=>'default'),
+	['pattern'=>'#\b(Firefox)/([0-9\.]+)\b#',	'profile'=>'default'],
 
-    	// Loose default: Including something Mozilla
-	array('pattern'=>'#^([a-zA-z0-9 ]+)/([0-9\.]+)\b#',	'profile'=>'default'),
+	// Loose default: Including something Mozilla
+	['pattern'=>'#^([a-zA-z0-9 ]+)/([0-9\.]+)\b#',	'profile'=>'default'],
 
-	array('pattern'=>'#^#',	'profile'=>'default'),	// Sentinel
-);
+	['pattern'=>'#^#',	'profile'=>'default'],	// Sentinel
+];

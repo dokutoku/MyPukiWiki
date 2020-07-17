@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone
 // $Id: versionlist.inc.php,v 1.17 2007/05/12 08:37:38 henoheno Exp $
 // Copyright (C)
@@ -12,42 +12,49 @@ function plugin_versionlist_action()
 {
 	global $_title_versionlist;
 
-	if (PKWK_SAFE_MODE) die_message('PKWK_SAFE_MODE prohibits this');
+	if (PKWK_SAFE_MODE) {
+		die_message('PKWK_SAFE_MODE prohibits this');
+	}
 
-	return array(
-		'msg' => $_title_versionlist,
-		'body' => plugin_versionlist_convert());
+	return [
+		'msg'=>$_title_versionlist,
+		'body'=>plugin_versionlist_convert(), ];
 }
 
 function plugin_versionlist_convert()
 {
-	if (PKWK_SAFE_MODE) return ''; // Show nothing
-	
-	/* 探索ディレクトリ設定 */
-	$SCRIPT_DIR = array('./');
-	if (LIB_DIR   != './') array_push($SCRIPT_DIR, LIB_DIR);
-	if (DATA_HOME != './' && DATA_HOME != LIB_DIR) array_push($SCRIPT_DIR, DATA_HOME);
+	if (PKWK_SAFE_MODE) {
+		return '';
+	} // Show nothing
+
+	// 探索ディレクトリ設定
+	$SCRIPT_DIR = ['./'];
+
+	if (LIB_DIR != './') {
+		array_push($SCRIPT_DIR, LIB_DIR);
+	}
+
+	if (DATA_HOME != './' && DATA_HOME != LIB_DIR) {
+		array_push($SCRIPT_DIR, DATA_HOME);
+	}
 	array_push($SCRIPT_DIR, PLUGIN_DIR, SKIN_DIR);
 
-	$comments = array();
+	$comments = [];
 
-	foreach ($SCRIPT_DIR as $sdir)
-	{
-		if (!$dir = @dir($sdir))
-		{
+	foreach ($SCRIPT_DIR as $sdir) {
+		if (!$dir = @dir($sdir)) {
 			// die_message('directory '.$sdir.' is not found or not readable.');
 			continue;
 		}
-		while($file = $dir->read())
-		{
-			if (!preg_match("/\.(php|lng|css|js)$/i",$file))
-			{
+
+		while ($file = $dir->read()) {
+			if (!preg_match('/\\.(php|lng|css|js)$/i', $file)) {
 				continue;
 			}
-			$data = join('',file($sdir.$file));
-			$comment = array('file'=>htmlsc($sdir.$file),'rev'=>'','date'=>'');
-			if (preg_match('/\$'.'Id: (.+),v (\d+\.\d+) (\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2})/',$data,$matches))
-			{
+			$data = implode('', file($sdir.$file));
+			$comment = ['file'=>htmlsc($sdir.$file), 'rev'=>'', 'date'=>''];
+
+			if (preg_match('/\$'.'Id: (.+),v (\d+\.\d+) (\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2})/', $data, $matches)) {
 //				$comment['file'] = htmlsc($sdir.$matches[1]);
 				$comment['rev'] = htmlsc($matches[2]);
 				$comment['date'] = htmlsc($matches[3]);
@@ -56,14 +63,14 @@ function plugin_versionlist_convert()
 		}
 		$dir->close();
 	}
-	if (count($comments) == 0)
-	{
+
+	if (count($comments) == 0) {
 		return '';
 	}
 	ksort($comments, SORT_STRING);
 	$retval = '';
-	foreach ($comments as $comment)
-	{
+
+	foreach ($comments as $comment) {
 		$retval .= <<<EOD
 
   <tr>
@@ -73,7 +80,8 @@ function plugin_versionlist_convert()
   </tr>
 EOD;
 	}
-	$retval = <<<EOD
+
+	return <<<EOD
 <table border="1">
  <thead>
   <tr>
@@ -83,10 +91,8 @@ EOD;
   </tr>
  </thead>
  <tbody>
-$retval
+{$retval}
  </tbody>
 </table>
 EOD;
-	return $retval;
 }
-?>

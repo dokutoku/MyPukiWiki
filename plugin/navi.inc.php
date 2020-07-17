@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // $Id: navi.inc.php,v 1.24 2011/01/25 15:01:01 henoheno Exp $
 //
@@ -40,7 +40,7 @@ define('PLUGIN_NAVI_EXCLUSIVE_REGEX', '');
 //define('PLUGIN_NAVI_EXCLUSIVE_REGEX', '#/_#'); // Ignore 'foobar/_memo' etc.
 
 // Insert <link rel=... /> tags into XHTML <head></head>
-define('PLUGIN_NAVI_LINK_TAGS', FALSE);	// FALSE, TRUE
+define('PLUGIN_NAVI_LINK_TAGS', false);	// FALSE, TRUE
 
 // ----
 
@@ -48,64 +48,74 @@ function plugin_navi_convert()
 {
 	global $vars, $script, $head_tags;
 	global $_navi_prev, $_navi_next, $_navi_up, $_navi_home;
-	static $navi = array();
+	static $navi = [];
 
 	$current = $vars['page'];
-	$reverse = FALSE;
+	$reverse = false;
+
 	if (func_num_args()) {
-		list($home, $reverse) = array_pad(func_get_args(), 2, '');
+		[$home, $reverse] = array_pad(func_get_args(), 2, '');
 		// strip_bracket() is not necessary but compatible
-		$home    = get_fullname(strip_bracket($home), $current);
+		$home = get_fullname(strip_bracket($home), $current);
 		$is_home = ($home == $current);
-		if (! is_page($home)) {
-			return '#navi(contents-page-name): No such page: ' .
-				htmlsc($home) . '<br />';
-		} else if (! $is_home &&
-		    ! preg_match('/^' . preg_quote($home, '/') . '/', $current)) {
-			return '#navi(' . htmlsc($home) .
-				'): Not a child page like: ' .
-				htmlsc($home . '/' . basename($current)) .
+
+		if (!is_page($home)) {
+			return '#navi(contents-page-name): No such page: '.
+				htmlsc($home).'<br />';
+		} elseif (!$is_home &&
+			!preg_match('/^'.preg_quote($home, '/').'/', $current)) {
+			return '#navi('.htmlsc($home).
+				'): Not a child page like: '.
+				htmlsc($home.'/'.basename($current)).
 				'<br />';
 		}
 		$reverse = (strtolower($reverse) == 'reverse');
 	} else {
-		$home    = $vars['page'];
-		$is_home = TRUE; // $home == $current
+		$home = $vars['page'];
+		$is_home = true; // $home == $current
 	}
 
-	$pages  = array();
+	$pages = [];
 	$footer = isset($navi[$home]); // The first time: FALSE, the second: TRUE
-	if (! $footer) {
-		$navi[$home] = array(
-			'up'   =>'',
-			'prev' =>'',
-			'prev1'=>'',
-			'next' =>'',
-			'next1'=>'',
-			'home' =>'',
-			'home1'=>'',
-		);
 
-		$pages = preg_grep('/^' . preg_quote($home, '/') .
+	if (!$footer) {
+		$navi[$home] = [
+			'up'=>'',
+			'prev'=>'',
+			'prev1'=>'',
+			'next'=>'',
+			'next1'=>'',
+			'home'=>'',
+			'home1'=>'',
+		];
+
+		$pages = preg_grep('/^'.preg_quote($home, '/').
 			'($|\/)/', get_existpages());
+
 		if (PLUGIN_NAVI_EXCLUSIVE_REGEX != '') {
 			// If old PHP could use preg_grep(,,PREG_GREP_INVERT)...
 			$pages = array_diff($pages,
 				preg_grep(PLUGIN_NAVI_EXCLUSIVE_REGEX, $pages));
 		}
 		$pages[] = $current; // Sentinel :)
-		$pages   = array_unique($pages);
+		$pages = array_unique($pages);
 		natcasesort($pages);
-		if ($reverse) $pages = array_reverse($pages);
+
+		if ($reverse) {
+			$pages = array_reverse($pages);
+		}
 		$pages = array_values($pages);
 		$prev = $home;
 		$next = '';
+
 		foreach ($pages as $index=>$page) {
 			if ($page === $current) {
 				$next_key = $index + 1;
+
 				if (array_key_exists($next_key, $pages)) {
 					$next = $pages[$next_key];
 				}
+
 				break;
 			}
 			$prev = $page;
@@ -113,33 +123,36 @@ function plugin_navi_convert()
 
 		$pos = strrpos($current, '/');
 		$up = '';
+
 		if ($pos > 0) {
 			$up = substr($current, 0, $pos);
-			$navi[$home]['up']    = make_pagelink($up, $_navi_up);
+			$navi[$home]['up'] = make_pagelink($up, $_navi_up);
 		}
-		if (! $is_home) {
-			$navi[$home]['prev']  = make_pagelink($prev);
+
+		if (!$is_home) {
+			$navi[$home]['prev'] = make_pagelink($prev);
 			$navi[$home]['prev1'] = make_pagelink($prev, $_navi_prev);
 		}
+
 		if ($next != '') {
-			$navi[$home]['next']  = make_pagelink($next);
+			$navi[$home]['next'] = make_pagelink($next);
 			$navi[$home]['next1'] = make_pagelink($next, $_navi_next);
 		}
-		$navi[$home]['home']  = make_pagelink($home);
+		$navi[$home]['home'] = make_pagelink($home);
 		$navi[$home]['home1'] = make_pagelink($home, $_navi_home);
 
 		// Generate <link> tag: start next prev(previous) parent(up)
 		// Not implemented: contents(toc) search first(begin) last(end)
 		if (PLUGIN_NAVI_LINK_TAGS) {
-			foreach (array('start'=>$home, 'next'=>$next,
-			    'prev'=>$prev, 'up'=>$up) as $rel=>$_page) {
+			foreach (['start'=>$home, 'next'=>$next,
+				'prev'=>$prev, 'up'=>$up, ] as $rel=>$_page) {
 				if ($_page != '') {
 					$s_page = htmlsc($_page);
 					$r_page = pagename_urlencode($_page);
-					$head_tags[] = ' <link rel="' .
-						$rel . '" href="' . $script .
-						'?' . $r_page . '" title="' .
-						$s_page . '" />';
+					$head_tags[] = ' <link rel="'.
+						$rel.'" href="'.$script.
+						'?'.$r_page.'" title="'.
+						$s_page.'" />';
 				}
 			}
 		}
@@ -150,22 +163,25 @@ function plugin_navi_convert()
 	if ($is_home) {
 		// Show contents
 		$count = count($pages);
+
 		if ($count == 0) {
 			return '#navi(contents-page-name): You already view the result<br />';
-		} else if ($count == 1) {
+		} elseif ($count == 1) {
 			// Sentinel only: Show usage and warning
 			$home = htmlsc($home);
-			$ret .= '#navi(' . $home . '): No child page like: ' .
-				$home . '/Foo';
+			$ret .= '#navi('.$home.'): No child page like: '.
+				$home.'/Foo';
 		} else {
 			$ret .= '<ul>';
-			foreach ($pages as $page)
-				if ($page !== $home)
-					$ret .= ' <li>' . make_pagelink($page) . '</li>';
+
+			foreach ($pages as $page) {
+				if ($page !== $home) {
+					$ret .= ' <li>'.make_pagelink($page).'</li>';
+				}
+			}
 			$ret .= '</ul>';
 		}
-
-	} else if (! $footer) {
+	} elseif (!$footer) {
 		// Header
 		$ret = <<<EOD
 <ul class="navi">
@@ -175,7 +191,6 @@ function plugin_navi_convert()
 </ul>
 <hr class="full_hr" />
 EOD;
-
 	} else {
 		// Footer
 		$ret = <<<EOD
@@ -187,6 +202,6 @@ EOD;
 </ul>
 EOD;
 	}
+
 	return $ret;
 }
-

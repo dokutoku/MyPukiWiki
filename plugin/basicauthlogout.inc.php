@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone
 // basicauthlogout.inc.php
 // Copyright 2016-2017 PukiWiki Development Team
@@ -9,23 +9,26 @@
 function plugin_basicauthlogout_inline()
 {
 	$logout_param = '?plugin=basicauthlogout';
-	return '<a href="' . htmlsc(get_base_uri() . $logout_param) . '">Log out</a>';
+
+	return '<a href="'.htmlsc(get_base_uri().$logout_param).'">Log out</a>';
 }
 
 function plugin_basicauthlogout_convert()
 {
-	return '<div>' . plugin_basicauthlogout_inline() . '</div>';
+	return '<div>'.plugin_basicauthlogout_inline().'</div>';
 }
 
 function plugin_basicauthlogout_action()
 {
 	global $auth_flag, $_msg_auth;
 	pkwk_common_headers();
+
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
 		header('WWW-Authenticate: Basic realm="Please cancel to log out"');
 		header('HTTP/1.0 401 Unauthorized');
 	}
-	return array(
-		'msg' => 'Log out',
-		'body' => 'Logged out completely');
+
+	return [
+		'msg'=>'Log out',
+		'body'=>'Logged out completely', ];
 }

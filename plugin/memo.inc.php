@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // memo.inc.php
 // Copyright 2002-2017 PukiWiki Development Team
@@ -7,7 +7,7 @@
 // Memo box plugin
 
 define('MEMO_COLS', 60); // Columns of textarea
-define('MEMO_ROWS',  5); // Rows of textarea
+define('MEMO_ROWS', 5); // Rows of textarea
 
 function plugin_memo_action()
 {
@@ -15,45 +15,53 @@ function plugin_memo_action()
 	global $_title_collided, $_msg_collided, $_title_updated;
 
 	$script = get_base_uri();
-	if (PKWK_READONLY) die_message('PKWK_READONLY prohibits editing');
-	if (! isset($vars['msg']) || $vars['msg'] == '') return;
 
-	$memo_body = preg_replace('/' . "\r" . '/', '', $vars['msg']);
+	if (PKWK_READONLY) {
+		die_message('PKWK_READONLY prohibits editing');
+	}
+
+	if (!isset($vars['msg']) || $vars['msg'] == '') {
+		return;
+	}
+
+	$memo_body = preg_replace('/'."\r".'/', '', $vars['msg']);
 	$memo_body = str_replace("\n", '\n', $memo_body);
 	$memo_body = str_replace('"', '&#x22;', $memo_body); // Escape double quotes
 	$memo_body = str_replace(',', '&#x2c;', $memo_body); // Escape commas
 
-	$postdata_old  = get_source($vars['refer']);
+	$postdata_old = get_source($vars['refer']);
 	$postdata = '';
 	$memo_no = 0;
-	foreach($postdata_old as $line) {
-		if (preg_match("/^#memo\(?.*\)?$/i", $line)) {
+
+	foreach ($postdata_old as $line) {
+		if (preg_match('/^#memo\\(?.*\\)?$/i', $line)) {
 			if ($memo_no == $vars['memo_no']) {
-				$postdata .= '#memo(' . $memo_body . ')' . "\n";
+				$postdata .= '#memo('.$memo_body.')'."\n";
 				$line = '';
 			}
-			++$memo_no;
+			$memo_no++;
 		}
 		$postdata .= $line;
 	}
 
-	$postdata_input = $memo_body . "\n";
+	$postdata_input = $memo_body."\n";
 
 	$body = '';
-	if (md5(get_source($vars['refer'], TRUE, TRUE)) !== $vars['digest']) {
-		$title = $_title_collided;
-		$body  = $_msg_collided . "\n";
 
-		$s_refer          = htmlsc($vars['refer']);
-		$s_digest         = htmlsc($vars['digest']);
+	if (md5(get_source($vars['refer'], true, true)) !== $vars['digest']) {
+		$title = $_title_collided;
+		$body = $_msg_collided."\n";
+
+		$s_refer = htmlsc($vars['refer']);
+		$s_digest = htmlsc($vars['digest']);
 		$s_postdata_input = htmlsc($postdata_input);
 
 		$body .= <<<EOD
-<form action="$script?cmd=preview" method="post">
+<form action="{$script}?cmd=preview" method="post">
  <div>
-  <input type="hidden" name="refer"  value="$s_refer" />
-  <input type="hidden" name="digest" value="$s_digest" />
-  <textarea name="msg" rows="$rows" cols="$cols" id="textarea">$s_postdata_input</textarea><br />
+  <input type="hidden" name="refer"  value="{$s_refer}" />
+  <input type="hidden" name="digest" value="{$s_digest}" />
+  <textarea name="msg" rows="{$rows}" cols="{$cols}" id="textarea">{$s_postdata_input}</textarea><br />
  </div>
 </form>
 EOD;
@@ -62,8 +70,8 @@ EOD;
 
 		$title = $_title_updated;
 	}
-	$retvars['msg']  = & $title;
-	$retvars['body'] = & $body;
+	$retvars['msg'] = &$title;
+	$retvars['body'] = &$body;
 
 	$vars['page'] = $vars['refer'];
 
@@ -74,9 +82,11 @@ function plugin_memo_convert()
 {
 	global $vars, $digest;
 	global $_btn_memo_update;
-	static $numbers = array();
+	static $numbers = [];
 
-	if (! isset($numbers[$vars['page']])) $numbers[$vars['page']] = 0;
+	if (!isset($numbers[$vars['page']])) {
+		$numbers[$vars['page']] = 0;
+	}
 	$memo_no = $numbers[$vars['page']]++;
 
 	$data = func_get_args();
@@ -87,25 +97,25 @@ function plugin_memo_convert()
 
 	if (PKWK_READONLY) {
 		$_script = '';
-		$_submit = '';	
+		$_submit = '';
 	} else {
 		$_script = get_base_uri();
-		$_submit = '<input type="submit" name="memo"    value="' . $_btn_memo_update . '" />';
+		$_submit = '<input type="submit" name="memo"    value="'.$_btn_memo_update.'" />';
 	}
 
-	$s_page   = htmlsc($vars['page']);
+	$s_page = htmlsc($vars['page']);
 	$s_digest = htmlsc($digest);
-	$s_cols   = MEMO_COLS;
-	$s_rows   = MEMO_ROWS;
-	$string   = <<<EOD
-<form action="$_script" method="post" class="memo">
+	$s_cols = MEMO_COLS;
+	$s_rows = MEMO_ROWS;
+	$string = <<<EOD
+<form action="{$_script}" method="post" class="memo">
  <div>
-  <input type="hidden" name="memo_no" value="$memo_no" />
-  <input type="hidden" name="refer"   value="$s_page" />
+  <input type="hidden" name="memo_no" value="{$memo_no}" />
+  <input type="hidden" name="refer"   value="{$s_page}" />
   <input type="hidden" name="plugin"  value="memo" />
-  <input type="hidden" name="digest"  value="$s_digest" />
-  <textarea name="msg" rows="$s_rows" cols="$s_cols">$data</textarea><br />
-  $_submit
+  <input type="hidden" name="digest"  value="{$s_digest}" />
+  <textarea name="msg" rows="{$s_rows}" cols="{$s_cols}">{$data}</textarea><br />
+  {$_submit}
  </div>
 </form>
 EOD;

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * PukiWiki lsプラグイン
  *
@@ -12,41 +12,38 @@ function plugin_ls_convert()
 {
 	global $vars;
 
-	$with_title = FALSE;
+	$with_title = false;
 
-	if (func_num_args())
-	{
+	if (func_num_args()) {
 		$args = func_get_args();
-		$with_title = in_array('title',$args);
+		$with_title = in_array('title', $args);
 	}
 
 	$prefix = $vars['page'].'/';
 
-	$pages = array();
-	foreach (get_existpages() as $page)
-	{
-		if (strpos($page,$prefix) === 0)
-		{
+	$pages = [];
+
+	foreach (get_existpages() as $page) {
+		if (strpos($page, $prefix) === 0) {
 			$pages[] = $page;
 		}
 	}
 	natcasesort($pages);
 
-	$ls = array();
-	foreach ($pages as $page)
-	{
-		$comment = '';
-		if ($with_title)
-		{
-			list($comment) = get_source($page);
-			// 見出しの固有ID部を削除
-			$comment = preg_replace('/^(\*{1,3}.*)\[#[A-Za-z][\w-]+\](.*)$/','$1$2',$comment);
+	$ls = [];
 
-			$comment = '- ' . preg_replace('/^[-*]+/','',$comment);
+	foreach ($pages as $page) {
+		$comment = '';
+
+		if ($with_title) {
+			[$comment] = get_source($page);
+			// 見出しの固有ID部を削除
+			$comment = preg_replace('/^(\*{1,3}.*)\[#[A-Za-z][\w-]+\](.*)$/', '$1$2', $comment);
+
+			$comment = '- '.preg_replace('/^[-*]+/', '', $comment);
 		}
-		$ls[] = "-[[$page]] $comment";
+		$ls[] = "-[[{$page}]] {$comment}";
 	}
 
 	return convert_html($ls);
 }
-

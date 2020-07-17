@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // bugtrack_list.inc.php
 // Copyright
@@ -7,9 +7,9 @@
 //
 // BugTrack List plugin
 
-require_once(PLUGIN_DIR . 'bugtrack.inc.php');
+require_once PLUGIN_DIR.'bugtrack.inc.php';
 
-function plugin_bugtrack_list_init()
+function plugin_bugtrack_list_init() : void
 {
 	plugin_bugtrack_init();
 }

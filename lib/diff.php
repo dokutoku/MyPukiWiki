@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // diff.php
 // Copyright
@@ -14,8 +14,8 @@ define('PKWK_DIFF_SHOW_CONFLICT_DETAIL', 1);
 function do_diff($strlines1, $strlines2)
 {
 	$obj = new line_diff();
-	$str = $obj->str_compare($strlines1, $strlines2);
-	return $str;
+
+	return $obj->str_compare($strlines1, $strlines2);
 }
 
 // Visualize diff-style-text to text-with-CSS
@@ -27,7 +27,8 @@ function diff_style_to_css($str = '')
 	// Cut diff markers ('+' or '-' or ' ')
 	$str = preg_replace('/^\-(.*)$/m', '<span class="diff_removed">$1</span>', $str);
 	$str = preg_replace('/^\+(.*)$/m', '<span class="diff_added"  >$1</span>', $str);
-	return preg_replace('/^ (.*)$/m',  '$1', $str);
+
+	return preg_replace('/^ (.*)$/m', '$1', $str);
 }
 
 // Merge helper (when it conflicts)
@@ -47,8 +48,8 @@ function do_update_diff($pagestr, $poststr, $original)
 
 	if (PKWK_DIFF_SHOW_CONFLICT_DETAIL) {
 		global $do_update_diff_table;
-		$table = array();
-		$table[] = <<<EOD
+		$table = [];
+		$table[] = <<<'EOD'
 <p>l : between backup data and stored page data.<br />
  r : between backup data and your post data.</p>
 <table class="style_table">
@@ -58,36 +59,41 @@ function do_update_diff($pagestr, $poststr, $original)
   <th>text</th>
  </tr>
 EOD;
-		$tags = array('th', 'th', 'td');
+		$tags = ['th', 'th', 'td'];
+
 		foreach ($arr as $_obj) {
 			$table[] = ' <tr>';
-			$params = array($_obj->get('left'), $_obj->get('right'), $_obj->text());
-			foreach ($params as $key => $text) {
+			$params = [$_obj->get('left'), $_obj->get('right'), $_obj->text()];
+
+			foreach ($params as $key=>$text) {
 				$text = htmlsc(rtrim($text));
-				if (empty($text)) $text = '&nbsp;';
-				$table[] = 
-					'  <' . $tags[$key] . ' class="style_' . $tags[$key] . '">' .
-					$text .
-					'</' . $tags[$key] . '>';
+
+				if (empty($text)) {
+					$text = '&nbsp;';
+				}
+				$table[] =
+					'  <'.$tags[$key].' class="style_'.$tags[$key].'">'.
+					$text.
+					'</'.$tags[$key].'>';
 			}
 			$table[] = ' </tr>';
 		}
-		$table[] =  '</table>';
+		$table[] = '</table>';
 
-		$do_update_diff_table = implode("\n", $table) . "\n";
+		$do_update_diff_table = implode("\n", $table)."\n";
 		unset($table);
 	}
 
-	$body = array();
+	$body = [];
+
 	foreach ($arr as $_obj) {
 		if ($_obj->get('left') != '-' && $_obj->get('right') != '-') {
 			$body[] = $_obj->text();
 		}
 	}
 
-	return array(rtrim(implode('', $body)) . "\n", 1);
+	return [rtrim(implode('', $body))."\n", 1];
 }
-
 
 // References of this class:
 // S. Wu, <A HREF="http://www.cs.arizona.edu/people/gene/vita.html">
@@ -97,63 +103,87 @@ EOD;
 // Information Processing Letters 35, 6 (1990), 317-323.
 class line_diff
 {
-	var $arr1, $arr2, $m, $n, $pos, $key, $plus, $minus, $equal, $reverse;
+	public $arr1;
 
-	function line_diff($plus = '+', $minus = '-', $equal = ' ')
+	public $arr2;
+
+	public $m;
+
+	public $n;
+
+	public $pos;
+
+	public $key;
+
+	public $plus;
+
+	public $minus;
+
+	public $equal;
+
+	public $reverse;
+
+	public function line_diff($plus = '+', $minus = '-', $equal = ' ') : void
 	{
 		$this->__construct($plus, $minus, $equal);
 	}
-	function __construct($plus = '+', $minus = '-', $equal = ' ')
+
+	public function __construct($plus = '+', $minus = '-', $equal = ' ')
 	{
-		$this->plus  = $plus;
+		$this->plus = $plus;
 		$this->minus = $minus;
 		$this->equal = $equal;
 	}
 
-	function arr_compare($key, $arr1, $arr2)
+	public function arr_compare($key, $arr1, $arr2)
 	{
-		$this->key  = $key;
+		$this->key = $key;
 		$this->arr1 = $arr1;
 		$this->arr2 = $arr2;
 		$this->compare();
-		$arr = $this->toArray();
-		return $arr;
+
+		return $this->toArray();
 	}
 
-	function set_str($key, $str1, $str2)
+	public function set_str($key, $str1, $str2) : void
 	{
-		$this->key  = $key;
-		$this->arr1 = array();
-		$this->arr2 = array();
+		$this->key = $key;
+		$this->arr1 = [];
+		$this->arr2 = [];
 		$str1 = str_replace("\r", '', $str1);
 		$str2 = str_replace("\r", '', $str2);
+
 		foreach (explode("\n", $str1) as $line) {
 			$this->arr1[] = new DiffLine($line);
 		}
+
 		foreach (explode("\n", $str2) as $line) {
 			$this->arr2[] = new DiffLine($line);
 		}
 	}
 
-	function str_compare($str1, $str2)
+	public function str_compare($str1, $str2)
 	{
 		$this->set_str('diff', $str1, $str2);
 		$this->compare();
 
 		$str = '';
+
 		foreach ($this->toArray() as $obj) {
-			$str .= $obj->get('diff') . $obj->text();
+			$str .= $obj->get('diff').$obj->text();
 		}
+
 		return $str;
 	}
 
-	function compare()
+	public function compare() : void
 	{
 		$this->m = count($this->arr1);
 		$this->n = count($this->arr2);
 
 		if ($this->m == 0 || $this->n == 0) { // No need to compare
-			$this->result = array(array('x'=>0, 'y'=>0));
+			$this->result = [['x'=>0, 'y'=>0]];
+
 			return;
 		}
 
@@ -164,39 +194,47 @@ class line_diff
 		$this->n++;
 
 		$this->reverse = ($this->n < $this->m);
+
 		if ($this->reverse) {
 			// Swap
-			$tmp = $this->m; $this->m = $this->n; $this->n = $tmp;
-			$tmp = $this->arr1; $this->arr1 = $this->arr2; $this->arr2 = $tmp;
+			$tmp = $this->m;
+			$this->m = $this->n;
+			$this->n = $tmp;
+			$tmp = $this->arr1;
+			$this->arr1 = $this->arr2;
+			$this->arr2 = $tmp;
 			unset($tmp);
 		}
 
 		$delta = $this->n - $this->m; // Must be >=0;
 
-		$fp = array();
-		$this->path = array();
+		$fp = [];
+		$this->path = [];
 
 		for ($p = -($this->m + 1); $p <= ($this->n + 1); $p++) {
 			$fp[$p] = -1;
-			$this->path[$p] = array();
+			$this->path[$p] = [];
 		}
 
-		for ($p = 0;; $p++) {
+		for ($p = 0; ; $p++) {
 			for ($k = -$p; $k <= $delta - 1; $k++) {
 				$fp[$k] = $this->snake($k, $fp[$k - 1], $fp[$k + 1]);
 			}
+
 			for ($k = $delta + $p; $k >= $delta + 1; $k--) {
 				$fp[$k] = $this->snake($k, $fp[$k - 1], $fp[$k + 1]);
 			}
 			$fp[$delta] = $this->snake($delta, $fp[$delta - 1], $fp[$delta + 1]);
+
 			if ($fp[$delta] >= $this->n) {
 				$this->pos = $this->path[$delta]; // 経路を決定
+
 				return;
 			}
 		}
 	}
 
-	function snake($k, $y1, $y2)
+	public function snake($k, $y1, $y2)
 	{
 		if ($y1 >= $y2) {
 			$_k = $k - 1;
@@ -205,32 +243,44 @@ class line_diff
 			$_k = $k + 1;
 			$y = $y2;
 		}
-		$this->path[$k] = $this->path[$_k];// ここまでの経路をコピー
+		$this->path[$k] = $this->path[$_k]; // ここまでの経路をコピー
 		$x = $y - $k;
+
 		while ((($x + 1) < $this->m) && (($y + 1) < $this->n)
-			and $this->arr1[$x + 1]->compare($this->arr2[$y + 1]))
-		{
-			++$x; ++$y;
-			$this->path[$k][] = array('x'=>$x, 'y'=>$y); // 経路を追加
+			&& $this->arr1[$x + 1]->compare($this->arr2[$y + 1])) {
+			$x++;
+			$y++;
+			$this->path[$k][] = ['x'=>$x, 'y'=>$y]; // 経路を追加
 		}
+
 		return $y;
 	}
 
-	function toArray()
+	public function toArray()
 	{
-		$arr = array();
+		$arr = [];
+
 		if ($this->reverse) { // 姑息な…
-			$_x = 'y'; $_y = 'x'; $_m = $this->n; $arr1 = $this->arr2; $arr2 = $this->arr1;
+			$_x = 'y';
+			$_y = 'x';
+			$_m = $this->n;
+			$arr1 = $this->arr2;
+			$arr2 = $this->arr1;
 		} else {
-			$_x = 'x'; $_y = 'y'; $_m = $this->m; $arr1 = $this->arr1; $arr2 = $this->arr2;
+			$_x = 'x';
+			$_y = 'y';
+			$_m = $this->m;
+			$arr1 = $this->arr1;
+			$arr2 = $this->arr2;
 		}
 
 		$x = $y = 1;
 		$this->add_count = $this->delete_count = 0;
-		$this->pos[] = array('x'=>$this->m, 'y'=>$this->n); // Sentinel
+		$this->pos[] = ['x'=>$this->m, 'y'=>$this->n]; // Sentinel
+
 		foreach ($this->pos as $pos) {
 			$this->delete_count += ($pos[$_x] - $x);
-			$this->add_count    += ($pos[$_y] - $y);
+			$this->add_count += ($pos[$_y] - $y);
 
 			while ($pos[$_x] > $x) {
 				$arr1[$x]->set($this->key, $this->minus);
@@ -239,7 +289,7 @@ class line_diff
 
 			while ($pos[$_y] > $y) {
 				$arr2[$y]->set($this->key, $this->plus);
-				$arr[] =  $arr2[$y++];
+				$arr[] = $arr2[$y++];
 			}
 
 			if ($x < $_m) {
@@ -247,48 +297,52 @@ class line_diff
 				$arr1[$x]->set($this->key, $this->equal);
 				$arr[] = $arr1[$x];
 			}
-			++$x; ++$y;
+			$x++;
+			$y++;
 		}
+
 		return $arr;
 	}
 }
 
 class DiffLine
 {
-	var $text;
-	var $status;
+	public $text;
 
-	function DiffLine($text)
+	public $status;
+
+	public function DiffLine($text) : void
 	{
 		$this->__construct($text);
 	}
-	function __construct($text)
+
+	public function __construct($text)
 	{
-		$this->text   = $text . "\n";
-		$this->status = array();
+		$this->text = $text."\n";
+		$this->status = [];
 	}
 
-	function compare($obj)
+	public function compare($obj)
 	{
 		return $this->text == $obj->text;
 	}
 
-	function set($key, $status)
+	public function set($key, $status) : void
 	{
 		$this->status[$key] = $status;
 	}
 
-	function get($key)
+	public function get($key)
 	{
 		return isset($this->status[$key]) ? $this->status[$key] : '';
 	}
 
-	function merge($obj)
+	public function merge($obj) : void
 	{
 		$this->status += $obj->status;
 	}
 
-	function text()
+	public function text()
 	{
 		return $this->text;
 	}

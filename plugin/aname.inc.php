@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone
 // aname.inc.php
 // Copyright
@@ -17,25 +17,25 @@
 define('PLUGIN_ANAME_ID_MUST_UNIQUE', 0);
 
 // Max length of ID
-define('PLUGIN_ANAME_ID_MAX',   40);
+define('PLUGIN_ANAME_ID_MAX', 40);
 
 // Pattern of ID
 define('PLUGIN_ANAME_ID_REGEX', '/^[A-Za-z][\w\-]*$/');
 
 // Show usage
-function plugin_aname_usage($convert = TRUE, $message = '')
+function plugin_aname_usage($convert = true, $message = '')
 {
 	if ($convert) {
 		if ($message == '') {
-			return '#aname(anchorID[[,super][,full][,noid],Link title])' . '<br />';
+			return '#aname(anchorID[[,super][,full][,noid],Link title])'.'<br />';
 		} else {
-			return '#aname: ' . $message . '<br />';
+			return '#aname: '.$message.'<br />';
 		}
 	} else {
 		if ($message == '') {
 			return '&amp;aname(anchorID[,super][,full][,noid][,nouserselect]){[Link title]};';
 		} else {
-			return '&amp;aname: ' . $message . ';';
+			return '&amp;aname: '.$message.';';
 		}
 	}
 }
@@ -43,10 +43,11 @@ function plugin_aname_usage($convert = TRUE, $message = '')
 // #aname
 function plugin_aname_convert()
 {
-	$convert = TRUE;
+	$convert = true;
 
-	if (func_num_args() < 1)
+	if (func_num_args() < 1) {
 		return plugin_aname_usage($convert);
+	}
 
 	return plugin_aname_tag(func_get_args(), $convert);
 }
@@ -54,67 +55,89 @@ function plugin_aname_convert()
 // &aname;
 function plugin_aname_inline()
 {
-	$convert = FALSE;
+	$convert = false;
 
-	if (func_num_args() < 2)
+	if (func_num_args() < 2) {
 		return plugin_aname_usage($convert);
+	}
 
 	$args = func_get_args(); // ONE or more
-	$body = strip_htmltag(array_pop($args), FALSE); // Strip anchor tags only
+	$body = strip_htmltag(array_pop($args), false); // Strip anchor tags only
 	array_push($args, $body);
 
 	return plugin_aname_tag($args, $convert);
 }
 
 // Aname plugin itself
-function plugin_aname_tag($args = array(), $convert = TRUE)
+function plugin_aname_tag($args = [], $convert = true)
 {
 	global $vars;
-	static $_id = array();
+	static $_id = [];
 
-	if (empty($args) || $args[0] == '') return plugin_aname_usage($convert);
+	if (empty($args) || $args[0] == '') {
+		return plugin_aname_usage($convert);
+	}
 
 	$id = array_shift($args);
 	$body = '';
-	if (! empty($args)) $body = array_pop($args);
-	$f_noid  = in_array('noid',  $args); // Option: Without id attribute
+
+	if (!empty($args)) {
+		$body = array_pop($args);
+	}
+	$f_noid = in_array('noid', $args); // Option: Without id attribute
 	$f_super = in_array('super', $args); // Option: CSS class
-	$f_full  = in_array('full',  $args); // Option: With full(absolute) URI
+	$f_full = in_array('full', $args); // Option: With full(absolute) URI
 	$f_nouserselect = in_array('nouserselect', $args); // Option: user-select:none;
 
 	if ($body == '') {
-		if ($f_noid)  return plugin_aname_usage($convert, 'Meaningless(No link-title with \'noid\')');
-		if ($f_super) return plugin_aname_usage($convert, 'Meaningless(No link-title with \'super\')');
-		if ($f_full)  return plugin_aname_usage($convert, 'Meaningless(No link-title with \'full\')');
+		if ($f_noid) {
+			return plugin_aname_usage($convert, 'Meaningless(No link-title with \'noid\')');
+		}
+
+		if ($f_super) {
+			return plugin_aname_usage($convert, 'Meaningless(No link-title with \'super\')');
+		}
+
+		if ($f_full) {
+			return plugin_aname_usage($convert, 'Meaningless(No link-title with \'full\')');
+		}
 	}
 
-	if (PLUGIN_ANAME_ID_MUST_UNIQUE && isset($_id[$id]) && ! $f_noid) {
-		return plugin_aname_usage($convert, 'ID already used: '. $id);
+	if (PLUGIN_ANAME_ID_MUST_UNIQUE && isset($_id[$id]) && !$f_noid) {
+		return plugin_aname_usage($convert, 'ID already used: '.$id);
 	} else {
-		if (strlen($id) > PLUGIN_ANAME_ID_MAX)
+		if (strlen($id) > PLUGIN_ANAME_ID_MAX) {
 			return plugin_aname_usage($convert, 'ID too long');
-		if (! preg_match(PLUGIN_ANAME_ID_REGEX, $id))
-			return plugin_aname_usage($convert, 'Invalid ID string: ' .
+		}
+
+		if (!preg_match(PLUGIN_ANAME_ID_REGEX, $id)) {
+			return plugin_aname_usage($convert, 'Invalid ID string: '.
 				htmlsc($id));
-		$_id[$id] = TRUE; // Set
+		}
+		$_id[$id] = true; // Set
 	}
 
-	if ($convert) $body = htmlsc($body);
+	if ($convert) {
+		$body = htmlsc($body);
+	}
 	$id = htmlsc($id); // Insurance
-	$class   = $f_super ? 'anchor_super' : 'anchor';
-	$attr_id = $f_noid  ? '' : ' id="' . $id . '"';
-	$url     = $f_full  ? get_page_uri($vars['page']) : '';
+	$class = $f_super ? 'anchor_super' : 'anchor';
+	$attr_id = $f_noid ? '' : ' id="'.$id.'"';
+	$url = $f_full ? get_page_uri($vars['page']) : '';
 	$astyle = '';
+
 	if ($body != '') {
-		$href  = ' href="' . $url . '#' . $id . '"';
-		$title = ' title="' . $id . '"';
+		$href = ' href="'.$url.'#'.$id.'"';
+		$title = ' title="'.$id.'"';
+
 		if ($f_nouserselect) {
 			$astyle = ' style="user-select:none;"';
 		}
 	} else {
 		$href = $title = '';
 	}
-	return '<a class="' . $class . '"' . $attr_id . $href . $title .
-		$astyle . '>' .
-		$body . '</a>';
+
+	return '<a class="'.$class.'"'.$attr_id.$href.$title.
+		$astyle.'>'.
+		$body.'</a>';
 }

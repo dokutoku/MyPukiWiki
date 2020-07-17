@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone.
 // newpage.inc.php
 // Copyright 2002-2017 PukiWiki Development Team
@@ -12,24 +12,33 @@ function plugin_newpage_convert()
 	static $id = 0;
 
 	$script = get_base_uri();
-	if (PKWK_READONLY) return ''; // Show nothing
+
+	if (PKWK_READONLY) {
+		return '';
+	} // Show nothing
 
 	$newpage = '';
-	if (func_num_args()) list($newpage) = func_get_args();
-	if (! preg_match('/^' . $BracketName . '$/', $newpage)) $newpage = '';
 
-	$s_page    = htmlsc(isset($vars['refer']) ? $vars['refer'] : $vars['page']);
+	if (func_num_args()) {
+		[$newpage] = func_get_args();
+	}
+
+	if (!preg_match('/^'.$BracketName.'$/', $newpage)) {
+		$newpage = '';
+	}
+
+	$s_page = htmlsc(isset($vars['refer']) ? $vars['refer'] : $vars['page']);
 	$s_newpage = htmlsc($newpage);
-	++$id;
+	$id++;
 
 	$ret = <<<EOD
-<form action="$script" method="post">
+<form action="{$script}" method="post">
  <div>
   <input type="hidden" name="plugin" value="newpage" />
-  <input type="hidden" name="refer"  value="$s_page" />
-  <label for="_p_newpage_$id">$_msg_newpage:</label>
-  <input type="text"   name="page" id="_p_newpage_$id" value="$s_newpage" size="30" />
-  <input type="submit" value="$_btn_edit" />
+  <input type="hidden" name="refer"  value="{$s_page}" />
+  <label for="_p_newpage_{$id}">{$_msg_newpage}:</label>
+  <input type="text"   name="page" id="_p_newpage_{$id}" value="{$s_newpage}" size="30" />
+  <input type="submit" value="{$_btn_edit}" />
  </div>
 </form>
 EOD;
@@ -41,21 +50,25 @@ function plugin_newpage_action()
 {
 	global $vars, $_btn_edit, $_msg_newpage;
 
-	if (PKWK_READONLY) die_message('PKWK_READONLY prohibits editing');
+	if (PKWK_READONLY) {
+		die_message('PKWK_READONLY prohibits editing');
+	}
 
 	if ($vars['page'] == '') {
-		$retvars['msg']  = $_msg_newpage;
+		$retvars['msg'] = $_msg_newpage;
 		$retvars['body'] = plugin_newpage_convert();
+
 		return $retvars;
 	} else {
-		$page    = strip_bracket($vars['page']);
-		$r_page  = rawurlencode(isset($vars['refer']) ?
+		$page = strip_bracket($vars['page']);
+		$r_page = rawurlencode(isset($vars['refer']) ?
 			get_fullname($page, $vars['refer']) : $page);
 		$r_refer = rawurlencode($vars['refer']);
 
 		pkwk_headers_sent();
-		header('Location: ' . get_base_uri(PKWK_URI_ROOT) .
-			'?cmd=read&page=' . $r_page . '&refer=' . $r_refer);
+		header('Location: '.get_base_uri(PKWK_URI_ROOT).
+			'?cmd=read&page='.$r_page.'&refer='.$r_refer);
+
 		exit;
 	}
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 // PukiWiki - Yet another WikiWikiWeb clone
 // $Id: deleted.inc.php,v 1.6 2005/01/22 04:22:01 henoheno Exp $
 //
@@ -15,20 +15,21 @@ function plugin_deleted_action()
 	global $_deleted_plugin_title, $_deleted_plugin_title_withfilename;
 
 	$dir = isset($vars['dir']) ? $vars['dir'] : 'backup';
-	$withfilename  = isset($vars['file']);
+	$withfilename = isset($vars['file']);
 
-	$_DIR['diff'  ]['dir'] = DIFF_DIR;
-	$_DIR['diff'  ]['ext'] = '.txt';
+	$_DIR['diff']['dir'] = DIFF_DIR;
+	$_DIR['diff']['ext'] = '.txt';
 	$_DIR['backup']['dir'] = BACKUP_DIR;
 	$_DIR['backup']['ext'] = BACKUP_EXT; // .gz or .txt
 	//$_DIR['cache' ]['dir'] = CACHE_DIR; // No way to delete them via web browser now
 	//$_DIR['cache' ]['ext'] = '.ref';
 	//$_DIR['cache' ]['ext'] = '.rel';
 
-	if (! isset($_DIR[$dir]))
-		return array('msg'=>'Deleted plugin', 'body'=>'No such setting: Choose backup or diff');
+	if (!isset($_DIR[$dir])) {
+		return ['msg'=>'Deleted plugin', 'body'=>'No such setting: Choose backup or diff'];
+	}
 
-	$deleted_pages  = array_diff(
+	$deleted_pages = array_diff(
 		get_existpages($_DIR[$dir]['dir'], $_DIR[$dir]['ext']),
 		get_existpages());
 
@@ -41,4 +42,3 @@ function plugin_deleted_action()
 
 	return $retval;
 }
-?>
