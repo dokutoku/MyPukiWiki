@@ -245,7 +245,7 @@ function plugin_search2_do_search($query_text, $base, $start_index,
 	print(json_encode($obj, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 }
 
-function plugin_search2_search_form($search_text = '', $bases = array(),
+function plugin_search2_search_form($search_text, $bases,
 	$offset, $prev_offset_s = null)
 {
 	global $_btn_search;
