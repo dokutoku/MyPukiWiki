@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // Copyright 2015-2017 PukiWiki Development Team
 // License: GPL v2 or (at your option) any later version
@@ -19,28 +21,30 @@ function plugin_loginform_convert()
 
 function plugin_loginform_action()
 {
-	global $auth_user, $auth_type, $_loginform_messages;
-	$page = isset($_GET['page']) ? $_GET['page'] : '';
-	$pcmd = isset($_GET['pcmd']) ? $_GET['pcmd'] : '';
-	$url_after_login = isset($_GET['url_after_login']) ? $_GET['url_after_login'] : '';
+	global $auth_user;
+	global $auth_type;
+	global $_loginform_messages;
+
+	$page = (isset($_GET['page'])) ? ($_GET['page']) : ('');
+	$pcmd = (isset($_GET['pcmd'])) ? ($_GET['pcmd']) : ('');
+	$url_after_login = (isset($_GET['url_after_login'])) ? ($_GET['url_after_login']) : ('');
 	$page_after_login = $page;
 
 	if (!$url_after_login) {
 		$page_after_login = $page;
 	}
-	$action_url = get_base_uri().'?plugin=loginform'
-		.'&page='.rawurlencode($page)
-		.($url_after_login ? '&url_after_login='.rawurlencode($url_after_login) : '')
-		.($page_after_login ? '&page_after_login='.rawurlencode($page_after_login) : '');
-	$username = isset($_POST['username']) ? $_POST['username'] : '';
-	$password = isset($_POST['password']) ? $_POST['password'] : '';
-	$isset_user_credential = $username || $password;
 
-	if ($username && $password && form_auth($username, $password)) {
+	$action_url = get_base_uri().'?plugin=loginform&page='.rawurlencode($page).(($url_after_login) ? ('&url_after_login='.rawurlencode($url_after_login)) : ('')).(($page_after_login) ? ('&page_after_login='.rawurlencode($page_after_login)) : (''));
+	$username = (isset($_POST['username'])) ? ($_POST['username']) : ('');
+	$password = (isset($_POST['password'])) ? ($_POST['password']) : ('');
+	$isset_user_credential = ($username) || ($password);
+
+	if (($username) && ($password) && (form_auth($username, $password))) {
 		// Sign in successfully completed
 		form_auth_redirect($url_after_login, $page_after_login);
 
-		exit; // or 'return FALSE;' - Don't double check for FORM_AUTH
+		// or 'return FALSE;' - Don't double check for FORM_AUTH
+		exit;
 	}
 
 	if ($pcmd === 'logout') {
@@ -51,24 +55,24 @@ function plugin_loginform_action()
 				header('HTTP/1.0 401 Unauthorized');
 
 				break;
+
 			case AUTH_TYPE_FORM:
 			case AUTH_TYPE_EXTERNAL:
 			case AUTH_TYPE_SAML:
 			default:
 				$_SESSION = [];
-				session_regenerate_id(true); // require: PHP5.1+
+
+				// require: PHP5.1+
+				session_regenerate_id(true);
+
 				session_destroy();
 
 				break;
 		}
+
 		$auth_user = '';
 
-		return [
-			'msg'=>'Log out',
-			'body'=>'Logged out completely<br>'
-				.'<a href="'.get_page_uri($page).'">'
-				.$page.'</a>',
-		];
+		return ['msg'=>'Log out', 'body'=>'Logged out completely<br><a href="'.get_page_uri($page).'">'.$page.'</a>'];
 	} else {
 		// login
 		ob_start(); ?>
@@ -147,9 +151,6 @@ window.addEventListener && window.addEventListener("DOMContentLoaded", function(
 		$body = ob_get_contents();
 		ob_end_clean();
 
-		return [
-			'msg'=>$_loginform_messages['login'],
-			'body'=>$body,
-		];
+		return ['msg'=>$_loginform_messages['login'], 'body'=>$body];
 	}
 }

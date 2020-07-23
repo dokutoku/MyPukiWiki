@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // counter.inc.php
 // Copyright
@@ -10,17 +12,20 @@
 
 // Counter file's suffix
 define('PLUGIN_COUNTER_SUFFIX', '.count');
+
 // Use Database (1) or not (0)
 define('PLUGIN_COUNTER_USE_DB', 0);
+
 // Database Connection setting
 define('PLUGIN_COUNTER_DB_CONNECT_STRING', 'sqlite:counter/counter.db');
 define('PLUGIN_COUNTER_DB_USERNAME', '');
 define('PLUGIN_COUNTER_DB_PASSWORD', '');
+
 global $plugin_counter_db_options;
-$plugin_counter_db_options = null;
+
 // For MySQL
-// $plugin_counter_db_options = array(PDO::MYSQL_ATTR_INIT_COMMAND =>
-//   "SET NAMES utf8mb4 COLLATE utf8mb4_bin");
+// $plugin_counter_db_options = [PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8mb4 COLLATE utf8mb4_bin"];
+$plugin_counter_db_options = null;
 
 define('PLUGIN_COUNTER_DB_TABLE_NAME_PREFIX', '');
 
@@ -34,21 +39,25 @@ function plugin_counter_inline()
 	global $vars;
 
 	// BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
-	$args = func_get_args(); // with array_shift()
+	// with array_shift()
+	$args = func_get_args();
 
 	$arg = strtolower(array_shift($args));
 
 	switch ($arg) {
-	case '': $arg = 'total'; // FALLTHROUGH
-	// no break
-	case 'total': // FALLTHROUGH
-	case 'today': // FALLTHROUGH
-	case 'yesterday':
-		$counter = plugin_counter_get_count($vars['page']);
+		case '':
+			$arg = 'total';
+			// FALLTHROUGH
 
-		return $counter[$arg];
-	default:
-		return '&counter([total|today|yesterday]);';
+		case 'total':
+		case 'today':
+		case 'yesterday':
+			$counter = plugin_counter_get_count($vars['page']);
+
+			return $counter[$arg];
+
+		default:
+			return '&counter([total|today|yesterday]);';
 	}
 }
 
@@ -71,18 +80,22 @@ EOD;
 // Return a summary
 function plugin_counter_get_count($page)
 {
-	global $vars, $plugin_counter_db_options;
+	global $vars;
+	global $plugin_counter_db_options;
 	static $counters = [];
 	static $default;
+
 	$page_counter_t = PLUGIN_COUNTER_DB_TABLE_NAME_PREFIX.'page_counter';
 
 	if (!isset($default)) {
-		$default = [
+		$default =
+		[
 			'total'=>0,
 			'date'=>get_date('Y/m/d'),
 			'today'=>0,
 			'yesterday'=>0,
-			'ip'=>'', ];
+			'ip'=>'',
+		];
 	}
 
 	if (!is_page($page)) {
@@ -102,17 +115,15 @@ function plugin_counter_get_count($page)
 		if (SOURCE_ENCODING !== 'UTF-8') {
 			die('counter.inc.php: Database counter is only available in UTF-8 mode');
 		}
+
 		$is_new_page = false;
 
 		try {
-			$pdo = new PDO(PLUGIN_COUNTER_DB_CONNECT_STRING,
-				PLUGIN_COUNTER_DB_USERNAME, PLUGIN_COUNTER_DB_PASSWORD,
-				$plugin_counter_db_options);
+			$pdo = new PDO(PLUGIN_COUNTER_DB_CONNECT_STRING, PLUGIN_COUNTER_DB_USERNAME, PLUGIN_COUNTER_DB_PASSWORD, $plugin_counter_db_options);
 			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 			$pdo->setAttribute(PDO::ATTR_TIMEOUT, 5);
-			$stmt = $pdo->prepare(
-"SELECT total, update_date,
+			$stmt = $pdo->prepare("SELECT total, update_date,
    today_viewcount, yesterday_viewcount, remote_addr
  FROM {$page_counter_t}
  WHERE page_name = ?"
@@ -134,19 +145,24 @@ function plugin_counter_get_count($page)
 			// Error occurred
 			$db_error = '(DBError)';
 
-			return [
+			return
+			[
 				'total'=>$db_error,
 				'date'=>$db_error,
 				'today'=>$db_error,
 				'yesterday'=>$db_error,
-				'ip'=>$db_error, ];
+				'ip'=>$db_error,
+			];
 		}
 	} else {
 		// Open
 		$file = COUNTER_DIR.encode($page).PLUGIN_COUNTER_SUFFIX;
 		pkwk_touch_file($file);
-		$fp = fopen($file, 'r+')
-			|| die('counter.inc.php: Cannot open COUNTER_DIR/'.basename($file));
+
+		if (!($fp = fopen($file, 'r+'))) {
+			die('counter.inc.php: Cannot open COUNTER_DIR/'.basename($file));
+		}
+
 		set_file_buffer($fp, 0);
 		flock($fp, LOCK_EX);
 		rewind($fp);
@@ -171,7 +187,7 @@ function plugin_counter_get_count($page)
 		$is_yesterday = ($c['date'] == get_date('Y/m/d', UTIME - 24 * 60 * 60));
 		$c[$page]['ip'] = $remote_addr;
 		$c['date'] = $default['date'];
-		$c['yesterday'] = $is_yesterday ? $c['today'] : 0;
+		$c['yesterday'] = ($is_yesterday) ? ($c['today']) : (0);
 		$c['today'] = 1;
 		$c['total']++;
 		$count_up = true;
@@ -185,22 +201,19 @@ function plugin_counter_get_count($page)
 	}
 
 	if (PLUGIN_COUNTER_USE_DB) {
-		if ($modify && $vars['cmd'] == 'read') {
+		if (($modify) && ($vars['cmd'] == 'read')) {
 			try {
 				if ($is_new_page) {
 					// Insert
-					$add_stmt = $pdo->prepare(
-"INSERT INTO {$page_counter_t}
+					$add_stmt = $pdo->prepare("INSERT INTO {$page_counter_t}
    (page_name, total, update_date, today_viewcount,
    yesterday_viewcount, remote_addr)
  VALUES (?, ?, ?, ?, ?, ?)"
 					);
-					$r_add = $add_stmt->execute([$page, $c['total'],
-						$c['date'], $c['today'], $c['yesterday'], $c['ip'], ]);
+					$r_add = $add_stmt->execute([$page, $c['total'], $c['date'], $c['today'], $c['yesterday'], $c['ip']]);
 				} elseif ($count_up) {
 					// Update on counting up 'total'
-					$upd_stmt = $pdo->prepare(
-"UPDATE {$page_counter_t}
+					$upd_stmt = $pdo->prepare("UPDATE {$page_counter_t}
  SET total = total + 1,
    update_date = ?,
    today_viewcount = ?,
@@ -208,8 +221,7 @@ function plugin_counter_get_count($page)
    remote_addr = ?
  WHERE page_name = ?"
 					);
-					$r_upd = $upd_stmt->execute([$c['date'],
-						$c['today'], $c['yesterday'], $c['ip'], $page, ]);
+					$r_upd = $upd_stmt->execute([$c['date'], $c['today'], $c['yesterday'], $c['ip'], $page]);
 				}
 			} catch (PDOException $e) {
 				foreach (array_keys($c) as $key) {
@@ -219,7 +231,7 @@ function plugin_counter_get_count($page)
 		}
 	} else {
 		// Modify
-		if ($modify && $vars['cmd'] == 'read') {
+		if (($modify) && ($vars['cmd'] == 'read')) {
 			rewind($fp);
 			ftruncate($fp, 0);
 
@@ -227,6 +239,7 @@ function plugin_counter_get_count($page)
 				fwrite($fp, $c[$key]."\n");
 			}
 		}
+
 		// Close
 		flock($fp, LOCK_UN);
 		fclose($fp);
@@ -247,13 +260,12 @@ function plugin_counter_get_popular_list($today, $except, $max)
 function plugin_counter_get_popular_list_file($today, $except, $max)
 {
 	global $whatsnew;
+
 	$counters = [];
 	$except_quote = str_replace('#', '\#', $except);
 
 	foreach (get_existpages(COUNTER_DIR, '.count') as $file=>$page) {
-		if (($except != '' && preg_match("#{$except_quote}#", $page)) ||
-				$page == $whatsnew || check_non_list($page) ||
-				!is_page($page)) {
+		if ((($except != '') && (preg_match("#{$except_quote}#", $page))) || ($page == $whatsnew) || (check_non_list($page)) || (!is_page($page))) {
 			continue;
 		}
 
@@ -277,7 +289,10 @@ function plugin_counter_get_popular_list_file($today, $except, $max)
 	asort($counters, SORT_NUMERIC);
 
 	// BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
-	$counters = array_reverse($counters, true); // with array_splice()
+
+	// with array_splice()
+	$counters = array_reverse($counters, true);
+
 	$counters = array_splice($counters, 0, $max);
 
 	return $counters;
@@ -286,6 +301,7 @@ function plugin_counter_get_popular_list_file($today, $except, $max)
 function plugin_counter_get_popular_list_db($today, $except, $max)
 {
 	global $whatsnew;
+
 	$page_counter_t = PLUGIN_COUNTER_DB_TABLE_NAME_PREFIX.'page_counter';
 
 	if ($today) {
@@ -293,19 +309,17 @@ function plugin_counter_get_popular_list_db($today, $except, $max)
 	} else {
 		$order_by_c = 'total';
 	}
+
 	$counters = [];
 
 	try {
-		$pdo = new PDO(PLUGIN_COUNTER_DB_CONNECT_STRING,
-			PLUGIN_COUNTER_DB_USERNAME, PLUGIN_COUNTER_DB_PASSWORD,
-			$plugin_counter_db_options);
+		$pdo = new PDO(PLUGIN_COUNTER_DB_CONNECT_STRING, PLUGIN_COUNTER_DB_USERNAME, PLUGIN_COUNTER_DB_PASSWORD, $plugin_counter_db_options);
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 		$pdo->setAttribute(PDO::ATTR_TIMEOUT, 5);
 
 		if ($today) {
-			$stmt = $pdo->prepare(
-"SELECT page_name, total, update_date,
+			$stmt = $pdo->prepare("SELECT page_name, total, update_date,
    today_viewcount, yesterday_viewcount
  FROM {$page_counter_t}
  WHERE update_date = ?
@@ -313,14 +327,14 @@ function plugin_counter_get_popular_list_db($today, $except, $max)
  LIMIT ?"
 			);
 		} else {
-			$stmt = $pdo->prepare(
-"SELECT page_name, total, update_date,
+			$stmt = $pdo->prepare("SELECT page_name, total, update_date,
    today_viewcount, yesterday_viewcount
  FROM {$page_counter_t}
  ORDER BY {$order_by_c} DESC
  LIMIT ?"
 			);
 		}
+
 		$except_quote = str_replace('#', '\#', $except);
 		$limit = $max + 100;
 
@@ -333,9 +347,7 @@ function plugin_counter_get_popular_list_db($today, $except, $max)
 		foreach ($stmt as $r) {
 			$page = $r['page_name'];
 
-			if (($except != '' && preg_match("#{$except_quote}#", $page)) ||
-					$page == $whatsnew || check_non_list($page) ||
-					!is_page($page)) {
+			if ((($except != '') && (preg_match("#{$except_quote}#", $page))) || ($page == $whatsnew) || (check_non_list($page)) || (!is_page($page))) {
 				continue;
 			}
 
@@ -345,6 +357,7 @@ function plugin_counter_get_popular_list_db($today, $except, $max)
 				$counters['_'.$page] = $r['total'];
 			}
 		}
+
 		$stmt->closeCursor();
 
 		return array_splice($counters, 0, $max);
@@ -359,17 +372,13 @@ function plugin_counter_page_rename($pages) : void
 
 	if (PLUGIN_COUNTER_USE_DB !== 0) {
 		$page_counter_t = PLUGIN_COUNTER_DB_TABLE_NAME_PREFIX.'page_counter';
-		$pdo = new PDO(PLUGIN_COUNTER_DB_CONNECT_STRING,
-			PLUGIN_COUNTER_DB_USERNAME, PLUGIN_COUNTER_DB_PASSWORD,
-			$plugin_counter_db_options);
+		$pdo = new PDO(PLUGIN_COUNTER_DB_CONNECT_STRING, PLUGIN_COUNTER_DB_USERNAME, PLUGIN_COUNTER_DB_PASSWORD, $plugin_counter_db_options);
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-		$stmt_delete = $pdo->prepare(
-"DELETE FROM {$page_counter_t}
+		$stmt_delete = $pdo->prepare("DELETE FROM {$page_counter_t}
  WHERE page_name = ?"
 		);
-		$stmt_rename = $pdo->prepare(
-"UPDATE {$page_counter_t}
+		$stmt_rename = $pdo->prepare("UPDATE {$page_counter_t}
  SET page_name = ?
  WHERE page_name = ?"
 		);
@@ -387,15 +396,12 @@ function plugin_counter_page_rename($pages) : void
 function plugin_counter_tool_setup_table() : void
 {
 	global $plugin_counter_db_options;
+
 	$page_counter_t = PLUGIN_COUNTER_DB_TABLE_NAME_PREFIX.'page_counter';
-	$pdo = new PDO(PLUGIN_COUNTER_DB_CONNECT_STRING,
-		PLUGIN_COUNTER_DB_USERNAME, PLUGIN_COUNTER_DB_PASSWORD,
-		$plugin_counter_db_options);
+	$pdo = new PDO(PLUGIN_COUNTER_DB_CONNECT_STRING, PLUGIN_COUNTER_DB_USERNAME, PLUGIN_COUNTER_DB_PASSWORD, $plugin_counter_db_options);
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-	$r = $pdo->exec(
-"CREATE TABLE {$page_counter_t} (
-   page_name VARCHAR(190) PRIMARY KEY,
+	$r = $pdo->exec("CREATE TABLE {$page_counter_t} (page_name VARCHAR(190) PRIMARY KEY,
    total INTEGER NOT NULL,
    update_date VARCHAR(20) NOT NULL,
    today_viewcount INTEGER NOT NULL,

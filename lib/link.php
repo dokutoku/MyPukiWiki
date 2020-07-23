@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // link.php
 // Copyright 2003-2020 PukiWiki Development Team
@@ -55,14 +57,15 @@ function links_get_related_db($page)
 function links_update($page) : void
 {
 	if (PKWK_READONLY) {
+		// Do nothing
 		return;
-	} // Do nothing
+	}
 
 	if (ini_get('safe_mode') == '0') {
 		set_time_limit(0);
 	}
 
-	$time = is_page($page, true) ? get_filetime($page) : 0;
+	$time = (is_page($page, true)) ? (get_filetime($page)) : (0);
 
 	$rel_old = [];
 	$rel_file = CACHE_DIR.encode($page).'.rel';
@@ -76,17 +79,22 @@ function links_update($page) : void
 			$rel_old = explode("\t", rtrim($lines[0]));
 		}
 	}
-	$rel_new = []; // 参照先
-	$rel_auto = []; // オートリンクしている参照先
+
+	// 参照先
+	$rel_new = [];
+
+	// オートリンクしている参照先
+	$rel_auto = [];
+
 	$links = links_get_objects($page, true);
 
 	foreach ($links as $_obj) {
-		if (!isset($_obj->type) || $_obj->type != 'pagename' ||
-			$_obj->name === $page || $_obj->name == '') {
+		if ((!isset($_obj->type)) || ($_obj->type != 'pagename') || ($_obj->name === $page) || ($_obj->name == '')) {
 			continue;
 		}
 
-		if (is_a($_obj, 'Link_autolink')) { // 行儀が悪い
+		// 行儀が悪い
+		if (is_a($_obj, 'Link_autolink')) {
 			$rel_auto[] = $_obj->name;
 		} elseif (is_a($_obj, 'Link_autoalias')) {
 			$_alias = get_autoalias_right_link($_obj->name);
@@ -98,6 +106,7 @@ function links_update($page) : void
 			$rel_new[] = $_obj->name;
 		}
 	}
+
 	$rel_new = array_unique($rel_new);
 
 	// autolinkしか向いていないページ
@@ -110,8 +119,10 @@ function links_update($page) : void
 	if ($time) {
 		// ページが存在している
 		if (!empty($rel_new)) {
-			$fp = fopen($rel_file, 'w')
-					|| die_message('cannot write '.htmlsc($rel_file));
+			if (!($fp = fopen($rel_file, 'w'))) {
+				die_message('cannot write '.htmlsc($rel_file));
+			}
+
 			fwrite($fp, implode("\t", $rel_new));
 			fclose($fp);
 		}
@@ -121,11 +132,12 @@ function links_update($page) : void
 	links_add($page, array_diff($rel_new, $rel_old), $rel_auto);
 	links_delete($page, array_diff($rel_old, $rel_new));
 
-	global $WikiName, $autolink, $nowikiname;
+	global $WikiName;
+	global $autolink;
+	global $nowikiname;
 
 	// $pageが新規作成されたページで、AutoLinkの対象となり得る場合
-	if ($time && !$rel_file_exist && $autolink
-		&& (preg_match("/^{$WikiName}$/", $page) ? $nowikiname : strlen($page) >= $autolink)) {
+	if (($time) && (!$rel_file_exist) && ($autolink) && ((preg_match('/^'.$WikiName.'$/', $page)) ? ($nowikiname) : (strlen($page) >= $autolink))) {
 		// $pageを参照していそうなページを一斉更新する(おい)
 		$pages = links_do_search_page($page);
 
@@ -135,10 +147,11 @@ function links_update($page) : void
 			}
 		}
 	}
+
 	$ref_file = CACHE_DIR.encode($page).'.ref';
 
 	// $pageが削除されたときに、
-	if (!$time && file_exists($ref_file)) {
+	if ((!$time) && (file_exists($ref_file))) {
 		foreach (file($ref_file) as $line) {
 			[$ref_page, $ref_auto] = explode("\t", rtrim($line));
 
@@ -156,8 +169,9 @@ function links_init() : void
 	global $whatsnew;
 
 	if (PKWK_READONLY) {
+		// Do nothing
 		return;
-	} // Do nothing
+	}
 
 	if (ini_get('safe_mode') == '0') {
 		set_time_limit(0);
@@ -172,31 +186,37 @@ function links_init() : void
 		unlink($cache);
 	}
 
-	$ref = []; // 参照元
+	// 参照元
+	$ref = [];
 
 	foreach (get_existpages() as $page) {
 		if ($page == $whatsnew) {
 			continue;
 		}
 
-		$rel = []; // 参照先
+		// 参照先
+		$rel = [];
+
 		$links = links_get_objects($page);
 
 		foreach ($links as $_obj) {
-			if (!isset($_obj->type) || $_obj->type != 'pagename' ||
-				$_obj->name == $page || $_obj->name == '') {
+			if ((!isset($_obj->type)) || ($_obj->type != 'pagename') || ($_obj->name == $page) || ($_obj->name == '')) {
 				continue;
 			}
+
 			$_name = $_obj->name;
 
 			if (is_a($_obj, 'Link_autoalias')) {
 				$_alias = get_autoalias_right_link($_name);
 
 				if (!is_pagename($_alias)) {
-					continue;	// not PageName
+					// not PageName
+					continue;
 				}
+
 				$_name = $_alias;
 			}
+
 			$rel[] = $_name;
 
 			if (!isset($ref[$_name][$page])) {
@@ -207,23 +227,28 @@ function links_init() : void
 				$ref[$_name][$page] = 0;
 			}
 		}
+
 		$rel = array_unique($rel);
 
 		if (!empty($rel)) {
-			$fp = fopen(CACHE_DIR.encode($page).'.rel', 'w')
-				|| die_message('cannot write '.htmlsc(CACHE_DIR.encode($page).'.rel'));
+			if (!($fp = fopen(CACHE_DIR.encode($page).'.rel', 'w'))) {
+				die_message('cannot write '.htmlsc(CACHE_DIR.encode($page).'.rel'));
+			}
+
 			fwrite($fp, implode("\t", $rel));
 			fclose($fp);
 		}
 	}
 
 	foreach ($ref as $page=>$arr) {
-		$fp = fopen(CACHE_DIR.encode($page).'.ref', 'w')
-			|| die_message('cannot write '.htmlsc(CACHE_DIR.encode($page).'.ref'));
+		if (!($fp = fopen(CACHE_DIR.encode($page).'.ref', 'w'))) {
+			die_message('cannot write '.htmlsc(CACHE_DIR.encode($page).'.ref'));
+		}
 
 		foreach ($arr as $ref_page=>$ref_auto) {
 			fwrite($fp, $ref_page."\t".$ref_auto."\n");
 		}
+
 		fclose($fp);
 	}
 }
@@ -231,15 +256,16 @@ function links_init() : void
 function links_add($page, $add, $rel_auto) : void
 {
 	if (PKWK_READONLY) {
+		// Do nothing
 		return;
-	} // Do nothing
+	}
 
 	$rel_auto = array_flip($rel_auto);
 
 	foreach ($add as $_page) {
 		$all_auto = isset($rel_auto[$_page]);
 		$is_page = is_page($_page);
-		$ref = $page."\t".($all_auto ? 1 : 0)."\n";
+		$ref = $page."\t".(($all_auto) ? (1) : (0))."\n";
 
 		$ref_file = CACHE_DIR.encode($_page).'.ref';
 
@@ -255,12 +281,15 @@ function links_add($page, $add, $rel_auto) : void
 					$ref .= $line;
 				}
 			}
+
 			unlink($ref_file);
 		}
 
-		if ($is_page || !$all_auto) {
-			$fp = fopen($ref_file, 'w')
-				 || die_message('cannot write '.htmlsc($ref_file));
+		if (($is_page) || (!$all_auto)) {
+			if (!($fp = fopen($ref_file, 'w'))) {
+				die_message('cannot write '.htmlsc($ref_file));
+			}
+
 			fwrite($fp, $ref);
 			fclose($fp);
 		}
@@ -270,8 +299,9 @@ function links_add($page, $add, $rel_auto) : void
 function links_delete($page, $del) : void
 {
 	if (PKWK_READONLY) {
+		// Do nothing
 		return;
-	} // Do nothing
+	}
 
 	foreach ($del as $_page) {
 		$ref_file = CACHE_DIR.encode($_page).'.ref';
@@ -292,14 +322,18 @@ function links_delete($page, $del) : void
 				if (!$ref_auto) {
 					$all_auto = false;
 				}
+
 				$ref .= $line;
 			}
 		}
+
 		unlink($ref_file);
 
-		if (($is_page || !$all_auto) && $ref != '') {
-			$fp = fopen($ref_file, 'w')
-				|| die_message('cannot write '.htmlsc($ref_file));
+		if ((($is_page) || (!$all_auto)) && ($ref != '')) {
+			if (!($fp = fopen($ref_file, 'w'))) {
+				die_message('cannot write '.htmlsc($ref_file));
+			}
+
 			fwrite($fp, $ref);
 			fclose($fp);
 		}
@@ -310,7 +344,7 @@ function links_get_objects($page, $refresh = false)
 {
 	static $obj;
 
-	if (!isset($obj) || $refresh) {
+	if ((!isset($obj)) || ($refresh)) {
 		$obj = new InlineConverter(null, ['note']);
 	}
 
@@ -335,6 +369,7 @@ function links_do_search_page($word)
 	foreach ($keys as $key=>$value) {
 		$keys[$key] = '/'.$value.'/S';
 	}
+
 	$pages = get_existpages();
 	$pages = array_flip($pages);
 	unset($pages[$whatsnew]);
@@ -355,7 +390,9 @@ function links_do_search_page($word)
 		if ($b_match) {
 			continue;
 		}
-		unset($pages[$page]); // Miss
+
+		// Miss
+		unset($pages[$page]);
 	}
 
 	return array_keys($pages);

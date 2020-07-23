@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // $Id: calendar_read.inc.php,v 1.9 2005/05/04 05:13:54 henoheno Exp $
 // Copyright (C)
@@ -23,7 +25,7 @@ function plugin_calendar_read_convert()
 	}
 
 	$command = 'read';
-	$args = func_num_args() ? func_get_args() : [];
+	$args = (func_num_args()) ? (func_get_args()) : ([]);
 
 	return call_user_func_array('plugin_calendar_convert', $args);
 }

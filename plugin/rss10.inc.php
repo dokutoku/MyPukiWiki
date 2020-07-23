@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // rss10.inc.php
 // Copyright 2003-2017 PukiWiki Development Team
@@ -9,7 +11,9 @@ function plugin_rss10_action() : void
 {
 	pkwk_headers_sent();
 	header('Status: 301 Moved Permanently');
-	header('Location: '.get_base_uri(PKWK_URI_ROOT).'?cmd=rss&ver=1.0'); // HTTP
+
+	// HTTP
+	header('Location: '.get_base_uri(PKWK_URI_ROOT).'?cmd=rss&ver=1.0');
 
 	exit;
 }

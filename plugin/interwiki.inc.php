@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // interwiki.inc.php
 // Copyright 2003-2018 PukiWiki Development Team
@@ -8,7 +10,8 @@
 
 function plugin_interwiki_action()
 {
-	global $vars, $InterWikiName;
+	global $vars;
+	global $InterWikiName;
 
 	if (PKWK_SAFE_MODE) {
 		die_message('InterWiki plugin is not allowed');
@@ -17,9 +20,10 @@ function plugin_interwiki_action()
 	$match = [];
 	$page = $vars['page'];
 
-	if (!preg_match("/^{$InterWikiName}$/", $page, $match)) {
+	if (!preg_match('/^'.$InterWikiName.'$/', $page, $match)) {
 		return plugin_interwiki_invalid($page);
 	}
+
 	$url = get_interwiki_url($match[2], $match[3]);
 
 	if ($url === false) {
@@ -34,12 +38,9 @@ function plugin_interwiki_action()
 
 function plugin_interwiki_invalid($page)
 {
-	global $_title_invalidiwn, $_msg_invalidiwn, $interwiki;
+	global $_title_invalidiwn;
+	global $_msg_invalidiwn;
+	global $interwiki;
 
-	return [
-		'msg'=>$_title_invalidiwn,
-		'body'=>str_replace(['$1', '$2'],
-			[htmlsc($page),
-				make_pagelink($interwiki, 'InterWikiName'), ],
-			$_msg_invalidiwn), ];
+	return ['msg'=>$_title_invalidiwn, 'body'=>str_replace(['$1', '$2'], [htmlsc($page), make_pagelink($interwiki, 'InterWikiName')], $_msg_invalidiwn)];
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // newpage.inc.php
 // Copyright 2002-2017 PukiWiki Development Team
@@ -8,14 +10,18 @@
 
 function plugin_newpage_convert()
 {
-	global $vars, $_btn_edit, $_msg_newpage, $BracketName;
+	global $vars;
+	global $_btn_edit;
+	global $_msg_newpage;
+	global $BracketName;
 	static $id = 0;
 
 	$script = get_base_uri();
 
 	if (PKWK_READONLY) {
+		// Show nothing
 		return '';
-	} // Show nothing
+	}
 
 	$newpage = '';
 
@@ -27,7 +33,7 @@ function plugin_newpage_convert()
 		$newpage = '';
 	}
 
-	$s_page = htmlsc(isset($vars['refer']) ? $vars['refer'] : $vars['page']);
+	$s_page = htmlsc(isset($vars['refer']) ? ($vars['refer']) : ($vars['page']));
 	$s_newpage = htmlsc($newpage);
 	$id++;
 
@@ -48,7 +54,9 @@ EOD;
 
 function plugin_newpage_action()
 {
-	global $vars, $_btn_edit, $_msg_newpage;
+	global $vars;
+	global $_btn_edit;
+	global $_msg_newpage;
 
 	if (PKWK_READONLY) {
 		die_message('PKWK_READONLY prohibits editing');
@@ -61,13 +69,11 @@ function plugin_newpage_action()
 		return $retvars;
 	} else {
 		$page = strip_bracket($vars['page']);
-		$r_page = rawurlencode(isset($vars['refer']) ?
-			get_fullname($page, $vars['refer']) : $page);
+		$r_page = rawurlencode((isset($vars['refer'])) ? (get_fullname($page, $vars['refer'])) : ($page));
 		$r_refer = rawurlencode($vars['refer']);
 
 		pkwk_headers_sent();
-		header('Location: '.get_base_uri(PKWK_URI_ROOT).
-			'?cmd=read&page='.$r_page.'&refer='.$r_refer);
+		header('Location: '.get_base_uri(PKWK_URI_ROOT).'?cmd=read&page='.$r_page.'&refer='.$r_refer);
 
 		exit;
 	}

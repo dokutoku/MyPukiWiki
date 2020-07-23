@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // search.inc.php
 // Copyright 2003-2017 PukiWiki Development Team
@@ -8,10 +10,14 @@
 
 // Allow search via GET method 'index.php?plugin=search&word=keyword'
 // NOTE: Also allows DoS to your site more easily by SPAMbot or worm or ...
-define('PLUGIN_SEARCH_DISABLE_GET_ACCESS', 1); // 1, 0
+
+// 1, 0
+define('PLUGIN_SEARCH_DISABLE_GET_ACCESS', 1);
 
 define('PLUGIN_SEARCH_MAX_LENGTH', 80);
-define('PLUGIN_SEARCH_MAX_BASE', 16); // #search(1,2,3,...,15,16)
+
+// #search(1,2,3,...,15,16)
+define('PLUGIN_SEARCH_MAX_BASE', 16);
 
 // Show a search box on a page
 function plugin_search_convert()
@@ -23,21 +29,27 @@ function plugin_search_convert()
 
 function plugin_search_action()
 {
-	global $post, $vars, $_title_result, $_title_search, $_msg_searching;
+	global $post;
+	global $vars;
+	global $_title_result;
+	global $_title_search;
+	global $_msg_searching;
 
 	if (PLUGIN_SEARCH_DISABLE_GET_ACCESS) {
-		$s_word = isset($post['word']) ? htmlsc($post['word']) : '';
+		$s_word = (isset($post['word'])) ? (htmlsc($post['word'])) : ('');
 	} else {
-		$s_word = isset($vars['word']) ? htmlsc($vars['word']) : '';
+		$s_word = (isset($vars['word'])) ? (htmlsc($vars['word'])) : ('');
 	}
 
 	if (strlen($s_word) > PLUGIN_SEARCH_MAX_LENGTH) {
-		unset($vars['word']); // Stop using $_msg_word at lib/html.php
+		// Stop using $_msg_word at lib/html.php
+		unset($vars['word']);
+
 		die_message('Search words too long');
 	}
 
-	$type = isset($vars['type']) ? $vars['type'] : '';
-	$base = isset($vars['base']) ? $vars['base'] : '';
+	$type = (isset($vars['type'])) ? ($vars['type']) : ('');
+	$base = (isset($vars['base'])) ? ($vars['base']) : ('');
 
 	if ($s_word != '') {
 		// Search
@@ -45,13 +57,16 @@ function plugin_search_action()
 		$body = do_search($vars['word'], $type, false, $base);
 	} else {
 		// Init
-		unset($vars['word']); // Stop using $_msg_word at lib/html.php
+
+		// Stop using $_msg_word at lib/html.php
+		unset($vars['word']);
+
 		$msg = $_title_search;
 		$body = '<br />'."\n".$_msg_searching."\n";
 	}
 
 	// Show search form
-	$bases = ($base == '') ? [] : [$base];
+	$bases = ($base == '') ? ([]) : ([$base]);
 	$body .= plugin_search_search_form($s_word, $type, $bases);
 
 	return ['msg'=>$msg, 'body'=>$body];
@@ -59,11 +74,15 @@ function plugin_search_action()
 
 function plugin_search_search_form($s_word = '', $type = '', $bases = [])
 {
-	global $_btn_and, $_btn_or, $_btn_search;
-	global $_search_pages, $_search_all;
+	global $_btn_and;
+	global $_btn_or;
+	global $_btn_search;
+	global $_search_pages;
+	global $_search_all;
 
 	$script = get_base_uri();
-	$and_check = $or_check = '';
+	$or_check = '';
+	$and_check = '';
 
 	if ($type == 'OR') {
 		$or_check = ' checked="checked"';
@@ -84,6 +103,7 @@ function plugin_search_search_form($s_word = '', $type = '', $bases = [])
 			if (PLUGIN_SEARCH_MAX_BASE < $_num) {
 				break;
 			}
+
 			$s_base = htmlsc($base);
 			$base_str = '<strong>'.$s_base.'</strong>';
 			$base_label = str_replace('$1', $base_str, $_search_pages);
@@ -94,6 +114,7 @@ function plugin_search_search_form($s_word = '', $type = '', $bases = [])
 EOD;
 			$check = '';
 		}
+
 		$base_msg .= <<<EOD
   <label><input type="radio" name="base" value="" /> {$_search_all}</label>
 EOD;

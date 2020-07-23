@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // $Id: mbstring.php,v 1.4 2005/04/29 11:24:20 henoheno Exp $
 // Copyright (C) 2003-2005 PukiWiki Developers Team
@@ -40,8 +42,7 @@ if (is_readable(JCODE_FILE)) {
 
 // jcodeが存在しない場合、マルチバイト文字や漢字コードを扱えない
 if (!function_exists('jcode_convert_encoding')) {
-
-//	die_message('Multibyte functions cannot be used. Please read "mbstring.php" for an additional installation procedure of "jcode".');
+	//	die_message('Multibyte functions cannot be used. Please read "mbstring.php" for an additional installation procedure of "jcode".');
 
 	function jstrlen($str)
 	{
@@ -85,11 +86,11 @@ function mb_convert_variables($to_encoding, $from_encoding, &$vars)
 {
 	// 注: 可変長引数ではない。init.phpから呼ばれる1引数のパターンのみをサポート
 	// 正直に実装するなら、可変引数をリファレンスで受ける方法が必要
-	if (is_array($from_encoding) || $from_encoding == '' || $from_encoding == 'auto') {
-		$from_encoding = mb_detect_encoding(join_array(' ', $vars));
+	if ((is_array($from_encoding)) || ($from_encoding == '') || ($from_encoding == 'auto')) {
+		$from_encoding = mb_detect_encoding(join_array(' ', $vars), mb_detect_order(), true);
 	}
 
-	if ($from_encoding != 'ASCII' && $from_encoding != SOURCE_ENCODING) {
+	if (($from_encoding != 'ASCII') && ($from_encoding != SOURCE_ENCODING)) {
 		$vars = mb_convert_encoding($vars, $to_encoding, $from_encoding);
 	}
 
@@ -102,7 +103,7 @@ function join_array($glue, $pieces)
 	$arr = [];
 
 	foreach ($pieces as $piece) {
-		$arr[] = is_array($piece) ? join_array($glue, $piece) : $piece;
+		$arr[] = (is_array($piece)) ? (join_array($glue, $piece)) : ($piece);
 	}
 
 	return implode($glue, $arr);
@@ -133,7 +134,7 @@ function mb_detect_order($encoding_list = null)
 		return $list;
 	}
 
-	$list = is_array($encoding_list) ? $encoding_list : explode(',', $encoding_list);
+	$list = (is_array($encoding_list)) ? ($encoding_list) : (explode(',', $encoding_list));
 
 	return true;
 }
@@ -150,13 +151,15 @@ function mb_encode_mimeheader($str, $charset = 'ISO-2022-JP', $transfer_encoding
 // mb_http_output -- HTTP出力文字エンコーディングの設定/取得
 function mb_http_output($encoding = '')
 {
-	return SOURCE_ENCODING; // 注: 何もしない
+	// 注: 何もしない
+	return SOURCE_ENCODING;
 }
 
 // mb_internal_encoding --  内部文字エンコーディングの設定/取得
 function mb_internal_encoding($encoding = '')
 {
-	return SOURCE_ENCODING; // 注: 何もしない
+	// 注: 何もしない
+	return SOURCE_ENCODING;
 }
 
 // mb_language --  カレントの言語を設定/取得
@@ -167,15 +170,17 @@ function mb_language($language = null)
 	if ($language === null) {
 		return $mb_language;
 	}
+
 	$mb_language = $language;
 
-	return true; // 注: 常にTRUEを返す
+	// 注: 常にTRUEを返す
+	return true;
 }
 
 // mb_strimwidth -- 指定した幅で文字列を丸める
 function mb_strimwidth($str, $start, $width, $trimmarker = '', $encoding = '')
 {
-	if ($start == 0 && $width <= strlen($str)) {
+	if (($start == 0) && ($width <= strlen($str))) {
 		return $str;
 	}
 
@@ -183,7 +188,7 @@ function mb_strimwidth($str, $start, $width, $trimmarker = '', $encoding = '')
 	$chars = unpack('C*', $str);
 	$substr = '';
 
-	while (!empty($chars) && $start > 0) {
+	while ((!empty($chars)) && ($start > 0)) {
 		$start--;
 
 		if (array_shift($chars) >= 0x80) {
@@ -195,16 +200,18 @@ function mb_strimwidth($str, $start, $width, $trimmarker = '', $encoding = '')
 		$width -= strlen($trimmarker);
 	}
 
-	while (!empty($chars) && $width-- > 0) {
+	while ((!empty($chars)) && ($width-- > 0)) {
 		$char = array_shift($chars);
 
 		if ($char >= 0x80) {
 			if ($width-- == 0) {
 				break;
 			}
+
 			$substr .= chr($char);
 			$char = array_shift($chars);
 		}
+
 		$substr .= chr($char);
 	}
 
@@ -226,5 +233,5 @@ function mb_strlen($str, $encoding = '')
 function mb_substr($str, $start, $length = null, $encoding = '')
 {
 	// 注: EUC-JP専用, $encodingを使用しない
-	return jsubstr($str, $start, ($length === null) ? jstrlen($str) : $length);
+	return jsubstr($str, $start, ($length === null) ? (jstrlen($str)) : ($length));
 }

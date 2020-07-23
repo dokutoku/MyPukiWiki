@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // ls2.inc.php
 // Copyright
@@ -35,7 +37,8 @@ define('PLUGIN_LS2_LIST_COMPACT', false);
 
 function plugin_ls2_action()
 {
-	global $vars, $_ls2_msg_title;
+	global $vars;
+	global $_ls2_msg_title;
 
 	$params = [];
 	$keys = ['title', 'include', 'reverse'];
@@ -44,18 +47,19 @@ function plugin_ls2_action()
 		$params[$key] = isset($vars[$key]);
 	}
 
-	$prefix = isset($vars['prefix']) ? $vars['prefix'] : '';
+	$prefix = (isset($vars['prefix'])) ? ($vars['prefix']) : ('');
 	$body = plugin_ls2_show_lists($prefix, $params);
 
-	return ['body'=>$body,
-		'msg'=>str_replace('$1', htmlsc($prefix), $_ls2_msg_title), ];
+	return ['body'=>$body, 'msg'=>str_replace('$1', htmlsc($prefix), $_ls2_msg_title)];
 }
 
 function plugin_ls2_convert()
 {
-	global $vars, $_ls2_msg_title;
+	global $vars;
+	global $_ls2_msg_title;
 
-	$params = [
+	$params =
+	[
 		'link'=>false,
 		'title'=>false,
 		'include'=>false,
@@ -81,8 +85,10 @@ function plugin_ls2_convert()
 		plugin_ls2_check_arg($arg, $params);
 	}
 
-	$title = (!empty($params['_args'])) ? implode(',', $params['_args']) : // Manual
-		str_replace('$1', htmlsc($prefix), $_ls2_msg_title); // Auto
+	$title =
+		(!empty($params['_args']))
+		? (implode(',', $params['_args'])) // Manual
+		: (str_replace('$1', htmlsc($prefix), $_ls2_msg_title)); // Auto
 
 	if (!$params['link']) {
 		return plugin_ls2_show_lists($prefix, $params);
@@ -99,8 +105,7 @@ function plugin_ls2_convert()
 		$tmp[] = 'include=1';
 	}
 
-	return '<p><a href="'.get_base_uri().'?'.implode('&amp;', $tmp).'">'.
-		$title.'</a></p>'."\n";
+	return '<p><a href="'.get_base_uri().'?'.implode('&amp;', $tmp).'">'.$title.'</a></p>'."\n";
 }
 
 function plugin_ls2_show_lists($prefix, &$params)
@@ -132,10 +137,13 @@ function plugin_ls2_show_lists($prefix, &$params)
 	if (empty($pages)) {
 		return str_replace('$1', htmlsc($prefix), $_ls2_err_nopages);
 	} else {
-		$params['result'] = $params['saved'] = [];
+		$params['saved'] = [];
+		$params['result'] = [];
 
 		foreach ($pages as $page) {
-			$read_pages = []; // read pages per page
+			// read pages per page
+			$read_pages = [];
+
 			plugin_ls2_get_headings($page, $params, 1, false, $read_pages);
 		}
 
@@ -148,14 +156,15 @@ function plugin_ls2_get_headings($page, &$params, $level, $include,
 {
 	static $_ls2_anchor = 0;
 
-	if (null === $read_pages) {
+	if ($read_pages === null) {
 		$read_pages = [];
 	}
+
 	// ページが未表示のとき
 	$is_done = isset($read_pages[$page]);
 
 	if (!$is_done) {
-		$params["page_{$page}"] = ++$_ls2_anchor;
+		$params['page_'.$page] = ++$_ls2_anchor;
 	}
 
 	$s_page = htmlsc($page);
@@ -163,21 +172,17 @@ function plugin_ls2_get_headings($page, &$params, $level, $include,
 	$href = get_page_uri($page);
 
 	plugin_ls2_list_push($params, $level);
-	$ret = $include ? '<li>include ' : '<li>';
+	$ret = ($include) ? ('<li>include ') : ('<li>');
 
 	if ($is_done) {
-		$ret .= '<a href="'.$href.'" class="'.
-			$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].
-			'">'.$s_page.'</a> ';
-		$ret .= '<a href="#list_'.$params["page_{$page}"].'"><sup>&uarr;</sup></a>';
+		$ret .= '<a href="'.$href.'" class="'.$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].'">'.$s_page.'</a> ';
+		$ret .= '<a href="#list_'.$params['page_'.$page].'"><sup>&uarr;</sup></a>';
 		array_push($params['result'], $ret);
 
 		return;
 	}
 
-	$ret .= '<a id="list_'.$params["page_{$page}"].'" href="'.$href.
-		'" class="'.$attrs['class'].'" data-mtime="'.
-		$attrs['data_mtime'].'">'.$s_page.'</a>';
+	$ret .= '<a id="list_'.$params['page_'.$page].'" href="'.$href.'" class="'.$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].'">'.$s_page.'</a>';
 	array_push($params['result'], $ret);
 
 	$anchor = PLUGIN_LS2_ANCHOR_ORIGIN;
@@ -185,20 +190,18 @@ function plugin_ls2_get_headings($page, &$params, $level, $include,
 	$is_title = $params['title'];
 	$is_include = $params['include'];
 
-	if (!$is_title && !$is_include) {
+	if ((!$is_title) && (!$is_include)) {
 		return;
 	}
 
 	foreach (get_source($page) as $line) {
-		if ($is_title && preg_match('/^(\*{1,3})/', $line, $matches)) {
+		if (($is_title) && (preg_match('/^(\*{1,3})/', $line, $matches))) {
 			$id = make_heading($line);
 			$heading_level = strlen($matches[1]);
 			$id = PLUGIN_LS2_ANCHOR_PREFIX.$anchor++;
 			plugin_ls2_list_push($params, $level + $heading_level);
-			array_push($params['result'],
-				'<li><a href="'.$href.$id.'">'.$line.'</a>');
-		} elseif ($is_include &&
-			preg_match('/^#include\((.+)\)/', $line, $matches)) {
+			array_push($params['result'], '<li><a href="'.$href.$id.'">'.$line.'</a>');
+		} elseif (($is_include) && (preg_match('/^#include\((.+)\)/', $line, $matches))) {
 			$include_args = $matches[1];
 			$page2 = $include_args;
 			$m2 = null;
@@ -210,14 +213,14 @@ function plugin_ls2_get_headings($page, &$params, $level, $include,
 					$page2 = $m2[4];
 				}
 			}
+
 			$sub_page = get_fullname($page2, $page);
 
 			if (is_page($sub_page)) {
 				$read_pages[$page] = 1;
 
 				if (!isset($read_pages[$sub_page])) {
-					plugin_ls2_get_headings($sub_page, $params,
-						$level + 1, true, $read_pages);
+					plugin_ls2_get_headings($sub_page, $params, $level + 1, true, $read_pages);
 				}
 			}
 		}
@@ -233,7 +236,7 @@ function plugin_ls2_list_push(&$params, $level) : void
 	$open = '<ul%s>';
 	$close = '</li></ul>';
 
-	while (count($saved) > $level || (!empty($saved) && $saved[0] != $close)) {
+	while ((count($saved) > $level) || ((!empty($saved)) && ($saved[0] != $close))) {
 		array_push($result, array_shift($saved));
 	}
 
@@ -251,11 +254,15 @@ function plugin_ls2_list_push(&$params, $level) : void
 		$left = 0;
 
 		if ($params['compact']) {
-			$left = 1;   // マージンを固定
-			$level -= ($margin - 1); // レベルを修正
+			// マージンを固定
+			$left = 1;
+
+			// レベルを修正
+			$level -= ($margin - 1);
 		} else {
 			$left = $margin;
 		}
+
 		$str = sprintf(pkwk_list_attrs_template(), $level, $left);
 		array_push($result, sprintf($open, $str));
 	}
@@ -276,15 +283,16 @@ function plugin_ls2_check_arg($value, &$params) : void
 
 	if (!$params['_done']) {
 		foreach (array_keys($params) as $param) {
-			if (strtolower($value) == $param &&
-				preg_match('/^[a-z]/', $param)) {
+			if ((strtolower($value) == $param) && (preg_match('/^[a-z]/', $param))) {
 				$params[$param] = true;
 
 				return;
 			}
 		}
+
 		$params['_done'] = true;
 	}
 
-	$params['_args'][] = htmlsc($value); // Link title
+	// Link title
+	$params['_args'][] = htmlsc($value);
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // config.php
 // Copyright 2003-2016 PukiWiki Development Team
@@ -9,12 +11,12 @@
 /*
  * $obj = new Config('plugin/plugin_name/')
  * $obj->read();
- * $array = $obj->get($title);
- * $array[] = array(4, 5, 6);		// Add - directly
- * $obj->add($title, array(4, 5, 6));	// Add - method of Config object
- * $array = array(1=>array(1, 2, 3));		// Replace - directly
- * $obj->put($title, array(1=>array(1, 2, 3));	// Replace - method of Config object
- * $obj->put_values($title, NULL);	// Delete
+ * $array = & $obj->get($title);
+ * $array[] = [4, 5, 6];		// Add - directly
+ * $obj->add($title, [4, 5, 6]);	// Add - method of Config object
+ * $array = [1=>[1, 2, 3]];		// Replace - directly
+ * $obj->put($title, [1=>[1, 2, 3]]);	// Replace - method of Config object
+ * $obj->put_values($title, null);	// Delete
  * $obj->write();
  */
 
@@ -26,7 +28,8 @@ class Config
 {
 	public $name;
 
-	public $page; // Page name
+	// Page name
+	public $page;
 
 	public $objs = [];
 
@@ -57,7 +60,9 @@ class Config
 				continue;
 			}
 
-			$head = $line[0];	// The first letter
+			// The first letter
+			$head = $line[0];
+
 			$level = strspn($line, $head);
 
 			if ($level > 3) {
@@ -73,24 +78,28 @@ class Config
 					if (!is_a($obj, 'ConfigTable_Direct')) {
 						$obj = new ConfigTable_Direct('', $obj);
 					}
+
 					$obj->set_key($line);
 				}
-			} elseif ($head == '-' && $level > 1) {
+			} elseif (($head == '-') && ($level > 1)) {
 				if (!is_a($obj, 'ConfigTable_Direct')) {
 					$obj = new ConfigTable_Direct('', $obj);
 				}
+
 				$obj->add_value($line);
-			} elseif ($head == '|' && preg_match('/^\|(.+)\|\s*$/', $line, $matches)) {
+			} elseif (($head == '|') && (preg_match('/^\|(.+)\|\s*$/', $line, $matches))) {
 				// Table row
 				if (!is_a($obj, 'ConfigTable_Sequential')) {
 					$obj = new ConfigTable_Sequential('', $obj);
 				}
+
 				// Trim() each table cell
 				$obj->add_value(array_map('trim', explode('|', $matches[1])));
 			} else {
 				$obj->add_line($line);
 			}
 		}
+
 		$this->objs[$obj->title] = $obj;
 
 		return true;
@@ -148,13 +157,17 @@ class Config
 // Class holds array values
 class ConfigTable
 {
-	public $title = '';	// Table title
+	// Table title
+	public $title = '';
 
-	public $before = [];	// Page contents (except table ones)
+	// Page contents (except table ones)
+	public $before = [];
 
-	public $after = [];	// Page contents (except table ones)
+	// Page contents (except table ones)
+	public $after = [];
 
-	public $values = [];	// Table contents
+	// Table contents
+	public $values = [];
 
 	public function ConfigTable($title, $obj = null) : void
 	{
@@ -189,7 +202,7 @@ class ConfigTable_Sequential extends ConfigTable
 	// Add a line
 	public function add_value($value) : void
 	{
-		$this->values[] = (count($value) == 1) ? $value[0] : $value;
+		$this->values[] = (count($value) == 1) ? ($value[0]) : ($value);
 	}
 
 	public function toString()
@@ -198,10 +211,11 @@ class ConfigTable_Sequential extends ConfigTable
 
 		if (is_array($this->values)) {
 			foreach ($this->values as $value) {
-				$value = is_array($value) ? implode('|', $value) : $value;
+				$value = (is_array($value)) ? (implode('|', $value)) : ($value);
 				$retval .= '|'.$value.'|'."\n";
 			}
 		}
+
 		$retval .= implode('', $this->after);
 
 		return $retval;
@@ -210,7 +224,8 @@ class ConfigTable_Sequential extends ConfigTable
 
 class ConfigTable_Direct extends ConfigTable
 {
-	public $_keys = [];	// Used at initialization phase
+	// Used at initialization phase
+	public $_keys = [];
 
 	public function set_key($line) : void
 	{
@@ -227,13 +242,14 @@ class ConfigTable_Direct extends ConfigTable
 		for ($n = 2; $n <= $level; $n++) {
 			$arr = &$arr[$this->_keys[$n]];
 		}
+
 		$arr[] = trim(substr($line, $level));
 	}
 
 	public function toString($values = null, $level = 2)
 	{
 		$retval = '';
-		$root = ($values === null);
+		$root = $values === null;
 
 		if ($root) {
 			$retval = implode('', $this->before);

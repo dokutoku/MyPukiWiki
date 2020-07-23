@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // $Id: clear.inc.php,v 1.4 2004/11/27 10:01:21 henoheno Exp $
 //

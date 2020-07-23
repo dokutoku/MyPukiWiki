@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // $Id: touchgraph.inc.php,v 1.10 2005/12/18 15:28:55 henoheno Exp $
 //
@@ -48,8 +50,10 @@ function plugin_touchgraph_rel() : void
 				if (check_non_list($name)) {
 					continue;
 				}
+
 				echo ' ', $name;
 			}
+
 			echo "\n";
 		}
 	}
@@ -74,8 +78,10 @@ function plugin_touchgraph_ref() : void
 				if (check_non_list($name)) {
 					continue;
 				}
+
 				echo ' ', $name;
 			}
+
 			echo "\n";
 		}
 	}

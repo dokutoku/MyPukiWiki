@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // includesubmenu.inc
 // Copyright 2002-2017 PukiWiki Development Team
@@ -24,6 +26,7 @@ function plugin_includesubmenu_convert()
 	$SubMenuPageName = '';
 
 	$tmppage = strip_bracket($vars['page']);
+
 	//下階層のSubMenuページ名
 	$SubMenuPageName1 = $tmppage.'/SubMenu';
 
@@ -35,6 +38,7 @@ function plugin_includesubmenu_convert()
 	} else {
 		$SubMenuPageName2 = substr($tmppage, 0, $LastSlash).'/SubMenu';
 	}
+
 	//echo "$SubMenuPageName1 <br />";
 	//echo "$SubMenuPageName2 <br />";
 	//下階層にSubMenuがあるかチェック
@@ -55,8 +59,8 @@ function plugin_includesubmenu_convert()
 	if ($ShowPageName) {
 		$r_page = rawurlencode($SubMenuPageName);
 		$s_page = htmlsc($SubMenuPageName);
-		$link = "<a href=\"{$script}?cmd=edit&amp;page={$r_page}\">{$s_page}</a>";
-		$body = "<h1>{$link}</h1>\n{$body}";
+		$link = '<a href="'.$script.'?cmd=edit&amp;page='.$r_page.'">'.$s_page.'</a>';
+		$body = '<h1>'.$link.'</h1>'."\n".$body;
 	}
 
 	return $body;

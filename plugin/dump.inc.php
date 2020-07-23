@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // dump.inc.php
 // Copyright
@@ -13,20 +15,26 @@
 // User defines
 
 // Allow using resture function
-define('PLUGIN_DUMP_ALLOW_RESTORE', false); // FALSE, TRUE
+// false, true
+define('PLUGIN_DUMP_ALLOW_RESTORE', false);
 
 // ページ名をディレクトリ構造に変換する際の文字コード (for mbstring)
 define('PLUGIN_DUMP_FILENAME_ENCORDING', 'SJIS');
 
 // 最大アップロードサイズ
-define('PLUGIN_DUMP_MAX_FILESIZE', 1024); // Kbyte
+// Kbyte
+define('PLUGIN_DUMP_MAX_FILESIZE', 1024);
 
 /////////////////////////////////////////////////
 // Internal defines
 
 // Action
-define('PLUGIN_DUMP_DUMP', 'dump');    // Dump & download
-define('PLUGIN_DUMP_RESTORE', 'restore'); // Upload & restore
+
+// Dump & download
+define('PLUGIN_DUMP_DUMP', 'dump');
+
+// Upload & restore
+define('PLUGIN_DUMP_RESTORE', 'restore');
 
 global $_STORAGE;
 
@@ -52,8 +60,8 @@ function plugin_dump_action()
 		die_message('PKWK_READONLY prohibits this');
 	}
 
-	$pass = isset($_POST['pass']) ? $_POST['pass'] : null;
-	$act = isset($vars['act']) ? $vars['act'] : null;
+	$pass = (isset($_POST['pass'])) ? ($_POST['pass']) : (null);
+	$act = (isset($vars['act'])) ? ($vars['act']) : (null);
 
 	$body = '';
 
@@ -62,23 +70,26 @@ function plugin_dump_action()
 			$body = "<p><strong>パスワードが違います。</strong></p>\n";
 		} else {
 			switch ($act) {
-			case PLUGIN_DUMP_DUMP:
-				$body = plugin_dump_download();
+				case PLUGIN_DUMP_DUMP:
+					$body = plugin_dump_download();
 
-				break;
-			case PLUGIN_DUMP_RESTORE:
-				$retcode = plugin_dump_upload();
+					break;
 
-				if ($retcode['code'] == true) {
-					$msg = 'アップロードが完了しました';
-				} else {
-					$msg = 'アップロードに失敗しました';
-				}
-				$body .= $retcode['msg'];
+				case PLUGIN_DUMP_RESTORE:
+					$retcode = plugin_dump_upload();
 
-				return ['msg'=>$msg, 'body'=>$body];
+					if ($retcode['code'] == true) {
+						$msg = 'アップロードが完了しました';
+					} else {
+						$msg = 'アップロードに失敗しました';
+					}
 
-				break;
+					$body .= $retcode['msg'];
+
+					return ['msg'=>$msg, 'body'=>$body];
+
+				default:
+					break;
 			}
 		}
 	}
@@ -101,23 +112,26 @@ function plugin_dump_action()
 // ファイルのダウンロード
 function plugin_dump_download()
 {
-	global $vars, $_STORAGE;
+	global $vars;
+	global $_STORAGE;
 
 	// アーカイブの種類
-	$arc_kind = ($vars['pcmd'] == 'tar') ? 'tar' : 'tgz';
+	$arc_kind = ($vars['pcmd'] == 'tar') ? ('tar') : ('tgz');
 
 	// ページ名に変換する
-	$namedecode = isset($vars['namedecode']) ? true : false;
+	$namedecode = (isset($vars['namedecode'])) ? (true) : (false);
 
 	// バックアップディレクトリ
-	$bk_wiki = isset($vars['bk_wiki']) ? true : false;
-	$bk_attach = isset($vars['bk_attach']) ? true : false;
-	$bk_backup = isset($vars['bk_backup']) ? true : false;
+	$bk_wiki = (isset($vars['bk_wiki'])) ? (true) : (false);
+	$bk_attach = (isset($vars['bk_attach'])) ? (true) : (false);
+	$bk_backup = (isset($vars['bk_backup'])) ? (true) : (false);
 
 	$filecount = 0;
 	$tar = new tarlib();
-	$tar->create(CACHE_DIR, $arc_kind) ||
+
+	if (!$tar->create(CACHE_DIR, $arc_kind)) {
 		die_message('テンポラリファイルの生成に失敗しました。');
+	}
 
 	if ($bk_wiki) {
 		$filecount += $tar->add_dir(DATA_DIR, $_STORAGE['DATA_DIR']['add_filter'], $namedecode);
@@ -142,7 +156,8 @@ function plugin_dump_download()
 		download_tarfile($tar->filename, $arc_kind);
 		@unlink($tar->filename);
 
-		exit;	// 正常終了
+		// 正常終了
+		exit;
 	}
 }
 
@@ -150,7 +165,8 @@ function plugin_dump_download()
 // ファイルのアップロード
 function plugin_dump_upload()
 {
-	global $vars, $_STORAGE;
+	global $vars;
+	global $_STORAGE;
 
 	if (!PLUGIN_DUMP_ALLOW_RESTORE) {
 		return ['code'=>false, 'msg'=>'Restoring function is not allowed'];
@@ -166,19 +182,27 @@ function plugin_dump_upload()
 		$matches[1] = strtolower($matches[1]);
 
 		switch ($matches[1]) {
-		case '.tar':    $arc_kind = 'tar';
+			case '.tar':
+				$arc_kind = 'tar';
 
-break;
-		case '.tgz':    $arc_kind = 'tar';
+				break;
 
-break;
-		case '.tar.gz': $arc_kind = 'tgz';
+			case '.tgz':
+				$arc_kind = 'tar';
 
-break;
-		default: die_message('Invalid file suffix: '.$matches[1]); }
+				break;
+
+			case '.tar.gz':
+				$arc_kind = 'tgz';
+
+				break;
+
+			default:
+				die_message('Invalid file suffix: '.$matches[1]);
+		}
 	}
 
-	if ($_FILES['upload_file']['size'] > PLUGIN_DUMP_MAX_FILESIZE * 1024) {
+	if ($_FILES['upload_file']['size'] > (PLUGIN_DUMP_MAX_FILESIZE * 1024)) {
 		die_message('Max file size exceeded: '.PLUGIN_DUMP_MAX_FILESIZE.'KB');
 	}
 
@@ -186,15 +210,12 @@ break;
 	$uploadfile = tempnam(realpath(CACHE_DIR), 'tarlib_uploaded_');
 	$tar = new tarlib();
 
-	if (!move_uploaded_file($_FILES['upload_file']['tmp_name'], $uploadfile) ||
-	   !$tar->open($uploadfile, $arc_kind)) {
+	if ((!move_uploaded_file($_FILES['upload_file']['tmp_name'], $uploadfile)) || (!$tar->open($uploadfile, $arc_kind))) {
 		@unlink($uploadfile);
 		die_message('ファイルがみつかりませんでした。');
 	}
 
-	$pattern = "(({$_STORAGE['DATA_DIR']['extract_filter']})|".
-			"({$_STORAGE['UPLOAD_DIR']['extract_filter']})|".
-			"({$_STORAGE['BACKUP_DIR']['extract_filter']}))";
+	$pattern = "(({$_STORAGE['DATA_DIR']['extract_filter']})|"."({$_STORAGE['UPLOAD_DIR']['extract_filter']})|"."({$_STORAGE['BACKUP_DIR']['extract_filter']}))";
 	$files = $tar->extract($pattern);
 
 	if (empty($files)) {
@@ -208,6 +229,7 @@ break;
 	foreach ($files as $name) {
 		$msg .= "<li>{$name}</li>\n";
 	}
+
 	$msg .= '</ul></p>';
 
 	$tar->close();
@@ -239,6 +261,7 @@ function download_tarfile($tempnam, $arc_kind) : void
 	while (ob_get_level()) {
 		ob_end_flush();
 	}
+
 	flush();
 	@readfile($tempnam);
 }
@@ -325,28 +348,66 @@ EOD;
 // tarlib: a class library for tar file creation and expansion
 
 // Tar related definition
-define('TARLIB_HDR_LEN', 512);	// ヘッダの大きさ
-define('TARLIB_BLK_LEN', 512);	// 単位ブロック長さ
-define('TARLIB_HDR_NAME_OFFSET', 0);	// ファイル名のオフセット
-define('TARLIB_HDR_NAME_LEN', 100);	// ファイル名の最大長さ
-define('TARLIB_HDR_MODE_OFFSET', 100);	// modeへのオフセット
-define('TARLIB_HDR_UID_OFFSET', 108);	// uidへのオフセット
-define('TARLIB_HDR_GID_OFFSET', 116);	// gidへのオフセット
-define('TARLIB_HDR_SIZE_OFFSET', 124);	// サイズへのオフセット
-define('TARLIB_HDR_SIZE_LEN', 12);	// サイズの長さ
-define('TARLIB_HDR_MTIME_OFFSET', 136);	// 最終更新時刻のオフセット
-define('TARLIB_HDR_MTIME_LEN', 12);	// 最終更新時刻の長さ
-define('TARLIB_HDR_CHKSUM_OFFSET', 148);	// チェックサムのオフセット
-define('TARLIB_HDR_CHKSUM_LEN', 8);	// チェックサムの長さ
-define('TARLIB_HDR_TYPE_OFFSET', 156);	// ファイルタイプへのオフセット
+
+// ヘッダの大きさ
+define('TARLIB_HDR_LEN', 512);
+
+// 単位ブロック長さ
+define('TARLIB_BLK_LEN', 512);
+
+// ファイル名のオフセット
+define('TARLIB_HDR_NAME_OFFSET', 0);
+
+// ファイル名の最大長さ
+define('TARLIB_HDR_NAME_LEN', 100);
+
+// modeへのオフセット
+define('TARLIB_HDR_MODE_OFFSET', 100);
+
+// uidへのオフセット
+define('TARLIB_HDR_UID_OFFSET', 108);
+
+// gidへのオフセット
+define('TARLIB_HDR_GID_OFFSET', 116);
+
+// サイズへのオフセット
+define('TARLIB_HDR_SIZE_OFFSET', 124);
+
+// サイズの長さ
+define('TARLIB_HDR_SIZE_LEN', 12);
+
+// 最終更新時刻のオフセット
+define('TARLIB_HDR_MTIME_OFFSET', 136);
+
+// 最終更新時刻の長さ
+define('TARLIB_HDR_MTIME_LEN', 12);
+
+// チェックサムのオフセット
+define('TARLIB_HDR_CHKSUM_OFFSET', 148);
+
+// チェックサムの長さ
+define('TARLIB_HDR_CHKSUM_LEN', 8);
+
+// ファイルタイプへのオフセット
+define('TARLIB_HDR_TYPE_OFFSET', 156);
 
 // Status
-define('TARLIB_STATUS_INIT', 0);		// 初期状態
-define('TARLIB_STATUS_OPEN', 10);		// 読み取り
-define('TARLIB_STATUS_CREATE', 20);		// 書き込み
 
-define('TARLIB_DATA_MODE', '100666 ');	// ファイルパーミッション
-define('TARLIB_DATA_UGID', '000000 ');	// uid / gid
+// 初期状態
+define('TARLIB_STATUS_INIT', 0);
+
+// 読み取り
+define('TARLIB_STATUS_OPEN', 10);
+
+// 書き込み
+define('TARLIB_STATUS_CREATE', 20);
+
+// ファイルパーミッション
+define('TARLIB_DATA_MODE', '100666 ');
+
+// uid / gid
+define('TARLIB_DATA_UGID', '000000 ');
+
 define('TARLIB_DATA_CHKBLANKS', '        ');
 
 // GNU拡張仕様(ロングファイル名対応)
@@ -388,7 +449,7 @@ class tarlib
 	////////////////////////////////////////////////////////////
 	// 関数  : tarファイルを作成する
 	// 引数  : tarファイルを作成するパス
-	// 返り値: TRUE .. 成功 , FALSE .. 失敗
+	// 返り値: true .. 成功 , false .. 失敗
 	////////////////////////////////////////////////////////////
 	public function create($tempdir, $kind = 'tgz')
 	{
@@ -432,8 +493,9 @@ class tarlib
 		$retvalue = 0;
 
 		if ($this->status != TARLIB_STATUS_CREATE) {
-			return '';
-		} // File is not created
+			// File is not created
+			return 0;
+		}
 
 		unset($files);
 
@@ -450,6 +512,7 @@ class tarlib
 				$files[] = $dir.$filename;
 			}
 		}
+
 		closedir($dp);
 
 		sort($files, SORT_STRING);
@@ -478,6 +541,7 @@ class tarlib
 						$filename = str_replace('\\', '_', $filename);
 					}
 				}
+
 				$filename = $dirname.$filename;
 				// ファイル名の文字コードを変換
 				if (function_exists('mb_convert_encoding')) {
@@ -541,7 +605,8 @@ class tarlib
 			if ($i < TARLIB_HDR_NAME_LEN) {
 				$tar_data[$i + TARLIB_HDR_NAME_OFFSET] = $filename[$i];
 			} else {
-				break;	// ファイル名が長すぎ
+				// ファイル名が長すぎ
+				break;
 			}
 		}
 
@@ -590,6 +655,7 @@ class tarlib
 		for ($i = 0; $i < TARLIB_BLK_LEN; $i++) {
 			$sum += 0xff & ord($tar_data[$i]);
 		}
+
 		$strchksum = sprintf('%7o', $sum);
 
 		for ($i = 0; $i < strlen($strchksum); $i++) {
@@ -608,29 +674,37 @@ class tarlib
 	////////////////////////////////////////////////////////////
 	public function _write_data($header, $body, $size) : void
 	{
-		$fixsize = ceil($size / TARLIB_BLK_LEN) * TARLIB_BLK_LEN - $size;
+		$fixsize = (ceil($size / TARLIB_BLK_LEN) * TARLIB_BLK_LEN) - $size;
 
 		if ($this->arc_kind == TARLIB_KIND_TGZ) {
-			gzwrite($this->fp, $header, TARLIB_HDR_LEN);    // Header
-			gzwrite($this->fp, $body, $size);               // Body
-			gzwrite($this->fp, $this->dummydata, $fixsize); // Padding
+			// Header
+			gzwrite($this->fp, $header, TARLIB_HDR_LEN);
+
+			// Body
+			gzwrite($this->fp, $body, $size);
+
+			// Padding
+			gzwrite($this->fp, $this->dummydata, $fixsize);
 		} else {
-			fwrite($this->fp, $header, TARLIB_HDR_LEN);    // Header
-			 fwrite($this->fp, $body, $size);               // Body
-			 fwrite($this->fp, $this->dummydata, $fixsize); // Padding
+			// Header
+			fwrite($this->fp, $header, TARLIB_HDR_LEN);
+
+			fwrite($this->fp, $body, $size);               // Body
+			fwrite($this->fp, $this->dummydata, $fixsize); // Padding
 		}
 	}
 
 	////////////////////////////////////////////////////////////
 	// 関数  : tarファイルを開く
 	// 引数  : tarファイル名
-	// 返り値: TRUE .. 成功 , FALSE .. 失敗
+	// 返り値: true .. 成功 , false .. 失敗
 	////////////////////////////////////////////////////////////
 	public function open($name = '', $kind = 'tgz')
 	{
 		if (!PLUGIN_DUMP_ALLOW_RESTORE) {
+			// Not allowed
 			return false;
-		} // Not allowed
+		}
 
 		if ($name != '') {
 			$this->filename = $name;
@@ -645,7 +719,8 @@ class tarlib
 		}
 
 		if ($this->fp === false) {
-			return false;	// No such file
+			// No such file
+			return false;
 		} else {
 			$this->status = TARLIB_STATUS_OPEN;
 			rewind($this->fp);
@@ -663,8 +738,9 @@ class tarlib
 	public function extract($pattern)
 	{
 		if ($this->status != TARLIB_STATUS_OPEN) {
-			return '';
-		} // Not opened
+			// Not opened
+			return [];
+		}
 
 		$files = [];
 		$longname = '';
@@ -680,7 +756,9 @@ class tarlib
 			$name = '';
 
 			if ($longname != '') {
-				$name = $longname;	// LongLink対応
+				// LongLink対応
+				$name = $longname;
+
 				$longname = '';
 			} else {
 				for ($i = 0; $i < TARLIB_HDR_NAME_LEN; $i++) {
@@ -691,6 +769,7 @@ class tarlib
 					}
 				}
 			}
+
 			$name = trim($name);
 
 			if ($name == '') {
@@ -705,6 +784,7 @@ class tarlib
 				$checksum .= $buff[$i + TARLIB_HDR_CHKSUM_OFFSET];
 				$buff[$i + TARLIB_HDR_CHKSUM_OFFSET] = $chkblanks[$i];
 			}
+
 			[$checksum] = sscanf('0'.trim($checksum), '%i');
 
 			// Compute checksum
@@ -715,8 +795,9 @@ class tarlib
 			}
 
 			if ($sum != $checksum) {
+				// Error
 				break;
-			} // Error
+			}
 
 			// Size
 			$size = '';
@@ -724,6 +805,7 @@ class tarlib
 			for ($i = 0; $i < TARLIB_HDR_SIZE_LEN; $i++) {
 				$size .= $buff[$i + TARLIB_HDR_SIZE_OFFSET];
 			}
+
 			[$size] = sscanf('0'.trim($size), '%i');
 
 			// ceil
@@ -736,6 +818,7 @@ class tarlib
 			for ($i = 0; $i < TARLIB_HDR_MTIME_LEN; $i++) {
 				$strmtime .= $buff[$i + TARLIB_HDR_MTIME_OFFSET];
 			}
+
 			[$mtime] = sscanf('0'.trim($strmtime), '%i');
 
 			// タイプフラグ
@@ -746,7 +829,7 @@ class tarlib
 				$buff = fread($this->fp, $pdsz);
 				$longname = substr($buff, 0, $size);
 			} elseif (preg_match("/{$pattern}/", $name)) {
-//			} else if ($type == 0 && preg_match("/$pattern/", $name) ) {
+//			} else if (($type == 0) && (preg_match("/$pattern/", $name))) {
 				$buff = fread($this->fp, $pdsz);
 
 				// 既に同じファイルがある場合は上書きされる

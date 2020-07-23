@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // en.lng.php
 // Copyright
@@ -87,8 +89,12 @@ $_msg_auth = 'PukiWikiAuth';
 
 ///////////////////////////////////////
 // Page name
-$rule_page = 'FormattingRules';	// Formatting rules
-$help_page = 'Help';		// Help
+
+// Formatting rules
+$rule_page = 'FormattingRules';
+
+// Help
+$help_page = 'Help';
 
 /////////////////////////////////////////////////
 // No subject (article)
@@ -107,22 +113,37 @@ $_LANG['skin']['backup'] = 'Backup';
 $_LANG['skin']['copy'] = 'Copy';
 $_LANG['skin']['diff'] = 'Diff';
 $_LANG['skin']['edit'] = 'Edit';
-$_LANG['skin']['filelist'] = 'List of page files';	// List of filenames
+
+// List of filenames
+$_LANG['skin']['filelist'] = 'List of page files';
+
 $_LANG['skin']['freeze'] = 'Freeze';
 $_LANG['skin']['help'] = 'Help';
 $_LANG['skin']['list'] = 'List of pages';
 $_LANG['skin']['new'] = 'New';
 $_LANG['skin']['rdf'] = 'RDF of recent changes';
-$_LANG['skin']['recent'] = 'Recent changes';	// RecentChanges
+
+// RecentChanges
+$_LANG['skin']['recent'] = 'Recent changes';
+
 $_LANG['skin']['reload'] = 'Reload';
-$_LANG['skin']['rename'] = 'Rename';	// Rename a page (and related)
+
+// Rename a page (and related)
+$_LANG['skin']['rename'] = 'Rename';
+
 $_LANG['skin']['rss'] = 'RSS of recent changes';
 $_LANG['skin']['rss10'] = &$_LANG['skin']['rss'];
 $_LANG['skin']['rss20'] = &$_LANG['skin']['rss'];
 $_LANG['skin']['search'] = 'Search';
-$_LANG['skin']['top'] = 'Front page';	// Top page
+
+// Top page
+$_LANG['skin']['top'] = 'Front page';
+
 $_LANG['skin']['unfreeze'] = 'Unfreeze';
-$_LANG['skin']['upload'] = 'Attach';	// Attach a file
+
+// Attach a file
+$_LANG['skin']['upload'] = 'Attach';
+
 $_LANG['skin']['login'] = 'Log in';
 $_LANG['skin']['logout'] = 'Log out';
 
@@ -144,7 +165,8 @@ $_msg_article_mail_page = 'Page: ';
 
 ///////////////////////////////////////
 // attach.inc.php
-$_attach_messages = [
+$_attach_messages =
+[
 	'msg_uploaded'=>'Uploaded the file to  $1',
 	'msg_deleted'=>'Deleted the file in  $1',
 	'msg_freezed'=>'The file has been frozen.',
@@ -297,7 +319,8 @@ $_msg_newpage = 'New page';
 
 ///////////////////////////////////////
 // paint.inc.php
-$_paint_messages = [
+$_paint_messages =
+[
 	'field_name'=>'Name',
 	'field_filename'=>'Filename',
 	'field_comment'=>'Comment',
@@ -305,13 +328,13 @@ $_paint_messages = [
 	'msg_max'=>'(Max %d x %d)',
 	'msg_title'=>'Paint and Attach to  $1',
 	'msg_title_collided'=>'On updating  $1, there was a collision.',
-	'msg_collided'=>'It seems that someone has already updated this page while you were editing it.<br />
- The picture and the comment were added to this page, but there may be a problem.<br />',
+	'msg_collided'=>'It seems that someone has already updated this page while you were editing it.<br /> The picture and the comment were added to this page, but there may be a problem.<br />',
 ];
 
 ///////////////////////////////////////
 // pcomment.inc.php
-$_pcmt_messages = [
+$_pcmt_messages =
+[
 	'btn_name'=>'Name: ',
 	'btn_comment'=>'Post Comment',
 	'msg_comment'=>'Comment: ',
@@ -319,10 +342,10 @@ $_pcmt_messages = [
 	'msg_all'=>'Go to the comment page.',
 	'msg_none'=>'No comment.',
 	'title_collided'=>'On updating  $1, there was a collision.',
-	'msg_collided'=>'It seems that someone has already updated this page while you were editing it.<br />
-	The comment was added to the page, but there may be a problem.<br />',
+	'msg_collided'=>'It seems that someone has already updated this page while you were editing it.<br /> The comment was added to the page, but there may be a problem.<br />',
 	'err_pagename'=>'[[%s]] : not a valid page name.',
 ];
+
 $_msg_pcomment_restrict = 'Due to the blocking, no comments could be read from  $1 at all.';
 
 ///////////////////////////////////////
@@ -337,7 +360,8 @@ $_recent_plugin_frame = '<h5>recent(%d)</h5>
 
 ///////////////////////////////////////
 // rename.inc.php
-$_rename_messages = [
+$_rename_messages =
+[
 	'err'=>'<p>error:%s</p>',
 	'err_nomatch'=>'no matching page(s)',
 	'err_notvalid'=>'the new name is invalid.',
@@ -380,7 +404,8 @@ $_search_detail = 'Show details';
 
 ///////////////////////////////////////
 // source.inc.php
-$_source_messages = [
+$_source_messages =
+[
 	'msg_title'=>'Source of  $1',
 	'msg_notfound'=>' $1 was not found.',
 	'err_notfound'=>'cannot display the page source.',
@@ -400,7 +425,8 @@ $_title_templatei = 'create a new page, using  $1 as a template.';
 
 ///////////////////////////////////////
 // tracker.inc.php
-$_tracker_messages = [
+$_tracker_messages =
+[
 	'msg_list'=>'List items of  $1',
 	'msg_back'=>'<p> $1</p>',
 	'msg_limit'=>'top  $2 results out of  $1.',
@@ -439,7 +465,8 @@ $_err_notexist = 'All pages have been created.';
 
 ///////////////////////////////////////
 // loginform.inc.php
-$_loginform_messages = [
+$_loginform_messages =
+[
 	'username'=>'Username',
 	'password'=>'Password',
 	'login'=>'Log in',
@@ -448,7 +475,8 @@ $_loginform_messages = [
 
 ///////////////////////////////////////
 // external_link.inc.php
-$_external_link_messages = [
+$_external_link_messages =
+[
 	'page_title'=>'External link: %s',
 	'desc'=>'The selected URL is not the contents of this site.',
 	'wait_n_seconds'=>'It will move to the page automatically after %s seconds.',

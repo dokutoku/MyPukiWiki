@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // lookup.inc.php
 // Copyright
@@ -17,15 +19,15 @@ function plugin_lookup_convert()
 
 	$num = func_num_args();
 
-	if ($num == 0 || $num > 3) {
+	if (($num == 0) || ($num > 3)) {
 		return PLUGIN_LOOKUP_USAGE;
 	}
 
 	$args = func_get_args();
 	$interwiki = htmlsc(trim($args[0]));
-	$button = isset($args[1]) ? trim($args[1]) : '';
-	$button = ($button != '') ? htmlsc($button) : 'lookup';
-	$default = ($num > 2) ? htmlsc(trim($args[2])) : '';
+	$button = (isset($args[1])) ? (trim($args[1])) : ('');
+	$button = ($button != '') ? (htmlsc($button)) : ('lookup');
+	$default = ($num > 2) ? (htmlsc(trim($args[2]))) : ('');
 	$s_page = htmlsc($vars['page']);
 	$id++;
 
@@ -48,14 +50,16 @@ EOD;
 
 function plugin_lookup_action()
 {
-	global $post; // Deny GET method to avlid GET loop
+	// Deny GET method to avlid GET loop
+	global $post;
 
-	$page = isset($post['page']) ? $post['page'] : '';
-	$inter = isset($post['inter']) ? $post['inter'] : '';
+	$page = (isset($post['page'])) ? ($post['page']) : ('');
+	$inter = (isset($post['inter'])) ? ($post['inter']) : ('');
 
 	if ($page == '') {
+		// Do nothing
 		return false;
-	} // Do nothing
+	}
 
 	if ($inter == '') {
 		return ['msg'=>'Invalid access', 'body'=>''];
@@ -71,7 +75,9 @@ function plugin_lookup_action()
 	}
 
 	pkwk_headers_sent();
-	header('Location: '.$url); // Publish as GET method
+
+	// Publish as GET method
+	header('Location: '.$url);
 
 	exit;
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // $Id: hr.inc.php,v 1.4 2005/01/22 03:34:17 henoheno Exp $
 //

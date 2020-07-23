@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // search2.inc.php
 // Copyright 2017 PukiWiki Development Team
@@ -6,7 +8,8 @@
 //
 // Search2 plugin - Show detail result using JavaScript
 
-define('PLUGIN_SEARCH2_MAX_BASE', 16); // #search(1,2,3,...,15,16)
+// #search(1,2,3,...,15,16)
+define('PLUGIN_SEARCH2_MAX_BASE', 16);
 
 define('PLUGIN_SEARCH2_RESULT_RECORD_LIMIT', 10000);
 define('PLUGIN_SEARCH2_RESULT_RECORD_LIMIT_START', 100);
@@ -23,12 +26,15 @@ function plugin_search2_convert()
 
 function plugin_search2_action()
 {
-	global $vars, $_title_search, $_title_result, $_msg_searching;
+	global $vars;
+	global $_title_search;
+	global $_title_result;
+	global $_msg_searching;
 
-	$action = isset($vars['action']) ? $vars['action'] : '';
-	$base = isset($vars['base']) ? $vars['base'] : '';
-	$start_s = isset($vars['start']) ? $vars['start'] : '';
-	$start_index = pkwk_ctype_digit($start_s) ? (int) $start_s : 0;
+	$action = (isset($vars['action'])) ? ($vars['action']) : ('');
+	$base = (isset($vars['base'])) ? ($vars['base']) : ('');
+	$start_s = (isset($vars['start'])) ? ($vars['start']) : ('');
+	$start_index = (pkwk_ctype_digit($start_s)) ? ((int) ($start_s)) : (0);
 	$bases = [];
 
 	if ($base !== '') {
@@ -36,30 +42,24 @@ function plugin_search2_action()
 	}
 
 	if ($action === '') {
-		$q = trim(isset($vars['q']) ? $vars['q'] : '');
-		$offset_s = isset($vars['offset']) ? $vars['offset'] : '';
-		$offset = pkwk_ctype_digit($offset_s) ? (int) $offset_s : 0;
-		$prev_offset_s = isset($vars['prev_offset']) ? $vars['prev_offset'] : '';
+		$q = trim((isset($vars['q'])) ? ($vars['q']) : (''));
+		$offset_s = (isset($vars['offset'])) ? ($vars['offset']) : ('');
+		$offset = (pkwk_ctype_digit($offset_s)) ? ((int) ($offset_s)) : (0);
+		$prev_offset_s = (isset($vars['prev_offset'])) ? ($vars['prev_offset']) : ('');
 
 		if ($q === '') {
-			return ['msg'=>$_title_search,
-				'body'=>'<br>'.$_msg_searching."\n".
-				plugin_search2_search_form($q, $bases, $offset), ];
+			return ['msg'=>$_title_search, 'body'=>'<br>'.$_msg_searching."\n".plugin_search2_search_form($q, $bases, $offset)];
 		} else {
 			$msg = str_replace('$1', htmlsc($q), $_title_result);
 
-			return ['msg'=>$msg,
-				'body'=>plugin_search2_search_form($q, $bases, $offset, $prev_offset_s), ];
+			return ['msg'=>$msg, 'body'=>plugin_search2_search_form($q, $bases, $offset, $prev_offset_s)];
 		}
 	} elseif ($action === 'query') {
-		$q = isset($vars['q']) ? $vars['q'] : '';
-		$search_start_time = isset($vars['search_start_time']) ?
-			$vars['search_start_time'] : null;
-		$modified_since = (int) (isset($vars['modified_since']) ?
-			$vars['modified_since'] : '0');
+		$q = (isset($vars['q'])) ? ($vars['q']) : ('');
+		$search_start_time = (isset($vars['search_start_time'])) ? ($vars['search_start_time']) : (null);
+		$modified_since = (int) ((isset($vars['modified_since'])) ? ($vars['modified_since']) : ('0'));
 		header('Content-Type: application/json; charset=UTF-8');
-		plugin_search2_do_search($q, $base, $start_index,
-			$search_start_time, $modified_since);
+		plugin_search2_do_search($q, $base, $start_index, $search_start_time, $modified_since);
 
 		exit;
 	}
@@ -68,14 +68,16 @@ function plugin_search2_action()
 function plugin_search2_get_base_url($search_text)
 {
 	global $vars;
+
 	$params = [];
 
 	if (!defined('PKWK_UTF8_ENABLE')) {
 		$params[] = 'encode_hint='.rawurlencode($vars['encode_hint']);
 	}
+
 	$params[] = 'cmd=search2';
 
-	if (isset($vars['encode_hint']) && $vars['encode_hint']) {
+	if ((isset($vars['encode_hint'])) && ($vars['encode_hint'])) {
 		$params[] = 'encode_hint='.rawurlencode($vars['encode_hint']);
 	}
 
@@ -83,9 +85,10 @@ function plugin_search2_get_base_url($search_text)
 		$params[] = 'q='.plugin_search2_urlencode_searchtext($search_text);
 	}
 
-	if (isset($vars['base']) && $vars['base']) {
+	if ((isset($vars['base'])) && ($vars['base'])) {
 		$params[] = 'base='.rawurlencode($vars['base']);
 	}
+
 	$url = get_base_uri().'?'.implode('&', $params);
 
 	return $url;
@@ -98,6 +101,7 @@ function plugin_search2_urlencode_searchtext($search_text)
 	if (!$s2) {
 		return '';
 	}
+
 	$sp = preg_split('#\s+#', $s2);
 	$list = [];
 
@@ -108,18 +112,22 @@ function plugin_search2_urlencode_searchtext($search_text)
 	return implode('+', $list);
 }
 
-function plugin_search2_do_search($query_text, $base, $start_index,
-	$search_start_time, $modified_since) : void
+function plugin_search2_do_search($query_text, $base, $start_index, $search_start_time, $modified_since) : void
 {
-	global $whatsnew, $non_list, $search_non_list;
-	global $_msg_andresult, $_msg_orresult;
-	global $search_auth, $auth_user;
+	global $whatsnew;
+	global $non_list;
+	global $search_non_list;
+	global $_msg_andresult;
+	global $_msg_orresult;
+	global $search_auth;
+	global $auth_user;
 
-	$result_record_limit = $start_index === 0 ?
-		PLUGIN_SEARCH2_RESULT_RECORD_LIMIT_START : PLUGIN_SEARCH2_RESULT_RECORD_LIMIT;
+	$result_record_limit = ($start_index === 0) ? (PLUGIN_SEARCH2_RESULT_RECORD_LIMIT_START) : (PLUGIN_SEARCH2_RESULT_RECORD_LIMIT);
 	$retval = [];
 
-	$b_type_and = true; // AND:TRUE OR:FALSE
+	// AND:true OR:false
+	$b_type_and = true;
+
 	$key_candidates = preg_split('/\s+/', $query_text, -1, PREG_SPLIT_NO_EMPTY);
 
 	for ($i = count($key_candidates) - 2; $i >= 1; $i--) {
@@ -128,6 +136,7 @@ function plugin_search2_do_search($query_text, $base, $start_index,
 			unset($key_candidates[$i]);
 		}
 	}
+
 	$key_candidates = array_merge($key_candidates);
 	$keys = get_search_words($key_candidates);
 
@@ -150,6 +159,7 @@ function plugin_search2_do_search($query_text, $base, $start_index,
 		if ($base != '') {
 			$pages = preg_grep('/^'.preg_quote($base, '/').'/S', $pages);
 		}
+
 		$page_names = $pages;
 	} else {
 		// Normal search
@@ -163,16 +173,20 @@ function plugin_search2_do_search($query_text, $base, $start_index,
 		if (!$search_non_list) {
 			$pages = array_diff($pages, preg_grep('/'.$non_list.'/S', $pages));
 		}
+
 		$pages = array_flip($pages);
 		unset($pages[$whatsnew]);
 		$page_names = array_keys($pages);
 	}
+
 	natsort($page_names);
+
 	// Cache collabolate
-	if (null === $search_start_time) {
+	if ($search_start_time === null) {
 		// Don't use client cache
 		$search_start_time = UTIME + LOCALZONE;
 	}
+
 	$found_pages = [];
 	$readable_page_index = -1;
 	$scan_page_index = -1;
@@ -189,9 +203,11 @@ function plugin_search2_do_search($query_text, $base, $start_index,
 				// $search_auth - 1: User can know page names that contain search text if the page is readable
 				continue;
 			}
+
 			// $search_auth - 0: All users can know page names that conntain search text
 			$pagename_only = true;
 		}
+
 		$readable_page_index++;
 
 		if ($readable_page_index < $start_index) {
@@ -234,28 +250,40 @@ function plugin_search2_do_search($query_text, $base, $start_index,
 
 			if ($pagename_only) {
 				// The user cannot read this page body
-				$found_pages[] = ['name'=>(string) $page,
-					'url'=>get_page_uri($page), 'updated_at'=>$updated_at,
+				$found_pages[] =
+				[
+					'name'=>(string) ($page),
+					'url'=>get_page_uri($page),
+					'updated_at'=>$updated_at,
 					'updated_time'=>$updated_time,
-					'body'=>'', 'pagename_only'=>1, ];
+					'body'=>'',
+					'pagename_only'=>1,
+				];
 			} else {
-				$found_pages[] = ['name'=>(string) $page,
-					'url'=>get_page_uri($page), 'updated_at'=>$updated_at,
+				$found_pages[] =
+				[
+					'name'=>(string) ($page),
+					'url'=>get_page_uri($page),
+					'updated_at'=>$updated_at,
 					'updated_time'=>$updated_time,
-					'body'=>(string) $body, ];
+					'body'=>(string) ($body),
+				];
 			}
 		}
+
 		$last_read_page_name = $page;
 
-		if ($start_index + $result_record_limit <= $readable_page_index + 1) {
+		if (($start_index + $result_record_limit) <= ($readable_page_index + 1)) {
 			// Read page limit
 			break;
 		}
 	}
-	$message = str_replace('$1', htmlsc($query_text), str_replace('$2', count($found_pages),
-		str_replace('$3', count($page_names), $b_type_and ? $_msg_andresult : $_msg_orresult)));
-	$search_done = (bool) ($scan_page_index + 1 === count($page_names));
-	$result_obj = [
+
+	$message = str_replace('$1', htmlsc($query_text), str_replace('$2', count($found_pages), str_replace('$3', count($page_names), (($b_type_and) ? ($_msg_andresult) : ($_msg_orresult)))));
+	$search_done = (bool) (($scan_page_index + 1) === count($page_names));
+
+	$result_obj =
+	[
 		'message'=>$message,
 		'q'=>$query_text,
 		'start_index'=>$start_index,
@@ -268,7 +296,9 @@ function plugin_search2_do_search($query_text, $base, $start_index,
 		'search_done'=>$search_done,
 		'search_start_time'=>$search_start_time,
 		'auth_user'=>$auth_user,
-		'results'=>$found_pages, ];
+		'results'=>$found_pages,
+	];
+
 	$obj = $result_obj;
 
 	if (!defined('PKWK_UTF8_ENABLE')) {
@@ -278,21 +308,29 @@ function plugin_search2_do_search($query_text, $base, $start_index,
 			mb_convert_variables('UTF-8', SOURCE_ENCODING, $obj);
 		}
 	}
+
 	echo json_encode($obj, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 }
 
-function plugin_search2_search_form($search_text, $bases,
-	$offset, $prev_offset_s = null)
+function plugin_search2_search_form($search_text, $bases, $offset, $prev_offset_s = null)
 {
 	global $_btn_search;
-	global $_search_pages, $_search_all;
-	global $_msg_andresult, $_msg_orresult, $_msg_notfoundresult;
-	global $_search_detail, $_search_searching, $_search_showing_result;
-	global $_msg_unsupported_webbrowser, $_msg_use_alternative_link;
-	global $_msg_more_results, $_msg_prev_results, $_msg_general_error;
+	global $_search_pages;
+	global $_search_all;
+	global $_msg_andresult;
+	global $_msg_orresult;
+	global $_msg_notfoundresult;
+	global $_search_detail;
+	global $_search_searching;
+	global $_search_showing_result;
+	global $_msg_unsupported_webbrowser;
+	global $_msg_use_alternative_link;
+	global $_msg_more_results;
+	global $_msg_prev_results;
+	global $_msg_general_error;
 	global $auth_user;
-
 	static $search2_form_total_count = 0;
+
 	$search2_form_total_count++;
 	$script = get_base_uri();
 	$h_search_text = htmlsc($search_text);
@@ -310,6 +348,7 @@ function plugin_search2_search_form($search_text, $bases,
 			if (PLUGIN_SEARCH2_MAX_BASE < $_num) {
 				break;
 			}
+
 			$s_base = htmlsc($base);
 			$base_str = '<strong>'.$s_base.'</strong>';
 			$base_label = str_replace('$1', $base_str, $_search_pages);
@@ -322,11 +361,13 @@ function plugin_search2_search_form($search_text, $bases,
 EOD;
 			$check = '';
 		}
+
 		$base_msg .= <<<EOD
 <label><input type="radio" name="base" value=""> {$_search_all}</label>
 EOD;
 		$base_option = '<div class="small">'.$base_msg.'</div>';
 	}
+
 	$_search2_result_notfound = htmlsc($_msg_notfoundresult);
 	$_search2_result_found = htmlsc($_msg_andresult);
 	$_search2_search_wait_milliseconds = PLUGIN_SEARCH2_SEARCH_WAIT_MILLISECONDS;
@@ -336,14 +377,13 @@ EOD;
 </ul>
 EOD;
 
-	if ($h_search_text == '' || $search2_form_total_count > 1) {
+	if (($h_search_text == '') || ($search2_form_total_count > 1)) {
 		$result_page_panel = '';
 	}
 
-	$plain_search_link = '<a href="'.$script.'?cmd=search'.'">'.htmlsc($_btn_search).'</a>';
+	$plain_search_link = '<a href="'.$script.'?cmd=search">'.htmlsc($_btn_search).'</a>';
 	$alt_msg = str_replace('$1', $plain_search_link, $_msg_use_alternative_link);
-	$status_span_text = '<span class="_plugin_search2_search_status_text1"></span>'.
-		'<span class="_plugin_search2_search_status_text2"></span>';
+	$status_span_text = '<span class="_plugin_search2_search_status_text1"></span><span class="_plugin_search2_search_status_text2"></span>';
 	$form = <<<EOD
 <form action="{$script}" method="GET" class="_plugin_search2_form">
  <div>
@@ -367,7 +407,7 @@ EOD;
 	$h_msg_more_results = htmlsc($_msg_more_results);
 	$h_msg_prev_results = htmlsc($_msg_prev_results);
 	$max_results = PLUGIN_SEARCH2_SEARCH_MAX_RESULTS;
-	$prev_offset = pkwk_ctype_digit($prev_offset_s) ? $prev_offset_s : '';
+	$prev_offset = (pkwk_ctype_digit($prev_offset_s)) ? ($prev_offset_s) : ('');
 	$search_props = <<<EOD
 <div style="display:none;">
   <input type="hidden" id="_plugin_search2_auth_user" value="{$h_auth_user}">

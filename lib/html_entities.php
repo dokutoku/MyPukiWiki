@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // This pattern was created by 'plugin/update_entities.inc.php'
 function get_html_entity_pattern()
 {

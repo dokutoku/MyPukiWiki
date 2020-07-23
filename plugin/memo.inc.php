@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // memo.inc.php
 // Copyright 2002-2017 PukiWiki Development Team
@@ -6,13 +8,20 @@
 //
 // Memo box plugin
 
-define('MEMO_COLS', 60); // Columns of textarea
-define('MEMO_ROWS', 5); // Rows of textarea
+// Columns of textarea
+define('MEMO_COLS', 60);
+
+// Rows of textarea
+define('MEMO_ROWS', 5);
 
 function plugin_memo_action()
 {
-	global $vars, $cols, $rows;
-	global $_title_collided, $_msg_collided, $_title_updated;
+	global $vars;
+	global $cols;
+	global $rows;
+	global $_title_collided;
+	global $_msg_collided;
+	global $_title_updated;
 
 	$script = get_base_uri();
 
@@ -20,14 +29,18 @@ function plugin_memo_action()
 		die_message('PKWK_READONLY prohibits editing');
 	}
 
-	if (!isset($vars['msg']) || $vars['msg'] == '') {
-		return;
+	if ((!isset($vars['msg'])) || ($vars['msg'] == '')) {
+		return [];
 	}
 
 	$memo_body = preg_replace('/'."\r".'/', '', $vars['msg']);
 	$memo_body = str_replace("\n", '\n', $memo_body);
-	$memo_body = str_replace('"', '&#x22;', $memo_body); // Escape double quotes
-	$memo_body = str_replace(',', '&#x2c;', $memo_body); // Escape commas
+
+	// Escape double quotes
+	$memo_body = str_replace('"', '&#x22;', $memo_body);
+
+	// Escape commas
+	$memo_body = str_replace(',', '&#x2c;', $memo_body);
 
 	$postdata_old = get_source($vars['refer']);
 	$postdata = '';
@@ -39,8 +52,10 @@ function plugin_memo_action()
 				$postdata .= '#memo('.$memo_body.')'."\n";
 				$line = '';
 			}
+
 			$memo_no++;
 		}
+
 		$postdata .= $line;
 	}
 
@@ -70,6 +85,7 @@ EOD;
 
 		$title = $_title_updated;
 	}
+
 	$retvars['msg'] = &$title;
 	$retvars['body'] = &$body;
 
@@ -80,19 +96,28 @@ EOD;
 
 function plugin_memo_convert()
 {
-	global $vars, $digest;
+	global $vars;
+	global $digest;
 	global $_btn_memo_update;
 	static $numbers = [];
 
 	if (!isset($numbers[$vars['page']])) {
 		$numbers[$vars['page']] = 0;
 	}
+
 	$memo_no = $numbers[$vars['page']]++;
 
 	$data = func_get_args();
-	$data = implode(',', $data);	// Care all arguments
-	$data = str_replace('&#x2c;', ',', $data); // Unescape commas
-	$data = str_replace('&#x22;', '"', $data); // Unescape double quotes
+
+	// Care all arguments
+	$data = implode(',', $data);
+
+	// Unescape commas
+	$data = str_replace('&#x2c;', ',', $data);
+
+	// Unescape double quotes
+	$data = str_replace('&#x22;', '"', $data);
+
 	$data = htmlsc(str_replace('\n', "\n", $data));
 
 	if (PKWK_READONLY) {

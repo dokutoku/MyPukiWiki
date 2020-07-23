@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // map.inc.php
 // Copyright 2002-2017 PukiWiki Development Team
@@ -17,20 +19,25 @@
 */
 
 // Show $non_list files
-define('PLUGIN_MAP_SHOW_HIDDEN', 0); // 0, 1
+// 0, 1
+define('PLUGIN_MAP_SHOW_HIDDEN', 0);
 
 function plugin_map_action()
 {
-	global $vars, $whatsnew, $defaultpage, $non_list;
+	global $vars;
+	global $whatsnew;
+	global $defaultpage;
+	global $non_list;
 
 	$reverse = isset($vars['reverse']);
-	$refer = isset($vars['refer']) ? $vars['refer'] : '';
+	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
 
-	if ($refer == '' || !is_page($refer)) {
-		$vars['refer'] = $refer = $defaultpage;
+	if (($refer == '') || (!is_page($refer))) {
+		$refer = $defaultpage;
+		$vars['refer'] = $defaultpage;
 	}
 
-	$retval['msg'] = $reverse ? 'Relation map (link from)' : 'Relation map, from $1';
+	$retval['msg'] = ($reverse) ? ('Relation map (link from)') : ('Relation map, from $1');
 	$retval['body'] = '';
 
 	// Get pages
@@ -45,8 +52,7 @@ function plugin_map_action()
 
 		return $retval;
 	} else {
-		$retval['body'] .= '<p>'."\n".'Total: '.count($pages).
-			' page(s) on this site.'."\n".'</p>'."\n";
+		$retval['body'] .= '<p>'."\n".'Total: '.count($pages).' page(s) on this site.'."\n".'</p>'."\n";
 	}
 
 	// Generate a tree
@@ -58,7 +64,8 @@ function plugin_map_action()
 
 	// Node not found: Because of filtererd by $non_list
 	if (!isset($nodes[$refer])) {
-		$vars['refer'] = $refer = $defaultpage;
+		$refer = $defaultpage;
+		$vars['refer'] = $defaultpage;
 	}
 
 	if ($reverse) {
@@ -74,23 +81,23 @@ function plugin_map_action()
 				$alone[] = $page;
 			}
 		}
+
 		$retval['body'] .= '</ul>'."\n";
 
 		if (!empty($alone)) {
-			$retval['body'] .= '<hr />'."\n".
-				'<p>No link from anywhere in this site.</p>'."\n";
+			$retval['body'] .= '<hr />'."\n".'<p>No link from anywhere in this site.</p>'."\n";
 			$retval['body'] .= '<ul>'."\n";
 
 			foreach ($alone as $page) {
 				$retval['body'] .= $nodes[$page]->toString($nodes, 1, $nodes[$page]->parent_id);
 			}
+
 			$retval['body'] .= '</ul>'."\n";
 		}
 	} else {
 		$nodes[$refer]->chain($nodes);
 		$retval['body'] .= '<ul>'."\n".$nodes[$refer]->toString($nodes).'</ul>'."\n";
-		$retval['body'] .= '<hr />'."\n".
-			'<p>Not related from '.htmlsc($refer).'</p>'."\n";
+		$retval['body'] .= '<hr />'."\n".'<p>Not related from '.htmlsc($refer).'</p>'."\n";
 		$keys = array_keys($nodes);
 		sort($keys, SORT_STRING);
 		$retval['body'] .= '<ul>'."\n";
@@ -101,6 +108,7 @@ function plugin_map_action()
 				$retval['body'] .= $nodes[$page]->toString($nodes, 1, $nodes[$page]->parent_id);
 			}
 		}
+
 		$retval['body'] .= '</ul>'."\n";
 	}
 
@@ -145,11 +153,9 @@ class MapNode
 		$this->id = ++$id;
 		$this->hide_pattern = '/'.$non_list.'/';
 
-		$this->rels = $reverse ? $this->ref() : $this->rel();
-		$mark = $reverse ? '' : '<sup>+</sup>';
-		$this->mark = '<a id="rel_'.$this->id.'" href="'.get_base_uri().
-			'?plugin=map&amp;refer='.rawurlencode($this->page).'">'.
-			$mark.'</a>';
+		$this->rels = ($reverse) ? ($this->ref()) : ($this->rel());
+		$mark = ($reverse) ? ('') : ('<sup>+</sup>');
+		$this->mark = '<a id="rel_'.$this->id.'" href="'.get_base_uri().'?plugin=map&amp;refer='.rawurlencode($this->page).'">'.$mark.'</a>';
 	}
 
 	public function hide(&$pages)
@@ -171,6 +177,7 @@ class MapNode
 				$ref = explode("\t", $line);
 				$refs[] = $ref[0];
 			}
+
 			$this->hide($refs);
 			sort($refs, SORT_STRING);
 		}
@@ -227,9 +234,9 @@ class MapNode
 		if (!$this->is_page) {
 			return $indent.'<li>'.$this->link.'</li>'."\n";
 		} elseif ($this->parent_id != $parent_id) {
-			return $indent.'<li>'.$this->link.
-				'<a href="#rel_'.$this->id.'">...</a></li>'."\n";
+			return $indent.'<li>'.$this->link.'<a href="#rel_'.$this->id.'">...</a></li>'."\n";
 		}
+
 		$retval = $indent.'<li>'.$this->mark.$this->link."\n";
 
 		if (!empty($this->rels)) {
@@ -237,16 +244,16 @@ class MapNode
 			$level += 2;
 
 			foreach ($this->rels as $page) {
-				if (isset($nodes[$page]) && $this->parent_id != $nodes[$page]->id) {
+				if ((isset($nodes[$page])) && ($this->parent_id != $nodes[$page]->id)) {
 					$childs[] = $nodes[$page]->toString($nodes, $level, $this->id);
 				}
 			}
 
 			if (!empty($childs)) {
-				$retval .= $indent.' <ul>'."\n".
-					implode('', $childs).$indent.' </ul>'."\n";
+				$retval .= $indent.' <ul>'."\n".implode('', $childs).$indent.' </ul>'."\n";
 			}
 		}
+
 		$retval .= $indent.'</li>'."\n";
 
 		return $retval;

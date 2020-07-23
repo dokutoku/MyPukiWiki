@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // default.ini.php
 // Copyright
@@ -32,12 +34,25 @@ $list_index = 1;
 /////////////////////////////////////////////////
 // Obsolete: リスト構造の左マージン (Leaves for compatibility of plugins)
 // Use list-indent1 CSS class instead
-$_ul_left_margin = 0;   // Must be 0 (Plugin backward compatibility)
-$_ul_margin = 1;        // Must be 1 (Plugin backward compatibility)
-$_ol_left_margin = 0;   // Must be 0
-$_ol_margin = 1;        // Must be 1
-$_dl_left_margin = 0;   // Must be 0
-$_dl_margin = 1;        // Must be 1
+
+// Must be 0 (Plugin backward compatibility)
+$_ul_left_margin = 0;
+
+// Must be 1 (Plugin backward compatibility)
+$_ul_margin = 1;
+
+// Must be 0
+$_ol_left_margin = 0;
+
+// Must be 1
+$_ol_margin = 1;
+
+// Must be 0
+$_dl_left_margin = 0;
+
+// Must be 1
+$_dl_margin = 1;
+
 // Use pkwk_list_attrs_template() instead
 $_list_pad_str = ' class="list%d list-indent%d"';
 
@@ -75,7 +90,8 @@ $hr = '<hr class="full_hr" />';
 // 脚注機能関連
 
 // 脚注のアンカーに埋め込む本文の最大長
-define('PKWK_FOOTNOTE_TITLE_MAX', 100); // Characters
+// Characters
+define('PKWK_FOOTNOTE_TITLE_MAX', 100);
 
 // 脚注のアンカーを相対パスで表示する (0 = 絶対パス)
 //  * 相対パスの場合、以前のバージョンのOperaで問題になることがあります
@@ -110,7 +126,8 @@ $usefacemark = 1;
 //
 /////////////////////////////////////////////////
 // ユーザ定義ルール(コンバート時に置換)
-$line_rules = [
+$line_rules =
+[
 	'COLOR\(([^\(\)]*)\){([^}]*)}'=>'<span style="color:$1">$2</span>',
 	'SIZE\(([^\(\)]*)\){([^}]*)}'=>'<span style="font-size:$1px">$2</span>',
 	'COLOR\(([^\(\)]*)\):((?:(?!COLOR\([^\)]+\)\:).)*)'=>'<span style="color:$1">$2</span>',
@@ -128,7 +145,8 @@ $line_rules = [
 // 文章内にXDなどが入った場合にfacemarkに置換されてしまうので
 // 必要のない方は $usefacemarkを0にしてください。
 
-$facemark_rules = [
+$facemark_rules =
+[
 	// Face marks
 	'\s(\:\))'=>' <img alt="$1" src="'.IMAGE_DIR.'face/smile.png" />',
 	'\s(\:D)'=>' <img alt="$1" src="'.IMAGE_DIR.'face/bigsmile.png" />',

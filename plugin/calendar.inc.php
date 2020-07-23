@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // calendar.inc.php
 // Copyright
@@ -10,7 +12,9 @@
 
 function plugin_calendar_convert()
 {
-	global $weeklabels, $vars, $command;
+	global $weeklabels;
+	global $vars;
+	global $command;
 
 	$script = get_base_uri();
 	$args = func_get_args();
@@ -18,16 +22,16 @@ function plugin_calendar_convert()
 	$page = '';
 
 	if (func_num_args() == 1) {
-		if (is_numeric($args[0]) && strlen($args[0]) == 6) {
+		if ((is_numeric($args[0])) && (strlen($args[0]) == 6)) {
 			$date_str = $args[0];
 		} else {
 			$page = $args[0];
 		}
 	} elseif (func_num_args() == 2) {
-		if (is_numeric($args[0]) && strlen($args[0]) == 6) {
+		if ((is_numeric($args[0])) && (strlen($args[0]) == 6)) {
 			$date_str = $args[0];
 			$page = $args[1];
-		} elseif (is_numeric($args[1]) && strlen($args[1]) == 6) {
+		} elseif ((is_numeric($args[1])) && (strlen($args[1]) == 6)) {
 			$date_str = $args[1];
 			$page = $args[0];
 		}
@@ -38,6 +42,7 @@ function plugin_calendar_convert()
 	} elseif (!is_pagename($page)) {
 		return false;
 	}
+
 	$pre = $page;
 	$prefix = $page.'/';
 
@@ -52,13 +57,14 @@ function plugin_calendar_convert()
 	$yr = substr($date_str, 0, 4);
 	$mon = substr($date_str, 4, 2);
 
-	if ($yr != get_date('Y') || $mon != get_date('m')) {
+	if (($yr != get_date('Y')) || ($mon != get_date('m'))) {
 		$now_day = 1;
 		$other_month = 1;
 	} else {
 		$now_day = get_date('d');
 		$other_month = 0;
 	}
+
 	$today = getdate(mktime(0, 0, 0, $mon, $now_day, $yr) - LOCALZONE + ZONETIME);
 
 	$m_num = $today['mon'];
@@ -85,12 +91,10 @@ function plugin_calendar_convert()
 EOD;
 
 	foreach ($weeklabels as $label) {
-		$ret .= '  <td class="style_td_week"><strong>'.
-			$label.'</strong></td>'."\n";
+		$ret .= '  <td class="style_td_week"><strong>'.$label.'</strong></td>'."\n";
 	}
 
-	$ret .= ' </tr>'."\n".
-		' <tr>'."\n";
+	$ret .= ' </tr>'."\n".' <tr>'."\n";
 
 	// Blank
 	for ($i = 0; $i < $wday; $i++) {
@@ -103,38 +107,32 @@ EOD;
 		$r_page = rawurlencode($name);
 		$s_page = htmlsc($name);
 
-		$refer = ($cmd == 'edit') ? '&amp;refer='.rawurlencode($page) : '';
+		$refer = ($cmd == 'edit') ? ('&amp;refer='.rawurlencode($page)) : ('');
 
-		if ($cmd == 'read' && !is_page($name)) {
+		if (($cmd == 'read') && (!is_page($name))) {
 			$link = '<strong>'.$day.'</strong>';
 		} else {
-			$link = '<a href="'.$script.'?cmd='.$cmd.
-				'&amp;page='.$r_page.$refer.'" title="'.
-				$s_page.'"><strong>'.$day.'</strong></a>';
+			$link = '<a href="'.$script.'?cmd='.$cmd.'&amp;page='.$r_page.$refer.'" title="'.$s_page.'"><strong>'.$day.'</strong></a>';
 		}
 
-		if ($wday == 0 && $day > 1) {
+		if (($wday == 0) && ($day > 1)) {
 			$ret .= '  </tr><tr>'."\n";
 		}
 
-		if (!$other_month && ($day == $today['mday']) &&
-			($m_num == $today['mon']) && ($year == $today['year'])) {
+		if ((!$other_month) && ($day == $today['mday']) && ($m_num == $today['mon']) && ($year == $today['year'])) {
 			//  Today
-			$ret .= '    <td class="style_td_today"><span class="small">'.
-				$link.'</span></td>'."\n";
+			$ret .= '    <td class="style_td_today"><span class="small">'.$link.'</span></td>'."\n";
 		} elseif ($wday == 0) {
 			//  Sunday
-			$ret .= '    <td class="style_td_sun"><span class="small">'.
-				$link.'</span></td>'."\n";
+			$ret .= '    <td class="style_td_sun"><span class="small">'.$link.'</span></td>'."\n";
 		} elseif ($wday == 6) {
 			//  Saturday
-			$ret .= '    <td class="style_td_sat"><span class="small">'.
-				$link.'</span></td>'."\n";
+			$ret .= '    <td class="style_td_sat"><span class="small">'.$link.'</span></td>'."\n";
 		} else {
 			// Weekday
-			$ret .= '    <td class="style_td_day"><span class="small">'.
-				$link.'</span></td>'."\n";
+			$ret .= '    <td class="style_td_day"><span class="small">'.$link.'</span></td>'."\n";
 		}
+
 		$day++;
 		$wday++;
 		$wday = $wday % 7;
@@ -148,8 +146,7 @@ EOD;
 		}
 	}
 
-	$ret .= '  </tr>'."\n".
-		'</table>'."\n";
+	$ret .= '  </tr>'."\n".'</table>'."\n";
 
 	return $ret;
 }

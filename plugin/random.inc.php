@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // random.inc.php
 // Copyright 2002-2019 PukiWiki Development Team
@@ -24,16 +26,16 @@ function plugin_random_convert()
 	global $vars;
 
 	$script = get_base_uri();
-	$title = '[Random Link]'; // default
+
+	// default
+	$title = '[Random Link]';
 
 	if (func_num_args()) {
 		$args = func_get_args();
 		$title = $args[0];
 	}
 
-	return "<p><a href=\"{$script}?plugin=random&amp;refer=".
-		pagename_urlencode($vars['page']).'">'.
-		htmlsc($title).'</a></p>';
+	return '<p><a href="'.$script.'?plugin=random&amp;refer='.pagename_urlencode($vars['page']).'">'.htmlsc($title).'</a></p>';
 }
 
 function plugin_random_action()
@@ -49,7 +51,7 @@ function plugin_random_action()
 		}
 	}
 
-	mt_srand((float) microtime() * 1000000);
+	mt_srand((float) (microtime()) * 1000000);
 	$page = array_rand($pages);
 
 	if ($page != '') {

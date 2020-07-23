@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // pukiwiki.php
 // Copyright
@@ -47,7 +49,8 @@ require LIB_DIR.'init.php';
 
 // Load optional libraries
 if ($notify) {
-	require LIB_DIR.'mail.php'; // Mail notification
+	// Mail notification
+	require LIB_DIR.'mail.php';
 }
 
 /////////////////////////////////////////////////
@@ -55,6 +58,7 @@ if ($notify) {
 if (manage_page_redirect()) {
 	exit;
 }
+
 $retvars = [];
 $is_cmd = false;
 
@@ -75,18 +79,18 @@ if ($plugin != '') {
 		$retvars = do_plugin_action($plugin);
 
 		if ($retvars === false) {
+			// Done
 			exit;
-		} // Done
+		}
 
 		if ($is_cmd) {
-			$base = isset($vars['page']) ? $vars['page'] : '';
+			$base = (isset($vars['page'])) ? ($vars['page']) : ('');
 		} else {
-			$base = isset($vars['refer']) ? $vars['refer'] : '';
+			$base = (isset($vars['refer'])) ? ($vars['refer']) : ('');
 		}
 	} else {
 		// Not found
-		$msg = 'plugin='.htmlsc($plugin).
-			' is not implemented.';
+		$msg = 'plugin='.htmlsc($plugin).' is not implemented.';
 		$retvars = ['msg'=>$msg, 'body'=>$msg];
 		$base = &$defaultpage;
 	}
@@ -95,15 +99,15 @@ if ($plugin != '') {
 $title = htmlsc(strip_bracket($base));
 $page = make_search($base);
 
-if (isset($retvars['msg']) && $retvars['msg'] != '') {
+if ((isset($retvars['msg'])) && ($retvars['msg'] != '')) {
 	$title = str_replace('$1', $title, $retvars['msg']);
 	$page = str_replace('$1', $page, $retvars['msg']);
 }
 
-if (isset($retvars['body']) && $retvars['body'] != '') {
+if ((isset($retvars['body'])) && ($retvars['body'] != '')) {
 	$body = &$retvars['body'];
 } else {
-	if ($base == '' || !is_page($base)) {
+	if (($base == '') || (!is_page($base))) {
 		check_readable($defaultpage, true, true);
 		$base = &$defaultpage;
 		$title = htmlsc(strip_bracket($base));

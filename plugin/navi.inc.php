@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // $Id: navi.inc.php,v 1.24 2011/01/25 15:01:01 henoheno Exp $
 //
@@ -37,17 +39,25 @@
 
 // Exclusive regex pattern of child pages
 define('PLUGIN_NAVI_EXCLUSIVE_REGEX', '');
-//define('PLUGIN_NAVI_EXCLUSIVE_REGEX', '#/_#'); // Ignore 'foobar/_memo' etc.
+
+// Ignore 'foobar/_memo' etc.
+//define('PLUGIN_NAVI_EXCLUSIVE_REGEX', '#/_#');
 
 // Insert <link rel=... /> tags into XHTML <head></head>
-define('PLUGIN_NAVI_LINK_TAGS', false);	// FALSE, TRUE
+// false, true
+define('PLUGIN_NAVI_LINK_TAGS', false);
 
 // ----
 
 function plugin_navi_convert()
 {
-	global $vars, $script, $head_tags;
-	global $_navi_prev, $_navi_next, $_navi_up, $_navi_home;
+	global $vars;
+	global $script;
+	global $head_tags;
+	global $_navi_prev;
+	global $_navi_next;
+	global $_navi_up;
+	global $_navi_home;
 	static $navi = [];
 
 	$current = $vars['page'];
@@ -60,26 +70,27 @@ function plugin_navi_convert()
 		$is_home = ($home == $current);
 
 		if (!is_page($home)) {
-			return '#navi(contents-page-name): No such page: '.
-				htmlsc($home).'<br />';
-		} elseif (!$is_home &&
-			!preg_match('/^'.preg_quote($home, '/').'/', $current)) {
-			return '#navi('.htmlsc($home).
-				'): Not a child page like: '.
-				htmlsc($home.'/'.basename($current)).
-				'<br />';
+			return '#navi(contents-page-name): No such page: '.htmlsc($home).'<br />';
+		} elseif ((!$is_home) && (!preg_match('/^'.preg_quote($home, '/').'/', $current))) {
+			return '#navi('.htmlsc($home).'): Not a child page like: '.htmlsc($home.'/'.basename($current)).'<br />';
 		}
+
 		$reverse = (strtolower($reverse) == 'reverse');
 	} else {
 		$home = $vars['page'];
-		$is_home = true; // $home == $current
+
+		// $home == $current
+		$is_home = true;
 	}
 
 	$pages = [];
-	$footer = isset($navi[$home]); // The first time: FALSE, the second: TRUE
+
+	// The first time: false, the second: true
+	$footer = isset($navi[$home]);
 
 	if (!$footer) {
-		$navi[$home] = [
+		$navi[$home] =
+		[
 			'up'=>'',
 			'prev'=>'',
 			'prev1'=>'',
@@ -89,21 +100,23 @@ function plugin_navi_convert()
 			'home1'=>'',
 		];
 
-		$pages = preg_grep('/^'.preg_quote($home, '/').
-			'($|\/)/', get_existpages());
+		$pages = preg_grep('/^'.preg_quote($home, '/').'($|\/)/', get_existpages());
 
 		if (PLUGIN_NAVI_EXCLUSIVE_REGEX != '') {
 			// If old PHP could use preg_grep(,,PREG_GREP_INVERT)...
-			$pages = array_diff($pages,
-				preg_grep(PLUGIN_NAVI_EXCLUSIVE_REGEX, $pages));
+			$pages = array_diff($pages, preg_grep(PLUGIN_NAVI_EXCLUSIVE_REGEX, $pages));
 		}
-		$pages[] = $current; // Sentinel :)
+
+		// Sentinel :)
+		$pages[] = $current;
+
 		$pages = array_unique($pages);
 		natcasesort($pages);
 
 		if ($reverse) {
 			$pages = array_reverse($pages);
 		}
+
 		$pages = array_values($pages);
 		$prev = $home;
 		$next = '';
@@ -118,6 +131,7 @@ function plugin_navi_convert()
 
 				break;
 			}
+
 			$prev = $page;
 		}
 
@@ -138,21 +152,18 @@ function plugin_navi_convert()
 			$navi[$home]['next'] = make_pagelink($next);
 			$navi[$home]['next1'] = make_pagelink($next, $_navi_next);
 		}
+
 		$navi[$home]['home'] = make_pagelink($home);
 		$navi[$home]['home1'] = make_pagelink($home, $_navi_home);
 
 		// Generate <link> tag: start next prev(previous) parent(up)
 		// Not implemented: contents(toc) search first(begin) last(end)
 		if (PLUGIN_NAVI_LINK_TAGS) {
-			foreach (['start'=>$home, 'next'=>$next,
-				'prev'=>$prev, 'up'=>$up, ] as $rel=>$_page) {
+			foreach (['start'=>$home, 'next'=>$next, 'prev'=>$prev, 'up'=>$up] as $rel=>$_page) {
 				if ($_page != '') {
 					$s_page = htmlsc($_page);
 					$r_page = pagename_urlencode($_page);
-					$head_tags[] = ' <link rel="'.
-						$rel.'" href="'.$script.
-						'?'.$r_page.'" title="'.
-						$s_page.'" />';
+					$head_tags[] = ' <link rel="'.$rel.'" href="'.$script.'?'.$r_page.'" title="'.$s_page.'" />';
 				}
 			}
 		}
@@ -169,8 +180,7 @@ function plugin_navi_convert()
 		} elseif ($count == 1) {
 			// Sentinel only: Show usage and warning
 			$home = htmlsc($home);
-			$ret .= '#navi('.$home.'): No child page like: '.
-				$home.'/Foo';
+			$ret .= '#navi('.$home.'): No child page like: '.$home.'/Foo';
 		} else {
 			$ret .= '<ul>';
 
@@ -179,6 +189,7 @@ function plugin_navi_convert()
 					$ret .= ' <li>'.make_pagelink($page).'</li>';
 				}
 			}
+
 			$ret .= '</ul>';
 		}
 	} elseif (!$footer) {

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // recent.inc.php
 // Copyright
@@ -14,7 +16,8 @@
 define('PLUGIN_RECENT_DEFAULT_LINES', 10);
 
 // Limit number of executions
-define('PLUGIN_RECENT_EXEC_LIMIT', 2); // N times per one output
+// N times per one output
+define('PLUGIN_RECENT_EXEC_LIMIT', 2);
 
 // ----
 
@@ -25,7 +28,9 @@ define('PLUGIN_RECENT_CACHE', CACHE_DIR.'recent.dat');
 
 function plugin_recent_convert()
 {
-	global $vars, $date_format, $_recent_plugin_frame;
+	global $vars;
+	global $date_format;
+	global $_recent_plugin_frame;
 	static $exec_count = 1;
 
 	$recent_lines = PLUGIN_RECENT_DEFAULT_LINES;
@@ -33,7 +38,7 @@ function plugin_recent_convert()
 	if (func_num_args()) {
 		$args = func_get_args();
 
-		if (!is_numeric($args[0]) || isset($args[1])) {
+		if ((!is_numeric($args[0])) || (isset($args[1]))) {
 			return PLUGIN_RECENT_USAGE.'<br />';
 		} else {
 			$recent_lines = $args[0];
@@ -42,7 +47,7 @@ function plugin_recent_convert()
 
 	// Show only N times
 	if ($exec_count > PLUGIN_RECENT_EXEC_LIMIT) {
-		return '#recent(): You called me too much'.'<br />'."\n";
+		return '#recent(): You called me too much<br />'."\n";
 	} else {
 		$exec_count++;
 	}
@@ -51,7 +56,7 @@ function plugin_recent_convert()
 		put_lastmodified();
 
 		if (!file_exists(PLUGIN_RECENT_CACHE)) {
-			return '#recent(): Cache file of RecentChanges not found'.'<br />';
+			return '#recent(): Cache file of RecentChanges not found<br />';
 		}
 	}
 
@@ -59,9 +64,11 @@ function plugin_recent_convert()
 	$lines = file_head(PLUGIN_RECENT_CACHE, $recent_lines);
 
 	if ($lines == false) {
-		return '#recent(): File can not open'.'<br />'."\n";
+		return '#recent(): File can not open<br />'."\n";
 	}
-	$date = $items = '';
+
+	$items = '';
+	$date = '';
 
 	foreach ($lines as $line) {
 		[$time, $page] = explode("\t", rtrim($line));
@@ -76,8 +83,7 @@ function plugin_recent_convert()
 
 			// New day
 			$date = $_date;
-			$items .= '<strong>'.$date.'</strong>'."\n".
-				'<ul class="recent_list">'."\n";
+			$items .= '<strong>'.$date.'</strong>'."\n".'<ul class="recent_list">'."\n";
 		}
 
 		$s_page = htmlsc($page);
@@ -87,11 +93,10 @@ function plugin_recent_convert()
 			$items .= ' <li>'.$s_page.'</li>'."\n";
 		} else {
 			$attrs = get_page_link_a_attrs($page);
-			$items .= ' <li><a href="'.get_page_uri($page).'" class="'.
-				$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].
-				'">'.$s_page.'</a></li>'."\n";
+			$items .= ' <li><a href="'.get_page_uri($page).'" class="'.$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].'">'.$s_page.'</a></li>'."\n";
 		}
 	}
+
 	// End of the day
 	if ($date != '') {
 		$items .= '</ul>'."\n";

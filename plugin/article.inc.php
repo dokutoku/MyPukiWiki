@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // article.inc.php
 // Copyright
@@ -24,33 +26,65 @@
 
  */
 
-define('PLUGIN_ARTICLE_COLS', 70); // テキストエリアのカラム数
-define('PLUGIN_ARTICLE_ROWS', 5); // テキストエリアの行数
-define('PLUGIN_ARTICLE_NAME_COLS', 24); // 名前テキストエリアのカラム数
-define('PLUGIN_ARTICLE_SUBJECT_COLS', 60); // 題名テキストエリアのカラム数
-define('PLUGIN_ARTICLE_NAME_FORMAT', '[[$name]]'); // 名前の挿入フォーマット
-define('PLUGIN_ARTICLE_SUBJECT_FORMAT', '**$subject'); // 題名の挿入フォーマット
+// テキストエリアのカラム数
+define('PLUGIN_ARTICLE_COLS', 70);
 
-define('PLUGIN_ARTICLE_INS', 0); // 挿入する位置 1:欄の前 0:欄の後
-define('PLUGIN_ARTICLE_COMMENT', 1); // 書き込みの下に一行コメントを入れる 1:入れる 0:入れない
-define('PLUGIN_ARTICLE_AUTO_BR', 1); // 改行を自動的変換 1:する 0:しない
+// テキストエリアの行数
+define('PLUGIN_ARTICLE_ROWS', 5);
 
-define('PLUGIN_ARTICLE_MAIL_AUTO_SEND', 0); // 投稿内容のメール自動配信 1:する 0:しない
-define('PLUGIN_ARTICLE_MAIL_FROM', ''); // 投稿内容のメール送信時の送信者メールアドレス
-define('PLUGIN_ARTICLE_MAIL_SUBJECT_PREFIX', '[someone\'s PukiWiki]'); // 投稿内容のメール送信時の題名
+// 名前テキストエリアのカラム数
+define('PLUGIN_ARTICLE_NAME_COLS', 24);
+
+// 題名テキストエリアのカラム数
+define('PLUGIN_ARTICLE_SUBJECT_COLS', 60);
+
+// 名前の挿入フォーマット
+define('PLUGIN_ARTICLE_NAME_FORMAT', '[[$name]]');
+
+// 題名の挿入フォーマット
+define('PLUGIN_ARTICLE_SUBJECT_FORMAT', '**$subject');
+
+// 挿入する位置 1:欄の前 0:欄の後
+define('PLUGIN_ARTICLE_INS', 0);
+
+// 書き込みの下に一行コメントを入れる 1:入れる 0:入れない
+define('PLUGIN_ARTICLE_COMMENT', 1);
+
+// 改行を自動的変換 1:する 0:しない
+define('PLUGIN_ARTICLE_AUTO_BR', 1);
+
+// 投稿内容のメール自動配信 1:する 0:しない
+define('PLUGIN_ARTICLE_MAIL_AUTO_SEND', 0);
+
+// 投稿内容のメール送信時の送信者メールアドレス
+define('PLUGIN_ARTICLE_MAIL_FROM', '');
+
+// 投稿内容のメール送信時の題名
+define('PLUGIN_ARTICLE_MAIL_SUBJECT_PREFIX', '[someone\'s PukiWiki]');
 
 // 投稿内容のメール自動配信先
 global $_plugin_article_mailto;
-$_plugin_article_mailto = [
+
+$_plugin_article_mailto =
+[
 	'',
 ];
 
 function plugin_article_action()
 {
-	global $post, $vars, $cols, $rows, $now;
-	global $_title_collided, $_msg_collided, $_title_updated;
-	global $_plugin_article_mailto, $_no_subject, $_no_name;
-	global $_msg_article_mail_sender, $_msg_article_mail_page;
+	global $post;
+	global $vars;
+	global $cols;
+	global $rows;
+	global $now;
+	global $_title_collided;
+	global $_msg_collided;
+	global $_title_updated;
+	global $_plugin_article_mailto;
+	global $_no_subject;
+	global $_no_name;
+	global $_msg_article_mail_sender;
+	global $_msg_article_mail_page;
 
 	$script = get_base_uri();
 
@@ -62,10 +96,10 @@ function plugin_article_action()
 		return ['msg'=>'', 'body'=>''];
 	}
 
-	$name = ($post['name'] == '') ? $_no_name : $post['name'];
-	$name = ($name == '') ? '' : str_replace('$name', $name, PLUGIN_ARTICLE_NAME_FORMAT);
-	$subject = ($post['subject'] == '') ? $_no_subject : $post['subject'];
-	$subject = ($subject == '') ? '' : str_replace('$subject', $subject, PLUGIN_ARTICLE_SUBJECT_FORMAT);
+	$name = ($post['name'] == '') ? ($_no_name) : ($post['name']);
+	$name = ($name == '') ? ('') : (str_replace('$name', $name, PLUGIN_ARTICLE_NAME_FORMAT));
+	$subject = ($post['subject'] == '') ? ($_no_subject) : ($post['subject']);
+	$subject = ($subject == '') ? ('') : (str_replace('$subject', $subject, PLUGIN_ARTICLE_SUBJECT_FORMAT));
 	$article = $subject."\n".'>'.$name.' ('.$now.')~'."\n".'~'."\n";
 
 	$msg = rtrim($post['msg']);
@@ -75,6 +109,7 @@ function plugin_article_action()
 		//コメント行、整形済み行には~をつけないように arino
 		$msg = implode("\n", preg_replace('/^(?!\/\/)(?!\s)(.*)$/', '$1~', explode("\n", $msg)));
 	}
+
 	$article .= $msg."\n\n".'//';
 
 	if (PLUGIN_ARTICLE_COMMENT) {
@@ -91,9 +126,10 @@ function plugin_article_action()
 		}
 
 		if (preg_match('/^#article/i', $line)) {
-			if ($article_no == $post['article_no'] && $post['msg'] != '') {
+			if (($article_no == $post['article_no']) && ($post['msg'] != '')) {
 				$postdata .= $article."\n";
 			}
+
 			$article_no++;
 		}
 
@@ -133,6 +169,7 @@ EOD;
 			if ($post['name']) {
 				$mailsubject .= '/'.$post['name'];
 			}
+
 			$mailsubject = mb_encode_mimeheader($mailsubject);
 
 			$mailbody = $post['msg'];
@@ -149,6 +186,7 @@ EOD;
 
 		$title = $_title_updated;
 	}
+
 	$retvars['msg'] = $title;
 	$retvars['body'] = $body;
 
@@ -160,15 +198,19 @@ EOD;
 
 function plugin_article_convert()
 {
-	global $vars, $digest;
-	global $_btn_article, $_btn_name, $_btn_subject;
+	global $vars;
+	global $digest;
+	global $_btn_article;
+	global $_btn_name;
+	global $_btn_subject;
 	static $numbers = [];
 
 	$script = get_base_uri();
 
 	if (PKWK_READONLY) {
+		// Show nothing
 		return '';
-	} // Show nothing
+	}
 
 	if (!isset($numbers[$vars['page']])) {
 		$numbers[$vars['page']] = 0;

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // pukiwiki.skin.php
 // Copyright
@@ -13,26 +15,31 @@
 
 // Set site identities
 $_IMAGE['skin']['logo'] = 'pukiwiki.png';
-$_IMAGE['skin']['favicon'] = ''; // Sample: 'image/favicon.ico';
+
+// Sample: 'image/favicon.ico';
+$_IMAGE['skin']['favicon'] = '';
 
 // SKIN_DEFAULT_DISABLE_TOPICPATH
 //   1 = Show reload URL
 //   0 = Show topicpath
 if (!defined('SKIN_DEFAULT_DISABLE_TOPICPATH')) {
+	// 1, 0
 	define('SKIN_DEFAULT_DISABLE_TOPICPATH', 1);
-} // 1, 0
+}
 
 // Show / Hide navigation bar UI at your choice
 // NOTE: This is not stop their functionalities!
 if (!defined('PKWK_SKIN_SHOW_NAVBAR')) {
+	// 1, 0
 	define('PKWK_SKIN_SHOW_NAVBAR', 1);
-} // 1, 0
+}
 
 // Show / Hide toolbar UI at your choice
 // NOTE: This is not stop their functionalities!
 if (!defined('PKWK_SKIN_SHOW_TOOLBAR')) {
+	// 1, 0
 	define('PKWK_SKIN_SHOW_TOOLBAR', 1);
-} // 1, 0
+}
 
 // ------------------------------------------------------------
 // Code start
@@ -56,13 +63,15 @@ $image = &$_IMAGE['skin'];
 $rw = !PKWK_READONLY;
 
 // MenuBar
-$menu = arg_check('read') && exist_plugin_convert('menu') ? do_plugin_convert('menu') : false;
+$menu = ((arg_check('read')) && (exist_plugin_convert('menu'))) ? (do_plugin_convert('menu')) : (false);
+
 // RightBar
 $rightbar = false;
 
-if (arg_check('read') && exist_plugin_convert('rightbar')) {
+if ((arg_check('read')) && (exist_plugin_convert('rightbar'))) {
 	$rightbar = do_plugin_convert('rightbar');
 }
+
 // ------------------------------------------------------------
 // Output
 
@@ -78,7 +87,7 @@ header('Content-Type: text/html; charset='.CONTENT_CHARSET);
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=<?php echo CONTENT_CHARSET; ?>" />
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<?php if ($nofollow || !$is_read) { ?> <meta name="robots" content="NOINDEX,NOFOLLOW" /><?php } ?>
+<?php if (($nofollow) || (!$is_read)) { ?> <meta name="robots" content="NOINDEX,NOFOLLOW" /><?php } ?>
 <?php if ($html_meta_referrer_policy) { ?> <meta name="referrer" content="<?php echo htmlsc(html_meta_referrer_policy); ?>" /><?php } ?>
 
  <title><?php echo $title; ?> - <?php echo $page_title; ?></title>
@@ -130,12 +139,11 @@ function _navigator($key, $value = '', $javascript = '')
 		return false;
 	}
 
-	echo '<a href="'.$link[$key].'" '.$javascript.'>'.
-		(($value === '') ? $lang[$key] : $value).
-		'</a>';
+	echo '<a href="'.$link[$key].'" '.$javascript.'>'.(($value === '') ? ($lang[$key]) : ($value)).'</a>';
 
 	return true;
 }
+
 ?>
  [ <?php _navigator('top'); ?> ] &nbsp;
 
@@ -143,15 +151,15 @@ function _navigator($key, $value = '', $javascript = '')
  [
  <?php if ($rw) { ?>
 	<?php _navigator('edit'); ?> |
-	<?php if ($is_read && $function_freeze) { ?>
-		<?php (!$is_freeze) ? _navigator('freeze') : _navigator('unfreeze'); ?> |
+	<?php if (($is_read) && ($function_freeze)) { ?>
+		<?php (!$is_freeze) ? (_navigator('freeze')) : (_navigator('unfreeze')); ?> |
 	<?php } ?>
  <?php } ?>
  <?php _navigator('diff'); ?>
  <?php if ($do_backup) { ?>
 	| <?php _navigator('backup'); ?>
  <?php } ?>
- <?php if ($rw && (bool) ini_get('file_uploads')) { ?>
+ <?php if (($rw) && ((bool) (ini_get('file_uploads')))) { ?>
 	| <?php _navigator('upload'); ?>
  <?php } ?>
  | <?php _navigator('reload'); ?>
@@ -254,13 +262,11 @@ function _toolbar($key, $x = 20, $y = 20)
 		return false;
 	}
 
-	echo '<a href="'.$link[$key].'">'.
-		'<img src="'.IMAGE_DIR.$image[$key].'" width="'.$x.'" height="'.$y.'" '.
-			'alt="'.$lang[$key].'" title="'.$lang[$key].'" />'.
-		'</a>';
+	echo '<a href="'.$link[$key].'"><img src="'.IMAGE_DIR.$image[$key].'" width="'.((string) ($x)).'" height="'.((string) ($y)).'" alt="'.$lang[$key].'" title="'.$lang[$key].'" /></a>';
 
 	return true;
 }
+
 ?>
  <?php _toolbar('top'); ?>
 
@@ -268,7 +274,7 @@ function _toolbar($key, $x = 20, $y = 20)
  &nbsp;
  <?php if ($rw) { ?>
 	<?php _toolbar('edit'); ?>
-	<?php if ($is_read && $function_freeze) { ?>
+	<?php if (($is_read) && ($function_freeze)) { ?>
 		<?php if (!$is_freeze) {
 	_toolbar('freeze');
 } else {
@@ -281,7 +287,7 @@ function _toolbar($key, $x = 20, $y = 20)
 	<?php _toolbar('backup'); ?>
 <?php } ?>
 <?php if ($rw) { ?>
-	<?php if ((bool) ini_get('file_uploads')) { ?>
+	<?php if ((bool) (ini_get('file_uploads'))) { ?>
 		<?php _toolbar('upload'); ?>
 	<?php } ?>
 	<?php _toolbar('copy'); ?>

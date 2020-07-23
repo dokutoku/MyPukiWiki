@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // menu.inc.php
 // Copyright 2003-2018 PukiWiki Development Team
@@ -14,7 +16,8 @@ define('MENU_SUBMENUBAR', 'MenuBar');
 
 function plugin_menu_convert()
 {
-	global $vars, $menubar;
+	global $vars;
+	global $menubar;
 	static $menu = null;
 
 	$num = func_num_args();
@@ -28,18 +31,20 @@ function plugin_menu_convert()
 		if ($menu !== null) {
 			return '#menu(): Already set: '.htmlsc($menu);
 		}
+
 		$args = func_get_args();
 
 		if (!is_page($args[0])) {
 			return '#menu(): No such page: '.htmlsc($args[0]);
 		} else {
-			$menu = $args[0]; // Set
+			// Set
+			$menu = $args[0];
 
 			return '';
 		}
 	} else {
 		// Output menubar page data
-		$page = ($menu === null) ? $menubar : $menu;
+		$page = ($menu === null) ? ($menubar) : ($menu);
 
 		if (MENU_ENABLE_SUBMENU) {
 			$path = explode('/', strip_bracket($vars['page']));
@@ -52,6 +57,7 @@ function plugin_menu_convert()
 
 					break;
 				}
+
 				array_pop($path);
 			}
 		}

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 /**
  *
  * PukiWiki - Yet another WikiWikiWeb clone.
@@ -25,22 +27,24 @@
  * @access    public
  *
  * @param     string    $page        ページ名
- * @param     bool   $delete      TRUE:バックアップを削除する
+ * @param     bool   $delete      true:バックアップを削除する
  *
  * @return    void
  */
 
 function make_backup($page, $is_delete, $wikitext) : void
 {
-	global $cycle, $maxage;
-	global $do_backup, $del_backup;
+	global $cycle;
+	global $maxage;
+	global $do_backup;
+	global $del_backup;
 	global $auth_user;
 
-	if (PKWK_READONLY || !$do_backup) {
+	if ((PKWK_READONLY) || (!$do_backup)) {
 		return;
 	}
 
-	if ($del_backup && $is_delete) {
+	if (($del_backup) && ($is_delete)) {
 		_backup_delete($page);
 
 		return;
@@ -53,7 +57,7 @@ function make_backup($page, $is_delete, $wikitext) : void
 	$lastmod = _backup_get_filetime($page);
 	$backups = get_backup($page);
 	$is_author_differ = false;
-	$need_backup_by_time = $lastmod == 0 || UTIME - $lastmod > 60 * 60 * $cycle;
+	$need_backup_by_time = ($lastmod == 0) || ((UTIME - $lastmod) > (60 * 60 * $cycle));
 
 	if (!$need_backup_by_time) {
 		// Backup file is saved recently, but the author may differ.
@@ -70,7 +74,7 @@ function make_backup($page, $is_delete, $wikitext) : void
 		}
 	}
 
-	if ($need_backup_by_time || $is_author_differ || $is_delete) {
+	if (($need_backup_by_time) || ($is_author_differ) || ($is_delete)) {
 		$backups = get_backup($page);
 		$count = count($backups) + 1;
 		// 直後に1件追加するので、(最大件数 - 1)を超える要素を捨てる
@@ -81,10 +85,13 @@ function make_backup($page, $is_delete, $wikitext) : void
 		$strout = '';
 
 		foreach ($backups as $age=>$data) {
-			$strout .= PKWK_SPLITTER.' '.$data['time']."\n"; // Splitter format
+			// Splitter format
+			$strout .= PKWK_SPLITTER.' '.$data['time']."\n";
+
 			$strout .= implode('', $data['data']);
 			unset($backups[$age]);
 		}
+
 		$strout = preg_replace("/([^\n])\n*$/", "$1\n", $strout);
 
 		// Escape 'lines equal to PKWK_SPLITTER', by inserting a space
@@ -97,9 +104,11 @@ function make_backup($page, $is_delete, $wikitext) : void
 			$body_on_delete = PKWK_SPLITTER.' '.UTIME."\n".$wikitext;
 			$body_on_delete = preg_replace("/\n*$/", "\n", $body_on_delete);
 		}
-		$fp = _backup_fopen($page, 'wb')
-			|| die_message('Cannot open '.htmlsc(_backup_get_filename($page)).
-			'<br />Maybe permission is not writable or filename is too long');
+
+		if (!($fp = _backup_fopen($page, 'wb'))) {
+			die_message('Cannot open '.htmlsc(_backup_get_filename($page)).'<br />Maybe permission is not writable or filename is too long');
+		}
+
 		_backup_fputs($fp, $strout);
 		_backup_fputs($fp, $body);
 		_backup_fputs($fp, $body_on_delete);
@@ -130,7 +139,8 @@ function get_backup($page, $age = 0)
 	}
 
 	$_age = 0;
-	$retvars = $match = [];
+	$match = [];
+	$retvars = [];
 	$regex_splitter = '/^'.preg_quote(PKWK_SPLITTER).'\s(\d+)$/';
 
 	foreach ($lines as $index=>$line) {
@@ -138,7 +148,7 @@ function get_backup($page, $age = 0)
 			// A splitter, tells new data of backup will come
 			$_age++;
 
-			if ($age > 0 && $_age > $age) {
+			if (($age > 0) && ($_age > $age)) {
 				return $retvars[$age];
 			}
 
@@ -153,6 +163,7 @@ function get_backup($page, $age = 0)
 			// The first ... the last line of the data
 			$retvars[$_age]['data'][] = $line;
 		}
+
 		unset($lines[$index]);
 	}
 
@@ -182,7 +193,7 @@ function _backup_get_filename($page)
  *
  * @param     string    $page        ページ名
  *
- * @return    bool   TRUE:ある FALSE:ない
+ * @return    bool   true:ある false:ない
  */
 function _backup_file_exists($page)
 {
@@ -202,8 +213,7 @@ function _backup_file_exists($page)
 
 function _backup_get_filetime($page)
 {
-	return _backup_file_exists($page) ?
-		filemtime(_backup_get_filename($page)) - LOCALZONE : 0;
+	return (_backup_file_exists($page)) ? (filemtime(_backup_get_filename($page)) - LOCALZONE) : (0);
 }
 
 /**
@@ -214,7 +224,7 @@ function _backup_get_filetime($page)
  *
  * @param     string    $page        ページ名
  *
- * @return    bool   FALSE:失敗
+ * @return    bool   false:失敗
  */
 function _backup_delete($page)
 {
@@ -237,7 +247,7 @@ if (extension_loaded('zlib')) {
 	 * @param     string    $page        ページ名
 	 * @param     string    $mode        モード
 	 *
-	 * @return    bool   FALSE:失敗
+	 * @return    bool   false:失敗
 	 */
 	function _backup_fopen($page, $mode)
 	{
@@ -253,7 +263,7 @@ if (extension_loaded('zlib')) {
 	 * @param     int   $zp          ファイルポインタ
 	 * @param     string    $str         文字列
 	 *
-	 * @return    bool   FALSE:失敗 その他:書き込んだバイト数
+	 * @return    bool   false:失敗 その他:書き込んだバイト数
 	 */
 	function _backup_fputs($zp, $str)
 	{
@@ -268,7 +278,7 @@ if (extension_loaded('zlib')) {
 	 *
 	 * @param     int   $zp          ファイルポインタ
 	 *
-	 * @return    bool   FALSE:失敗
+	 * @return    bool   false:失敗
 	 */
 	function _backup_fclose($zp)
 	{
@@ -287,13 +297,9 @@ if (extension_loaded('zlib')) {
 	 */
 	function _backup_file($page)
 	{
-		return _backup_file_exists($page) ?
-			gzfile(_backup_get_filename($page)) :
-			[];
+		return (_backup_file_exists($page)) ? (gzfile(_backup_get_filename($page))) : ([]);
 	}
-}
-/////////////////////////////////////////////////
-else {
+} else {
 	// ファイルシステム関数
 	define('BACKUP_EXT', '.txt');
 
@@ -306,7 +312,7 @@ else {
 	 * @param     string    $page        ページ名
 	 * @param     string    $mode        モード
 	 *
-	 * @return    bool   FALSE:失敗
+	 * @return    bool   false:失敗
 	 */
 	function _backup_fopen($page, $mode)
 	{
@@ -322,7 +328,7 @@ else {
 	 * @param     int   $zp          ファイルポインタ
 	 * @param     string    $str         文字列
 	 *
-	 * @return    bool   FALSE:失敗 その他:書き込んだバイト数
+	 * @return    bool   false:失敗 その他:書き込んだバイト数
 	 */
 	function _backup_fputs($zp, $str)
 	{
@@ -337,7 +343,7 @@ else {
 	 *
 	 * @param     int   $zp          ファイルポインタ
 	 *
-	 * @return    bool   FALSE:失敗
+	 * @return    bool   false:失敗
 	 */
 	function _backup_fclose($zp)
 	{
@@ -356,8 +362,6 @@ else {
 	 */
 	function _backup_file($page)
 	{
-		return _backup_file_exists($page) ?
-			file(_backup_get_filename($page)) :
-			[];
+		return (_backup_file_exists($page)) ? (file(_backup_get_filename($page))) : ([]);
 	}
 }

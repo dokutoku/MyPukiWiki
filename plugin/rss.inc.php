@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // rss.inc.php
 // Copyright 2003-2017 PukiWiki Development Team
@@ -15,24 +17,39 @@
 
 function plugin_rss_action() : void
 {
-	global $vars, $rss_max, $page_title, $whatsnew;
+	global $vars;
+	global $rss_max;
+	global $page_title;
+	global $whatsnew;
 
-	$version = isset($vars['ver']) ? $vars['ver'] : '';
+	$version = (isset($vars['ver'])) ? ($vars['ver']) : ('');
 
 	switch ($version) {
-	case '':  $version = '0.91';
+		case '':
+			$version = '0.91';
 
-break; // Default
-	case '1': $version = '1.0';
+			// Default
+			break;
 
-break; // Sugar
-	case '2': $version = '2.0';
+		case '1':
+			$version = '1.0';
 
-break; // Sugar
-	case '0.91': // FALLTHROUGH
-	case '1.0': // FALLTHROUGH
-	case '2.0': break;
-	default: die('Invalid RSS version!!');
+			// Sugar
+			break;
+
+		case '2':
+			$version = '2.0';
+
+			// Sugar
+			break;
+
+		case '0.91':
+		case '1.0':
+		case '2.0':
+			break;
+
+		default:
+			die('Invalid RSS version!!');
 	}
 
 	$recent = CACHE_DIR.'recent.dat';
@@ -46,7 +63,8 @@ break; // Sugar
 	$self = get_base_uri(PKWK_URI_ABSOLUTE);
 
 	// Creating <item>
-	$items = $rdf_li = '';
+	$rdf_li = '';
+	$items = '';
 
 	foreach (file_head($recent, $rss_max) as $line) {
 		[$time, $page] = explode("\t", rtrim($line));
@@ -54,13 +72,11 @@ break; // Sugar
 		$title = mb_convert_encoding($page, 'UTF-8', SOURCE_ENCODING);
 
 		switch ($version) {
-		case '0.91': // FALLTHROUGH
-		case '2.0':
-			$date = get_date('D, d M Y H:i:s T', $time);
-			$date = ($version == '0.91') ?
-				' <description>'.$date.'</description>' :
-				' <pubDate>'.$date.'</pubDate>';
-			$items .= <<<EOD
+			case '0.91':
+			case '2.0':
+				$date = get_date('D, d M Y H:i:s T', $time);
+				$date = ($version == '0.91') ? (' <description>'.$date.'</description>') : (' <pubDate>'.$date.'</pubDate>');
+				$items .= <<<EOD
 <item>
  <title>{$title}</title>
  <link>{$self}?{$r_page}</link>
@@ -73,10 +89,9 @@ EOD;
 
 		case '1.0':
 			// Add <item> into <items>
-			$rdf_li .= '    <rdf:li rdf:resource="'.$self.
-				'?'.$r_page.'" />'."\n";
+			$rdf_li .= '    <rdf:li rdf:resource="'.$self.'?'.$r_page.'" />'."\n";
 
-			$date = substr_replace(get_date('Y-m-d\TH:i:sO', $time), ':', -2, 0);
+			$date = substr_replace(get_date('Y-m-d\TH:i:sO', (int) ($time)), ':', -2, 0);
 			$items .= <<<EOD
 <item rdf:about="{$self}?{$r_page}">
  <title>{$title}</title>
@@ -88,6 +103,9 @@ EOD;
 EOD;
 
 			break;
+
+			default:
+				break;
 		}
 	}
 
@@ -99,14 +117,12 @@ EOD;
 	$r_whatsnew = pagename_urlencode($whatsnew);
 
 	switch ($version) {
-	case '0.91':
-		print '<!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"'.
-		' "http://my.netscape.com/publish/formats/rss-0.91.dtd">'."\n";
-		 // FALLTHROUGH
+		case '0.91':
+			print '<!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN" "http://my.netscape.com/publish/formats/rss-0.91.dtd">'."\n";
+			 // FALLTHROUGH
 
-		 // no break
-	case '2.0':
-		print <<<EOD
+		case '2.0':
+			print <<<EOD
 <rss version="{$version}">
  <channel>
   <title>{$page_title_utf8}</title>
@@ -121,8 +137,8 @@ EOD;
 
 		break;
 
-	case '1.0':
-		print <<<EOD
+		case '1.0':
+			print <<<EOD
 <rdf:RDF
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns="http://purl.org/rss/1.0/"
@@ -144,6 +160,9 @@ EOD;
 EOD;
 
 		break;
+
+		default:
+			break;
 	}
 
 	exit;

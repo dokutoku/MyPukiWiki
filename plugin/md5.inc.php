@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // md5.inc.php
 // Copyright 2001-2018 PukiWiki Development Team
@@ -15,27 +17,27 @@
 // User interface of pkwk_hash_compute() for system admin
 function plugin_md5_action()
 {
-	global $get, $post;
+	global $get;
+	global $post;
 
-	if (PKWK_SAFE_MODE || PKWK_READONLY) {
+	if ((PKWK_SAFE_MODE) || (PKWK_READONLY)) {
 		die_message('Prohibited by admin');
 	}
+
 	// Wait POST
-	$phrase = isset($post['phrase']) ? $post['phrase'] : '';
+	$phrase = (isset($post['phrase'])) ? ($post['phrase']) : ('');
 
 	if ($phrase == '') {
 		// Show the form
 		// If plugin=md5&md5=password, only set it (Don't compute)
-		$value = isset($get['md5']) ? $get['md5'] : '';
+		$value = (isset($get['md5'])) ? ($get['md5']) : ('');
 
-		return [
-			'msg'=>'Compute userPassword',
-			'body'=>plugin_md5_show_form(isset($post['phrase']), $value), ];
+		return ['msg'=>'Compute userPassword', 'body'=>plugin_md5_show_form(isset($post['phrase']), $value)];
 	} else {
 		// Compute (Don't show its $phrase at the same time)
 		$is_output_prefix = isset($post['prefix']);
-		$salt = isset($post['salt']) ? $post['salt'] : '';
-		$scheme = isset($post['scheme']) ? $post['scheme'] : '';
+		$salt = (isset($post['salt'])) ? ($post['salt']) : ('');
+		$scheme = (isset($post['scheme'])) ? ($post['scheme']) : ('');
 		$algos_enabled = plugin_md5_get_algos_enabled();
 		$scheme_list = ['x-php-md5', 'MD5', 'SMD5'];
 
@@ -51,18 +53,13 @@ function plugin_md5_action()
 			array_push($scheme_list, 'x-php-sha512', 'SHA512', 'SSHA512');
 		}
 
-		if (!in_array($scheme, $scheme_list)) {
-			return [
-				'msg'=>'Error',
-				'body'=>'Invalid scheme: '.htmlsc($scheme),
-			];
+		if (!in_array($scheme, $scheme_list, true)) {
+			return ['msg'=>'Error', 'body'=>'Invalid scheme: '.htmlsc($scheme)];
 		}
+
 		$scheme_with_salt = '{'.$scheme.'}'.$salt;
 
-		return [
-			'msg'=>'Result',
-			'body'=>pkwk_hash_compute($phrase, $scheme_with_salt,
-					$is_output_prefix, true), ];
+		return ['msg'=>'Result', 'body'=>pkwk_hash_compute($phrase, $scheme_with_salt, $is_output_prefix, true)];
 	}
 }
 
@@ -70,7 +67,7 @@ function plugin_md5_action()
 // $value    = Default passphrase value
 function plugin_md5_show_form($nophrase = false, $value = '')
 {
-	if (PKWK_SAFE_MODE || PKWK_READONLY) {
+	if ((PKWK_SAFE_MODE) || (PKWK_READONLY)) {
 		die_message('Prohibited');
 	}
 
@@ -81,14 +78,17 @@ function plugin_md5_show_form($nophrase = false, $value = '')
 	if ($value != '') {
 		$value = 'value="'.htmlsc($value).'" ';
 	}
+
 	$algos_enabled = plugin_md5_get_algos_enabled();
-	$sha1_checked = $md5_checked = '';
+	$md5_checked = '';
+	$sha1_checked = '';
 
 	if ($algos_enabled->sha1) {
 		$sha1_checked = 'checked="checked" ';
 	} else {
 		$md5_checked = 'checked="checked" ';
 	}
+
 	$self = get_base_uri();
 	$form = <<<'EOD'
 <p><strong>NOTICE: Don't use this feature via untrustful or unsure network</strong></p>
@@ -98,6 +98,7 @@ EOD;
 	if ($nophrase) {
 		$form .= '<strong>NO PHRASE</strong><br />';
 	}
+
 	$form .= <<<EOD
 <form action="{$self}" method="post">
  <div>
@@ -139,6 +140,7 @@ EOD;
   <label for="_p_md5_lsha">LDAP SHA (sha-1)</label><br />
 EOD;
 	}
+
 	$form .= <<<EOD
   <input type="radio" name="scheme" id="_p_md5_lsmd5" value="SMD5" {$md5_checked}/>
   <label for="_p_md5_lsmd5">LDAP SMD5 (md5 with a seed) *</label><br />
@@ -163,6 +165,7 @@ EOD;
   <label for="_p_md5_lsha512">LDAP SHA512</label><br />
 EOD;
 	}
+
 	$form .= <<<'EOD'
   <input type="checkbox" name="prefix" id="_p_md5_prefix" checked="checked" />
   <label for="_p_md5_prefix">Add scheme prefix (RFC2307, Using LDAP as NIS)</label><br />
@@ -190,19 +193,20 @@ function plugin_md5_get_algos_enabled()
 	$sha256_enabled = false;
 	$sha512_enabled = false;
 
-	if (function_exists('hash') && function_exists('hash_algos')) {
+	if ((function_exists('hash')) && (function_exists('hash_algos'))) {
 		$algos = hash_algos();
 
-		if (in_array('sha256', $algos)) {
+		if (in_array('sha256', $algos, true)) {
 			$sha256_enabled = true;
 		}
 
-		if (in_array('sha512', $algos)) {
+		if (in_array('sha512', $algos, true)) {
 			$sha512_enabled = true;
 		}
 	}
 
-	return (object) [
+	return (object)
+	[
 		'sha1'=>$sha1_enabled,
 		'sha256'=>$sha256_enabled,
 		'sha512'=>$sha512_enabled,

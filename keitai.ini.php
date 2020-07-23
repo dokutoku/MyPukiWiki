@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // keitai.ini.php
 // Copyright
@@ -32,12 +34,25 @@ $list_index = 0;
 /////////////////////////////////////////////////
 // Obsolete: リスト構造の左マージン (Leaves for compatibility of plugins)
 // Use list-indent1 CSS class instead
-$_ul_left_margin = 0;	// Must be 0 (Plugin backward compatibility)
-$_ul_margin = 1;	// Must be 1 (Plugin backward compatibility)
-$_ol_left_margin = 0;	// Must be 0
-$_ol_margin = 1;	// Must be 1
-$_dl_left_margin = 0;	// Must be 0
-$_dl_margin = 1;	// Must be 1
+
+// Must be 0 (Plugin backward compatibility)
+$_ul_left_margin = 0;
+
+// Must be 1 (Plugin backward compatibility)
+$_ul_margin = 1;
+
+// Must be 0
+$_ol_left_margin = 0;
+
+// Must be 1
+$_ol_margin = 1;
+
+// Must be 0
+$_dl_left_margin = 0;
+
+// Must be 1
+$_dl_margin = 1;
+
 // Use pkwk_list_attrs_template() instead
 $_list_pad_str = '';
 
@@ -70,7 +85,8 @@ $hr = '<hr>';
 // 脚注機能関連
 
 // 脚注のアンカーに埋め込む本文の最大長
-define('PKWK_FOOTNOTE_TITLE_MAX', 0); // Characters
+// Characters
+define('PKWK_FOOTNOTE_TITLE_MAX', 0);
 
 // 脚注のアンカーを相対パスで表示する (0 = 絶対パス)
 //  * 相対パスの場合、以前のバージョンのOperaで問題になることがあります
@@ -103,10 +119,16 @@ $accesskey = 'accesskey';
 // ブラウザ調整前のデフォルト値
 
 // max_size (SKINで使用)
-$max_size = 5;	// SKINで使用, KByte
+// SKINで使用, KByte
+$max_size = 5;
 
 // cols: テキストエリアのカラム数 rows: 行数
-$cols = 22; $rows = 5;	// i_mode
+
+// i_mode
+$cols = 22;
+
+// i_mode
+$rows = 5;
 
 /////////////////////////////////////////////////
 // ブラウザに合わせた調整
@@ -118,7 +140,6 @@ $matches = [];
 
 // Browser-name only
 switch ($ua_name) {
-
 	// NetFront / Compact NetFront
 	//   DoCoMo Net For MOBILE: ｉモード対応HTMLの考え方: ユーザエージェント
 	//   http://www.nttdocomo.co.jp/mc-user/i/tag/imodetag.html
@@ -129,9 +150,14 @@ switch ($ua_name) {
 	case 'DoCoMo':
 	case 'Opera': // Performing CNF compatible
 		if (preg_match('#\b[cC]([0-9]+)\b#', $ua_agent, $matches)) {
-			$max_size = $matches[1];	// Cache max size
+			// Cache max size
+			$max_size = $matches[1];
 		}
-		$cols = 22; $rows = 5;	// i_mode
+
+		$cols = 22;
+
+		// i_mode
+		$rows = 5;
 
 		break;
 
@@ -145,17 +171,30 @@ switch ($ua_name) {
 		preg_match('/^([0-9]+)\./', $user_agent['vers'], $matches);
 
 		switch ($matches[1]) {
-		case '3': $max_size = 6;
+			case '3':
+				$max_size = 6;
 
-break; // C type: lt   6000bytes
-		case '4': $max_size = 12;
+				// C type: lt   6000bytes
+				break;
 
-break; // P type: lt  12Kbytes
-		case '5': $max_size = 200;
+			case '4':
+				$max_size = 12;
 
-break; // W type: lt 200Kbytes
+				// P type: lt  12Kbytes
+				break;
+
+			case '5':
+				$max_size = 200;
+
+				// W type: lt 200Kbytes
+				break;
+
+			default:
+				break;
 		}
-		$cols = 24; $rows = 20;
+
+		$cols = 24;
+		$rows = 20;
 
 		break;
 
@@ -169,15 +208,22 @@ break; // W type: lt 200Kbytes
 		}
 
 		break;
+
+	default:
+		break;
 }
 
 // Browser-name + version
-switch ("{$ua_name}/{$ua_vers}") {
+switch ($ua_name.'/'.$ua_vers) {
 	// Restriction For imode:
 	//  http://www.nttdocomo.co.jp/mc-user/i/tag/s2.html
-	case 'DoCoMo/2.0':	$max_size = min($max_size, 30);
+	case 'DoCoMo/2.0':
+		$max_size = min($max_size, 30);
 
-break;
+		break;
+
+	default:
+		break;
 }
 
 /////////////////////////////////////////////////
@@ -189,11 +235,18 @@ break;
 //  行末指定は $ を後ろに。
 
 // ユーザ定義ルール(コンバート時に置換)
-$line_rules = [
+$line_rules =
+[
 	'COLOR\(([^\(\)]*)\){([^}]*)}'=>'<font color="$1">$2</font>',
-	'SIZE\(([^\(\)]*)\){([^}]*)}'=>'$2',	// Disabled
+
+	// Disabled
+	'SIZE\(([^\(\)]*)\){([^}]*)}'=>'$2',
+
 	'COLOR\(([^\(\)]*)\):((?:(?!COLOR\([^\)]+\)\:).)*)'=>'<font color="$1">$2</font>',
-	'SIZE\(([^\(\)]*)\):((?:(?!SIZE\([^\)]+\)\:).)*)'=>'$2', // Disabled
+
+	// Disabled
+	'SIZE\(([^\(\)]*)\):((?:(?!SIZE\([^\)]+\)\:).)*)'=>'$2',
+
 	'%%%(?!%)((?:(?!%%%).)*)%%%'=>'<ins>$1</ins>',
 	'%%(?!%)((?:(?!%%).)*)%%'=>'<del>$1</del>',
 	'\'\'\'(?!\')((?:(?!\'\'\').)*)\'\'\''=>'<em>$1</em>',
@@ -211,186 +264,331 @@ $line_rules = [
 $facemark_rules = [];
 
 switch ($ua_name) {
-
 	// Graphic icons for imode HTML 4.0, with Shift-JIS text output
 	// http://www.nttdocomo.co.jp/mc-user/i/tag/emoji/e1.html
 	// http://www.nttdocomo.co.jp/mc-user/i/tag/emoji/list.html
 	case 'DoCoMo':
+		$facemark_rules =
+		[
+			// Face marks
 
-	$facemark_rules = [
-		// Face marks
-		'\s(\:\))'=>'&#63893;',	// smile
-		'\s(\:D)'=>'&#63893;',	// bigsmile
-		'\s(\:p)'=>'&#xE728;',	// huh
-		'\s(\:d)'=>'&#xE728;',	// huh
-		'\s(XD)'=>'&#63895;',	// oh
-		'\s(X\()'=>'&#63895;',	// oh
-		'\s(;\))'=>'&#xE729;',	// wink
-		'\s(;\()'=>'&#63894;',	// sad
-		'\s(\:\()'=>'&#63894;',	// sad
-		'&amp;(smile);'=>'&#63893;',
-		'&amp;(bigsmile);'=>'&#63893;',
-		'&amp;(huh);'=>'&#xE728;',
-		'&amp;(oh);'=>'&#63895;',
-		'&amp;(wink);'=>'&#xE729;',
-		'&amp;(sad);'=>'&#63894;',
-		'&amp;(heart);'=>'&#63889;',
-		'&amp;(worried);'=>'&#xE722;',
+			// smile
+			'\s(\:\))'=>'&#63893;',
 
-		// Face marks, Japanese style
-		'\s(\(\^\^\))'=>'&#63893;',	// smile
-		'\s(\(\^-\^)'=>'&#63893;',	// smile
-		'\s(\(\.\.;)'=>'&#63895;',	// oh
-		'\s(\(\^_-\))'=>'&#xE729;',	// wink
-		'\s(\(--;)'=>'&#63894;',	// sad
-		'\s(\(\^\^;\))'=>'&#xE722;',	// worried
-		'\s(\(\^\^;)'=>'&#xE722;',	// worried
+			// bigsmile
+			'\s(\:D)'=>'&#63893;',
 
-		// Push buttons, 0-9 and sharp
-		'&amp;(pb1);'=>'&#63879;',
-		'&amp;(pb2);'=>'&#63880;',
-		'&amp;(pb3);'=>'&#63881;',
-		'&amp;(pb4);'=>'&#63882;',
-		'&amp;(pb5);'=>'&#63883;',
-		'&amp;(pb6);'=>'&#63884;',
-		'&amp;(pb7);'=>'&#63885;',
-		'&amp;(pb8);'=>'&#63886;',
-		'&amp;(pb9);'=>'&#63887;',
-		'&amp;(pb0);'=>'&#63888;',
-		'&amp;(pb#);'=>'&#63877;',
+			// huh
+			'\s(\:p)'=>'&#xE728;',
 
-		// Others
-		'&amp;(zzz);'=>'&#63910;',
-		'&amp;(man);'=>'&#63829;',
-		'&amp;(clock);'=>'&#63838;',
-		'&amp;(mail);'=>'&#63863;',
-		'&amp;(mailto);'=>'&#63859;',
-		'&amp;(phone);'=>'&#63720;',
-		'&amp;(phoneto);'=>'&#63858;',
-		'&amp;(faxto);'=>'&#63860;',
-	];
+			// huh
+			'\s(\:d)'=>'&#xE728;',
 
-	break;
+			// oh
+			'\s(XD)'=>'&#63895;',
+
+			// oh
+			'\s(X\()'=>'&#63895;',
+
+			// wink
+			'\s(;\))'=>'&#xE729;',
+
+			// sad
+			'\s(;\()'=>'&#63894;',
+
+			// sad
+			'\s(\:\()'=>'&#63894;',
+
+			'&amp;(smile);'=>'&#63893;',
+			'&amp;(bigsmile);'=>'&#63893;',
+			'&amp;(huh);'=>'&#xE728;',
+			'&amp;(oh);'=>'&#63895;',
+			'&amp;(wink);'=>'&#xE729;',
+			'&amp;(sad);'=>'&#63894;',
+			'&amp;(heart);'=>'&#63889;',
+			'&amp;(worried);'=>'&#xE722;',
+
+			// Face marks, Japanese style
+
+			// smile
+			'\s(\(\^\^\))'=>'&#63893;',
+
+			// smile
+			'\s(\(\^-\^)'=>'&#63893;',
+
+			// oh
+			'\s(\(\.\.;)'=>'&#63895;',
+
+			// wink
+			'\s(\(\^_-\))'=>'&#xE729;',
+
+			// sad
+			'\s(\(--;)'=>'&#63894;',
+
+			// worried
+			'\s(\(\^\^;\))'=>'&#xE722;',
+
+			// worried
+			'\s(\(\^\^;)'=>'&#xE722;',
+
+			// Push buttons, 0-9 and sharp
+			'&amp;(pb1);'=>'&#63879;',
+			'&amp;(pb2);'=>'&#63880;',
+			'&amp;(pb3);'=>'&#63881;',
+			'&amp;(pb4);'=>'&#63882;',
+			'&amp;(pb5);'=>'&#63883;',
+			'&amp;(pb6);'=>'&#63884;',
+			'&amp;(pb7);'=>'&#63885;',
+			'&amp;(pb8);'=>'&#63886;',
+			'&amp;(pb9);'=>'&#63887;',
+			'&amp;(pb0);'=>'&#63888;',
+			'&amp;(pb#);'=>'&#63877;',
+
+			// Others
+			'&amp;(zzz);'=>'&#63910;',
+			'&amp;(man);'=>'&#63829;',
+			'&amp;(clock);'=>'&#63838;',
+			'&amp;(mail);'=>'&#63863;',
+			'&amp;(mailto);'=>'&#63859;',
+			'&amp;(phone);'=>'&#63720;',
+			'&amp;(phoneto);'=>'&#63858;',
+			'&amp;(faxto);'=>'&#63860;',
+		];
+
+		break;
 
 	// Graphic icons for Vodafone (ex. J-PHONE) cell phones
 	// http://www.dp.j-phone.com/dp/tool_dl/web/picword_top.php
 	case 'J-PHONE':
-
-	$facemark_rules = [
-		// Face marks
-		'\s(\:\))'=>chr(27).'$Gv'.chr(15),	// '&#57430;',	// smile
-		'\s(\:D)'=>chr(27).'$Gv'.chr(15),	// '&#57430;',	// bigsmile => smile
-		'\s(\:p)'=>chr(27).'$E%'.chr(15),	// '&#57605;',	// huh
-		'\s(\:d)'=>chr(27).'$E%'.chr(15),	// '&#57605;',	// huh
-		'\s(XD)'=>chr(27).'$Gx'.chr(15),	// '&#57432;',	// oh
-		'\s(X\()'=>chr(27).'$Gx'.chr(15),	// '&#57432;',	// oh
-		'\s(;\))'=>chr(27).'$E&'.chr(15),	// '&#57606;',	// winkじゃないけどね(^^; (※目がハート)
-		'\s(;\()'=>chr(27).'$E&'.chr(15),	// '&#57606;',	// sad
-		'\s(\:\()'=>chr(27).'$Gy'.chr(15),	// '&#57433;',	// sad
-		'&amp;(smile);'=>chr(27).'$Gv'.chr(15),	// '&#57430;',
-		'&amp;(bigsmile);'=>chr(27).'$Gw'.chr(15),	// '&#57431;',
-		'&amp;(huh);'=>chr(27).'$E%'.chr(15),	// '&#57605;',
-		'&amp;(oh);'=>chr(27).'$Gx'.chr(15),	// '&#57432;',
-		'&amp;(wink);'=>chr(27).'$E&'.chr(15),	// '&#57606;',	// winkじゃないけどね(^^; (※目がハート)
-		'&amp;(sad);'=>chr(27).'$Gy'.chr(15),	// '&#57433;',
-		'&amp;(heart);'=>chr(27).'$GB'.chr(15),	// '&#57378;',
-		'&amp;(worried);'=>chr(27).'$E('.chr(15),	// '&#57608;',
-
-		// Face marks, Japanese style
-		'\s(\(\^\^\))'=>chr(27).'$Gv'.chr(15),	// smile
-		'\s(\(\^-\^)'=>chr(27).'$Gv'.chr(15),	// smile
-		'\s(\(\.\.;)'=>chr(27).'$Gx'.chr(15),	// oh
-		'\s(\(\^_-\))'=>chr(27).'$E&'.chr(15),	// winkじゃないけどね(^^; (※目がハート)
-		'\s(\(--;)'=>chr(27).'$E&'.chr(15),	// sad
-		'\s(\(\^\^;\))'=>chr(27).'$E('.chr(15),	// worried
-		'\s(\(\^\^;)'=>chr(27).'$E('.chr(15),	// worried
-
-		// Push buttons, 0-9 and sharp
-		'&amp;(pb1);'=>chr(27).'$F<'.chr(15),	// '&#57884;',
-		'&amp;(pb2);'=>chr(27).'$F='.chr(15),	// '&#57885;',
-		'&amp;(pb3);'=>chr(27).'$F>'.chr(15),	// '&#57886;',
-		'&amp;(pb4);'=>chr(27).'$F?'.chr(15),	// '&#57887;',
-		'&amp;(pb5);'=>chr(27).'$F@'.chr(15),	// '&#57888;',
-		'&amp;(pb6);'=>chr(27).'$FA'.chr(15),	// '&#57889;',
-		'&amp;(pb7);'=>chr(27).'$FB'.chr(15),	// '&#57890;',
-		'&amp;(pb8);'=>chr(27).'$FC'.chr(15),	// '&#57891;',
-		'&amp;(pb9);'=>chr(27).'$FD'.chr(15),	// '&#57892;',
-		'&amp;(pb0);'=>chr(27).'$FE'.chr(15),	// '&#57893;',
-
-		// Others
-		'&amp;(zzz);'=>chr(27).'$E\\'.chr(15),
-		'&amp;(man);'=>chr(27).'$G!'.chr(15),
-		'&amp;(clock);'=>chr(27).'$GF'.chr(15),	// '&#xE026;',
-		'&amp;(mail);'=>chr(27).'$Fv'.chr(15),
-		'&amp;(mailto);'=>chr(27).'$E#'.chr(15),
-		'&amp;(phone);'=>chr(27).'$G)'.chr(15),
-		'&amp;(phoneto);'=>chr(27).'$E$'.chr(15),
-		'&amp;(faxto);'=>chr(27).'$G+'.chr(15),
-	];
-
-	break;
-
-	case 'UP.Browser':
-
-	// UP.Browser for KDDI cell phones' built-in icons
-	// http://www.au.kddi.com/ezfactory/tec/spec/3.html
-	if (preg_match('#^KDDI#', $ua_agent)) {
-		$facemark_rules = [
+		$facemark_rules =
+		[
 			// Face marks
-			'\s(\:\))'=>'<img localsrc="68">',	// smile
-			'\s(\:D)'=>'<img localsrc="257">',	// bigsmile
-			'\s(\:p)'=>'<img localsrc="264">',	// huh
-			'\s(\:d)'=>'<img localsrc="264">',	// huh
-			'\s(XD)'=>'<img localsrc="260">',	// oh
-			'\s(X\()'=>'<img localsrc="260">',	// oh
-			'\s(;\))'=>'<img localsrc="348">',	// wink
-			'\s(;\()'=>'<img localsrc="259">',	// sad
-			'\s(\:\()'=>'<img localsrc="259">',	// sad
-			'&amp;(smile);'=>'<img localsrc="68">',
-			'&amp;(bigsmile);'=>'<img localsrc="257">',
-			'&amp;(huh);'=>'<img localsrc="264">',
-			'&amp;(oh);'=>'<img localsrc="260">',
-			'&amp;(wink);'=>'<img localsrc="348">',
-			'&amp;(sad);'=>'<img localsrc="259">',
-			'&amp;(heart);'=>'<img localsrc="415">',
-			'&amp;(worried);'=>'<img localsrc="351">',
+
+			// '&#57430;',	// smile
+			'\s(\:\))'=>chr(27).'$Gv'.chr(15),
+
+			// '&#57430;',	// bigsmile=>smile
+			'\s(\:D)'=>chr(27).'$Gv'.chr(15),
+
+			// '&#57605;',	// huh
+			'\s(\:p)'=>chr(27).'$E%'.chr(15),
+
+			// '&#57605;',	// huh
+			'\s(\:d)'=>chr(27).'$E%'.chr(15),
+
+			// '&#57432;',	// oh
+			'\s(XD)'=>chr(27).'$Gx'.chr(15),
+
+			// '&#57432;',	// oh
+			'\s(X\()'=>chr(27).'$Gx'.chr(15),
+
+			// '&#57606;',	// winkじゃないけどね(^^; (※目がハート)
+			'\s(;\))'=>chr(27).'$E&'.chr(15),
+
+			// '&#57606;',	// sad
+			'\s(;\()'=>chr(27).'$E&'.chr(15),
+
+			// '&#57433;',	// sad
+			'\s(\:\()'=>chr(27).'$Gy'.chr(15),
+
+			// '&#57430;',
+			'&amp;(smile);'=>chr(27).'$Gv'.chr(15),
+
+			// '&#57431;',
+			'&amp;(bigsmile);'=>chr(27).'$Gw'.chr(15),
+
+			// '&#57605;',
+			'&amp;(huh);'=>chr(27).'$E%'.chr(15),
+
+			// '&#57432;',
+			'&amp;(oh);'=>chr(27).'$Gx'.chr(15),
+
+			// '&#57606;',	// winkじゃないけどね(^^; (※目がハート)
+			'&amp;(wink);'=>chr(27).'$E&'.chr(15),
+
+			// '&#57433;',
+			'&amp;(sad);'=>chr(27).'$Gy'.chr(15),
+
+			// '&#57378;',
+			'&amp;(heart);'=>chr(27).'$GB'.chr(15),
+
+			// '&#57608;',
+			'&amp;(worried);'=>chr(27).'$E('.chr(15),
 
 			// Face marks, Japanese style
-			'\s(\(\^\^\))'=>'<img localsrc="68">',	// smile
-			'\s(\(\^-\^)'=>'<img localsrc="68">',	// smile
-			'\s(\(\.\.;)'=>'<img localsrc="260">',	// oh
-			'\s(\(\^_-\))'=>'<img localsrc="348">',	// wink
-			'\s(\(--;)'=>'<img localsrc="259">',	// sad
-			'\s(\(\^\^;\))'=>'<img localsrc="351">',	// worried
-			'\s(\(\^\^;)'=>'<img localsrc="351">',	// worried
+
+			// smile
+			'\s(\(\^\^\))'=>chr(27).'$Gv'.chr(15),
+
+			// smile
+			'\s(\(\^-\^)'=>chr(27).'$Gv'.chr(15),
+
+			// oh
+			'\s(\(\.\.;)'=>chr(27).'$Gx'.chr(15),
+
+			// winkじゃないけどね(^^; (※目がハート)
+			'\s(\(\^_-\))'=>chr(27).'$E&'.chr(15),
+
+			// sad
+			'\s(\(--;)'=>chr(27).'$E&'.chr(15),
+
+			// worried
+			'\s(\(\^\^;\))'=>chr(27).'$E('.chr(15),
+
+			// worried
+			'\s(\(\^\^;)'=>chr(27).'$E('.chr(15),
 
 			// Push buttons, 0-9 and sharp
-			'&amp;(pb1);'=>'<img localsrc="180">',
-			'&amp;(pb2);'=>'<img localsrc="181">',
-			'&amp;(pb3);'=>'<img localsrc="182">',
-			'&amp;(pb4);'=>'<img localsrc="183">',
-			'&amp;(pb5);'=>'<img localsrc="184">',
-			'&amp;(pb6);'=>'<img localsrc="185">',
-			'&amp;(pb7);'=>'<img localsrc="186">',
-			'&amp;(pb8);'=>'<img localsrc="187">',
-			'&amp;(pb9);'=>'<img localsrc="188">',
-			'&amp;(pb0);'=>'<img localsrc="325">',
-			'&amp;(pb#);'=>'<img localsrc="818">',
+
+			// '&#57884;',
+			'&amp;(pb1);'=>chr(27).'$F<'.chr(15),
+
+			// '&#57885;',
+			'&amp;(pb2);'=>chr(27).'$F='.chr(15),
+
+			// '&#57886;',
+			'&amp;(pb3);'=>chr(27).'$F>'.chr(15),
+
+			// '&#57887;',
+			'&amp;(pb4);'=>chr(27).'$F?'.chr(15),
+
+			// '&#57888;',
+			'&amp;(pb5);'=>chr(27).'$F@'.chr(15),
+
+			// '&#57889;',
+			'&amp;(pb6);'=>chr(27).'$FA'.chr(15),
+
+			// '&#57890;',
+			'&amp;(pb7);'=>chr(27).'$FB'.chr(15),
+
+			// '&#57891;',
+			'&amp;(pb8);'=>chr(27).'$FC'.chr(15),
+
+			// '&#57892;',
+			'&amp;(pb9);'=>chr(27).'$FD'.chr(15),
+
+			// '&#57893;',
+			'&amp;(pb0);'=>chr(27).'$FE'.chr(15),
 
 			// Others
-			'&amp;(zzz);'=>'<img localsrc="261">',
-			'&amp;(man);'=>'<img localsrc="80">',	// Face of male
-			'&amp;(clock);'=>'<img localsrc="46">',
-			'&amp;(mail);'=>'<img localsrc="108">',
-			'&amp;(mailto);'=>'<img localsrc="784">',
-			'&amp;(phone);'=>'<img localsrc="85">',
-			'&amp;(phoneto);'=>'<img localsrc="155">',	// An ear receiver
-			'&amp;(faxto);'=>'<img localsrc="166">',	// A FAX
+			'&amp;(zzz);'=>chr(27).'$E\\'.chr(15),
+			'&amp;(man);'=>chr(27).'$G!'.chr(15),
+
+			// '&#xE026;',
+			'&amp;(clock);'=>chr(27).'$GF'.chr(15),
+
+			'&amp;(mail);'=>chr(27).'$Fv'.chr(15),
+			'&amp;(mailto);'=>chr(27).'$E#'.chr(15),
+			'&amp;(phone);'=>chr(27).'$G)'.chr(15),
+			'&amp;(phoneto);'=>chr(27).'$E$'.chr(15),
+			'&amp;(faxto);'=>chr(27).'$G+'.chr(15),
 		];
-	}
 
-	break;
+		break;
 
+	case 'UP.Browser':
+		// UP.Browser for KDDI cell phones' built-in icons
+		// http://www.au.kddi.com/ezfactory/tec/spec/3.html
+		if (preg_match('#^KDDI#', $ua_agent)) {
+			$facemark_rules =
+			[
+				// Face marks
+
+				// smile
+				'\s(\:\))'=>'<img localsrc="68">',
+
+				// bigsmile
+				'\s(\:D)'=>'<img localsrc="257">',
+
+				// huh
+				'\s(\:p)'=>'<img localsrc="264">',
+
+				// huh
+				'\s(\:d)'=>'<img localsrc="264">',
+
+				// oh
+				'\s(XD)'=>'<img localsrc="260">',
+
+				// oh
+				'\s(X\()'=>'<img localsrc="260">',
+
+				// wink
+				'\s(;\))'=>'<img localsrc="348">',
+
+				// sad
+				'\s(;\()'=>'<img localsrc="259">',
+
+				// sad
+				'\s(\:\()'=>'<img localsrc="259">',
+
+				'&amp;(smile);'=>'<img localsrc="68">',
+				'&amp;(bigsmile);'=>'<img localsrc="257">',
+				'&amp;(huh);'=>'<img localsrc="264">',
+				'&amp;(oh);'=>'<img localsrc="260">',
+				'&amp;(wink);'=>'<img localsrc="348">',
+				'&amp;(sad);'=>'<img localsrc="259">',
+				'&amp;(heart);'=>'<img localsrc="415">',
+				'&amp;(worried);'=>'<img localsrc="351">',
+
+				// Face marks, Japanese style
+
+				// smile
+				'\s(\(\^\^\))'=>'<img localsrc="68">',
+
+				// smile
+				'\s(\(\^-\^)'=>'<img localsrc="68">',
+
+				// oh
+				'\s(\(\.\.;)'=>'<img localsrc="260">',
+
+				// wink
+				'\s(\(\^_-\))'=>'<img localsrc="348">',
+
+				// sad
+				'\s(\(--;)'=>'<img localsrc="259">',
+
+				// worried
+				'\s(\(\^\^;\))'=>'<img localsrc="351">',
+
+				// worried
+				'\s(\(\^\^;)'=>'<img localsrc="351">',
+
+				// Push buttons, 0-9 and sharp
+				'&amp;(pb1);'=>'<img localsrc="180">',
+				'&amp;(pb2);'=>'<img localsrc="181">',
+				'&amp;(pb3);'=>'<img localsrc="182">',
+				'&amp;(pb4);'=>'<img localsrc="183">',
+				'&amp;(pb5);'=>'<img localsrc="184">',
+				'&amp;(pb6);'=>'<img localsrc="185">',
+				'&amp;(pb7);'=>'<img localsrc="186">',
+				'&amp;(pb8);'=>'<img localsrc="187">',
+				'&amp;(pb9);'=>'<img localsrc="188">',
+				'&amp;(pb0);'=>'<img localsrc="325">',
+				'&amp;(pb#);'=>'<img localsrc="818">',
+
+				// Others
+				'&amp;(zzz);'=>'<img localsrc="261">',
+
+				// Face of male
+				'&amp;(man);'=>'<img localsrc="80">',
+
+				'&amp;(clock);'=>'<img localsrc="46">',
+				'&amp;(mail);'=>'<img localsrc="108">',
+				'&amp;(mailto);'=>'<img localsrc="784">',
+				'&amp;(phone);'=>'<img localsrc="85">',
+
+				// An ear receiver
+				'&amp;(phoneto);'=>'<img localsrc="155">',
+
+				// A FAX
+				'&amp;(faxto);'=>'<img localsrc="166">',
+			];
+		}
+
+		break;
+
+	default:
+		break;
 }
 
 unset($matches, $ua_name, $ua_vers, $ua_agent, $special_rules);

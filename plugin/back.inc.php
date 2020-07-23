@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // back.inc.php
 // Copyright
@@ -9,38 +11,46 @@
 
 // Allow specifying back link by page name and anchor, or
 // by relative or site-abusolute path
-define('PLUGIN_BACK_ALLOW_PAGELINK', PKWK_SAFE_MODE); // FALSE(Compat), TRUE
+// false(Compat), true
+define('PLUGIN_BACK_ALLOW_PAGELINK', PKWK_SAFE_MODE);
 
 // Allow JavaScript (Compat)
-define('PLUGIN_BACK_ALLOW_JAVASCRIPT', true); // TRUE(Compat), FALSE
+// true(Compat), false
+define('PLUGIN_BACK_ALLOW_JAVASCRIPT', true);
 
 // ----
 define('PLUGIN_BACK_USAGE', '#back([text],[center|left|right][,0(no hr)[,Page-or-URI-to-back]])');
 function plugin_back_convert()
 {
-	global $_msg_back_word, $script;
+	global $_msg_back_word;
+	global $script;
 
 	if (func_num_args() > 4) {
 		return PLUGIN_BACK_USAGE;
 	}
+
 	[$word, $align, $hr, $href] = array_pad(func_get_args(), 4, '');
 
 	$word = trim($word);
-	$word = ($word == '') ? $_msg_back_word : htmlsc($word);
+	$word = ($word == '') ? ($_msg_back_word) : (htmlsc($word));
 
 	$align = strtolower(trim($align));
 
 	switch ($align) {
-	case '': $align = 'center';
-				   // FALLTHROUGH
-				   // no break
-	case 'center': // FALLTHROUGH
-	case 'left': // FALLTHROUGH
-	case 'right': break;
-	default: return PLUGIN_BACK_USAGE;
+		case '':
+			$align = 'center';
+			// FALLTHROUGH
+
+		case 'center':
+		case 'left':
+		case 'right':
+			break;
+
+		default:
+			return PLUGIN_BACK_USAGE;
 	}
 
-	$hr = (trim($hr) != '0') ? '<hr class="full_hr" />'."\n" : '';
+	$hr = (trim($hr) != '0') ? ('<hr class="full_hr" />'."\n") : ('');
 
 	$link = true;
 	$href = trim($href);
@@ -50,14 +60,15 @@ function plugin_back_convert()
 			if (is_url($href)) {
 				$href = htmlsc($href);
 			} else {
-				$refer = isset($vars['page']) ? $vars['page'] : '';
+				$refer = (isset($vars['page'])) ? ($vars['page']) : ('');
 				$array = anchor_explode($href);
 				$page = get_fullname($array[0], $refer);
 
 				if (!is_pagename($page)) {
 					return PLUGIN_BACK_USAGE;
 				}
-				$anchor = ($array[1] != '') ? '#'.rawurlencode($array[1]) : '';
+
+				$anchor = ($array[1] != '') ? ('#'.rawurlencode($array[1])) : ('');
 				$href = get_page_uri($page).$anchor;
 				$link = is_page($page);
 			}
@@ -72,17 +83,15 @@ function plugin_back_convert()
 		if (!PLUGIN_BACK_ALLOW_JAVASCRIPT) {
 			return PLUGIN_BACK_USAGE.': Set a page name or an URI';
 		}
+
 		$href = 'javascript:history.go(-1)';
 	}
 
 	if ($link) {
 		// Normal link
-		return $hr.'<div style="text-align:'.$align.'">'.
-			'[ <a href="'.$href.'">'.$word.'</a> ]</div>'."\n";
+		return $hr.'<div style="text-align:'.$align.'">[ <a href="'.$href.'">'.$word.'</a> ]</div>'."\n";
 	} else {
 		// Dangling link
-		return $hr.'<div style="text-align:'.$align.'">'.
-			'[ <span class="noexists">'.$word.'<a href="'.$href.
-			'">?</a></span> ]</div>'."\n";
+		return $hr.'<div style="text-align:'.$align.'">[ <span class="noexists">'.$word.'<a href="'.$href.'">?</a></span> ]</div>'."\n";
 	}
 }

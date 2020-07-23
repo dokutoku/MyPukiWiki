@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // $Id: lastmod.inc.php,v 1.3 2005/01/31 13:03:41 henoheno Exp $
 //
@@ -7,15 +9,18 @@
 
 function plugin_lastmod_inline()
 {
-	global $vars, $WikiName, $BracketName;
+	global $vars;
+	global $WikiName;
+	global $BracketName;
 
 	$args = func_get_args();
 	$page = $args[0];
 
 	if ($page == '') {
-		$page = $vars['page']; // Default: page itself
+		// Default: page itself
+		$page = $vars['page'];
 	} else {
-		if (preg_match("/^({$WikiName}|{$BracketName})$/", strip_bracket($page))) {
+		if (preg_match('/^('.$WikiName.'|'.$BracketName.')$/', strip_bracket($page))) {
 			$page = get_fullname(strip_bracket($page), $vars['page']);
 		} else {
 			return false;

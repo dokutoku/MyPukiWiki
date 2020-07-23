@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // yetlist.inc.php
 // Copyright 2001-2020 PukiWiki Development Team
@@ -8,7 +10,10 @@
 
 function plugin_yetlist_action()
 {
-	global $_title_yetlist, $_err_notexist, $_symbol_noexists, $non_list;
+	global $_title_yetlist;
+	global $_err_notexist;
+	global $_symbol_noexists;
+	global $non_list;
 	global $whatsdeleted;
 
 	$retval = ['msg'=>$_title_yetlist, 'body'=>''];
@@ -36,6 +41,7 @@ function plugin_yetlist_action()
 			[$_page] = explode("\t", rtrim($line));
 			$refer[] = $_page;
 		}
+
 		// Diff
 		$refer = array_diff($refer, preg_grep($refer_regex, $refer));
 
@@ -49,9 +55,9 @@ function plugin_yetlist_action()
 
 			foreach ($refer as $_refer) {
 				$r_refer = pagename_urlencode($_refer);
-				$link_refs[] = '<a href="'.get_page_uri($_refer).'">'.
-					htmlsc($_refer).'</a>';
+				$link_refs[] = '<a href="'.get_page_uri($_refer).'">'.htmlsc($_refer).'</a>';
 			}
+
 			$link_ref = implode(' ', $link_refs);
 			unset($link_refs);
 
@@ -64,14 +70,12 @@ function plugin_yetlist_action()
 				$symbol_html = '';
 
 				if ($_symbol_noexists !== '') {
-					$symbol_html = '<span style="user-select:none;">'.
-						htmlsc($_symbol_noexists).'</span>';
+					$symbol_html = '<span style="user-select:none;">'.htmlsc($_symbol_noexists).'</span>';
 				}
-				$href = '<span class="noexists"><a href="'.
-					$script.'?cmd=edit&amp;page='.rawurlencode($page).
-					'&amp;refer='.$r_refer.'">'.$s_page.
-					'</a>'.$symbol_html.'</span>';
+
+				$href = '<span class="noexists"><a href="'.$script.'?cmd=edit&amp;page='.rawurlencode($page).'&amp;refer='.$r_refer.'">'.$s_page.'</a>'.$symbol_html.'</span>';
 			}
+
 			$retval['body'] .= '<li>'.$href.' <em>('.$link_ref.')</em></li>'."\n";
 		}
 	}

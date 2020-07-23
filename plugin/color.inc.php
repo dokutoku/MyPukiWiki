@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // color.inc.php
 // Copyright
@@ -9,7 +11,8 @@
 
 // Allow CSS instead of <font> tag
 // NOTE: <font> tag become invalid from XHTML 1.1
-define('PLUGIN_COLOR_ALLOW_CSS', true); // TRUE, FALSE
+// true, false
+define('PLUGIN_COLOR_ALLOW_CSS', true);
 
 // ----
 define('PLUGIN_COLOR_USAGE', '&color(foreground[,background]){text};');
@@ -18,23 +21,25 @@ define('PLUGIN_COLOR_REGEX', '/^(#[0-9a-f]{3}|#[0-9a-f]{6}|[a-z-]+)$/i');
 function plugin_color_inline()
 {
 	$args = func_get_args();
-	$text = strip_autolink(array_pop($args)); // Already htmlsc(text)
+
+	// Already htmlsc(text)
+	$text = strip_autolink(array_pop($args));
 
 	[$color, $bgcolor] = array_pad($args, 2, '');
 
-	if ($color != '' && $bgcolor != '' && $text == '') {
+	if (($color != '') && ($bgcolor != '') && ($text == '')) {
 		// Maybe the old style: '&color(foreground,text);'
 		$text = htmlsc($bgcolor);
 		$bgcolor = '';
 	}
 
-	if (($color == '' && $bgcolor == '') || $text == '' || func_num_args() > 3) {
+	if ((($color == '') && ($bgcolor == '')) || ($text == '') || (func_num_args() > 3)) {
 		return PLUGIN_COLOR_USAGE;
 	}
 
 	// Invalid color
 	foreach ([$color, $bgcolor] as $col) {
-		if ($col != '' && !preg_match(PLUGIN_COLOR_REGEX, $col)) {
+		if (($col != '') && (!preg_match(PLUGIN_COLOR_REGEX, $col))) {
 			return '&color():Invalid color: '.htmlsc($col).';';
 		}
 	}
@@ -42,7 +47,7 @@ function plugin_color_inline()
 	if (PLUGIN_COLOR_ALLOW_CSS) {
 		$delimiter = '';
 
-		if ($color != '' && $bgcolor != '') {
+		if (($color != '') && ($bgcolor != '')) {
 			$delimiter = '; ';
 		}
 
@@ -54,8 +59,7 @@ function plugin_color_inline()
 			$bgcolor = 'background-color:'.$bgcolor;
 		}
 
-		return '<span style="'.$color.$delimiter.$bgcolor.'">'.
-			$text.'</span>';
+		return '<span style="'.$color.$delimiter.$bgcolor.'">'.$text.'</span>';
 	} else {
 		if ($bgcolor != '') {
 			return '&color(): bgcolor (with CSS) not allowed;';

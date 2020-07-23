@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // tracker_list.inc.php
 // Copyright 2003-2017 PukiWiki Development Team

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // insert.inc.php
 // Copyright 2002-2017 PukiWiki Development Team
@@ -6,14 +8,23 @@
 //
 // Text inserting box plugin
 
-define('INSERT_COLS', 70); // Columns of textarea
-define('INSERT_ROWS', 5); // Rows of textarea
-define('INSERT_INS', 1); // Order of insertion (1:before the textarea, 0:after)
+// Columns of textarea
+define('INSERT_COLS', 70);
+
+// Rows of textarea
+define('INSERT_ROWS', 5);
+
+// Order of insertion (1:before the textarea, 0:after)
+define('INSERT_INS', 1);
 
 function plugin_insert_action()
 {
-	global $vars, $cols, $rows;
-	global $_title_collided, $_msg_collided, $_title_updated;
+	global $vars;
+	global $cols;
+	global $rows;
+	global $_title_collided;
+	global $_msg_collided;
+	global $_title_updated;
 
 	$script = get_base_uri();
 
@@ -21,12 +32,12 @@ function plugin_insert_action()
 		die_message('PKWK_READONLY prohibits editing');
 	}
 
-	if (!isset($vars['msg']) || $vars['msg'] == '') {
+	if ((!isset($vars['msg'])) || ($vars['msg'] == '')) {
 		return;
 	}
 
 	$vars['msg'] = preg_replace('/'."\r".'/', '', $vars['msg']);
-	$insert = ($vars['msg'] != '') ? "\n".$vars['msg']."\n" : '';
+	$insert = ($vars['msg'] != '') ? ("\n".$vars['msg']."\n") : ('');
 
 	$postdata = '';
 	$postdata_old = get_source($vars['refer']);
@@ -41,6 +52,7 @@ function plugin_insert_action()
 			if ($insert_no == $vars['insert_no']) {
 				$postdata .= $insert;
 			}
+
 			$insert_no++;
 		}
 
@@ -75,6 +87,7 @@ EOD;
 
 		$title = $_title_updated;
 	}
+
 	$retvars['msg'] = $title;
 	$retvars['body'] = $body;
 
@@ -85,15 +98,17 @@ EOD;
 
 function plugin_insert_convert()
 {
-	global $vars, $digest;
+	global $vars;
+	global $digest;
 	global $_btn_insert;
 	static $numbers = [];
 
 	$script = get_base_uri();
 
 	if (PKWK_READONLY) {
+		// Show nothing
 		return '';
-	} // Show nothing
+	}
 
 	if (!isset($numbers[$vars['page']])) {
 		$numbers[$vars['page']] = 0;

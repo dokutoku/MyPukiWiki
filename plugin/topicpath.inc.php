@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // topicpath.inc.php
 // Copyright
@@ -41,7 +43,8 @@ function plugin_topicpath_parent_links($page)
 			if (is_page($link['page'])) {
 				$active_links[] = $link;
 			} else {
-				$active_links[] = [
+				$active_links[] =
+				[
 					'page'=>$link['page'],
 					'leaf'=>$link['leaf'],
 				];
@@ -61,7 +64,9 @@ function plugin_topicpath_parent_all_links($page)
 
 	for ($i = 0, $pos = 0; $pos = strpos($page, '/', $i); $i = $pos + 1) {
 		$p = substr($page, 0, $pos);
-		$parents[] = [
+
+		$parents[] =
+		[
 			'page'=>$p,
 			'leaf'=>substr($p, $i),
 			'uri'=>get_page_uri($p),
@@ -73,42 +78,43 @@ function plugin_topicpath_parent_all_links($page)
 
 function plugin_topicpath_inline()
 {
-	global $vars, $defaultpage;
-	$page = isset($vars['page']) ? $vars['page'] : '';
+	global $vars;
+	global $defaultpage;
 
-	if ($page == '' || $page == $defaultpage) {
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
+
+	if (($page == '') || ($page == $defaultpage)) {
 		return '';
 	}
+
 	$parents = plugin_topicpath_parent_all_links($page);
 	$topic_path = [];
 
 	foreach ($parents as $p) {
-		if (PKWK_READONLY && !is_page($p['page'])) {
+		if ((PKWK_READONLY) && (!is_page($p['page']))) {
 			// Page not exists
 			$topic_path[] = htmlsc($p['leaf']);
 		} else {
 			// Page exists or not exists
-			$topic_path[] = '<a href="'.$p['uri'].'">'.
-				$p['leaf'].'</a>';
+			$topic_path[] = '<a href="'.$p['uri'].'">'.$p['leaf'].'</a>';
 		}
 	}
+
 	// This page
 	if (PLUGIN_TOPICPATH_THIS_PAGE_DISPLAY) {
 		$leaf_name = preg_replace('#^.*/#', '', $page);
 
 		if (PLUGIN_TOPICPATH_THIS_PAGE_LINK) {
-			$topic_path[] = '<a href="'.get_page_uri($page).'">'.
-				$leaf_name.'</a>';
+			$topic_path[] = '<a href="'.get_page_uri($page).'">'.$leaf_name.'</a>';
 		} else {
 			$topic_path[] = htmlsc($leaf_name);
 		}
 	}
+
 	$s = implode(PLUGIN_TOPICPATH_TOP_SEPARATOR, $topic_path);
 
 	if (PLUGIN_TOPICPATH_TOP_DISPLAY) {
-		$s = '<span class="topicpath-top">'.
-			make_pagelink($defaultpage, PLUGIN_TOPICPATH_TOP_LABEL).
-			PLUGIN_TOPICPATH_TOP_SEPARATOR.'</span>'.$s;
+		$s = '<span class="topicpath-top">'.make_pagelink($defaultpage, PLUGIN_TOPICPATH_TOP_LABEL).PLUGIN_TOPICPATH_TOP_SEPARATOR.'</span>'.$s;
 	}
 
 	return $s;

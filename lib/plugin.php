@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // plugin.php
 // Copyright
@@ -24,25 +26,20 @@ function set_plugin_messages($messages) : void
 function exist_plugin($name)
 {
 	global $vars;
-	static $exist = [], $count = [];
+	static $exist = [];
+	static $count = [];
 
 	$name = strtolower($name);
 
 	if (isset($exist[$name])) {
 		if (++$count[$name] > PKWK_PLUGIN_CALL_TIME_LIMIT) {
-			die('Alert: plugin "'.htmlsc($name).
-			'" was called over '.PKWK_PLUGIN_CALL_TIME_LIMIT.
-			' times. SPAM or someting?<br />'."\n".
-			'<a href="'.get_base_uri().'?cmd=edit&amp;page='.
-			rawurlencode($vars['page']).'">Try to edit this page</a><br />'."\n".
-			'<a href="'.get_base_uri().'">Return to frontpage</a>');
+			die('Alert: plugin "'.htmlsc($name).'" was called over '.PKWK_PLUGIN_CALL_TIME_LIMIT.' times. SPAM or someting?<br />'."\n".'<a href="'.get_base_uri().'?cmd=edit&amp;page='.rawurlencode($vars['page']).'">Try to edit this page</a><br />'."\n".'<a href="'.get_base_uri().'">Return to frontpage</a>');
 		}
 
 		return $exist[$name];
 	}
 
-	if (preg_match('/^\w{1,64}$/', $name) &&
-		file_exists(PLUGIN_DIR.$name.'.inc.php')) {
+	if ((preg_match('/^\w{1,64}$/', $name)) && (file_exists(PLUGIN_DIR.$name.'.inc.php'))) {
 		$exist[$name] = true;
 		$count[$name] = 1;
 		require_once PLUGIN_DIR.$name.'.inc.php';
@@ -59,33 +56,30 @@ function exist_plugin($name)
 // Check if plugin API 'action' exists
 function exist_plugin_action($name)
 {
-	return	(function_exists('plugin_'.$name.'_action')) ? (true) : ((exist_plugin($name)) ?
-		(function_exists('plugin_'.$name.'_action')) : (false));
+	return (function_exists('plugin_'.$name.'_action')) ? (true) : ((exist_plugin($name)) ? (function_exists('plugin_'.$name.'_action')) : (false));
 }
 
 // Check if plugin API 'convert' exists
 function exist_plugin_convert($name)
 {
-	return	(function_exists('plugin_'.$name.'_convert')) ? (true) : ((exist_plugin($name)) ?
-		(function_exists('plugin_'.$name.'_convert')) : (false));
+	return (function_exists('plugin_'.$name.'_convert')) ? (true) : ((exist_plugin($name)) ? (function_exists('plugin_'.$name.'_convert')) : (false));
 }
 
 // Check if plugin API 'inline' exists
 function exist_plugin_inline($name)
 {
-	return	(function_exists('plugin_'.$name.'_inline')) ? (true) : ((exist_plugin($name)) ?
-		(function_exists('plugin_'.$name.'_inline')) : (false));
+	return (function_exists('plugin_'.$name.'_inline')) ? (true) : ((exist_plugin($name)) ? (function_exists('plugin_'.$name.'_inline')) : (false));
 }
 
 // Call 'init' function for the plugin
-// NOTE: Returning FALSE means "An erorr occurerd"
+// NOTE: Returning false means "An erorr occurerd"
 function do_plugin_init($name)
 {
 	static $done = [];
 
 	if (!isset($done[$name])) {
 		$func = 'plugin_'.$name.'_init';
-		$done[$name] = (!function_exists($func) || call_user_func($func) !== false);
+		$done[$name] = (!function_exists($func)) || (call_user_func($func) !== false);
 	}
 
 	return $done[$name];
@@ -106,9 +100,7 @@ function do_plugin_action($name)
 
 	// Insert a hidden field, supports idenrtifying text enconding
 	if (PKWK_ENCODING_HINT != '') {
-		$retvar = preg_replace('/(<form[^>]*>)/', '$1'."\n".
-			'<div><input type="hidden" name="encode_hint" value="'.
-			PKWK_ENCODING_HINT.'" /></div>', $retvar);
+		$retvar = preg_replace('/(<form[^>]*>)/', '$1'."\n".'<div><input type="hidden" name="encode_hint" value="'.PKWK_ENCODING_HINT.'" /></div>', $retvar);
 	}
 
 	return $retvar;
@@ -125,7 +117,9 @@ function do_plugin_convert($name, $args = '')
 
 	if (!PKWKEXP_DISABLE_MULTILINE_PLUGIN_HACK) {
 		// Multiline plugin?
-		$pos = strpos($args, "\r"); // "\r" is just a delimiter
+
+		// "\r" is just a delimiter
+		$pos = strpos($args, "\r");
 
 		if ($pos !== false) {
 			$body = substr($args, $pos + 1);
@@ -134,9 +128,11 @@ function do_plugin_convert($name, $args = '')
 	}
 
 	if ($args === '') {
-		$aryargs = [];                 // #plugin()
+		// #plugin()
+		$aryargs = [];
 	} else {
-		$aryargs = csv_explode(',', $args); // #plugin(A,B,C,D)
+		// #plugin(A,B,C,D)
+		$aryargs = csv_explode(',', $args);
 	}
 
 	if (!PKWKEXP_DISABLE_MULTILINE_PLUGIN_HACK) {
@@ -147,16 +143,15 @@ function do_plugin_convert($name, $args = '')
 
 	$_digest = $digest;
 	$retvar = call_user_func_array('plugin_'.$name.'_convert', $aryargs);
-	$digest = $_digest; // Revert
+
+	// Revert
+	$digest = $_digest;
 
 	if ($retvar === false) {
-		return htmlsc('#'.$name.
-			($args != '' ? '('.$args.')' : ''));
+		return htmlsc('#'.$name.(($args != '') ? ('('.$args.')') : ('')));
 	} elseif (PKWK_ENCODING_HINT != '') {
 		// Insert a hidden field, supports idenrtifying text enconding
-		return preg_replace('/(<form[^>]*>)/', '$1 '."\n".
-			'<div><input type="hidden" name="encode_hint" value="'.
-			PKWK_ENCODING_HINT.'" /></div>', $retvar);
+		return preg_replace('/(<form[^>]*>)/', '$1 '."\n".'<div><input type="hidden" name="encode_hint" value="'.PKWK_ENCODING_HINT.'" /></div>', $retvar);
 	} else {
 		return $retvar;
 	}
@@ -178,15 +173,19 @@ function do_plugin_inline($name, $args, &$body)
 	}
 
 	// NOTE: A reference of $body is always the last argument
-	$aryargs[] = &$body; // func_num_args() != 0
+
+	// func_num_args() != 0
+	$aryargs[] = &$body;
 
 	$_digest = $digest;
 	$retvar = call_user_func_array('plugin_'.$name.'_inline', $aryargs);
-	$digest = $_digest; // Revert
+
+	// Revert
+	$digest = $_digest;
 
 	if ($retvar === false) {
 		// Do nothing
-		return htmlsc('&'.$name.($args ? '('.$args.')' : '').';');
+		return htmlsc('&'.$name.(($args) ? ('('.$args.')') : ('').';'));
 	} else {
 		return $retvar;
 	}

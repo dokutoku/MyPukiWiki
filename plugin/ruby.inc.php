@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // $Id: ruby.inc.php,v 1.8 2011/01/25 15:01:01 henoheno Exp $
 //
@@ -22,11 +24,9 @@ function plugin_ruby_inline()
 	// strip_htmltag() is just for avoiding AutoLink insertion
 	$body = strip_htmltag($body);
 
-	if ($ruby == '' || $body == '') {
+	if (($ruby == '') || ($body == '')) {
 		return PLUGIN_RUBY_USAGE;
 	}
 
-	return '<ruby><rb>'.$body.'</rb>'.'<rp>(</rp>'.
-		'<rt>'.htmlsc($ruby).'</rt>'.'<rp>)</rp>'.
-		'</ruby>';
+	return '<ruby><rb>'.$body.'</rb><rp>(</rp><rt>'.htmlsc($ruby).'</rt><rp>)</rp></ruby>';
 }

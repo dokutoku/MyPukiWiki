@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // img.inc.php
 // Copyright 2002-2018 PukiWiki Development Team
@@ -7,12 +9,16 @@
 // Inline-image plugin (Output inline-image tag from a URI)
 
 define('PLUGIN_IMG_USAGE', '#img(): Usage: (URI-to-image[,right[,clear]])<br />'."\n");
-define('PLUGIN_IMG_CLEAR', '<div style="clear:both"></div>'."\n"); // Stop word-wrapping
 
-if (defined('PKWK_DISABLE_INLINE_IMAGE_FROM_URI') && PKWK_DISABLE_INLINE_IMAGE_FROM_URI) {
-	define('PLUGIN_IMG_SHOW_IMAGE', 0); // 1: Show image, 0: Don't show image
+// Stop word-wrapping
+define('PLUGIN_IMG_CLEAR', '<div style="clear:both"></div>'."\n");
+
+if ((defined('PKWK_DISABLE_INLINE_IMAGE_FROM_URI')) && (PKWK_DISABLE_INLINE_IMAGE_FROM_URI)) {
+	// 1: Show image, 0: Don't show image
+	define('PLUGIN_IMG_SHOW_IMAGE', 0);
 } else {
-	define('PLUGIN_IMG_SHOW_IMAGE', 1); // 1: Show image, 0: Don't show image
+	// 1: Show image, 0: Don't show image
+	define('PLUGIN_IMG_SHOW_IMAGE', 1);
 }
 
 function plugin_img_get_style($args)
@@ -63,15 +69,16 @@ function plugin_img_get_islink($args)
 /**
  * @param[in] $args func_get_args() of xxx_inline() and xxx_convert()
  *
- * @return array(url, is_url, file_path, page, style, a_begin, a_end)
+ * @return [url, is_url, file_path, page, style, a_begin, a_end]
  */
 function plugin_img_get_props($args)
 {
 	global $vars;
+
 	$is_file = false;
 	$is_url = false;
-	$file_path = isset($args[0]) ? $args[0] : '';
-	$page = isset($vars['page']) ? $vars['page'] : '';
+	$file_path = (isset($args[0])) ? ($args[0]) : ('');
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
 
 	if (is_url($file_path)) {
 		$url = $file_path;
@@ -82,9 +89,11 @@ function plugin_img_get_props($args)
 
 		if (preg_match('#^(.+)/([^/]+)$#', $file_path, $matches)) {
 			// (Page_name/maybe-separated-with/slashes/ATTACHED_FILENAME)
-			if ($matches[1] == '.' || $matches[1] == '..') {
-				$matches[1] .= '/'; // Restore relative paths
+			if (($matches[1] == '.') || ($matches[1] == '..')) {
+				// Restore relative paths
+				$matches[1] .= '/';
 			}
+
 			$attach_name = $matches[2];
 			$attach_page = get_fullname($matches[1], $page);
 		} else {
@@ -92,30 +101,36 @@ function plugin_img_get_props($args)
 			$attach_name = $file_path;
 			$attach_page = $page;
 		}
+
 		$file = UPLOAD_DIR.encode($attach_page).'_'.encode($attach_name);
 		$is_file = is_file($file);
 
 		if ($is_file) {
-			$url = get_base_uri().'?plugin=attach'.
-				'&refer='.rawurlencode($attach_page).
-				'&openfile='.rawurlencode($attach_name);
+			$url = get_base_uri().'?plugin=attach&refer='.rawurlencode($attach_page).'&openfile='.rawurlencode($attach_name);
 			$is_url = true;
 		}
 	}
+
 	$h_url = htmlsc($url);
 	$style = plugin_img_get_style($args);
 	$a_begin = '';
 	$a_end = '';
 
 	if (plugin_img_get_islink($args)) {
-		$a_begin = "<a href=\"{$h_url}\" class=\"image-link\">";
+		$a_begin = '<a href="'.$h_url.'" class="image-link">';
 		$a_end = '</a>';
 	}
 
-	return (object) ['url'=>$url, 'is_url'=>$is_url,
-		'file_path'=>$file_path, 'is_file'=>$is_file,
+	return (object)
+	[
+		'url'=>$url,
+		'is_url'=>$is_url,
+		'file_path'=>$file_path,
+		'is_file'=>$is_file,
 		'style'=>$style,
-		'a_begin'=>$a_begin, 'a_end'=>$a_end, ];
+		'a_begin'=>$a_begin,
+		'a_end'=>$a_end,
+	];
 }
 
 function plugin_img_inline()
@@ -128,7 +143,7 @@ function plugin_img_inline()
 			$h_url = htmlsc($p->url);
 			$title = '&amp;img(): PLUGIN_IMG_SHOW_IMAGE prohibits this';
 
-			return "<a href=\"{$h_url}\" title=\"{$title}\">{$h_url}</a>";
+			return '<a href="'.$h_url.'" title="'.$title.'">'.$h_url.'</a>';
 		}
 
 		return '&amp;img(): File not found: '.htmlsc($p->file_path)."\n";
@@ -152,29 +167,31 @@ function plugin_img_convert()
 {
 	$args = func_get_args();
 	$p = plugin_img_get_props($args);
-	// Check the 2nd argument first, for compatibility
-	$arg = isset($args[1]) ? strtoupper($args[1]) : '';
 
-	if ($a->file_path === '' && $arg == 'CLEAR') {
+	// Check the 2nd argument first, for compatibility
+	$arg = (isset($args[1])) ? (strtoupper($args[1])) : ('');
+
+	if (($a->file_path === '') && ($arg == 'CLEAR')) {
 		// Stop word-wrapping only (Ugly but compatible)
 		// Short usage: #img(,clear)
 		return PLUGIN_IMG_CLEAR;
 	}
 
-	if ($arg === '' || $arg === 'L' || $arg === 'LEFT') {
+	if (($arg === '') || ($arg === 'L') || ($arg === 'LEFT')) {
 		$align = 'left';
-	} elseif ($arg === 'R' || $arg === 'RIGHT') {
+	} elseif (($arg === 'R') || ($arg === 'RIGHT')) {
 		$align = 'right';
 	}
-	$arg2 = isset($args[2]) ? strtoupper($args[2]) : '';
-	$clear = ($arg2 === 'C' || $arg2 === 'CLEAR') ? PLUGIN_IMG_CLEAR : '';
+
+	$arg2 = (isset($args[2])) ? (strtoupper($args[2])) : ('');
+	$clear = (($arg2 === 'C') || ($arg2 === 'CLEAR')) ? (PLUGIN_IMG_CLEAR) : ('');
 
 	if (!PLUGIN_IMG_SHOW_IMAGE) {
 		if ($p->is_url) {
 			$h_url = htmlsc($p->url);
 			$title = '#img(): PLUGIN_IMG_SHOW_IMAGE prohibits this';
 
-			return "<div><a href=\"{$h_url}\" title=\"{$title}\">{$h_url}</a></div>";
+			return '<div><a href="'.$h_url.'" title="'.$title.'">'.$h_url.'</a></div>';
 		}
 
 		return '#img(): File not found: '.htmlsc($p->file_path)."\n";

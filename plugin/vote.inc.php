@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // vote.inc.php
 // Copyright 2002-2017 PukiWiki Development Team
@@ -8,8 +10,12 @@
 
 function plugin_vote_action()
 {
-	global $vars, $cols,$rows;
-	global $_title_collided, $_msg_collided, $_title_updated;
+	global $vars;
+	global $cols;
+	global $rows;
+	global $_title_collided;
+	global $_msg_collided;
+	global $_title_updated;
 	global $_vote_plugin_votes;
 
 	$script = get_base_uri();
@@ -21,18 +27,22 @@ function plugin_vote_action()
 	$postdata_old = get_source($vars['refer']);
 
 	$vote_no = 0;
-	$title = $body = $postdata = $postdata_input = $vote_str = '';
+	$vote_str = '';
+	$postdata_input = '';
+	$postdata = '';
+	$body = '';
+	$title = '';
 	$matches = [];
 
 	foreach ($postdata_old as $line) {
-		if (!preg_match('/^#vote(?:\((.*)\)(.*))?$/i', $line, $matches) ||
-			$vote_no++ != $vars['vote_no']) {
+		if ((!preg_match('/^#vote(?:\((.*)\)(.*))?$/i', $line, $matches)) || ($vote_no++ != $vars['vote_no'])) {
 			$postdata .= $line;
 
 			continue;
 		}
+
 		$args = explode(',', $matches[1]);
-		$lefts = isset($matches[2]) ? $matches[2] : '';
+		$lefts = (isset($matches[2])) ? ($matches[2]) : ('');
 
 		foreach ($args as $arg) {
 			$cnt = 0;
@@ -41,9 +51,10 @@ function plugin_vote_action()
 				$arg = $matches[1];
 				$cnt = $matches[2];
 			}
+
 			$e_arg = encode($arg);
 
-			if (!empty($vars['vote_'.$e_arg]) && $vars['vote_'.$e_arg] == $_vote_plugin_votes) {
+			if ((!empty($vars['vote_'.$e_arg])) && ($vars['vote_'.$e_arg] == $_vote_plugin_votes)) {
 				$cnt++;
 			}
 
@@ -84,16 +95,20 @@ EOD;
 
 function plugin_vote_convert()
 {
-	global $vars, $digest;
-	global $_vote_plugin_choice, $_vote_plugin_votes;
+	global $vars;
+	global $digest;
+	global $_vote_plugin_choice;
+	global $_vote_plugin_votes;
 	static $number = [];
 
-	$page = isset($vars['page']) ? $vars['page'] : '';
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
 
 	// Vote-box-id in the page
 	if (!isset($number[$page])) {
+		// Init
 		$number[$page] = 0;
-	} // Init
+	}
+
 	$vote_no = $number[$page]++;
 
 	if (!func_num_args()) {
@@ -137,11 +152,12 @@ EOD;
 			$arg = $matches[1];
 			$cnt = $matches[2];
 		}
+
 		$e_arg = encode($arg);
 
 		$link = make_link($arg);
 
-		$cls = ($tdcnt++ % 2) ? 'vote_td1' : 'vote_td2';
+		$cls = ($tdcnt++ % 2) ? ('vote_td1') : ('vote_td2');
 
 		$body .= <<<EOD
   <tr>

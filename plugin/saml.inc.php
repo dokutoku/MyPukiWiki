@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // saml.inc.php
 // Copyright
@@ -19,6 +21,7 @@ define('PLUGIN_SAML_AUTHUSER_DISPLAYNAME_ATTR', 'DisplayName');
 function plugin_saml_action()
 {
 	global $vars;
+
 	require 'saml_settings.php';
 
 	$auth = new OneLogin\Saml2\Auth($settingsInfo);
@@ -41,6 +44,7 @@ function plugin_saml_action()
 		if (isset($_SESSION['samlSessionIndex'])) {
 			$sessionIndex = $_SESSION['samlSessionIndex'];
 		}
+
 		$auth->logout($returnTo, $paramters, $nameId, $sessionIndex);
 	} elseif (isset($vars['acs'])) {
 		// acs: Sign in endpoint after IdP
@@ -55,6 +59,7 @@ function plugin_saml_action()
 		if (!$auth->isAuthenticated()) {
 			return ['msg'=>'SAML sign in', 'body'=>'<p>Not authenticated</p>'];
 		}
+
 		$attrs = $auth->getAttributes();
 		$_SESSION['samlUserdata'] = $attrs;
 		$_SESSION['samlNameId'] = $auth->getNameId();
@@ -72,7 +77,7 @@ function plugin_saml_action()
 			$_SESSION['authenticated_user_fullname'] = $attrs[PLUGIN_SAML_AUTHUSER_DISPLAYNAME_ATTR][0];
 		}
 
-		if (isset($_POST['RelayState']) && OneLogin\Saml2\Utils::getSelfURL() != $_POST['RelayState']) {
+		if ((isset($_POST['RelayState'])) && (OneLogin\Saml2\Utils::getSelfURL() != $_POST['RelayState'])) {
 			$auth->redirectTo($_POST['RelayState']);
 		}
 

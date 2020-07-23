@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // showrss.inc.php
 // Copyright:
@@ -24,9 +26,7 @@ function plugin_showrss_action()
 	$body = '';
 
 	foreach (['xml', 'mbstring'] as $extension) {
-		${$extension} = extension_loaded($extension) ?
-			'&color(green){Found};' :
-			'&color(red){Not found};';
+		${$extension} = (extension_loaded($extension)) ? ('&color(green){Found};') : ('&color(red){Not found};');
 		$body .= '| '.$extension.' extension | '.${$extension}.' |'."\n";
 	}
 
@@ -54,19 +54,32 @@ function plugin_showrss_convert()
 	$argv = func_get_args();
 	$timestamp = false;
 	$cachehour = 0;
-	$template = $uri = '';
+	$uri = '';
+	$template = '';
 
 	switch ($num) {
-	case 4: $timestamp = (trim($argv[3]) == '1');	// FALLTHROUGH
-	// no break
-	case 3: $cachehour = trim($argv[2]);		// FALLTHROUGH
-	// no break
-	case 2: $template = strtolower(trim($argv[1])); // FALLTHROUGH
-	// no break
-	case 1: $uri = trim($argv[0]);
+		case 4:
+			$timestamp = trim($argv[3]) == '1';
+			// FALLTHROUGH
+
+		case 3:
+			$cachehour = trim($argv[2]);
+			// FALLTHROUGH
+
+		case 2:
+			$template = strtolower(trim($argv[1]));
+			// FALLTHROUGH
+
+		case 1:
+			$uri = trim($argv[0]);
+
+			break;
+
+		default:
+			break;
 	}
 
-	$class = ($template == '' || $template == 'default') ? 'ShowRSS_html' : 'ShowRSS_html_'.$template;
+	$class = (($template == '') || ($template == 'default')) ? ('ShowRSS_html') : ('ShowRSS_html_'.$template);
 
 	if (!class_exists($class)) {
 		$class = 'ShowRSS_html';
@@ -94,11 +107,11 @@ function plugin_showrss_convert()
 		// Show XML error message
 		return '#showrss: Error - '.htmlsc($rss).'<br />'."\n";
 	}
+
 	$time_display = '';
 
 	if ($timestamp > 0) {
-		$time_display = '<p style="font-size:10px; font-weight:bold">Last-Modified:'.
-			get_date('Y/m/d H:i:s', $time).'</p>';
+		$time_display = '<p style="font-size:10px; font-weight:bold">Last-Modified:'.get_date('Y/m/d H:i:s', $time).'</p>';
 	}
 
 	$obj = new $class($rss);
@@ -125,9 +138,7 @@ class ShowRSS_html
 				$link = $item['LINK'];
 				$title = $item['TITLE'];
 				$date = get_date_atom($item['_TIMESTAMP'] + LOCALZONE);
-				$link = '<a href="'.$link.'" data-mtime="'.
-					 $date.'" class="'.get_link_passage_class().
-					 '" rel="nofollow">'.$title.'</a>';
+				$link = '<a href="'.$link.'" data-mtime="'.$date.'" class="'.get_link_passage_class().'" rel="nofollow">'.$title.'</a>';
 				$this->items[$date][] = $this->format_link($link);
 			}
 		}
@@ -155,6 +166,7 @@ class ShowRSS_html
 		foreach ($this->items as $date=>$items) {
 			$retval .= $this->format_list($date, implode('', $items));
 		}
+
 		$retval = $this->format_body($retval);
 
 		return <<<EOD
@@ -191,8 +203,7 @@ class ShowRSS_html_recent extends ShowRSS_html
 
 	public function format_list($date, $str)
 	{
-		return '<strong>'.$date.'</strong>'."\n".
-			'<ul class="recent_list">'."\n".$str.'</ul>'."\n";
+		return '<strong>'.$date.'</strong>'."\n".'<ul class="recent_list">'."\n".$str.'</ul>'."\n";
 	}
 }
 
@@ -213,13 +224,14 @@ function plugin_showrss_get_rss($target, $cachehour)
 		}
 	}
 
-	if (null === $time) {
+	if ($time === null) {
 		// Newly get RSS
 		$data = pkwk_http_request($target);
 
 		if ($data['rc'] !== 200) {
 			return [false, 0];
 		}
+
 		$buf = $data['data'];
 		$time = UTIME;
 
@@ -230,9 +242,10 @@ function plugin_showrss_get_rss($target, $cachehour)
 			fclose($fp);
 		}
 	}
+
 	// Parse
 	$obj = new ShowRSS_XML();
-	$obj->modified_date = (null === $time ? UTIME : $time);
+	$obj->modified_date = ($time === null) ? (UTIME) : ($time);
 
 	return [$obj->parse($buf), $time];
 }
@@ -240,13 +253,16 @@ function plugin_showrss_get_rss($target, $cachehour)
 // Remove cache if expired limit exeed
 function plugin_showrss_cache_expire($cachehour) : void
 {
-	$expire = $cachehour * 60 * 60; // Hour
+	// Hour
+	$expire = $cachehour * 60 * 60;
+
 	$dh = dir(CACHE_DIR);
 
 	while (($file = $dh->read()) !== false) {
 		if (substr($file, -4) != '.tmp') {
 			continue;
 		}
+
 		$file = CACHE_DIR.$file;
 		$last = time() - filemtime($file);
 
@@ -254,6 +270,7 @@ function plugin_showrss_cache_expire($cachehour) : void
 			unlink($file);
 		}
 	}
+
 	$dh->close();
 }
 
@@ -265,7 +282,9 @@ function plugin_showrss_cache_expire($cachehour) : void
  */
 function plugin_showrss_cache_expire_file($filename, $cachehour) : void
 {
-	$expire = $cachehour * 60 * 60; // Hour
+	// Hour
+	$expire = $cachehour * 60 * 60;
+
 	$last = time() - filemtime($filename);
 
 	if ($last > $expire) {
@@ -309,17 +328,16 @@ class ShowRSS_XML
 				$buf = mb_convert_encoding($buf, $utf8, $encoding);
 			}
 		}
+
 		// Parsing
 		$xml_parser = xml_parser_create($utf8);
 		xml_set_element_handler($xml_parser, [$this, 'start_element'], [$this, 'end_element']);
 		xml_set_character_data_handler($xml_parser, [$this, 'character_data']);
 
 		if (!xml_parse($xml_parser, $buf, 1)) {
-			return sprintf('XML error: %s at line %d in %s',
-				xml_error_string(xml_get_error_code($xml_parser)),
-				xml_get_current_line_number($xml_parser),
-				(strlen($buf) < 500 ? $buf : substr($buf, 0, 500).'...'));
+			return sprintf('XML error: %s at line %d in %s', xml_error_string(xml_get_error_code($xml_parser)), xml_get_current_line_number($xml_parser), ((strlen($buf) < 500) ? ($buf) : (substr($buf, 0, 500).'...')));
 		}
+
 		xml_parser_free($xml_parser);
 
 		return $this->items;
@@ -343,10 +361,11 @@ class ShowRSS_XML
 		if ($this->is_item !== false) {
 			$this->tag = $name;
 
-			if ($this->is_item === 'ENTRY' && $name === 'LINK' && isset($attrs['HREF'])) {
+			if (($this->is_item === 'ENTRY') && ($name === 'LINK') && (isset($attrs['HREF']))) {
 				if (!isset($this->item[$name])) {
 					$this->item[$name] = '';
 				}
+
 				$this->item[$name] .= $attrs['HREF'];
 			}
 		} elseif ($name === 'ITEM') {
@@ -359,7 +378,7 @@ class ShowRSS_XML
 	// Tag end
 	public function end_element($parser, $name) : void
 	{
-		if ($this->is_item === false || $name !== $this->is_item) {
+		if (($this->is_item === false) || ($name !== $this->is_item)) {
 			return;
 		}
 
@@ -375,17 +394,17 @@ class ShowRSS_XML
 		} else {
 			$time_from_desc = false;
 
-			if (isset($item['DESCRIPTION']) &&
-				(($description = trim($item['DESCRIPTION'])) != '')) {
+			if (isset($item['DESCRIPTION']) && (($description = trim($item['DESCRIPTION'])) != '')) {
 				$time_from_desc = strtotime($description);
 			}
 
-			if ($time_from_desc !== false && $time_from_desc !== -1) {
+			if (($time_from_desc !== false) && ($time_from_desc !== -1)) {
 				$time = $time_from_desc - LOCALZONE;
 			} else {
 				$time = time() - LOCALZONE;
 			}
 		}
+
 		$item['_TIMESTAMP'] = $time;
 		$date = get_date('Y-m-d', $item['_TIMESTAMP']);
 
@@ -402,6 +421,7 @@ class ShowRSS_XML
 		if (!isset($this->item[$this->tag])) {
 			$this->item[$this->tag] = '';
 		}
+
 		$this->item[$this->tag] .= $data;
 	}
 }
@@ -419,17 +439,17 @@ function plugin_showrss_get_timestamp($str, $default_date)
 	if (preg_match('/(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})(([+-])(\d{2}):(\d{2}))?/', $str, $matches)) {
 		$time = strtotime($matches[1].' '.$matches[2]);
 
-		if ($time === false || $time === -1) {
+		if (($time === false) || ($time === -1)) {
 			$time = $default_date;
 		} elseif (isset($matches[3])) {
 			$diff = ($matches[5] * 60 + $matches[6]) * 60;
-			$time += ($matches[4] == '-' ? $diff : -$diff);
+			$time += ($matches[4] == '-') ? ($diff) : (-$diff);
 		}
 
 		return $time;
 	} else {
 		$time = strtotime($str);
 
-		return ($time === false || $time === -1) ? $default_date : $time - LOCALZONE;
+		return (($time === false) || ($time === -1)) ? ($default_date) : ($time - LOCALZONE);
 	}
 }

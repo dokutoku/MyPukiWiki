@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // $Id: versionlist.inc.php,v 1.17 2007/05/12 08:37:38 henoheno Exp $
 // Copyright (C)
@@ -16,16 +18,15 @@ function plugin_versionlist_action()
 		die_message('PKWK_SAFE_MODE prohibits this');
 	}
 
-	return [
-		'msg'=>$_title_versionlist,
-		'body'=>plugin_versionlist_convert(), ];
+	return ['msg'=>$_title_versionlist, 'body'=>plugin_versionlist_convert()];
 }
 
 function plugin_versionlist_convert()
 {
 	if (PKWK_SAFE_MODE) {
+		// Show nothing
 		return '';
-	} // Show nothing
+	}
 
 	// 探索ディレクトリ設定
 	$SCRIPT_DIR = ['./'];
@@ -34,9 +35,10 @@ function plugin_versionlist_convert()
 		array_push($SCRIPT_DIR, LIB_DIR);
 	}
 
-	if (DATA_HOME != './' && DATA_HOME != LIB_DIR) {
+	if ((DATA_HOME != './') && (DATA_HOME != LIB_DIR)) {
 		array_push($SCRIPT_DIR, DATA_HOME);
 	}
+
 	array_push($SCRIPT_DIR, PLUGIN_DIR, SKIN_DIR);
 
 	$comments = [];
@@ -51,22 +53,26 @@ function plugin_versionlist_convert()
 			if (!preg_match('/\\.(php|lng|css|js)$/i', $file)) {
 				continue;
 			}
+
 			$data = implode('', file($sdir.$file));
 			$comment = ['file'=>htmlsc($sdir.$file), 'rev'=>'', 'date'=>''];
 
-			if (preg_match('/\$'.'Id: (.+),v (\d+\.\d+) (\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2})/', $data, $matches)) {
+			if (preg_match('/\$Id: (.+),v (\d+\.\d+) (\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2})/', $data, $matches)) {
 //				$comment['file'] = htmlsc($sdir.$matches[1]);
 				$comment['rev'] = htmlsc($matches[2]);
 				$comment['date'] = htmlsc($matches[3]);
 			}
+
 			$comments[$sdir.$file] = $comment;
 		}
+
 		$dir->close();
 	}
 
 	if (count($comments) == 0) {
 		return '';
 	}
+
 	ksort($comments, SORT_STRING);
 	$retval = '';
 

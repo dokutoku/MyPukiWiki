@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // rename.inc.php
 // Copyright 2002-2018 PukiWiki Development Team
@@ -30,7 +32,7 @@ function plugin_rename_action()
 		$src_pattern = '/'.preg_quote($src, '/').'/';
 		$arr0 = preg_grep($src_pattern, plugin_rename_get_existpages());
 
-		if (!is_array($arr0) || empty($arr0)) {
+		if ((!is_array($arr0)) || (empty($arr0))) {
 			return plugin_rename_phase1('nomatch');
 		}
 
@@ -55,7 +57,7 @@ function plugin_rename_action()
 			return plugin_rename_phase1('notpage', $refer);
 		} elseif ($refer === $whatsnew) {
 			return plugin_rename_phase1('norename', $refer);
-		} elseif ($page == '' || $page === $refer) {
+		} elseif (($page == '') || ($page === $refer)) {
 			return plugin_rename_phase2();
 		} elseif (!is_pagename($page)) {
 			return plugin_rename_phase2('notvalid');
@@ -70,7 +72,7 @@ function plugin_rename_getvar($key)
 {
 	global $vars;
 
-	return isset($vars[$key]) ? $vars[$key] : '';
+	return (isset($vars[$key])) ? ($vars[$key]) : ('');
 }
 
 // エラーメッセージを作る
@@ -90,6 +92,7 @@ function plugin_rename_err($err, $page = '')
 		foreach ($page as $_page) {
 			$tmp .= '<br />'.$_page;
 		}
+
 		$page = $tmp;
 	}
 
@@ -112,13 +115,15 @@ function plugin_rename_phase1($err = '', $page = '')
 	$refer = plugin_rename_getvar('refer');
 	$method = plugin_rename_getvar('method');
 
-	$radio_regex = $radio_page = '';
+	$radio_page = '';
+	$radio_regex = '';
 
 	if ($method == 'regex') {
 		$radio_regex = ' checked="checked"';
 	} else {
 		$radio_page = ' checked="checked"';
 	}
+
 	$select_refer = plugin_rename_getselecttag($refer);
 
 	$s_src = htmlsc(plugin_rename_getvar('src'));
@@ -165,8 +170,7 @@ function plugin_rename_phase2($err = '')
 	$related = plugin_rename_getrelated($refer);
 
 	if (!empty($related)) {
-		$msg_related = '<label for="_p_rename_related">'.$_rename_messages['msg_do_related'].'</label>'.
-		'<input type="checkbox" name="related" id="_p_rename_related" value="1" checked="checked" /><br />';
+		$msg_related = '<label for="_p_rename_related">'.$_rename_messages['msg_do_related'].'</label><input type="checkbox" name="related" id="_p_rename_related" value="1" checked="checked" /><br />';
 	}
 
 	$msg_rename = sprintf($_rename_messages['msg_rename'], make_pagelink($refer));
@@ -197,6 +201,7 @@ EOD;
 		foreach ($related as $name) {
 			$ret['body'] .= '<li>'.make_pagelink($name).'</li>';
 		}
+
 		$ret['body'] .= '</ul>';
 	}
 
@@ -252,7 +257,8 @@ function plugin_rename_phase3($pages)
 	global $_rename_messages;
 
 	$script = get_base_uri();
-	$msg = $input = '';
+	$input = '';
+	$msg = '';
 	$files = plugin_rename_get_files($pages);
 
 	$exists = [];
@@ -267,7 +273,7 @@ function plugin_rename_phase3($pages)
 
 	$pass = plugin_rename_getvar('pass');
 
-	if ($pass != '' && pkwk_login($pass)) {
+	if (($pass != '') && (pkwk_login($pass))) {
 		return plugin_rename_proceed($pages, $files, $exists);
 	} elseif ($pass != '') {
 		$msg = plugin_rename_err('adminpass');
@@ -305,19 +311,19 @@ function plugin_rename_phase3($pages)
 				$msg .= '<ul>'."\n";
 
 				foreach ($arr as $ofile=>$nfile) {
-					$msg .= '<li>'.$ofile.
-					$_rename_messages['msg_arrow'].$nfile.'</li>'."\n";
+					$msg .= '<li>'.$ofile.$_rename_messages['msg_arrow'].$nfile.'</li>'."\n";
 				}
+
 				$msg .= '</ul>';
 			}
+
 			$msg .= '</li>'."\n";
 		}
+
 		$msg .= '</ul><hr />'."\n";
 
-		$input .= '<input type="radio" name="exist" value="0" checked="checked" />'.
-			$_rename_messages['msg_exist_none'].'<br />';
-		$input .= '<input type="radio" name="exist" value="1" />'.
-			$_rename_messages['msg_exist_overwrite'].'<br />';
+		$input .= '<input type="radio" name="exist" value="0" checked="checked" />'.$_rename_messages['msg_exist_none'].'<br />';
+		$input .= '<input type="radio" name="exist" value="1" />'.$_rename_messages['msg_exist_overwrite'].'<br />';
 	}
 
 	$ret = [];
@@ -340,10 +346,9 @@ EOD;
 	$ret['body'] .= '<ul>'."\n";
 
 	foreach ($pages as $old=>$new) {
-		$ret['body'] .= '<li>'.make_pagelink(decode($old)).
-			$_rename_messages['msg_arrow'].
-			htmlsc(decode($new)).'</li>'."\n";
+		$ret['body'] .= '<li>'.make_pagelink(decode($old)).$_rename_messages['msg_arrow'].htmlsc(decode($new)).'</li>'."\n";
 	}
+
 	$ret['body'] .= '</ul>'."\n";
 
 	return $ret;
@@ -361,6 +366,7 @@ function plugin_rename_get_files($pages)
 	if (exist_plugin_convert('counter')) {
 		$dirs[] = COUNTER_DIR;
 	}
+
 	// and more ...
 
 	$matches = [];
@@ -369,11 +375,12 @@ function plugin_rename_get_files($pages)
 		$dir = opendir($path);
 
 		if (!$dir) {
+			// TODO: !== false or die()?
 			continue;
-		}	// TODO: !== FALSE or die()?
+		}
 
 		while (($file = readdir($dir)) !== false) {
-			if ($file == '.' || $file == '..') {
+			if (($file == '.') || ($file == '..')) {
 				continue;
 			}
 
@@ -394,7 +401,8 @@ function plugin_rename_get_files($pages)
 
 function plugin_rename_proceed($pages, $files, $exists) : void
 {
-	global $now, $_rename_messages;
+	global $now;
+	global $_rename_messages;
 
 	if (plugin_rename_getvar('exist') == '') {
 		foreach ($exists as $key=>$arr) {
@@ -406,16 +414,19 @@ function plugin_rename_proceed($pages, $files, $exists) : void
 
 	foreach ($files as $page=>$arr) {
 		foreach ($arr as $old=>$new) {
-			if (isset($exists[$page][$old]) && $exists[$page][$old]) {
+			if ((isset($exists[$page][$old])) && ($exists[$page][$old])) {
 				unlink($new);
 			}
+
 			rename($old, $new);
 		}
+
 		// linkデータベースを更新する BugTrack/327 arino
 		$new_page = $pages[$page];
 		links_update(decode($page));
 		links_update(decode($new_page));
 	}
+
 	// Rename counter
 	$pages_decoded = [];
 
@@ -444,20 +455,18 @@ function plugin_rename_proceed($pages, $files, $exists) : void
 		$postdata[] = "\n".$_rename_messages['msg_result']."\n";
 
 		foreach ($exists as $page=>$arr) {
-			$postdata[] = '-'.decode($page).
-				$_rename_messages['msg_arrow'].decode($pages[$page])."\n";
+			$postdata[] = '-'.decode($page).$_rename_messages['msg_arrow'].decode($pages[$page])."\n";
 
 			foreach ($arr as $ofile=>$nfile) {
-				$postdata[] = '--'.$ofile.
-					$_rename_messages['msg_arrow'].$nfile."\n";
+				$postdata[] = '--'.$ofile.$_rename_messages['msg_arrow'].$nfile."\n";
 			}
 		}
+
 		$postdata[] = '----'."\n";
 	}
 
 	foreach ($pages as $old=>$new) {
-		$postdata[] = '-'.decode($old).
-			$_rename_messages['msg_arrow'].decode($new)."\n";
+		$postdata[] = '-'.decode($old).$_rename_messages['msg_arrow'].decode($new)."\n";
 	}
 
 	// 更新の衝突はチェックしない。
@@ -511,11 +520,11 @@ function plugin_rename_getselecttag($page)
 			continue;
 		}
 
-		$selected = ($_page === $page) ? ' selected' : '';
+		$selected = ($_page === $page) ? (' selected') : ('');
 		$s_page = htmlsc($_page);
-		$pages[$_page] = '<option value="'.$s_page.'"'.$selected.'>'.
-			$s_page.'</option>';
+		$pages[$_page] = '<option value="'.$s_page.'"'.$selected.'>'.$s_page.'</option>';
 	}
+
 	ksort($pages, SORT_STRING);
 	$list = implode("\n".' ', $pages);
 

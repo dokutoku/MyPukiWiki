@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // init.php
 // Copyright
@@ -9,13 +11,8 @@
 // Init PukiWiki here
 
 // PukiWiki version / Copyright / Licence
-
 define('S_VERSION', '1.5.3');
-define('S_COPYRIGHT',
-	'<strong>PukiWiki '.S_VERSION.'</strong>'.
-	' &copy; 2001-2020'.
-	' <a href="https://pukiwiki.osdn.jp/">PukiWiki Development Team</a>'
-);
+define('S_COPYRIGHT', '<strong>PukiWiki '.S_VERSION.'</strong> &copy; 2001-2020 <a href="https://pukiwiki.osdn.jp/">PukiWiki Development Team</a>');
 
 /////////////////////////////////////////////////
 // Session security options
@@ -32,18 +29,22 @@ if (!isset($HTTP_SERVER_VARS)) {
 	$HTTP_SERVER_VARS = [];
 }
 
-foreach (['SCRIPT_NAME', 'SERVER_ADMIN', 'SERVER_NAME',
-	'SERVER_PORT', 'SERVER_SOFTWARE', ] as $key) {
-	define($key, isset($_SERVER[$key]) ? $_SERVER[$key] : '');
+foreach (['SCRIPT_NAME', 'SERVER_ADMIN', 'SERVER_NAME', 'SERVER_PORT', 'SERVER_SOFTWARE'] as $key) {
+	define($key, (isset($_SERVER[$key])) ? ($_SERVER[$key]) : (''));
 	unset(${$key}, $_SERVER[$key], $HTTP_SERVER_VARS[$key]);
 }
 
 /////////////////////////////////////////////////
 // Init grobal variables
 
-$foot_explain = [];	// Footnotes
-$related = [];	// Related pages
-$head_tags = [];	// XHTML tags in <head></head>
+// Footnotes
+$foot_explain = [];
+
+// Related pages
+$related = [];
+
+// XHTML tags in <head></head>
+$head_tags = [];
 
 /////////////////////////////////////////////////
 // Time settings
@@ -58,7 +59,7 @@ define('MUTIME', getmicrotime());
 define('INI_FILE', DATA_HOME.'pukiwiki.ini.php');
 $die = '';
 
-if (!file_exists(INI_FILE) || !is_readable(INI_FILE)) {
+if ((!file_exists(INI_FILE)) || (!is_readable(INI_FILE))) {
 	$die .= 'File is not found. (INI_FILE)'."\n";
 } else {
 	require INI_FILE;
@@ -80,39 +81,50 @@ if ($die) {
 //   'UTF-8', 'iso-8859-1', 'EUC-JP' or ...
 
 switch (LANG) {
-case 'en': define('MB_LANGUAGE', 'English');
+	case 'en':
+		define('MB_LANGUAGE', 'English');
 
-break;
-case 'ja': define('MB_LANGUAGE', 'Japanese');
+		break;
 
-break;
-case 'ko': define('MB_LANGUAGE', 'Korean');
+	case 'ja':
+		define('MB_LANGUAGE', 'Japanese');
 
-break; //UTF-8 only
-	// See BugTrack2/13 for all hack about Korean support, //UTF-8 only
-	// and give us your report!                            //UTF-8 only
-default: die_message('No such language "'.LANG.'"');
+		break;
 
-break;
+	case 'ko':
+		define('MB_LANGUAGE', 'Korean');
+
+		//UTF-8 only
+		// See BugTrack2/13 for all hack about Korean support, //UTF-8 only
+		// and give us your report!                            //UTF-8 only
+		break;
+
+	default:
+		die_message('No such language "'.LANG.'"');
 }
 
-define('PKWK_UTF8_ENABLE', 1); //UTF-8 only
+//UTF-8 only
+define('PKWK_UTF8_ENABLE', 1);
 
 if (defined('PKWK_UTF8_ENABLE')) {
 	define('SOURCE_ENCODING', 'UTF-8');
 	define('CONTENT_CHARSET', 'UTF-8');
 } else {
 	switch (LANG) {
-	case 'en':
-		define('SOURCE_ENCODING', 'ASCII');
-		define('CONTENT_CHARSET', 'iso-8859-1');
+		case 'en':
+			define('SOURCE_ENCODING', 'ASCII');
+			define('CONTENT_CHARSET', 'iso-8859-1');
 
-		break;
-	case 'ja':
-		define('SOURCE_ENCODING', 'EUC-JP');
-		define('CONTENT_CHARSET', 'EUC-JP');
+			break;
 
-		break;
+		case 'ja':
+			define('SOURCE_ENCODING', 'EUC-JP');
+			define('CONTENT_CHARSET', 'EUC-JP');
+
+			break;
+
+		default:
+			break;
 	}
 }
 
@@ -124,12 +136,16 @@ mb_detect_order('auto');
 /////////////////////////////////////////////////
 // INI_FILE: Require LANG_FILE
 
-define('LANG_FILE_HINT', DATA_HOME.LANG.'.lng.php');	// For encoding hint
-define('LANG_FILE', DATA_HOME.UI_LANG.'.lng.php');	// For UI resource
+// For encoding hint
+define('LANG_FILE_HINT', DATA_HOME.LANG.'.lng.php');
+
+// For UI resource
+define('LANG_FILE', DATA_HOME.UI_LANG.'.lng.php');
+
 $die = '';
 
 foreach (['LANG_FILE_HINT', 'LANG_FILE'] as $langfile) {
-	if (!file_exists(constant($langfile)) || !is_readable(constant($langfile))) {
+	if ((!file_exists(constant($langfile))) || (!is_readable(constant($langfile)))) {
 		$die .= 'File is not found or not readable. ('.$langfile.')'."\n";
 	} else {
 		require_once constant($langfile);
@@ -143,7 +159,7 @@ if ($die) {
 /////////////////////////////////////////////////
 // LANG_FILE: Init encoding hint
 
-define('PKWK_ENCODING_HINT', isset($_LANG['encode_hint'][LANG]) ? $_LANG['encode_hint'][LANG] : '');
+define('PKWK_ENCODING_HINT', (isset($_LANG['encode_hint'][LANG])) ? ($_LANG['encode_hint'][LANG]) : (''));
 unset($_LANG['encode_hint']);
 
 /////////////////////////////////////////////////
@@ -163,7 +179,7 @@ if (isset($script)) {
 }
 
 // INI_FILE: Auth settings
-if (isset($auth_type) && $auth_type === AUTH_TYPE_SAML) {
+if ((isset($auth_type)) && ($auth_type === AUTH_TYPE_SAML)) {
 	$auth_external_login_url_base = get_base_uri().'?//cmd.saml//sso';
 }
 
@@ -171,35 +187,44 @@ if (isset($auth_type) && $auth_type === AUTH_TYPE_SAML) {
 // INI_FILE: $agents:  UserAgentの識別
 
 $ua = 'HTTP_USER_AGENT';
-$user_agent = $matches = [];
+$matches = [];
+$user_agent = [];
 
-$user_agent['agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+$user_agent['agent'] = (isset($_SERVER['HTTP_USER_AGENT'])) ? ($_SERVER['HTTP_USER_AGENT']) : ('');
 
 foreach ($agents as $agent) {
 	if (preg_match($agent['pattern'], $user_agent['agent'], $matches)) {
-		$user_agent['profile'] = isset($agent['profile']) ? $agent['profile'] : '';
-		$user_agent['name'] = isset($matches[1]) ? $matches[1] : '';	// device or browser name
-		$user_agent['vers'] = isset($matches[2]) ? $matches[2] : ''; // 's version
+		$user_agent['profile'] = (isset($agent['profile'])) ? ($agent['profile']) : ('');
+
+		// device or browser name
+		$user_agent['name'] = (isset($matches[1])) ? ($matches[1]) : ('');
+
+		// 's version
+		$user_agent['vers'] = (isset($matches[2])) ? ($matches[2]) : ('');
 
 		break;
 	}
 }
+
 unset($agents, $matches);
 
 // Profile-related init and setting
-define('UA_PROFILE', isset($user_agent['profile']) ? $user_agent['profile'] : '');
+define('UA_PROFILE', (isset($user_agent['profile'])) ? ($user_agent['profile']) : (''));
 
 define('UA_INI_FILE', DATA_HOME.UA_PROFILE.'.ini.php');
 
-if (!file_exists(UA_INI_FILE) || !is_readable(UA_INI_FILE)) {
+if ((!file_exists(UA_INI_FILE)) || (!is_readable(UA_INI_FILE))) {
 	die_message('UA_INI_FILE for "'.UA_PROFILE.'" not found.');
 } else {
-	require UA_INI_FILE; // Also manually
+	// Also manually
+	require UA_INI_FILE;
 }
 
-define('UA_NAME', isset($user_agent['name']) ? $user_agent['name'] : '');
-define('UA_VERS', isset($user_agent['vers']) ? $user_agent['vers'] : '');
-unset($user_agent);	// Unset after reading UA_INI_FILE
+define('UA_NAME', (isset($user_agent['name'])) ? ($user_agent['name']) : (''));
+define('UA_VERS', (isset($user_agent['vers'])) ? ($user_agent['vers']) : (''));
+
+// Unset after reading UA_INI_FILE
+unset($user_agent);
 
 /////////////////////////////////////////////////
 // ディレクトリのチェック
@@ -215,8 +240,7 @@ foreach (['DATA_DIR', 'DIFF_DIR', 'BACKUP_DIR', 'CACHE_DIR'] as $dir) {
 // 設定ファイルの変数チェック
 $temp = '';
 
-foreach (['rss_max', 'page_title', 'note_hr', 'related_link', 'show_passage',
-	'rule_related_str', 'load_template_func', ] as $var) {
+foreach (['rss_max', 'page_title', 'note_hr', 'related_link', 'show_passage', 'rule_related_str', 'load_template_func'] as $var) {
 	if (!isset(${$var})) {
 		$temp .= '$'.$var."\n";
 	}
@@ -226,6 +250,7 @@ if ($temp) {
 	if ($die) {
 		$die .= "\n";
 	}	// A breath
+
 	$die .= 'Variable(s) not found: (Maybe the old *.ini.php?)'."\n".$temp;
 }
 
@@ -241,12 +266,14 @@ if ($temp) {
 	if ($die) {
 		$die .= "\n";
 	}	// A breath
+
 	$die .= 'Define(s) not found: (Maybe the old *.ini.php?)'."\n".$temp;
 }
 
 if ($die) {
 	die_message(nl2br("\n\n".$die));
 }
+
 unset($die, $temp);
 
 /////////////////////////////////////////////////
@@ -269,8 +296,12 @@ foreach (['msg', 'pass'] as $key) {
 }
 
 // Expire risk
-unset($HTTP_GET_VARS, $HTTP_POST_VARS);	//, 'SERVER', 'ENV', 'SESSION', ...
-unset($_REQUEST);	// Considered harmful
+
+//, 'SERVER', 'ENV', 'SESSION', ...
+unset($HTTP_GET_VARS, $HTTP_POST_VARS);
+
+// Considered harmful
+unset($_REQUEST);
 
 // Remove null character etc.
 $_GET = input_filter($_GET);
@@ -281,18 +312,17 @@ $_COOKIE = input_filter($_COOKIE);
 // <form> で送信された文字 (ブラウザがエンコードしたデータ) のコードを変換
 // POST method は常に form 経由なので、必ず変換する
 //
-if (isset($_POST['encode_hint']) && $_POST['encode_hint'] != '') {
+if ((isset($_POST['encode_hint'])) && ($_POST['encode_hint'] != '')) {
 	// do_plugin_xxx() の中で、<form> に encode_hint を仕込んでいるので、
 	// encode_hint を用いてコード検出する。
 	// 全体を見てコード検出すると、機種依存文字や、妙なバイナリ
 	// コードが混入した場合に、コード検出に失敗する恐れがある。
-	$encode = mb_detect_encoding($_POST['encode_hint']);
+	$encode = mb_detect_encoding($_POST['encode_hint'], mb_detect_order(), true);
 	mb_convert_variables(SOURCE_ENCODING, $encode, $_POST);
-} elseif (isset($_POST['charset']) && $_POST['charset'] != '') {
+} elseif ((isset($_POST['charset'])) && ($_POST['charset'] != '')) {
 	// TrackBack Ping で指定されていることがある
 	// うまくいかない場合は自動検出に切り替え
-	if (mb_convert_variables(SOURCE_ENCODING,
-		$_POST['charset'], $_POST) !== $_POST['charset']) {
+	if (mb_convert_variables(SOURCE_ENCODING, $_POST['charset'], $_POST) !== $_POST['charset']) {
 		mb_convert_variables(SOURCE_ENCODING, 'auto', $_POST);
 	}
 } elseif (!empty($_POST)) {
@@ -303,11 +333,11 @@ if (isset($_POST['encode_hint']) && $_POST['encode_hint'] != '') {
 // 文字コード変換 ($_GET)
 // GET method は form からの場合と、<a href="http://script/?key=value> の場合がある
 // <a href...> の場合は、サーバーが rawurlencode しているので、コード変換は不要
-if (isset($_GET['encode_hint']) && $_GET['encode_hint'] != '') {
+if ((isset($_GET['encode_hint'])) && ($_GET['encode_hint'] != '')) {
 	// form 経由の場合は、ブラウザがエンコードしているので、コード検出・変換が必要。
 	// encode_hint が含まれているはずなので、それを見て、コード検出した後、変換する。
 	// 理由は、post と同様
-	$encode = mb_detect_encoding($_GET['encode_hint']);
+	$encode = mb_detect_encoding($_GET['encode_hint'], mb_detect_order(), true);
 	mb_convert_variables(SOURCE_ENCODING, $encode, $_GET);
 }
 
@@ -318,28 +348,35 @@ if (isset($_GET['encode_hint']) && $_GET['encode_hint'] != '') {
 // ページ名かInterWikiNameであるとみなす
 $arg = '';
 
-if (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '') {
+if ((isset($_SERVER['QUERY_STRING'])) && ($_SERVER['QUERY_STRING'] != '')) {
 	global $g_query_string;
+
 	$g_query_string = $_SERVER['QUERY_STRING'];
 	$arg = &$_SERVER['QUERY_STRING'];
-} elseif (isset($_SERVER['argv']) && !empty($_SERVER['argv'])) {
+} elseif ((isset($_SERVER['argv'])) && (!empty($_SERVER['argv']))) {
 	$arg = &$_SERVER['argv'][0];
 }
 
-if (PKWK_QUERY_STRING_MAX && strlen($arg) > PKWK_QUERY_STRING_MAX) {
+if ((PKWK_QUERY_STRING_MAX) && (strlen($arg) > PKWK_QUERY_STRING_MAX)) {
 	// Something nasty attack?
 	pkwk_common_headers();
-	sleep(1);	// Fake processing, and/or process other threads
+
+	// Fake processing, and/or process other threads
+	sleep(1);
+
 	echo 'Query string too long';
 
 	exit;
 }
-$arg = input_filter($arg); // \0 除去
+
+// \0 除去
+$arg = input_filter($arg);
 
 // unset QUERY_STRINGs
 foreach (['QUERY_STRING', 'argv', 'argc'] as $key) {
 	unset(${$key}, $_SERVER[$key], $HTTP_SERVER_VARS[$key]);
 }
+
 // $_SERVER['REQUEST_URI'] is used at func.php NOW
 unset($REQUEST_URI, $HTTP_SERVER_VARS['REQUEST_URI']);
 
@@ -355,11 +392,11 @@ $arg = $arg[0];
 $matches = [];
 
 foreach (explode('&', $arg) as $key_and_value) {
-	if (preg_match('/^([^=]+)=(.+)/', $key_and_value, $matches) &&
-		mb_detect_encoding($matches[2]) != 'ASCII') {
+	if ((preg_match('/^([^=]+)=(.+)/', $key_and_value, $matches)) && (mb_detect_encoding($matches[2], mb_detect_order(), true) != 'ASCII')) {
 		$_GET[$matches[1]] = $matches[2];
 	}
 }
+
 unset($matches);
 
 /////////////////////////////////////////////////
@@ -371,11 +408,14 @@ $cookie = &$_COOKIE;
 
 // GET + POST = $vars
 if (empty($_POST)) {
-	$vars = &$_GET;  // Major pattern: Read-only access via GET
+	// Major pattern: Read-only access via GET
+	$vars = &$_GET;
 } elseif (empty($_GET)) {
-	$vars = &$_POST; // Minor pattern: Write access via POST etc.
+	// Minor pattern: Write access via POST etc.
+	$vars = &$_POST;
 } else {
-	$vars = array_merge($_GET, $_POST); // Considered reliable than $_REQUEST
+	// Considered reliable than $_REQUEST
+	$vars = array_merge($_GET, $_POST);
 }
 
 /**
@@ -405,7 +445,7 @@ function parse_query_string_ext($query_string)
 	return $vars;
 }
 
-if (isset($g_query_string) && $g_query_string) {
+if ((isset($g_query_string)) && ($g_query_string)) {
 	if (substr($g_query_string, 0, 2) === '//') {
 		// Parse ?//key.value//key.value format query string
 		$vars = array_merge($vars, parse_query_string_ext($g_query_string));
@@ -413,38 +453,47 @@ if (isset($g_query_string) && $g_query_string) {
 }
 
 // 入力チェック: 'cmd=' and 'plugin=' can't live together
-if (isset($vars['cmd']) && isset($vars['plugin'])) {
+if ((isset($vars['cmd'])) && (isset($vars['plugin']))) {
 	die('Using both cmd= and plugin= is not allowed');
 }
 
 // 入力チェック: cmd, plugin の文字列は英数字以外ありえない
 foreach (['cmd', 'plugin'] as $var) {
-	if (isset($vars[$var]) && !preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $vars[$var])) {
+	if ((isset($vars[$var])) && (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $vars[$var]))) {
 		unset($get[$var], $post[$var], $vars[$var]);
 	}
 }
 
 // 整形: page, strip_bracket()
 if (isset($vars['page'])) {
-	$get['page'] = $post['page'] = $vars['page'] = strip_bracket($vars['page']);
+	$vars['page'] = strip_bracket($vars['page']);
+	$post['page'] = $vars['page'];
+	$get['page'] = $vars['page'];
 } else {
-	$get['page'] = $post['page'] = $vars['page'] = '';
+	$vars['page'] = '';
+	$post['page'] = '';
+	$get['page'] = '';
 }
 
 // 整形: msg, 改行を取り除く
 if (isset($vars['msg'])) {
-	$get['msg'] = $post['msg'] = $vars['msg'] = str_replace("\r", '', $vars['msg']);
+	$vars['msg'] = str_replace("\r", '', $vars['msg']);
+	$post['msg'] = $vars['msg'];
+	$get['msg'] = $vars['msg'];
 }
 
 // 後方互換性 (?md5=...)
-if (isset($get['md5']) && $get['md5'] != '' &&
-	!isset($vars['cmd']) && !isset($vars['plugin'])) {
-	$get['cmd'] = $post['cmd'] = $vars['cmd'] = 'md5';
+if ((isset($get['md5'])) && ($get['md5'] != '') && (!isset($vars['cmd'])) && (!isset($vars['plugin']))) {
+	$vars['cmd'] = 'md5';
+	$post['cmd'] = 'md5';
+	$get['cmd'] = 'md5';
 }
 
 // cmdもpluginも指定されていない場合は、QUERY_STRINGをページ名かInterWikiNameであるとみなす
-if (!isset($vars['cmd']) && !isset($vars['plugin'])) {
-	$get['cmd'] = $post['cmd'] = $vars['cmd'] = 'read';
+if ((!isset($vars['cmd'])) && (!isset($vars['plugin']))) {
+	$vars['cmd'] = 'read';
+	$post['cmd'] = 'read';
+	$get['cmd'] = 'read';
 
 	$arg = preg_replace('#^([^&]*)&.*$#', '$1', $arg);
 
@@ -458,7 +507,9 @@ if (!isset($vars['cmd']) && !isset($vars['plugin'])) {
 	$arg = urldecode($arg);
 	$arg = strip_bracket($arg);
 	$arg = input_filter($arg);
-	$get['page'] = $post['page'] = $vars['page'] = $arg;
+	$vars['page'] = $arg;
+	$post['page'] = $arg;
+	$get['page'] = $arg;
 }
 
 /////////////////////////////////////////////////
@@ -499,16 +550,22 @@ $now = format_date(UTIME);
 if ($usedatetime) {
 	$line_rules += $datetime_rules;
 }
+
 unset($datetime_rules);
 
 // フェイスマークを$line_rulesに加える
 if ($usefacemark) {
 	$line_rules += $facemark_rules;
 }
+
 unset($facemark_rules);
 
 // 実体参照パターンおよびシステムで使用するパターンを$line_rulesに加える
-$line_rules = array_merge([
-	'&amp;(#[0-9]+|#x[0-9a-f]+|'.get_html_entity_pattern().');'=>'&$1;',
-	"\r"=>'<br />'."\n",	// 行末にチルダは改行
-], $line_rules);
+$line_rules = array_merge(
+	[
+		'&amp;(#[0-9]+|#x[0-9a-f]+|'.get_html_entity_pattern().');'=>'&$1;',
+
+		// 行末にチルダは改行
+		"\r"=>'<br />'."\n",
+	],
+	$line_rules);

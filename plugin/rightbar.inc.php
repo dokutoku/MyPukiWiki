@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // rightbar.inc.php
 // Copyright 2020 PukiWiki Development Team
@@ -14,7 +16,9 @@ define('RIGHTBAR_SUBMENUBAR', 'RightBar');
 
 function plugin_rightbar_convert()
 {
-	global $vars, $rightbar_name;
+	global $vars;
+	global $rightbar_name;
+
 	static $menu = null;
 
 	$num = func_num_args();
@@ -28,18 +32,21 @@ function plugin_rightbar_convert()
 		if ($menu !== null) {
 			return '#rightbar(): Already set: '.htmlsc($menu);
 		}
+
 		$args = func_get_args();
 
 		if (!is_page($args[0])) {
 			return '#rightbar(): No such page: '.htmlsc($args[0]);
 		} else {
-			$menu = $args[0]; // Set
+			// Set
+			$menu = $args[0];
 
 			return '';
 		}
 	}
+
 	// Output rightbar page data
-	$page = ($menu === null) ? $rightbar_name : $menu;
+	$page = ($menu === null) ? ($rightbar_name) : ($menu);
 
 	if (RIGHTBAR_ENABLE_SUBMENU) {
 		$path = explode('/', strip_bracket($vars['page']));
@@ -52,6 +59,7 @@ function plugin_rightbar_convert()
 
 				break;
 			}
+
 			array_pop($path);
 		}
 	}

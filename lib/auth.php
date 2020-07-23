@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // auth.php
 // Copyright 2003-2018 PukiWiki Development Team
@@ -26,11 +28,11 @@ function pkwk_login($pass = '')
 {
 	global $adminpass;
 
-	if (!PKWK_READONLY && isset($adminpass) &&
-		pkwk_hash_compute($pass, $adminpass) === $adminpass) {
+	if ((!PKWK_READONLY) && (isset($adminpass)) && (pkwk_hash_compute($pass, $adminpass) === $adminpass)) {
 		return true;
 	} else {
-		sleep(2);       // Blocking brute force attack
+		// Blocking brute force attack
+		sleep(2);
 
 		return false;
 	}
@@ -43,7 +45,7 @@ function pkwk_login($pass = '')
 // $canonical : Correct or Preserve $scheme prefix
 function pkwk_hash_compute($phrase = '', $scheme = '{x-php-md5}', $prefix = true, $canonical = false)
 {
-	if (!is_string($phrase) || !is_string($scheme)) {
+	if ((!is_string($phrase)) || (!is_string($scheme))) {
 		return false;
 	}
 
@@ -58,155 +60,138 @@ function pkwk_hash_compute($phrase = '', $scheme = '{x-php-md5}', $prefix = true
 		$scheme = $matches[1];
 		$salt = $matches[2];
 	} elseif ($scheme != '') {
-		$scheme = ''; // Cleartext
+		// Cleartext
+		$scheme = '';
+
 		$salt = '';
 	}
 
 	// Compute and add a scheme-prefix
 	switch (strtolower($scheme)) {
+		// PHP crypt()
+		case '{x-php-crypt}':
+			$hash = (($prefix) ? (($canonical) ? ('{x-php-crypt}') : ($scheme)) : ('')).(($salt != '') ? (crypt($phrase, $salt)) : (crypt($phrase)));
 
-	// PHP crypt()
-	case '{x-php-crypt}':
-		$hash = ($prefix ? ($canonical ? '{x-php-crypt}' : $scheme) : '').
-			($salt != '' ? crypt($phrase, $salt) : crypt($phrase));
+			break;
 
-		break;
+		// PHP md5()
+		case '{x-php-md5}':
+			$hash = (($prefix) ? (($canonical) ? ('{x-php-md5}') : ($scheme)) : ('')).md5($phrase);
 
-	// PHP md5()
-	case '{x-php-md5}':
-		$hash = ($prefix ? ($canonical ? '{x-php-md5}' : $scheme) : '').
-			md5($phrase);
+			break;
 
-		break;
+		// PHP sha1()
+		case '{x-php-sha1}':
+			$hash = (($prefix) ? (($canonical) ? ('{x-php-sha1}') : ($scheme)) : ('')).sha1($phrase);
 
-	// PHP sha1()
-	case '{x-php-sha1}':
-		$hash = ($prefix ? ($canonical ? '{x-php-sha1}' : $scheme) : '').
-			sha1($phrase);
+			break;
 
-		break;
+		// PHP sha256
+		case '{x-php-sha256}':
+			$hash = (($prefix) ? (($canonical) ? ('{x-php-sha256}') : ($scheme)) : ('')).hash('sha256', $phrase);
 
-	// PHP sha256
-	case '{x-php-sha256}':
-		$hash = ($prefix ? ($canonical ? '{x-php-sha256}' : $scheme) : '').
-			hash('sha256', $phrase);
+			break;
 
-		break;
+		// PHP sha384
+		case '{x-php-sha384}':
+			$hash = (($prefix) ? (($canonical) ? ('{x-php-sha384}') : ($scheme)) : ('')).hash('sha384', $phrase);
 
-	// PHP sha384
-	case '{x-php-sha384}':
-		$hash = ($prefix ? ($canonical ? '{x-php-sha384}' : $scheme) : '').
-			hash('sha384', $phrase);
+			break;
 
-		break;
+		// PHP sha512
+		case '{x-php-sha512}':
+			$hash = (($prefix) ? (($canonical) ? ('{x-php-sha512}') : ($scheme)) : ('')).hash('sha512', $phrase);
 
-	// PHP sha512
-	case '{x-php-sha512}':
-		$hash = ($prefix ? ($canonical ? '{x-php-sha512}' : $scheme) : '').
-			hash('sha512', $phrase);
+			break;
 
-		break;
+		// LDAP CRYPT
+		case '{crypt}':
+			$hash = (($prefix) ? (($canonical) ? ('{CRYPT}') : ($scheme)) : ('')).(($salt != '') ? (crypt($phrase, $salt)) : (crypt($phrase)));
 
-	// LDAP CRYPT
-	case '{crypt}':
-		$hash = ($prefix ? ($canonical ? '{CRYPT}' : $scheme) : '').
-			($salt != '' ? crypt($phrase, $salt) : crypt($phrase));
+			break;
 
-		break;
+		// LDAP MD5
+		case '{md5}':
+			$hash = (($prefix) ? (($canonical) ? ('{MD5}') : ($scheme)) : ('')).base64_encode(pkwk_hex2bin(md5($phrase)));
 
-	// LDAP MD5
-	case '{md5}':
-		$hash = ($prefix ? ($canonical ? '{MD5}' : $scheme) : '').
-			base64_encode(pkwk_hex2bin(md5($phrase)));
+			break;
 
-		break;
+		// LDAP SMD5
+		case '{smd5}':
+			// MD5 Key length = 128bits = 16bytes
+			$salt = ($salt != '') ? (substr(base64_decode($salt, true), 16)) : (substr(crypt(''), -8));
+			$hash = (($prefix) ? (($canonical) ? ('{SMD5}') : ($scheme)) : ('')).base64_encode(pkwk_hex2bin(md5($phrase.$salt)).$salt);
 
-	// LDAP SMD5
-	case '{smd5}':
-		// MD5 Key length = 128bits = 16bytes
-		$salt = ($salt != '' ? substr(base64_decode($salt), 16) : substr(crypt(''), -8));
-		$hash = ($prefix ? ($canonical ? '{SMD5}' : $scheme) : '').
-			base64_encode(pkwk_hex2bin(md5($phrase.$salt)).$salt);
+			break;
 
-		break;
+		// LDAP SHA
+		case '{sha}':
+			$hash = (($prefix) ? (($canonical) ? ('{SHA}') : ($scheme)) : ('')).base64_encode(pkwk_hex2bin(sha1($phrase)));
 
-	// LDAP SHA
-	case '{sha}':
-		$hash = ($prefix ? ($canonical ? '{SHA}' : $scheme) : '').
-			base64_encode(pkwk_hex2bin(sha1($phrase)));
+			break;
 
-		break;
+		// LDAP SSHA
+		case '{ssha}':
+			// SHA-1 Key length = 160bits = 20bytes
+			$salt = ($salt != '') ? (substr(base64_decode($salt, true), 20)) : (substr(crypt(''), -8));
+			$hash = (($prefix) ? (($canonical) ? ('{SSHA}') : ($scheme)) : ('')).base64_encode(pkwk_hex2bin(sha1($phrase.$salt)).$salt);
 
-	// LDAP SSHA
-	case '{ssha}':
-		// SHA-1 Key length = 160bits = 20bytes
-		$salt = ($salt != '' ? substr(base64_decode($salt), 20) : substr(crypt(''), -8));
-		$hash = ($prefix ? ($canonical ? '{SSHA}' : $scheme) : '').
-			base64_encode(pkwk_hex2bin(sha1($phrase.$salt)).$salt);
+			break;
 
-		break;
+		// LDAP SHA256
+		case '{sha256}':
+			$hash = (($prefix) ? (($canonical) ? ('{SHA256}') : ($scheme)) : ('')).base64_encode(hash('sha256', $phrase, true));
 
-	// LDAP SHA256
-	case '{sha256}':
-		$hash = ($prefix ? ($canonical ? '{SHA256}' : $scheme) : '').
-			base64_encode(hash('sha256', $phrase, true));
+			break;
 
-		break;
+		// LDAP SSHA256
+		case '{ssha256}':
+			// SHA-2 SHA-256 Key length = 256bits = 32bytes
+			$salt = ($salt != '') ? (substr(base64_decode($salt, true), 32)) : (substr(crypt(''), -8));
+			$hash = (($prefix) ? (($canonical) ? ('{SSHA256}') : ($scheme)) : ('')).base64_encode(hash('sha256', $phrase.$salt, true).$salt);
 
-	// LDAP SSHA256
-	case '{ssha256}':
-		// SHA-2 SHA-256 Key length = 256bits = 32bytes
-		$salt = ($salt != '' ? substr(base64_decode($salt), 32) : substr(crypt(''), -8));
-		$hash = ($prefix ? ($canonical ? '{SSHA256}' : $scheme) : '').
-			base64_encode(hash('sha256', $phrase.$salt, true).$salt);
+			break;
 
-		break;
+		// LDAP SHA384
+		case '{sha384}':
+			$hash = (($prefix) ? (($canonical) ? ('{SHA384}') : ($scheme)) : ('')).base64_encode(hash('sha384', $phrase, true));
 
-	// LDAP SHA384
-	case '{sha384}':
-		$hash = ($prefix ? ($canonical ? '{SHA384}' : $scheme) : '').
-			base64_encode(hash('sha384', $phrase, true));
+			break;
 
-		break;
+		// LDAP SSHA384
+		case '{ssha384}':
+			// SHA-2 SHA-384 Key length = 384bits = 48bytes
+			$salt = ($salt != '') ? (substr(base64_decode($salt, true), 48)) : (substr(crypt(''), -8));
+			$hash = (($prefix) ? (($canonical) ? ('{SSHA384}') : ($scheme)) : ('')).base64_encode(hash('sha384', $phrase.$salt, true).$salt);
 
-	// LDAP SSHA384
-	case '{ssha384}':
-		// SHA-2 SHA-384 Key length = 384bits = 48bytes
-		$salt = ($salt != '' ? substr(base64_decode($salt), 48) : substr(crypt(''), -8));
-		$hash = ($prefix ? ($canonical ? '{SSHA384}' : $scheme) : '').
-			base64_encode(hash('sha384', $phrase.$salt, true).$salt);
+			break;
 
-		break;
+		// LDAP SHA512
+		case '{sha512}':
+			$hash = (($prefix) ? (($canonical) ? ('{SHA512}') : ($scheme)) : ('')).base64_encode(hash('sha512', $phrase, true));
 
-	// LDAP SHA512
-	case '{sha512}':
-		$hash = ($prefix ? ($canonical ? '{SHA512}' : $scheme) : '').
-			base64_encode(hash('sha512', $phrase, true));
+			break;
 
-		break;
+		// LDAP SSHA512
+		case '{ssha512}':
+			// SHA-2 SHA-512 Key length = 512bits = 64bytes
+			$salt = ($salt != '') ? (substr(base64_decode($salt, true), 64)) : (substr(crypt(''), -8));
+			$hash = (($prefix) ? (($canonical) ? ('{SSHA512}') : ($scheme)) : ('')).base64_encode(hash('sha512', $phrase.$salt, true).$salt);
 
-	// LDAP SSHA512
-	case '{ssha512}':
-		// SHA-2 SHA-512 Key length = 512bits = 64bytes
-		$salt = ($salt != '' ? substr(base64_decode($salt), 64) : substr(crypt(''), -8));
-		$hash = ($prefix ? ($canonical ? '{SSHA512}' : $scheme) : '').
-			base64_encode(hash('sha512', $phrase.$salt, true).$salt);
+			break;
 
-		break;
+		// LDAP CLEARTEXT and just cleartext
+		case '{cleartext}':
+		case '':
+			$hash = (($prefix) ? (($canonical) ? ('{CLEARTEXT}') : ($scheme)) : ('')).$phrase;
 
-	// LDAP CLEARTEXT and just cleartext
-	case '{cleartext}': // FALLTHROUGH
-	case '':
-		$hash = ($prefix ? ($canonical ? '{CLEARTEXT}' : $scheme) : '').
-			$phrase;
+			break;
 
-		break;
+		// Invalid scheme
+		default:
+			$hash = false;
 
-	// Invalid scheme
-	default:
-		$hash = false;
-
-		break;
+			break;
 	}
 
 	return $hash;
@@ -225,8 +210,7 @@ function pkwk_ldap_escape_filter($value)
 		return ldap_escape($value, false, LDAP_ESCAPE_FILTER);
 	}
 
-	return preg_replace_callback('/[\\\\*()\0]/',
-		'_pkwk_ldap_escape_callback', $value);
+	return preg_replace_callback('/[\\\\*()\0]/', '_pkwk_ldap_escape_callback', $value);
 }
 
 function pkwk_ldap_escape_dn($value)
@@ -235,8 +219,7 @@ function pkwk_ldap_escape_dn($value)
 		return ldap_escape($value, false, LDAP_ESCAPE_DN);
 	}
 
-	return preg_replace_callback('/[\\\\,=+<>;"#]/',
-		'_pkwk_ldap_escape_callback', $value);
+	return preg_replace_callback('/[\\\\,=+<>;"#]/', '_pkwk_ldap_escape_callback', $value);
 }
 
 // Basic-auth related ----
@@ -244,24 +227,26 @@ function pkwk_ldap_escape_dn($value)
 // Check edit-permission
 function check_editable($page, $auth_enabled = true, $exit_on_fail = true)
 {
-	global $_title_cannotedit, $_msg_unfreeze;
+	global $_title_cannotedit;
+	global $_msg_unfreeze;
 
-	if (edit_auth($page, $auth_enabled, $exit_on_fail) && is_editable($page)) {
+	if ((edit_auth($page, $auth_enabled, $exit_on_fail)) && (is_editable($page))) {
 		// Editable
 		return true;
 	} else {
 		// Not editable
 		if ($exit_on_fail === false) {
-			return false; // Without exit
+			// Without exit
+			return false;
 		} else {
 			// With exit
-			$body = $title = str_replace('$1',
-				htmlsc(strip_bracket($page)), $_title_cannotedit);
+			$title = str_replace('$1', htmlsc(strip_bracket($page)), $_title_cannotedit);
+			$body = $title;
 
 			if (is_freeze($page)) {
-				$body .= '(<a href="'.get_base_uri().'?cmd=unfreeze&amp;page='.
-					rawurlencode($page).'">'.$_msg_unfreeze.'</a>)';
+				$body .= '(<a href="'.get_base_uri().'?cmd=unfreeze&amp;page='.rawurlencode($page).'">'.$_msg_unfreeze.'</a>)';
 			}
+
 			$page = str_replace('$1', make_search($page), $_title_cannotedit);
 			catbody($title, $page, $body);
 
@@ -300,16 +285,21 @@ function is_page_writable($page)
  */
 function _is_page_accessible($page, $auth_pages)
 {
-	global $auth_method_type, $auth_user_groups, $auth_user;
+	global $auth_method_type;
+	global $auth_user_groups;
+	global $auth_user;
 
 	// Checked by:
 	$target_str = '';
 
 	if ($auth_method_type == 'pagename') {
-		$target_str = $page; // Page name
+		// Page name
+		$target_str = $page;
 	} elseif ($auth_method_type == 'contents') {
-		$target_str = implode('', get_source($page)); // Its contents
+		// Its contents
+		$target_str = implode('', get_source($page));
 	}
+
 	$user_list = [];
 
 	foreach ($auth_pages as $key=>$val) {
@@ -319,8 +309,9 @@ function _is_page_accessible($page, $auth_pages)
 	}
 
 	if (empty($user_list)) {
+		// No limit
 		return true;
-	} // No limit
+	}
 
 	if (!$auth_user) {
 		// Current user doesen't yet log in.
@@ -341,14 +332,15 @@ function _is_page_accessible($page, $auth_pages)
  */
 function ensure_page_readable($page)
 {
-	global $read_auth, $read_auth_pages, $_title_cannotread;
+	global $read_auth;
+	global $read_auth_pages;
+	global $_title_cannotread;
 
 	if (!$read_auth) {
 		return true;
 	}
 
-	return basic_auth($page, true, true,
-		$read_auth_pages, $_title_cannotread);
+	return basic_auth($page, true, true, $read_auth_pages, $_title_cannotread);
 }
 
 /**
@@ -358,14 +350,15 @@ function ensure_page_readable($page)
  */
 function ensure_page_writable($page)
 {
-	global $edit_auth, $edit_auth_pages, $_title_cannotedit;
+	global $edit_auth;
+	global $edit_auth_pages;
+	global $_title_cannotedit;
 
 	if (!$edit_auth) {
 		return true;
 	}
 
-	return basic_auth($page, true, true,
-		$edit_auth_pages, $_title_cannotedit);
+	return basic_auth($page, true, true, $edit_auth_pages, $_title_cannotedit);
 }
 
 /**
@@ -384,18 +377,20 @@ function check_readable($page, $auth_enabled = true, $exit_on_fail = true)
 
 function edit_auth($page, $auth_enabled = true, $exit_on_fail = true)
 {
-	global $edit_auth, $edit_auth_pages, $_title_cannotedit;
+	global $edit_auth;
+	global $edit_auth_pages;
+	global $_title_cannotedit;
 
-	return $edit_auth ? basic_auth($page, $auth_enabled, $exit_on_fail,
-		$edit_auth_pages, $_title_cannotedit) : true;
+	return ($edit_auth) ? (basic_auth($page, $auth_enabled, $exit_on_fail, $edit_auth_pages, $_title_cannotedit)) : (true);
 }
 
 function read_auth($page, $auth_enabled = true, $exit_on_fail = true)
 {
-	global $read_auth, $read_auth_pages, $_title_cannotread;
+	global $read_auth;
+	global $read_auth_pages;
+	global $_title_cannotread;
 
-	return $read_auth ? basic_auth($page, $auth_enabled, $exit_on_fail,
-		$read_auth_pages, $_title_cannotread) : true;
+	return ($read_auth) ? (basic_auth($page, $auth_enabled, $exit_on_fail, $read_auth_pages, $_title_cannotread)) : (true);
 }
 
 /**
@@ -409,8 +404,12 @@ function read_auth($page, $auth_enabled = true, $exit_on_fail = true)
  */
 function basic_auth($page, $auth_enabled, $exit_on_fail, $auth_pages, $title_cannot)
 {
-	global $auth_users, $_msg_auth, $auth_user;
-	global $auth_type, $g_query_string;
+	global $auth_users;
+	global $_msg_auth;
+	global $auth_user;
+	global $auth_type;
+	global $g_query_string;
+
 	$is_accessible = _is_page_accessible($page, $auth_pages);
 
 	if ($is_accessible) {
@@ -419,28 +418,27 @@ function basic_auth($page, $auth_enabled, $exit_on_fail, $auth_pages, $title_can
 		// Auth failed
 		pkwk_common_headers();
 
-		if ($auth_enabled && !$auth_user) {
+		if (($auth_enabled) && (!$auth_user)) {
 			if (AUTH_TYPE_BASIC === $auth_type) {
 				header('WWW-Authenticate: Basic realm="'.$_msg_auth.'"');
 				header('HTTP/1.0 401 Unauthorized');
 			} elseif (AUTH_TYPE_FORM === $auth_type) {
-				if (null === $g_query_string) {
+				if ($g_query_string === null) {
 					$url_after_login = get_base_uri();
 				} else {
 					$url_after_login = get_base_uri().'?'.$g_query_string;
 				}
-				$loginurl = get_base_uri().'?plugin=loginform'
-					.'&page='.rawurlencode($page)
-					.'&url_after_login='.rawurlencode($url_after_login);
+
+				$loginurl = get_base_uri().'?plugin=loginform&page='.rawurlencode($page).'&url_after_login='.rawurlencode($url_after_login);
 				header('HTTP/1.0 302 Found');
 				header('Location: '.$loginurl);
-			} elseif (AUTH_TYPE_EXTERNAL === $auth_type ||
-				AUTH_TYPE_SAML === $auth_type) {
-				if (null === $g_query_string) {
+			} elseif ((AUTH_TYPE_EXTERNAL === $auth_type) || (AUTH_TYPE_SAML === $auth_type)) {
+				if ($g_query_string === null) {
 					$url_after_login = get_base_uri(PKWK_URI_ABSOLUTE);
 				} else {
 					$url_after_login = get_base_uri(PKWK_URI_ABSOLUTE).'?'.$g_query_string;
 				}
+
 				$loginurl = get_auth_external_login_url($page, $url_after_login);
 				header('HTTP/1.0 302 Found');
 				header('Location: '.$loginurl);
@@ -448,8 +446,8 @@ function basic_auth($page, $auth_enabled, $exit_on_fail, $auth_pages, $title_can
 		}
 
 		if ($exit_on_fail) {
-			$body = $title = str_replace('$1',
-				htmlsc(strip_bracket($page)), $title_cannot);
+			$title = str_replace('$1', htmlsc(strip_bracket($page)), $title_cannot);
+			$body = $title;
 			$page = str_replace('$1', make_search($page), $title_cannot);
 			catbody($title, $page, $body);
 
@@ -467,12 +465,18 @@ function basic_auth($page, $auth_enabled, $exit_on_fail, $auth_pages, $title_can
  */
 function ensure_valid_auth_user()
 {
-	global $auth_type, $auth_users, $_msg_auth, $auth_user, $auth_groups;
-	global $auth_user_groups, $auth_user_fullname;
+	global $auth_type;
+	global $auth_users;
+	global $_msg_auth;
+	global $auth_user;
+	global $auth_groups;
+	global $auth_user_groups;
+	global $auth_user_fullname;
 	global $ldap_user_account;
-	global $read_auth, $edit_auth;
+	global $read_auth;
+	global $edit_auth;
 
-	if ($read_auth || $edit_auth) {
+	if (($read_auth) || ($edit_auth)) {
 		switch ($auth_type) {
 			case AUTH_TYPE_BASIC:
 			case AUTH_TYPE_FORM:
@@ -481,23 +485,24 @@ function ensure_valid_auth_user()
 			case AUTH_TYPE_EXTERNAL_X_FORWARDED_USER:
 			case AUTH_TYPE_SAML:
 				break;
+
 			default:
 				// $auth_type is not valid, Set form auth as default
 				$auth_type = AUTH_TYPE_FORM;
+
+				break;
 		}
 	}
+
 	$auth_dynamic_groups = null;
 
 	switch ($auth_type) {
 		case AUTH_TYPE_BASIC:
-
 			if (isset($_SERVER['PHP_AUTH_USER'])) {
 				$user = $_SERVER['PHP_AUTH_USER'];
 
-				if (in_array($user, array_keys($auth_users))) {
-					if (pkwk_hash_compute(
-						$_SERVER['PHP_AUTH_PW'],
-						$auth_users[$user]) === $auth_users[$user]) {
+				if (in_array($user, array_keys($auth_users), true)) {
+					if (pkwk_hash_compute($_SERVER['PHP_AUTH_PW'], $auth_users[$user]) === $auth_users[$user]) {
 						$auth_user = $user;
 						$auth_user_fullname = $auth_user;
 						$auth_user_groups = get_groups_from_username($user);
@@ -505,18 +510,20 @@ function ensure_valid_auth_user()
 						return true;
 					}
 				}
+
 				header('WWW-Authenticate: Basic realm="'.$_msg_auth.'"');
 				header('HTTP/1.0 401 Unauthorized');
 			}
+
 			$auth_user = '';
 			$auth_user_groups = [];
 
-			return true; // no auth input
+			// no auth input
+			return true;
 
 		case AUTH_TYPE_FORM:
 		case AUTH_TYPE_EXTERNAL:
 		case AUTH_TYPE_SAML:
-
 			session_start();
 			$user = '';
 			$fullname = '';
@@ -525,14 +532,13 @@ function ensure_valid_auth_user()
 			if (isset($_SESSION['authenticated_user'])) {
 				$user = $_SESSION['authenticated_user'];
 
-				if (isset($_SESSION['authenticated_user_fullname'])) {
+				if ((isset($_SESSION['authenticated_user_fullname'])) && (isset($_SESSION['dynamic_member_groups']))) {
 					$fullname = $_SESSION['authenticated_user_fullname'];
 					$dynamic_groups = $_SESSION['dynamic_member_groups'];
 				} else {
 					$fullname = $user;
 
-					if (($auth_type === AUTH_TYPE_EXTERNAL || $auth_type === AUTH_TYPE_SAML) &&
-						$ldap_user_account) {
+					if ((($auth_type === AUTH_TYPE_EXTERNAL) || ($auth_type === AUTH_TYPE_SAML)) && ($ldap_user_account)) {
 						$ldap_user_info = ldap_get_simple_user_info($user);
 
 						if ($ldap_user_info) {
@@ -540,10 +546,12 @@ function ensure_valid_auth_user()
 							$dynamic_groups = $ldap_user_info['dynamic_member_groups'];
 						}
 					}
+
 					$_SESSION['authenticated_user_fullname'] = $fullname;
 					$_SESSION['dynamic_member_groups'] = $dynamic_groups;
 				}
 			}
+
 			$auth_user = $user;
 			$auth_user_fullname = $fullname;
 			$auth_dynamic_groups = $dynamic_groups;
@@ -555,24 +563,29 @@ function ensure_valid_auth_user()
 			$auth_user_fullname = $auth_user;
 
 			break;
+
 		case AUTH_TYPE_EXTERNAL_X_FORWARDED_USER:
 			$auth_user = $_SERVER['HTTP_X_FORWARDED_USER'];
 			$auth_user_fullname = $auth_user;
 
 			break;
-		default: // AUTH_TYPE_NONE
+
+		// AUTH_TYPE_NONE
+		default:
 			$auth_user = '';
 			$auth_user_fullname = '';
 
 			break;
 	}
+
 	$auth_user_groups = get_groups_from_username($auth_user);
 
-	if ($auth_dynamic_groups && is_array($auth_dynamic_groups)) {
+	if (($auth_dynamic_groups) && (is_array($auth_dynamic_groups))) {
 		$auth_user_groups = array_values(array_merge($auth_user_groups, $auth_dynamic_groups));
 	}
 
-	return true; // is not basic auth
+	// is not basic auth
+	return true;
 }
 
 /**
@@ -596,16 +609,18 @@ function get_groups_from_username($user)
 		foreach ($auth_groups as $group=>$users) {
 			$sp = explode(',', $users);
 
-			if (in_array($user, $sp)) {
+			if (in_array($user, $sp, true)) {
 				$groups[] = $group;
 			}
 		}
+
 		// Implicit group that has same name as user itself
 		$groups[] = $user;
+
 		// 'valid-user' group for
 		$valid_user = 'valid-user';
 
-		if (!in_array($valid_user, $groups)) {
+		if (!in_array($valid_user, $groups, true)) {
 			$groups[] = $valid_user;
 		}
 
@@ -639,7 +654,9 @@ function get_auth_user()
  */
 function form_auth($username, $password)
 {
-	global $ldap_user_account, $auth_users;
+	global $ldap_user_account;
+	global $auth_users;
+
 	$user = $username;
 
 	if ($ldap_user_account) {
@@ -647,12 +664,13 @@ function form_auth($username, $password)
 		return ldap_auth($username, $password);
 	} else {
 		// Defined users in pukiwiki.ini.php
-		if (in_array($user, array_keys($auth_users))) {
-			if (pkwk_hash_compute(
-				$password,
-				$auth_users[$user]) === $auth_users[$user]) {
+		if (in_array($user, array_keys($auth_users), true)) {
+			if (pkwk_hash_compute($password, $auth_users[$user]) === $auth_users[$user]) {
 				session_start();
-				session_regenerate_id(true); // require: PHP5.1+
+
+				// require: PHP5.1+
+				session_regenerate_id(true);
+
 				$_SESSION['authenticated_user'] = $user;
 				$_SESSION['authenticated_user_fullname'] = $user;
 
@@ -666,7 +684,11 @@ function form_auth($username, $password)
 
 function ldap_auth($username, $password)
 {
-	global $ldap_server, $ldap_base_dn, $ldap_bind_dn, $ldap_bind_password;
+	global $ldap_server;
+	global $ldap_base_dn;
+	global $ldap_bind_dn;
+	global $ldap_bind_password;
+
 	$ldapconn = ldap_connect($ldap_server);
 
 	if ($ldapconn) {
@@ -684,7 +706,10 @@ function ldap_auth($username, $password)
 
 				if ($user_info) {
 					$ldap_groups = get_ldap_groups_with_user($ldapconn, $username, $user_info['is_ad']);
-					session_regenerate_id(true); // require: PHP5.1+
+
+					// require: PHP5.1+
+					session_regenerate_id(true);
+
 					$_SESSION['authenticated_user'] = $user_info['uid'];
 					$_SESSION['authenticated_user_fullname'] = $user_info['fullname'];
 					$_SESSION['dynamic_member_groups'] = $ldap_groups;
@@ -704,7 +729,10 @@ function ldap_auth($username, $password)
 
 					if ($ldap_bind_user2) {
 						$ldap_groups = get_ldap_groups_with_user($ldapconn, $username, $user_info['is_ad']);
-						session_regenerate_id(true); // require: PHP5.1+
+
+						// require: PHP5.1+
+						session_regenerate_id(true);
+
 						$_SESSION['authenticated_user'] = $user_info['uid'];
 						$_SESSION['authenticated_user_fullname'] = $user_info['fullname'];
 						$_SESSION['dynamic_member_groups'] = $ldap_groups;
@@ -722,7 +750,11 @@ function ldap_auth($username, $password)
 // Get LDAP user info via bind DN
 function ldap_get_simple_user_info($username)
 {
-	global $ldap_server, $ldap_base_dn, $ldap_bind_dn, $ldap_bind_password;
+	global $ldap_server;
+	global $ldap_base_dn;
+	global $ldap_bind_dn;
+	global $ldap_bind_password;
+
 	$ldapconn = ldap_connect($ldap_server);
 
 	if ($ldapconn) {
@@ -735,8 +767,7 @@ function ldap_get_simple_user_info($username)
 			$user_info = get_ldap_user_info($ldapconn, $username, $ldap_base_dn);
 
 			if ($user_info) {
-				$ldap_groups = get_ldap_groups_with_user($ldapconn,
-					$username, $user_info['is_ad']);
+				$ldap_groups = get_ldap_groups_with_user($ldapconn, $username, $user_info['is_ad']);
 				$user_info['dynamic_member_groups'] = $ldap_groups;
 
 				return $user_info;
@@ -759,13 +790,14 @@ function ldap_get_simple_user_info($username)
 function get_ldap_user_info($ldapconn, $username, $base_dn)
 {
 	$username_esc = pkwk_ldap_escape_filter($username);
-	$filter = "(|(uid={$username_esc})(sAMAccountName={$username_esc}))";
+	$filter = '(|(uid='.$username_esc.')(sAMAccountName='.$username_esc.'))';
 	$result1 = ldap_search($ldapconn, $base_dn, $filter, ['dn', 'uid', 'cn', 'samaccountname', 'displayname', 'mail']);
 	$entries = ldap_get_entries($ldapconn, $result1);
 
 	if (!isset($entries[0])) {
 		return false;
 	}
+
 	$info = $entries[0];
 
 	if (isset($info['dn'])) {
@@ -779,6 +811,7 @@ function get_ldap_user_info($ldapconn, $username, $base_dn)
 			$cano_username = $info['samaccountname'][0];
 			$is_active_directory = true;
 		}
+
 		$cano_fullname = $username;
 
 		if (isset($info['displayname'][0])) {
@@ -787,7 +820,8 @@ function get_ldap_user_info($ldapconn, $username, $base_dn)
 			$cano_fullname = $info['cn'][0];
 		}
 
-		return [
+		return
+		[
 			'dn'=>$user_dn,
 			'uid'=>$cano_username,
 			'fullname'=>$cano_fullname,
@@ -823,25 +857,27 @@ function form_auth_redirect($location, $page) : void
 function get_auth_external_login_url($page, $url_after_login)
 {
 	global $auth_external_login_url_base;
+
 	$sep = '&';
 
 	if (strpos($auth_external_login_url_base, '?') === false) {
 		$sep = '?';
 	}
-	$url = $auth_external_login_url_base.$sep
-		.'page='.rawurlencode($page)
-		.'&url_after_login='.rawurlencode($url_after_login);
+
+	$url = $auth_external_login_url_base.$sep.'page='.rawurlencode($page).'&url_after_login='.rawurlencode($url_after_login);
 
 	return $url;
 }
 
 function get_auth_user_prefix()
 {
-	global $ldap_user_account, $auth_type;
+	global $ldap_user_account;
+	global $auth_type;
 	global $auth_provider_user_prefix_default;
 	global $auth_provider_user_prefix_ldap;
 	global $auth_provider_user_prefix_external;
 	global $auth_provider_user_prefix_saml;
+
 	$user_prefix = '';
 
 	switch ($auth_type) {
@@ -849,16 +885,19 @@ function get_auth_user_prefix()
 			$user_prefix = $auth_provider_user_prefix_default;
 
 			break;
+
 		case AUTH_TYPE_EXTERNAL:
 		case AUTH_TYPE_EXTERNAL_REMOTE_USER:
 		case AUTH_TYPE_EXTERNAL_X_FORWARDED_USER:
 			$user_prefix = $auth_provider_user_prefix_external;
 
 			break;
+
 		case AUTH_TYPE_SAML:
 			$user_prefix = $auth_provider_user_prefix_saml;
 
 			break;
+
 		case AUTH_TYPE_FORM:
 			if ($ldap_user_account) {
 				$user_prefix = $auth_provider_user_prefix_ldap;
@@ -867,6 +906,9 @@ function get_auth_user_prefix()
 			}
 
 			break;
+
+		default:
+			break;
 	}
 
 	return $user_prefix;
@@ -874,8 +916,10 @@ function get_auth_user_prefix()
 
 function get_ldap_related_groups()
 {
-	global $read_auth_pages, $edit_auth_pages;
+	global $read_auth_pages;
+	global $edit_auth_pages;
 	global $auth_provider_user_prefix_ldap;
+
 	$ldap_groups = [];
 
 	foreach ($read_auth_pages as $pattern=>$groups) {
@@ -897,6 +941,7 @@ function get_ldap_related_groups()
 			}
 		}
 	}
+
 	$ldap_groups_unique = array_values(array_unique($ldap_groups));
 
 	return $ldap_groups_unique;
@@ -915,11 +960,13 @@ function get_ldap_groups_with_user($ldapconn, $user, $is_ad)
 {
 	global $auth_provider_user_prefix_ldap;
 	global $ldap_base_dn;
+
 	$related_groups = get_ldap_related_groups();
 
 	if (count($related_groups) == 0) {
 		return [];
 	}
+
 	$gfilter = '(|';
 
 	foreach ($related_groups as $group_full) {
@@ -930,9 +977,9 @@ function get_ldap_groups_with_user($ldapconn, $user, $is_ad)
 			$gfilter .= sprintf('(sAMAccountName=%s)', pkwk_ldap_escape_filter($g));
 		}
 	}
+
 	$gfilter .= ')';
-	$result_g = ldap_search($ldapconn, $ldap_base_dn, $gfilter,
-		['dn', 'uid', 'cn', 'samaccountname']);
+	$result_g = ldap_search($ldapconn, $ldap_base_dn, $gfilter, ['dn', 'uid', 'cn', 'samaccountname']);
 	$entries = ldap_get_entries($ldapconn, $result_g);
 
 	if (!isset($entries[0])) {
@@ -942,6 +989,7 @@ function get_ldap_groups_with_user($ldapconn, $user, $is_ad)
 	if (!$entries) {
 		return [];
 	}
+
 	$entry_count = $entries['count'];
 	$group_list = [];
 
@@ -951,11 +999,14 @@ function get_ldap_groups_with_user($ldapconn, $user, $is_ad)
 		if ($is_ad) {
 			$group_name = $entries[$i]['samaccountname'][0];
 		}
-		$group_list[] = [
+
+		$group_list[] =
+		[
 			'name'=>$group_name,
 			'dn'=>$entries[$i]['dn'],
 		];
 	}
+
 	$groups_member = [];
 	$groups_nonmember = [];
 
@@ -966,19 +1017,18 @@ function get_ldap_groups_with_user($ldapconn, $user, $is_ad)
 			// LDAP_MATCHING_RULE_IN_CHAIN: Active Directory specific rule
 			$fmt = '(&(sAMAccountName=%s)(memberOf:1.2.840.113556.1.4.1941:=%s))';
 		}
-		$user_gfilter = sprintf($fmt,
-			pkwk_ldap_escape_filter($user),
-			pkwk_ldap_escape_filter($gp['dn']));
-		$result_e = ldap_search($ldapconn, $ldap_base_dn, $user_gfilter,
-			['dn'], 0, 1);
+
+		$user_gfilter = sprintf($fmt, pkwk_ldap_escape_filter($user), pkwk_ldap_escape_filter($gp['dn']));
+		$result_e = ldap_search($ldapconn, $ldap_base_dn, $user_gfilter, ['dn'], 0, 1);
 		$user_e = ldap_get_entries($ldapconn, $result_e);
 
-		if (isset($user_e['count']) && $user_e['count'] > 0) {
+		if ((isset($user_e['count'])) && ($user_e['count'] > 0)) {
 			$groups_member[] = $gp['name'];
 		} else {
 			$groups_nonmember[] = $gp['name'];
 		}
 	}
+
 	$groups_full = [];
 
 	foreach ($groups_member as $g) {

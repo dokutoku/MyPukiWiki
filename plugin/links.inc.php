@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // links.inc.php
 // Copyright 2003-2017 PukiWiki Development Team
@@ -9,8 +11,10 @@
 // Message setting
 function plugin_links_init() : void
 {
-	$messages = [
-		'_links_messages'=>[
+	$messages =
+	[
+		'_links_messages'=>
+		[
 			'title_update'=>'キャッシュ更新',
 			'msg_adminpass'=>'管理者パスワード',
 			'btn_submit'=>'実行',
@@ -29,12 +33,15 @@ function plugin_links_init() : void
 ',
 		],
 	];
+
 	set_plugin_messages($messages);
 }
 
 function plugin_links_action()
 {
-	global $post, $vars, $foot_explain;
+	global $post;
+	global $vars;
+	global $foot_explain;
 	global $_links_messages;
 
 	$script = get_base_uri();
@@ -43,9 +50,10 @@ function plugin_links_action()
 		die_message('PKWK_READONLY prohibits this');
 	}
 
-	$msg = $body = '';
+	$body = '';
+	$msg = '';
 
-	if (empty($vars['action']) || empty($post['adminpass']) || !pkwk_login($post['adminpass'])) {
+	if ((empty($vars['action'])) || (empty($post['adminpass'])) || (!pkwk_login($post['adminpass']))) {
 		$msg = &$_links_messages['title_update'];
 		$body = convert_html($_links_messages['msg_usage']);
 		$body .= <<<EOD
@@ -61,7 +69,10 @@ function plugin_links_action()
 EOD;
 	} elseif ($vars['action'] == 'update') {
 		links_init();
-		$foot_explain = []; // Exhaust footnotes
+
+		// Exhaust footnotes
+		$foot_explain = [];
+
 		$msg = &$_links_messages['title_update'];
 		$body = &$_links_messages['msg_done'];
 	} else {

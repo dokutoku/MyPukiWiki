@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // $Id: keitai.skin.php,v 1.16 2006/01/09 10:37:05 henoheno Exp $
 // Copyright (C) 2003-2006 PukiWiki Developers Team
@@ -12,12 +14,17 @@ if (!defined('UI_LANG')) {
 	die('UI_LANG is not set');
 }
 
-$pageno = (isset($vars['p']) && is_numeric($vars['p'])) ? $vars['p'] : 0;
-$edit = (isset($vars['cmd']) && $vars['cmd'] == 'edit') ||
-	(isset($vars['plugin']) && $vars['plugin'] == 'edit');
+$pageno = ((isset($vars['p'])) && (is_numeric($vars['p']))) ? ($vars['p']) : (0);
+$edit = ((isset($vars['cmd'])) && ($vars['cmd'] == 'edit')) || ((isset($vars['plugin'])) && ($vars['plugin'] == 'edit'));
 
-global $max_size, $accesskey, $menubar, $_symbol_anchor;
-$max_size = --$max_size * 1024; // Make 1KByte spare (for $navi, etc)
+global $max_size;
+global $accesskey;
+global $menubar;
+global $_symbol_anchor;
+
+// Make 1KByte spare (for $navi, etc)
+$max_size = --$max_size * 1024;
+
 $link = $_LINK;
 $rw = !PKWK_READONLY;
 
@@ -39,7 +46,7 @@ $body = preg_replace('#(<div[^>]+>)?(<a[^>]+>)?<img[^>]+>(?(2)</a>)(?(1)</div>)#
 $pagecount = ceil(strlen($body) / $max_size);
 
 // Too large contents to edit
-if ($edit && $pagecount > 1) {
+if (($edit) && ($pagecount > 1)) {
 	die('Unable to edit: Too large contents for your device');
 }
 
@@ -56,7 +63,7 @@ if ($rw) {
 	$navi[] = '<a href="'.$link['new'].'" '.$accesskey.'="1">1.New</a>';
 	$navi[] = '<a href="'.$link['edit'].'" '.$accesskey.'="2">2.Edit</a>';
 
-	if ($is_read && $function_freeze) {
+	if (($is_read) && ($function_freeze)) {
 		if (!$is_freeze) {
 			$navi[] = '<a href="'.$link['freeze'].'" '.$accesskey.'="3">3.Freeze</a>';
 		} else {
@@ -64,6 +71,7 @@ if ($rw) {
 		}
 	}
 }
+
 $navi[] = '<a href="'.$script.'?'.pagename_urlencode($menubar).'" '.$accesskey.'="4">4.Menu</a>';
 $navi[] = '<a href="'.$link['recent'].'" '.$accesskey.'="5">5.Recent</a>';
 
@@ -73,14 +81,13 @@ if ($pagecount > 1) {
 	$next = $pageno + 1;
 
 	if ($pageno > 0) {
-		$navi[] = '<a href="'.$script.'?cmd=read&amp;page='.$r_page.
-			'&amp;p='.$prev.'" '.$accesskey.'="7">7.Prev</a>';
+		$navi[] = '<a href="'.$script.'?cmd=read&amp;page='.$r_page.'&amp;p='.$prev.'" '.$accesskey.'="7">7.Prev</a>';
 	}
+
 	$navi[] = $next.'/'.$pagecount.' ';
 
-	if ($pageno < $pagecount - 1) {
-		$navi[] = '<a href="'.$script.'?cmd=read&amp;page='.$r_page.
-			'&amp;p='.$next.'" '.$accesskey.'="8">8.Next</a>';
+	if ($pageno < ($pagecount - 1)) {
+		$navi[] = '<a href="'.$script.'?cmd=read&amp;page='.$r_page.'&amp;p='.$next.'" '.$accesskey.'="8">8.Next</a>';
 	}
 }
 

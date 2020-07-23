@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // freeze.inc.php
 // Copyright 2003-2017 PukiWiki Development Team
@@ -14,26 +16,31 @@ function plugin_freeze_convert()
 
 function plugin_freeze_action()
 {
-	global $vars, $function_freeze;
-	global $_title_isfreezed, $_title_freezed, $_title_freeze;
-	global $_msg_invalidpass, $_msg_freezing, $_btn_freeze;
+	global $vars;
+	global $function_freeze;
+	global $_title_isfreezed;
+	global $_title_freezed;
+	global $_title_freeze;
+	global $_msg_invalidpass;
+	global $_msg_freezing;
+	global $_btn_freeze;
 
 	$script = get_base_uri();
-	$page = isset($vars['page']) ? $vars['page'] : '';
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
 
-	if (!$function_freeze || !is_page($page)) {
+	if ((!$function_freeze) || (!is_page($page))) {
 		return ['msg'=>'', 'body'=>''];
 	}
 
-	$pass = isset($vars['pass']) ? $vars['pass'] : null;
-	$msg = $body = '';
+	$pass = (isset($vars['pass'])) ? ($vars['pass']) : (null);
+	$body = '';
+	$msg = '';
 
 	if (is_freeze($page)) {
 		// Freezed already
 		$msg = &$_title_isfreezed;
-		$body = str_replace('$1', htmlsc(strip_bracket($page)),
-			$_title_isfreezed);
-	} elseif ($pass !== null && pkwk_login($pass)) {
+		$body = str_replace('$1', htmlsc(strip_bracket($page)), $_title_isfreezed);
+	} elseif (($pass !== null) && (pkwk_login($pass))) {
 		// Freeze
 		$postdata = get_source($page);
 		array_unshift($postdata, "#freeze\n");
@@ -48,7 +55,7 @@ function plugin_freeze_action()
 		// Show a freeze form
 		$msg = &$_title_freeze;
 		$s_page = htmlsc($page);
-		$body = ($pass === null) ? '' : "<p><strong>{$_msg_invalidpass}</strong></p>\n";
+		$body = ($pass === null) ? ('') : ('<p><strong>'.$_msg_invalidpass.'</strong></p>'."\n");
 		$body .= <<<EOD
 <p>{$_msg_freezing}</p>
 <form action="{$script}" method="post">

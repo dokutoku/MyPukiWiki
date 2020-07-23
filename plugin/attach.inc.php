@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // attach.inc.php
 // Copyright
@@ -17,32 +19,38 @@
 ini_set('upload_max_filesize', '2M');
 
 // Max file size for upload on script of PukiWikiX_FILESIZE
-define('PLUGIN_ATTACH_MAX_FILESIZE', (1024 * 1024)); // default: 1MB
+// default: 1MB
+define('PLUGIN_ATTACH_MAX_FILESIZE', 1024 * 1024);
 
 // 管理者だけが添付ファイルをアップロードできるようにする
-define('PLUGIN_ATTACH_UPLOAD_ADMIN_ONLY', true); // FALSE or TRUE
+// false or true
+define('PLUGIN_ATTACH_UPLOAD_ADMIN_ONLY', true);
 
 // 管理者だけが添付ファイルを削除できるようにする
-define('PLUGIN_ATTACH_DELETE_ADMIN_ONLY', true); // FALSE or TRUE
+// false or true
+define('PLUGIN_ATTACH_DELETE_ADMIN_ONLY', true);
 
 // 管理者が添付ファイルを削除するときは、バックアップを作らない
 // PLUGIN_ATTACH_DELETE_ADMIN_ONLY=TRUEのとき有効
-define('PLUGIN_ATTACH_DELETE_ADMIN_NOBACKUP', false); // FALSE or TRUE
+// false or true
+define('PLUGIN_ATTACH_DELETE_ADMIN_NOBACKUP', false);
 
 // アップロード/削除時にパスワードを要求する(ADMIN_ONLYが優先)
-define('PLUGIN_ATTACH_PASSWORD_REQUIRE', false); // FALSE or TRUE
+// false or true
+define('PLUGIN_ATTACH_PASSWORD_REQUIRE', false);
 
 // 添付ファイル名を変更できるようにする
-define('PLUGIN_ATTACH_RENAME_ENABLE', true); // FALSE or TRUE
+// false or true
+define('PLUGIN_ATTACH_RENAME_ENABLE', true);
 
 // ファイルのアクセス権
 define('PLUGIN_ATTACH_FILE_MODE', 0644);
-//define('PLUGIN_ATTACH_FILE_MODE', 0604); // for XREA.COM
+
+// for XREA.COM
+//define('PLUGIN_ATTACH_FILE_MODE', 0604);
 
 // File icon image
-define('PLUGIN_ATTACH_FILE_ICON', '<img src="'.IMAGE_DIR.'file.png"'.
-	' width="20" height="20" alt="file"'.
-	' style="border-width:0" />');
+define('PLUGIN_ATTACH_FILE_ICON', '<img src="'.IMAGE_DIR.'file.png" width="20" height="20" alt="file" style="border-width:0" />');
 
 // mime-typeを記述したページ
 define('PLUGIN_ATTACH_CONFIG_PAGE_MIME', 'plugin/attach/mime-type');
@@ -52,9 +60,10 @@ function plugin_attach_convert()
 {
 	global $vars;
 
-	$page = isset($vars['page']) ? $vars['page'] : '';
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
 
-	$nolist = $noform = false;
+	$noform = false;
+	$nolist = false;
 
 	if (func_num_args() > 0) {
 		foreach (func_get_args() as $arg) {
@@ -81,7 +90,8 @@ function plugin_attach_convert()
 //-------- action
 function plugin_attach_action()
 {
-	global $vars, $_attach_messages;
+	global $vars;
+	global $_attach_messages;
 
 	// Backward compatible
 	if (isset($vars['openfile'])) {
@@ -94,17 +104,17 @@ function plugin_attach_action()
 		$vars['pcmd'] = 'delete';
 	}
 
-	$pcmd = isset($vars['pcmd']) ? $vars['pcmd'] : '';
-	$refer = isset($vars['refer']) ? $vars['refer'] : '';
-	$pass = isset($vars['pass']) ? $vars['pass'] : null;
-	$page = isset($vars['page']) ? $vars['page'] : '';
+	$pcmd = (isset($vars['pcmd'])) ? ($vars['pcmd']) : ('');
+	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
+	$pass = (isset($vars['pass'])) ? ($vars['pass']) : (null);
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
 
-	if ($refer === '' && $page !== '') {
+	if (($refer === '') && ($page !== '')) {
 		$refer = $page;
 	}
 
-	if ($refer != '' && is_pagename($refer)) {
-		if (in_array($pcmd, ['info', 'open', 'list'])) {
+	if (($refer != '') && (is_pagename($refer))) {
+		if (in_array($pcmd, ['info', 'open', 'list'], true)) {
 			check_readable($refer);
 		} else {
 			check_editable($refer);
@@ -117,26 +127,49 @@ function plugin_attach_action()
 		return attach_upload($_FILES['attach_file'], $refer, $pass);
 	} else {
 		switch ($pcmd) {
-		case 'delete':	// FALLTHROUGH
-		case 'freeze':
-		case 'unfreeze':
-			if (PKWK_READONLY) {
-				die_message('PKWK_READONLY prohibits editing');
-			}
+			case 'delete':
+			case 'freeze':
+			case 'unfreeze':
+				if (PKWK_READONLY) {
+					die_message('PKWK_READONLY prohibits editing');
+				}
+
+				break;
+
+			default:
+				break;
 		}
 
 		switch ($pcmd) {
-		case 'info': return attach_info();
-		case 'delete': return attach_delete();
-		case 'open': return attach_open();
-		case 'list': return attach_list();
-		case 'freeze': return attach_freeze(true);
-		case 'unfreeze': return attach_freeze(false);
-		case 'rename': return attach_rename();
-		case 'upload': return attach_showform();
+			case 'info':
+				return attach_info();
+
+			case 'delete':
+				return attach_delete();
+
+			case 'open':
+				return attach_open();
+
+			case 'list':
+				return attach_list();
+
+			case 'freeze':
+				return attach_freeze(true);
+
+			case 'unfreeze':
+				return attach_freeze(false);
+
+			case 'rename':
+				return attach_rename();
+
+			case 'upload':
+				return attach_showform();
+
+			default:
+				break;
 		}
 
-		if ($page == '' || !is_page($page)) {
+		if (($page == '') || (!is_page($page))) {
 			return attach_list();
 		} else {
 			return attach_showform();
@@ -147,65 +180,58 @@ function plugin_attach_action()
 //-------- call from skin
 function attach_filelist()
 {
-	global $vars, $_attach_messages;
+	global $vars;
+	global $_attach_messages;
 
-	$page = isset($vars['page']) ? $vars['page'] : '';
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
 
 	$obj = new AttachPages($page, 0);
 
 	if (!isset($obj->pages[$page])) {
 		return '';
 	} else {
-		return $_attach_messages['msg_file'].': '.
-		$obj->toString($page, true)."\n";
+		return $_attach_messages['msg_file'].': '.$obj->toString($page, true)."\n";
 	}
 }
 
 //-------- 実体
 // ファイルアップロード
-// $pass = NULL : パスワードが指定されていない
-// $pass = TRUE : アップロード許可
+// $pass = null : パスワードが指定されていない
+// $pass = true : アップロード許可
 function attach_upload($file, $page, $pass = null)
 {
-	global $_attach_messages, $notify, $notify_subject;
+	global $_attach_messages;
+	global $notify;
+	global $notify_subject;
 
 	if (PKWK_READONLY) {
 		die_message('PKWK_READONLY prohibits editing');
 	}
 
 	// Check query-string
-	$query = 'plugin=attach&amp;pcmd=info&amp;refer='.rawurlencode($page).
-		'&amp;file='.rawurlencode($file['name']);
+	$query = 'plugin=attach&amp;pcmd=info&amp;refer='.rawurlencode($page).'&amp;file='.rawurlencode($file['name']);
 
-	if (PKWK_QUERY_STRING_MAX && strlen($query) > PKWK_QUERY_STRING_MAX) {
+	if ((PKWK_QUERY_STRING_MAX) && (strlen($query) > PKWK_QUERY_STRING_MAX)) {
 		pkwk_common_headers();
 		echo 'Query string (page name and/or file name) too long';
 
 		exit;
 	} elseif (!is_page($page)) {
 		die_message('No such page');
-	} elseif ($file['tmp_name'] == '' || !is_uploaded_file($file['tmp_name'])) {
+	} elseif (($file['tmp_name'] == '') || (!is_uploaded_file($file['tmp_name']))) {
 		return ['result'=>false];
 	} elseif ($file['size'] > PLUGIN_ATTACH_MAX_FILESIZE) {
-		return [
-			'result'=>false,
-			'msg'=>$_attach_messages['err_exceed'], ];
-	} elseif (!is_pagename($page) || ($pass !== true && !is_editable($page))) {
-		return [
-			'result'=>false, '
-			msg'=>$_attach_messages['err_noparm'], ];
-	} elseif (PLUGIN_ATTACH_UPLOAD_ADMIN_ONLY && $pass !== true &&
-		  ($pass === null || !pkwk_login($pass))) {
-		return [
-			'result'=>false,
-			'msg'=>$_attach_messages['err_adminpass'], ];
+		return ['result'=>false, 'msg'=>$_attach_messages['err_exceed']];
+	} elseif ((!is_pagename($page)) || (($pass !== true) && (!is_editable($page)))) {
+		return ['result'=>false, 'msg'=>$_attach_messages['err_noparm']];
+	} elseif ((PLUGIN_ATTACH_UPLOAD_ADMIN_ONLY) && ($pass !== true) && (($pass === null) || (!pkwk_login($pass)))) {
+		return ['result'=>false, 'msg'=>$_attach_messages['err_adminpass']];
 	}
 
 	$obj = new AttachFile($page, $file['name']);
 
 	if ($obj->exist) {
-		return ['result'=>false,
-			'msg'=>$_attach_messages['err_exists'], ];
+		return ['result'=>false, 'msg'=>$_attach_messages['err_exists']];
 	}
 
 	if (move_uploaded_file($file['tmp_name'], $obj->filename)) {
@@ -217,7 +243,7 @@ function attach_upload($file, $page, $pass = null)
 	}
 
 	$obj->getstatus();
-	$obj->status['pass'] = ($pass !== true && $pass !== null) ? md5($pass) : '';
+	$obj->status['pass'] = (($pass !== true) && ($pass !== null)) ? (md5($pass)) : ('');
 	$obj->putstatus();
 
 	if ($notify) {
@@ -226,51 +252,46 @@ function attach_upload($file, $page, $pass = null)
 		$footer['FILESIZE'] = $file['size'];
 		$footer['PAGE'] = $page;
 
-		$footer['URI'] = get_base_uri(PKWK_URI_ABSOLUTE).
-			// MD5 may heavy
-			'?plugin=attach'.
-				'&refer='.rawurlencode($page).
-				'&file='.rawurlencode($file['name']).
-				'&pcmd=info';
+		// MD5 may heavy
+		$footer['URI'] = get_base_uri(PKWK_URI_ABSOLUTE).'?plugin=attach&refer='.rawurlencode($page).'&file='.rawurlencode($file['name']).'&pcmd=info';
 
 		$footer['USER_AGENT'] = true;
 		$footer['REMOTE_ADDR'] = true;
 
-		pkwk_mail_notify($notify_subject, "\n", $footer) ||
+		if (!pkwk_mail_notify($notify_subject, "\n", $footer)) {
 			die('pkwk_mail_notify(): Failed');
+		}
 	}
 
-	return [
-		'result'=>true,
-		'msg'=>$_attach_messages['msg_uploaded'], ];
+	return ['result'=>true, 'msg'=>$_attach_messages['msg_uploaded']];
 }
 
 // 詳細フォームを表示
 function attach_info($err = '')
 {
-	global $vars, $_attach_messages;
+	global $vars;
+	global $_attach_messages;
 
 	foreach (['refer', 'file', 'age'] as $var) {
-		${$var} = isset($vars[$var]) ? $vars[$var] : '';
+		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
 	}
 
 	$obj = new AttachFile($refer, $file, $age);
 
-	return $obj->getstatus() ?
-		$obj->info($err) :
-		['msg'=>$_attach_messages['err_notfound']];
+	return ($obj->getstatus()) ? ($obj->info($err)) : (['msg'=>$_attach_messages['err_notfound']]);
 }
 
 // 削除
 function attach_delete()
 {
-	global $vars, $_attach_messages;
+	global $vars;
+	global $_attach_messages;
 
 	foreach (['refer', 'file', 'age', 'pass'] as $var) {
-		${$var} = isset($vars[$var]) ? $vars[$var] : '';
+		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
 	}
 
-	if (is_freeze($refer) || !is_editable($refer)) {
+	if ((is_freeze($refer)) || (!is_editable($refer))) {
 		return ['msg'=>$_attach_messages['err_noparm']];
 	}
 
@@ -286,35 +307,36 @@ function attach_delete()
 // 凍結
 function attach_freeze($freeze)
 {
-	global $vars, $_attach_messages;
+	global $vars;
+	global $_attach_messages;
 
 	foreach (['refer', 'file', 'age', 'pass'] as $var) {
-		${$var} = isset($vars[$var]) ? $vars[$var] : '';
+		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
 	}
 
-	if (is_freeze($refer) || !is_editable($refer)) {
+	if ((is_freeze($refer)) || (!is_editable($refer))) {
 		return ['msg'=>$_attach_messages['err_noparm']];
 	} else {
 		$obj = new AttachFile($refer, $file, $age);
 
-		return $obj->getstatus() ?
-			$obj->freeze($freeze, $pass) :
-			['msg'=>$_attach_messages['err_notfound']];
+		return ($obj->getstatus()) ? ($obj->freeze($freeze, $pass)) : (['msg'=>$_attach_messages['err_notfound']]);
 	}
 }
 
 // リネーム
 function attach_rename()
 {
-	global $vars, $_attach_messages;
+	global $vars;
+	global $_attach_messages;
 
 	foreach (['refer', 'file', 'age', 'pass', 'newname'] as $var) {
-		${$var} = isset($vars[$var]) ? $vars[$var] : '';
+		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
 	}
 
-	if (is_freeze($refer) || !is_editable($refer)) {
+	if ((is_freeze($refer)) || (!is_editable($refer))) {
 		return ['msg'=>$_attach_messages['err_noparm']];
 	}
+
 	$obj = new AttachFile($refer, $file, $age);
 
 	if (!$obj->getstatus()) {
@@ -327,32 +349,30 @@ function attach_rename()
 // ダウンロード
 function attach_open()
 {
-	global $vars, $_attach_messages;
+	global $vars;
+	global $_attach_messages;
 
 	foreach (['refer', 'file', 'age'] as $var) {
-		${$var} = isset($vars[$var]) ? $vars[$var] : '';
+		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
 	}
 
 	$obj = new AttachFile($refer, $file, $age);
 
-	return $obj->getstatus() ?
-		$obj->open() :
-		['msg'=>$_attach_messages['err_notfound']];
+	return ($obj->getstatus()) ? ($obj->open()) : (['msg'=>$_attach_messages['err_notfound']]);
 }
 
 // 一覧取得
 function attach_list()
 {
-	global $vars, $_attach_messages;
+	global $vars;
+	global $_attach_messages;
 
-	$refer = isset($vars['refer']) ? $vars['refer'] : '';
+	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
 
 	$obj = new AttachPages($refer);
 
-	$msg = $_attach_messages[($refer == '') ? 'msg_listall' : 'msg_listpage'];
-	$body = ($refer == '' || isset($obj->pages[$refer])) ?
-		$obj->toString($refer, false) :
-		$_attach_messages['err_noexist'];
+	$msg = $_attach_messages[($refer == '') ? ('msg_listall') : ('msg_listpage')];
+	$body = (($refer == '') || (isset($obj->pages[$refer]))) ? ($obj->toString($refer, false)) : ($_attach_messages['err_noexist']);
 
 	return ['msg'=>$msg, 'body'=>$body];
 }
@@ -360,9 +380,10 @@ function attach_list()
 // アップロードフォームを表示 (action時)
 function attach_showform()
 {
-	global $vars, $_attach_messages;
+	global $vars;
+	global $_attach_messages;
 
-	$page = isset($vars['page']) ? $vars['page'] : '';
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
 	$vars['refer'] = $page;
 	$body = attach_form($page);
 
@@ -373,11 +394,13 @@ function attach_showform()
 // mime-typeの決定
 function attach_mime_content_type($filename, $displayname)
 {
-	$type = 'application/octet-stream'; // default
+	// default
+	$type = 'application/octet-stream';
 
 	if (!file_exists($filename)) {
 		return $type;
 	}
+
 	$pathinfo = pathinfo($displayname);
 	$ext0 = $pathinfo['extension'];
 
@@ -386,17 +409,30 @@ function attach_mime_content_type($filename, $displayname)
 
 		if (is_array($size)) {
 			switch ($size[2]) {
-				case 1: return 'image/gif';
-				case 2: return 'image/jpeg';
-				case 3: return 'image/png';
-				case 4: return 'application/x-shockwave-flash';
+				case 1:
+					return 'image/gif';
+
+				case 2:
+					return 'image/jpeg';
+
+				case 3:
+					return 'image/png';
+
+				case 4:
+					return 'application/x-shockwave-flash';
+
+				default:
+					break;
 			}
 		}
 	}
+
 	// mime-type一覧表を取得
 	$config = new Config(PLUGIN_ATTACH_CONFIG_PAGE_MIME);
-	$table = $config->read() ? $config->get('mime-type') : [];
-	unset($config); // メモリ節約
+	$table = ($config->read()) ? ($config->get('mime-type')) : ([]);
+
+	// メモリ節約
+	unset($config);
 
 	foreach ($table as $row) {
 		$_type = trim($row[0]);
@@ -415,7 +451,8 @@ function attach_mime_content_type($filename, $displayname)
 // アップロードフォームの出力
 function attach_form($page)
 {
-	global $vars, $_attach_messages;
+	global $vars;
+	global $_attach_messages;
 
 	$script = get_base_uri();
 	$r_page = rawurlencode($page);
@@ -440,8 +477,8 @@ EOD;
 
 	$pass = '';
 
-	if (PLUGIN_ATTACH_PASSWORD_REQUIRE || PLUGIN_ATTACH_UPLOAD_ADMIN_ONLY) {
-		$title = $_attach_messages[PLUGIN_ATTACH_UPLOAD_ADMIN_ONLY ? 'msg_adminpass' : 'msg_password'];
+	if ((PLUGIN_ATTACH_PASSWORD_REQUIRE) || (PLUGIN_ATTACH_UPLOAD_ADMIN_ONLY)) {
+		$title = $_attach_messages[(PLUGIN_ATTACH_UPLOAD_ADMIN_ONLY) ? ('msg_adminpass') : ('msg_password')];
 		$pass = '<br />'.$title.': <input type="password" name="pass" size="8" />';
 	}
 
@@ -499,18 +536,18 @@ class AttachFile
 	{
 		$this->page = $page;
 		$this->file = preg_replace('#^.*/#', '', $file);
-		$this->age = is_numeric($age) ? $age : 0;
+		$this->age = (is_numeric($age)) ? ($age) : (0);
 
 		$this->basename = UPLOAD_DIR.encode($page).'_'.encode($this->file);
-		$this->filename = $this->basename.($age ? '.'.$age : '');
+		$this->filename = $this->basename.(($age) ? ('.'.$age) : (''));
 		$this->logname = $this->basename.'.log';
 		$this->exist = file_exists($this->filename);
-		$this->time = $this->exist ? filemtime($this->filename) - LOCALZONE : 0;
+		$this->time = ($this->exist) ? (filemtime($this->filename) - LOCALZONE) : (0);
 	}
 
 	public function gethash()
 	{
-		return $this->exist ? md5_file($this->filename) : '';
+		return ($this->exist) ? (md5_file($this->filename)) : ('');
 	}
 
 	// ファイル情報取得
@@ -523,12 +560,14 @@ class AttachFile
 			foreach ($this->status as $key=>$value) {
 				$this->status[$key] = rtrim(array_shift($data));
 			}
+
 			$this->status['count'] = explode(',', $this->status['count']);
 		}
 
 		if (!$this->exist) {
 			return false;
 		}
+
 		$this->time_str = get_date('Y/m/d H:i:s', $this->time);
 		$this->size = filesize($this->filename);
 		$this->size_str = sprintf('%01.1f', round($this->size / 1024, 1)).'KB';
@@ -541,8 +580,11 @@ class AttachFile
 	public function putstatus() : void
 	{
 		$this->status['count'] = implode(',', $this->status['count']);
-		$fp = fopen($this->logname, 'wb') ||
+
+		if (!($fp = fopen($this->logname, 'wb'))) {
 			die_message('cannot write '.$this->logname);
+		}
+
 		set_file_buffer($fp, 0);
 		flock($fp, LOCK_EX);
 		rewind($fp);
@@ -550,6 +592,7 @@ class AttachFile
 		foreach ($this->status as $key=>$value) {
 			fwrite($fp, $value."\n");
 		}
+
 		flock($fp, LOCK_UN);
 		fclose($fp);
 	}
@@ -557,7 +600,7 @@ class AttachFile
 	// 日付の比較関数
 	public function datecomp($a, $b)
 	{
-		return ($a->time == $b->time) ? 0 : (($a->time > $b->time) ? -1 : 1);
+		return ($a->time == $b->time) ? (0) : (($a->time > $b->time) ? (-1) : (1));
 	}
 
 	public function toString($showicon, $showinfo)
@@ -566,24 +609,24 @@ class AttachFile
 
 		$script = get_base_uri();
 		$this->getstatus();
-		$param = '&amp;file='.rawurlencode($this->file).'&amp;refer='.rawurlencode($this->page).
-			($this->age ? '&amp;age='.$this->age : '');
+		$param = '&amp;file='.rawurlencode($this->file).'&amp;refer='.rawurlencode($this->page).(($this->age) ? ('&amp;age='.$this->age) : (''));
 		$title = $this->time_str.' '.$this->size_str;
-		$label = ($showicon ? PLUGIN_ATTACH_FILE_ICON : '').htmlsc($this->file);
+		$label = (($showicon) ? (PLUGIN_ATTACH_FILE_ICON) : ('')).htmlsc($this->file);
 
 		if ($this->age) {
 			$label .= ' (backup No.'.$this->age.')';
 		}
-		$info = $count = '';
+
+		$count = '';
+		$info = '';
 
 		if ($showinfo) {
 			$_title = str_replace('$1', rawurlencode($this->file), $_attach_messages['msg_info']);
-			$info = "\n<span class=\"small\">[<a href=\"{$script}?plugin=attach&amp;pcmd=info{$param}\" title=\"{$_title}\">{$_attach_messages['btn_info']}</a>]</span>\n";
-			$count = ($showicon && !empty($this->status['count'][$this->age])) ?
-				sprintf($_attach_messages['msg_count'], $this->status['count'][$this->age]) : '';
+			$info = "\n".'<span class="small">[<a href="'.$script.'?plugin=attach&amp;pcmd=info'.$param.'" title="'.$_title.'">'.$_attach_messages['btn_info'].'</a>]</span>'."\n";
+			$count = (($showicon) && (!empty($this->status['count'][$this->age]))) ? (sprintf($_attach_messages['msg_count'], $this->status['count'][$this->age])) : ('');
 		}
 
-		return "<a href=\"{$script}?plugin=attach&amp;pcmd=open{$param}\" title=\"{$title}\">{$label}</a>{$count}{$info}";
+		return '<a href="'.$script.'?plugin=attach&amp;pcmd=open'.$param.'" title="'.$title.'">'.$label.'</a>'.$count.$info;
 	}
 
 	// 情報表示
@@ -595,47 +638,36 @@ class AttachFile
 		$r_page = rawurlencode($this->page);
 		$s_page = htmlsc($this->page);
 		$s_file = htmlsc($this->file);
-		$s_err = ($err == '') ? '' : '<p style="font-weight:bold">'.$_attach_messages[$err].'</p>';
+		$s_err = ($err === '') ? ('') : ('<p style="font-weight:bold">'.$_attach_messages[$err].'</p>');
 
 		$msg_rename = '';
 
 		if ($this->age) {
 			$msg_freezed = '';
-			$msg_delete = '<input type="radio" name="pcmd" id="_p_attach_delete" value="delete" />'.
-				'<label for="_p_attach_delete">'.$_attach_messages['msg_delete'].
-				$_attach_messages['msg_require'].'</label><br />';
+			$msg_delete = '<input type="radio" name="pcmd" id="_p_attach_delete" value="delete" /><label for="_p_attach_delete">'.$_attach_messages['msg_delete'].$_attach_messages['msg_require'].'</label><br />';
 			$msg_freeze = '';
 		} else {
 			if ($this->status['freeze']) {
 				$msg_freezed = "<dd>{$_attach_messages['msg_isfreeze']}</dd>";
 				$msg_delete = '';
-				$msg_freeze = '<input type="radio" name="pcmd" id="_p_attach_unfreeze" value="unfreeze" />'.
-					'<label for="_p_attach_unfreeze">'.$_attach_messages['msg_unfreeze'].
-					$_attach_messages['msg_require'].'</label><br />';
+				$msg_freeze = '<input type="radio" name="pcmd" id="_p_attach_unfreeze" value="unfreeze" /><label for="_p_attach_unfreeze">'.$_attach_messages['msg_unfreeze'].$_attach_messages['msg_require'].'</label><br />';
 			} else {
 				$msg_freezed = '';
-				$msg_delete = '<input type="radio" name="pcmd" id="_p_attach_delete" value="delete" />'.
-					'<label for="_p_attach_delete">'.$_attach_messages['msg_delete'];
+				$msg_delete = '<input type="radio" name="pcmd" id="_p_attach_delete" value="delete" /><label for="_p_attach_delete">'.$_attach_messages['msg_delete'];
 
-				if (PLUGIN_ATTACH_DELETE_ADMIN_ONLY || $this->age) {
+				if ((PLUGIN_ATTACH_DELETE_ADMIN_ONLY) || ($this->age)) {
 					$msg_delete .= $_attach_messages['msg_require'];
 				}
+
 				$msg_delete .= '</label><br />';
-				$msg_freeze = '<input type="radio" name="pcmd" id="_p_attach_freeze" value="freeze" />'.
-					'<label for="_p_attach_freeze">'.$_attach_messages['msg_freeze'].
-					$_attach_messages['msg_require'].'</label><br />';
+				$msg_freeze = '<input type="radio" name="pcmd" id="_p_attach_freeze" value="freeze" /><label for="_p_attach_freeze">'.$_attach_messages['msg_freeze'].$_attach_messages['msg_require'].'</label><br />';
 
 				if (PLUGIN_ATTACH_RENAME_ENABLE) {
-					$msg_rename = '<input type="radio" name="pcmd" id="_p_attach_rename" value="rename" />'.
-						'<label for="_p_attach_rename">'.$_attach_messages['msg_rename'].
-						$_attach_messages['msg_require'].'</label><br />&nbsp;&nbsp;&nbsp;&nbsp;'.
-						'<label for="_p_attach_newname">'.$_attach_messages['msg_newname'].
-						':</label> '.
-						'<input type="text" name="newname" id="_p_attach_newname" size="40" value="'.
-						$this->file.'" /><br />';
+					$msg_rename = '<input type="radio" name="pcmd" id="_p_attach_rename" value="rename" /><label for="_p_attach_rename">'.$_attach_messages['msg_rename'].$_attach_messages['msg_require'].'</label><br />&nbsp;&nbsp;&nbsp;&nbsp;<label for="_p_attach_newname">'.$_attach_messages['msg_newname'].':</label> <input type="text" name="newname" id="_p_attach_newname" size="40" value="'.$this->file.'" /><br />';
 				}
 			}
 		}
+
 		$info = $this->toString(true, false);
 		$hash = $this->gethash();
 
@@ -680,24 +712,24 @@ EOD;
 
 	public function delete($pass)
 	{
-		global $_attach_messages, $notify, $notify_subject;
+		global $_attach_messages;
+		global $notify;
+		global $notify_subject;
 
 		if ($this->status['freeze']) {
 			return attach_info('msg_isfreeze');
 		}
 
 		if (!pkwk_login($pass)) {
-			if (PLUGIN_ATTACH_DELETE_ADMIN_ONLY || $this->age) {
+			if ((PLUGIN_ATTACH_DELETE_ADMIN_ONLY) || ($this->age)) {
 				return attach_info('err_adminpass');
-			} elseif (PLUGIN_ATTACH_PASSWORD_REQUIRE &&
-				md5($pass) !== $this->status['pass']) {
+			} elseif ((PLUGIN_ATTACH_PASSWORD_REQUIRE) && (md5($pass) !== $this->status['pass'])) {
 				return attach_info('err_password');
 			}
 		}
 
 		// バックアップ
-		if ($this->age ||
-			(PLUGIN_ATTACH_DELETE_ADMIN_ONLY && PLUGIN_ATTACH_DELETE_ADMIN_NOBACKUP)) {
+		if (($this->age) || ((PLUGIN_ATTACH_DELETE_ADMIN_ONLY) && (PLUGIN_ATTACH_DELETE_ADMIN_NOBACKUP))) {
 			@unlink($this->filename);
 		} else {
 			do {
@@ -725,8 +757,10 @@ EOD;
 			$footer['URI'] = get_page_uri($this->page, PKWK_URI_ABSOLUTE);
 			$footer['USER_AGENT'] = true;
 			$footer['REMOTE_ADDR'] = true;
-			pkwk_mail_notify($notify_subject, "\n", $footer) ||
+
+			if (!pkwk_mail_notify($notify_subject, "\n", $footer)) {
 				die('pkwk_mail_notify(): Failed');
+			}
 		}
 
 		return ['msg'=>$_attach_messages['msg_deleted']];
@@ -734,20 +768,22 @@ EOD;
 
 	public function rename($pass, $newname)
 	{
-		global $_attach_messages, $notify, $notify_subject;
+		global $_attach_messages;
+		global $notify;
+		global $notify_subject;
 
 		if ($this->status['freeze']) {
 			return attach_info('msg_isfreeze');
 		}
 
 		if (!pkwk_login($pass)) {
-			if (PLUGIN_ATTACH_DELETE_ADMIN_ONLY || $this->age) {
+			if ((PLUGIN_ATTACH_DELETE_ADMIN_ONLY) || ($this->age)) {
 				return attach_info('err_adminpass');
-			} elseif (PLUGIN_ATTACH_PASSWORD_REQUIRE &&
-				md5($pass) !== $this->status['pass']) {
+			} elseif ((PLUGIN_ATTACH_PASSWORD_REQUIRE) && (md5($pass) !== $this->status['pass'])) {
 				return attach_info('err_password');
 			}
 		}
+
 		$newbase = UPLOAD_DIR.encode($this->page).'_'.encode($newname);
 
 		if (file_exists($newbase)) {
@@ -761,6 +797,7 @@ EOD;
 		if (!rename($this->basename, $newbase)) {
 			return ['msg'=>$_attach_messages['err_rename']];
 		}
+
 		// Rename primary file succeeded.
 		// Then, rename backup(archive) files and log file)
 		$rename_targets = [];
@@ -779,11 +816,13 @@ EOD;
 					if (!preg_match($pattern, $file, $matches)) {
 						continue;
 					}
+
 					$basename2 = $matches[0];
 					$newbase2 = $newbase.$matches[2];
 					$rename_targets[$basename2] = $newbase2;
 				}
 			}
+
 			closedir($dir);
 		}
 
@@ -807,7 +846,7 @@ EOD;
 		$this->status['freeze'] = $freeze;
 		$this->putstatus();
 
-		return ['msg'=>$_attach_messages[$freeze ? 'msg_freezed' : 'msg_unfreezed']];
+		return ['msg'=>$_attach_messages[($freeze) ? ('msg_freezed') : ('msg_unfreezed')]];
 	}
 
 	public function open() : void
@@ -822,26 +861,30 @@ EOD;
 
 		if (LANG == 'ja') {
 			switch (UA_NAME.'/'.UA_PROFILE) {
-			case 'MSIE/default':
-				$legacy_filename = mb_convert_encoding($filename, 'SJIS', SOURCE_ENCODING);
+				case 'MSIE/default':
+					$legacy_filename = mb_convert_encoding($filename, 'SJIS', SOURCE_ENCODING);
 
-				break;
+					break;
+
+				default:
+					break;
 			}
 		}
+
 		$utf8filename = mb_convert_encoding($filename, 'UTF-8', SOURCE_ENCODING);
 
 		ini_set('default_charset', '');
 		mb_http_output('pass');
 
 		pkwk_common_headers();
-		header('Content-Disposition: inline; filename="'.$legacy_filename
-			.'"; filename*=utf-8\'\''.rawurlencode($utf8filename));
+		header('Content-Disposition: inline; filename="'.$legacy_filename.'"; filename*=utf-8\'\''.rawurlencode($utf8filename));
 		header('Content-Length: '.$this->size);
 		header('Content-Type: '.$this->type);
 		// Disable output bufferring
 		while (ob_get_level()) {
 			ob_end_flush();
 		}
+
 		flush();
 		@readfile($this->filename);
 
@@ -896,18 +939,20 @@ class AttachFiles
 			if (!isset($_files[0])) {
 				$_files[0] = htmlsc($file);
 			}
+
 			ksort($_files, SORT_NUMERIC);
 			$_file = $_files[0];
 			unset($_files[0]);
-			$ret .= " <li>{$_file}\n";
+			$ret .= ' <li>'.$_file."\n";
 
 			if (count($_files)) {
 				$ret .= "<ul>\n<li>".implode("</li>\n<li>", $_files)."</li>\n</ul>\n";
 			}
+
 			$ret .= " </li>\n";
 		}
 
-		return make_pagelink($this->page)."\n<ul>\n{$ret}</ul>\n";
+		return make_pagelink($this->page)."\n".'<ul>'."\n".$ret.'</ul>'."\n";
 	}
 
 	// ファイル一覧を取得(inline)
@@ -921,6 +966,7 @@ class AttachFiles
 				$files[$file] = $this->files[$file][0];
 			}
 		}
+
 		uasort($files, ['AttachFile', 'datecomp']);
 
 		foreach (array_keys($files) as $file) {
@@ -943,12 +989,12 @@ class AttachPages
 
 	public function __construct($page = '', $age = null)
 	{
-		$dir = opendir(UPLOAD_DIR) ||
+		if (!($dir = opendir(UPLOAD_DIR))) {
 			die('directory '.UPLOAD_DIR.' is not exist or not readable.');
+		}
 
-		$page_pattern = ($page == '') ? '(?:[0-9A-F]{2})+' : preg_quote(encode($page), '/');
-		$age_pattern = ($age === null) ?
-			'(?:\.([0-9]+))?' : ($age ? "\\.({$age})" : '');
+		$page_pattern = ($page === '') ? ('(?:[0-9A-F]{2})+') : (preg_quote(encode($page), '/'));
+		$age_pattern = ($age === null) ? ('(?:\.([0-9]+))?') : (($age) ? ('.('.((string) ($age)).')') : (''));
 		$pattern = "/^({$page_pattern})_((?:[0-9A-F]{2})+){$age_pattern}$/";
 
 		$matches = [];
@@ -960,13 +1006,15 @@ class AttachPages
 
 			$_page = decode($matches[1]);
 			$_file = decode($matches[2]);
-			$_age = isset($matches[3]) ? $matches[3] : 0;
+			$_age = (isset($matches[3])) ? ($matches[3]) : (0);
 
 			if (!isset($this->pages[$_page])) {
 				$this->pages[$_page] = new AttachFiles($_page);
 			}
+
 			$this->pages[$_page]->add($_file, $_age);
 		}
+
 		closedir($dir);
 	}
 
@@ -979,6 +1027,7 @@ class AttachPages
 				return $this->pages[$page]->toString($flat);
 			}
 		}
+
 		$ret = '';
 
 		$pages = array_keys($this->pages);
@@ -988,6 +1037,7 @@ class AttachPages
 			if (check_non_list($page)) {
 				continue;
 			}
+
 			$ret .= '<li>'.$this->pages[$page]->toString($flat).'</li>'."\n";
 		}
 

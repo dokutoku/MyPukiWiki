@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // $Id: br.inc.php,v 1.5 2007/04/08 10:22:18 henoheno Exp $
 // Copyright (C) 2003-2005, 2007 PukiWiki Developers Team

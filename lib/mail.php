@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // mail.php
 // Copyright
@@ -11,12 +13,18 @@
 // Send a mail to the administrator
 function pkwk_mail_notify($subject, $message, $footer = [])
 {
-	global $smtp_server, $smtp_auth, $notify_to, $notify_from, $notify_header;
-	static $_to, $_headers, $_after_pop;
+	global $smtp_server;
+	global $smtp_auth;
+	global $notify_to;
+	global $notify_from;
+	global $notify_header;
+	static $_to;
+	static $_headers;
+	static $_after_pop;
 
 	// Init and lock
 	if (!isset($_to)) {
-		if (!PKWK_OPTIMISE) {
+		if ((!defined('PKWK_OPTIMISE')) || (!PKWK_OPTIMISE)) {
 			// Validation check
 			$func = 'pkwk_mail_notify(): ';
 			$mail_regex = '/[^@]+@[^@]{1,}\.[^@]{2,}/';
@@ -43,10 +51,7 @@ function pkwk_mail_notify($subject, $message, $footer = [])
 		}
 
 		$_to = $notify_to;
-		$_headers =
-			'X-Mailer: PukiWiki/'.S_VERSION.
-			' PHP/'.PHP_VERSION."\r\n".
-			'From: '.$notify_from;
+		$_headers = 'X-Mailer: PukiWiki/'.S_VERSION.' PHP/'.PHP_VERSION."\r\n".'From: '.$notify_from;
 
 		// Additional header(s) by admin
 		if ($notify_header != '') {
@@ -56,7 +61,7 @@ function pkwk_mail_notify($subject, $message, $footer = [])
 		$_after_pop = $smtp_auth;
 	}
 
-	if ($subject == '' || ($message == '' && empty($footer))) {
+	if (($subject == '') || (($message == '') && (empty($footer)))) {
 		return false;
 	}
 
@@ -84,6 +89,7 @@ function pkwk_mail_notify($subject, $message, $footer = [])
 		foreach ($footer as $key=>$value) {
 			$_footer .= $key.': '.$value."\n";
 		}
+
 		$message .= $_footer;
 	}
 
@@ -107,20 +113,23 @@ function pkwk_mail_notify($subject, $message, $footer = [])
 }
 
 // APOP/POP Before SMTP
-function pop_before_smtp($pop_userid = '', $pop_passwd = '',
-	$pop_server = 'localhost', $pop_port = 110)
+function pop_before_smtp($pop_userid = '', $pop_passwd = '', pop_server = 'localhost', $pop_port = 110)
 {
-	$pop_auth_use_apop = true;	// Always try APOP, by default
-	$must_use_apop = false;	// Always try POP for APOP-disabled server
+	// Always try APOP, by default
+	$pop_auth_use_apop = true;
+
+	// Always try POP for APOP-disabled server
+	$must_use_apop = false;
 
 	if (isset($GLOBALS['pop_auth_use_apop'])) {
 		// Force APOP only, or POP only
-		$pop_auth_use_apop = $must_use_apop = $GLOBALS['pop_auth_use_apop'];
+		$must_use_apop = $GLOBALS['pop_auth_use_apop'];
+		$pop_auth_use_apop = $GLOBALS['pop_auth_use_apop'];
 	}
 
 	// Compat: GLOBALS > function arguments
 	foreach (['pop_userid', 'pop_passwd', 'pop_server', 'pop_port'] as $global) {
-		if (isset($GLOBALS[$global]) && $GLOBALS[$global] !== '') {
+		if ((isset($GLOBALS[$global])) && ($GLOBALS[$global] !== '')) {
 			${$global} = $GLOBALS[$global];
 		}
 	}
@@ -148,7 +157,9 @@ function pop_before_smtp($pop_userid = '', $pop_passwd = '',
 	}
 
 	// Greeting message from server, may include <challenge-string> of APOP
-	$message = fgets($fp, 1024); // 512byte max
+
+	// 512byte max
+	$message = fgets($fp, 1024);
 
 	if (!preg_match('/^\+OK/', $message)) {
 		fclose($fp);
@@ -158,45 +169,61 @@ function pop_before_smtp($pop_userid = '', $pop_passwd = '',
 
 	$challenge = [];
 
-	if ($pop_auth_use_apop &&
-	   (preg_match('/<.*>/', $message, $challenge) || $must_use_apop)) {
-		$method = 'APOP'; // APOP auth
+	if (($pop_auth_use_apop) && ((preg_match('/<.*>/', $message, $challenge)) || ($must_use_apop))) {
+		// APOP auth
+		$method = 'APOP';
 
 		if (!isset($challenge[0])) {
-			$response = md5(time()); // Someting worthless but variable
+			// Someting worthless but variable
+			$response = md5(time());
 		} else {
 			$response = md5($challenge[0].$pop_passwd);
 		}
+
 		fwrite($fp, 'APOP '.$pop_userid.' '.$response."\r\n");
 	} else {
-		$method = 'POP'; // POP auth
+		// POP auth
+		$method = 'POP';
+
 		fwrite($fp, 'USER '.$pop_userid."\r\n");
-		$message = fgets($fp, 1024); // 512byte max
+
+		// 512byte max
+		$message = fgets($fp, 1024);
 
 		if (!preg_match('/^\+OK/', $message)) {
 			fclose($fp);
 
 			return 'pop_before_smtp(): USER seems invalid';
 		}
+
 		fwrite($fp, 'PASS '.$pop_passwd."\r\n");
 	}
 
-	$result = fgets($fp, 1024); // 512byte max, auth result
+	// 512byte max, auth result
+	$result = fgets($fp, 1024);
+
 	$auth = preg_match('/^\+OK/', $result);
 
 	if ($auth) {
-		fwrite($fp, 'STAT'."\r\n"); // STAT, trigger SMTP relay!
-		$message = fgets($fp, 1024); // 512byte max
+		// STAT, trigger SMTP relay!
+		fwrite($fp, 'STAT'."\r\n");
+
+		// 512byte max
+		$message = fgets($fp, 1024);
 	}
 
 	// Disconnect anyway
 	fwrite($fp, 'QUIT'."\r\n");
-	$message = fgets($fp, 1024); // 512byte max, last '+OK'
+
+	// 512byte max, last '+OK'
+	$message = fgets($fp, 1024);
+
 	fclose($fp);
 
 	if (!$auth) {
 		return 'pop_before_smtp(): '.$method.' authentication failed';
 	} else {
-		return true;	// Success
+		// Success
+		return true;
 	}
 }

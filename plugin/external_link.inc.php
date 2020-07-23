@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // external_link.inc.php
 // Copyright
@@ -9,7 +11,10 @@
 
 function plugin_external_link_action() : void
 {
-	global $vars, $external_link_cushion, $_external_link_messages;
+	global $vars;
+	global $external_link_cushion;
+	global $_external_link_messages;
+
 	$charset = CONTENT_CHARSET;
 	header('Content-Type: text/html; charset='.$charset);
 	$valid_url = false;
@@ -34,12 +39,12 @@ EOM;
 
 		exit;
 	}
+
 	$encoded_url = htmlsc($url);
 	$refreshwait = $external_link_cushion['wait_seconds'];
 	$h_title = htmlsc(str_replace('%s', $url, $_external_link_messages['page_title']));
 	$h_desc = htmlsc($_external_link_messages['desc']);
-	$h_wait = htmlsc(str_replace('%s', (string) $external_link_cushion['wait_seconds'],
-		$_external_link_messages['wait_n_seconds']));
+	$h_wait = htmlsc(str_replace('%s', (string) ($external_link_cushion['wait_seconds']), $_external_link_messages['wait_n_seconds']));
 	$body = <<< EOM
 <html>
   <head>

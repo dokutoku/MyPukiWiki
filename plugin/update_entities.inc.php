@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // update_entities.inc.php
 // Copyright 2003-2017 PukiWiki Development Team
@@ -13,8 +15,10 @@ define('W3C_XHTML_DTD_LOCATION', 'http://www.w3.org/TR/xhtml1/DTD/');
 // メッセージ設定
 function plugin_update_entities_init() : void
 {
-	$messages = [
-		'_entities_messages'=>[
+	$messages =
+	[
+		'_entities_messages'=>
+		[
 			'title_update'=>'キャッシュ更新',
 			'msg_adminpass'=>'管理者パスワード',
 			'btn_submit'=>'実行',
@@ -32,7 +36,9 @@ PHPの持つテーブルおよびW3CのDTDをスキャンして、キャッシ�
 * 実行
 管理者パスワードを入力して、[実行]ボタンをクリックしてください。
 ',
-		], ];
+		],
+	];
+
 	set_plugin_messages($messages);
 }
 
@@ -47,9 +53,10 @@ function plugin_update_entities_action()
 		die_message('PKWK_READONLY prohibits this');
 	}
 
-	$msg = $body = '';
+	$body = '';
+	$msg = '';
 
-	if (empty($vars['action']) || empty($vars['adminpass']) || !pkwk_login($vars['adminpass'])) {
+	if ((empty($vars['action'])) || (empty($vars['adminpass'])) || (!pkwk_login($vars['adminpass']))) {
 		$msg = &$_entities_messages['title_update'];
 		$items = plugin_update_entities_create();
 		$body = convert_html(sprintf($_entities_messages['msg_usage'], implode("\n".'-', $items)));
@@ -76,7 +83,7 @@ EOD;
 	return ['msg'=>$msg, 'body'=>$body];
 }
 
-// Remove &amp; => amp
+// Remove &amp;=>amp
 function plugin_update_entities_strtr($entity)
 {
 	return strtr($entity, ['&'=>'', ';'=>'']);
@@ -86,8 +93,7 @@ function plugin_update_entities_create($do = false)
 {
 	$files = ['xhtml-lat1.ent', 'xhtml-special.ent', 'xhtml-symbol.ent'];
 
-	$entities = array_map('plugin_update_entities_strtr',
-		array_values(get_html_translation_table(HTML_ENTITIES)));
+	$entities = array_map('plugin_update_entities_strtr', array_values(get_html_translation_table(HTML_ENTITIES)));
 	$items = ['php:html_translation_table'];
 	$matches = [];
 
@@ -99,10 +105,10 @@ function plugin_update_entities_create($do = false)
 
 			continue;
 		}
+
 		$items[] = 'w3c:'.$file;
 
-		if (preg_match_all('/<!ENTITY\s+([A-Za-z0-9]+)/',
-			implode('', $source), $matches, PREG_PATTERN_ORDER)) {
+		if (preg_match_all('/<!ENTITY\s+([A-Za-z0-9]+)/', implode('', $source), $matches, PREG_PATTERN_ORDER)) {
 			$entities = array_merge($entities, $matches[1]);
 		}
 	}
@@ -122,11 +128,12 @@ function plugin_update_entities_create($do = false)
 		$min = min($min, $len);
 	}
 
-	$pattern = "(?=[a-zA-Z0-9]\\{{$min},{$max}})".
-		get_autolink_pattern_sub($entities, 0, count($entities), 0);
-	$fp = fopen(CACHE_DIR.'entities.dat', 'w')
-		|| die_message('cannot write file '.CACHE_DIR.'entities.dat<br />'."\n".
-			'maybe permission is not writable or filename is too long');
+	$pattern = "(?=[a-zA-Z0-9]\\{{$min},{$max}})".get_autolink_pattern_sub($entities, 0, count($entities), 0);
+
+	if (!($fp = fopen(CACHE_DIR.'entities.dat', 'w'))) {
+		die_message('cannot write file '.CACHE_DIR.'entities.dat<br />'."\n".'maybe permission is not writable or filename is too long');
+	}
+
 	fwrite($fp, $pattern);
 	fclose($fp);
 

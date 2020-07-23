@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // popular.inc.php
 // Copyright
@@ -30,7 +32,8 @@ define('PLUGIN_POPULAR_DEFAULT', 10);
 function plugin_popular_convert()
 {
 	global $vars;
-	global $_popular_plugin_frame, $_popular_plugin_today_frame;
+	global $_popular_plugin_frame;
+	global $_popular_plugin_today_frame;
 
 	$max = PLUGIN_POPULAR_DEFAULT;
 	$except = '';
@@ -40,13 +43,25 @@ function plugin_popular_convert()
 	$today_param = $array[2];
 
 	switch (func_num_args()) {
-	case 3: if ($today_param && $today_param !== 'false') {
-		$today = get_date('Y/m/d');
-	}
-	// no break
-	case 2: $except = $array[1];
-	// no break
-	case 1: $max = (int) $array[0];
+		case 3:
+			if (($today_param) && ($today_param !== 'false')) {
+				$today = get_date('Y/m/d');
+			}
+
+			//ToDo: FALLTHROUGH?
+
+		case 2:
+			$except = $array[1];
+
+			//ToDo: FALLTHROUGH?
+
+		case 1:
+			$max = (int) ($array[0]);
+
+			break;
+
+		default:
+			break;
 	}
 
 	if (exist_plugin('counter')) {
@@ -68,18 +83,14 @@ function plugin_popular_convert()
 			if ($page === $vars['page']) {
 				// No need to link itself, notifies where you just read
 				$attrs = get_page_link_a_attrs($page);
-				$items .= ' <li><span class="'.
-					$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].
-					'">'.$s_page.'<span class="counter">('.$count.
-					')</span></span></li>'."\n";
+				$items .= ' <li><span class="'.$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].'">'.$s_page.'<span class="counter">('.$count.')</span></span></li>'."\n";
 			} else {
-				$items .= ' <li>'.make_pagelink($page,
-					$s_page.'<span class="counter">('.$count.')</span>').
-					'</li>'."\n";
+				$items .= ' <li>'.make_pagelink($page, $s_page.'<span class="counter">('.$count.')</span>').'</li>'."\n";
 			}
 		}
+
 		$items .= '</ul>'."\n";
 	}
 
-	return sprintf($today ? $_popular_plugin_today_frame : $_popular_plugin_frame, count($counters), $items);
+	return sprintf((($today) ? ($_popular_plugin_today_frame) : ($_popular_plugin_frame)), count($counters), $items);
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // related.inc.php
 // Copyright 2005-2017 PukiWiki Development Team
@@ -16,9 +18,11 @@ function plugin_related_convert()
 // Show Backlinks: via related caches for the page
 function plugin_related_action()
 {
-	global $vars, $defaultpage, $whatsnew;
+	global $vars;
+	global $defaultpage;
+	global $whatsnew;
 
-	$_page = isset($vars['page']) ? $vars['page'] : '';
+	$_page = (isset($vars['page'])) ? ($vars['page']) : ('');
 
 	if ($_page == '') {
 		$_page = $defaultpage;
@@ -30,17 +34,16 @@ function plugin_related_action()
 	if (!empty($data)) {
 		// Hide by array keys (not values)
 		foreach (array_keys($data) as $page) {
-			if ($page == $whatsnew ||
-				check_non_list($page)) {
+			if (($page == $whatsnew) || (check_non_list($page))) {
 				unset($data[$page]);
 			}
 		}
 	}
+
 	// Result
 	$s_word = htmlsc($_page);
 	$msg = 'Backlinks for: '.$s_word;
-	$retval = '<a href="'.get_page_uri($_page).'">'.
-		'Return to '.$s_word.'</a><br />'."\n";
+	$retval = '<a href="'.get_page_uri($_page).'">Return to '.$s_word.'</a><br />'."\n";
 
 	if (empty($data)) {
 		$retval .= '<ul><li>No related pages found.</li></ul>'."\n";
@@ -52,9 +55,9 @@ function plugin_related_action()
 		foreach ($data as $page=>$time) {
 			$s_page = htmlsc($page);
 			$mtime_span = get_passage_mtime_html_span($time + LOCALZONE);
-			$retval .= ' <li><a href="'.get_page_uri($page).'">'.$s_page.
-				'</a>'.$mtime_span.'</li>'."\n";
+			$retval .= ' <li><a href="'.get_page_uri($page).'">'.$s_page.'</a>'.$mtime_span.'</li>'."\n";
 		}
+
 		$retval .= '</ul>'."\n";
 	}
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // edit.inc.php
 // Copyright 2001-2019 PukiWiki Development Team
@@ -11,7 +13,8 @@ define('PLUGIN_EDIT_FREEZE_REGEX', '/^(?:#freeze(?!\w)\s*)+/im');
 
 function plugin_edit_action()
 {
-	global $vars, $_title_edit;
+	global $vars;
+	global $_title_edit;
 
 	if (PKWK_READONLY) {
 		die_message('PKWK_READONLY prohibits editing');
@@ -20,7 +23,7 @@ function plugin_edit_action()
 	// Create initial pages
 	plugin_edit_setup_initial_pages();
 
-	$page = isset($vars['page']) ? $vars['page'] : '';
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
 	check_editable($page, true, true);
 	check_readable($page, true, true);
 
@@ -39,6 +42,7 @@ function plugin_edit_action()
 	if ($postdata === '') {
 		$postdata = auto_template($page);
 	}
+
 	$postdata = remove_author_info($postdata);
 
 	return ['msg'=>$_title_edit, 'body'=>edit_form($page, $postdata)];
@@ -50,12 +54,13 @@ function plugin_edit_action()
 function plugin_edit_preview_with_template()
 {
 	global $vars;
+
 	$msg = '';
-	$page = isset($vars['page']) ? $vars['page'] : '';
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
 	// Loading template
 	$template_page;
 
-	if (isset($vars['template_page']) && is_page($template_page = $vars['template_page'])) {
+	if ((isset($vars['template_page'])) && (is_page($template_page = $vars['template_page']))) {
 		if (is_page_readable($template_page)) {
 			$msg = remove_author_info(get_source($vars['template_page'], true, true));
 			// Cut fixed anchors
@@ -74,15 +79,17 @@ function plugin_edit_preview_with_template()
 function plugin_edit_preview($msg)
 {
 	global $vars;
-	global $_title_preview, $_msg_preview, $_msg_preview_delete;
+	global $_title_preview;
+	global $_msg_preview;
+	global $_msg_preview_delete;
 
-	$page = isset($vars['page']) ? $vars['page'] : '';
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
 
 	$msg = preg_replace(PLUGIN_EDIT_FREEZE_REGEX, '', $msg);
 	$postdata = $msg;
 
-	if (isset($vars['add']) && $vars['add']) {
-		if (isset($vars['add_top']) && $vars['add_top']) {
+	if ((isset($vars['add'])) && ($vars['add'])) {
+		if ((isset($vars['add_top'])) && ($vars['add_top'])) {
 			$postdata = $postdata."\n\n".@implode('', get_source($page));
 		} else {
 			$postdata = @implode('', get_source($page))."\n\n".$postdata;
@@ -94,6 +101,7 @@ function plugin_edit_preview($msg)
 	if ($postdata === '') {
 		$body .= '<strong>'.$_msg_preview_delete.'</strong>';
 	}
+
 	$body .= '<br />'."\n";
 
 	if ($postdata) {
@@ -102,6 +110,7 @@ function plugin_edit_preview($msg)
 		$postdata = drop_submit(convert_html($postdata));
 		$body .= '<div id="preview">'.$postdata.'</div>'."\n";
 	}
+
 	$body .= edit_form($page, $msg, $vars['digest'], false);
 
 	return ['msg'=>$_title_preview, 'body'=>$body];
@@ -112,11 +121,13 @@ function plugin_edit_inline()
 {
 	static $usage = '&edit(pagename#anchor[[,noicon],nolabel])[{label}];';
 
-	global $vars, $fixed_heading_anchor_edit;
+	global $vars;
+	global $fixed_heading_anchor_edit;
 
 	if (PKWK_READONLY) {
+		// Show nothing
 		return '';
-	} // Show nothing
+	}
 
 	// Arguments
 	$args = func_get_args();
@@ -129,18 +140,27 @@ function plugin_edit_inline()
 	if ($page === null) {
 		$page = '';
 	}
-	$_noicon = $_nolabel = false;
+
+	$_nolabel = false;
+	$_noicon = false;
 
 	foreach ($args as $arg) {
 		switch (strtolower($arg)) {
-		case '':                   break;
-		case 'nolabel': $_nolabel = true;
+			case '':
+				break;
 
-break;
-		case 'noicon': $_noicon = true;
+			case 'nolabel':
+				$_nolabel = true;
 
-break;
-		default: return $usage;
+				break;
+
+			case 'noicon':
+				$_noicon = true;
+
+				break;
+
+			default:
+				return $usage;
 		}
 	}
 
@@ -149,7 +169,7 @@ break;
 
 	// Default: This one
 	if ($s_page == '') {
-		$s_page = isset($vars['page']) ? $vars['page'] : '';
+		$s_page = (isset($vars['page'])) ? ($vars['page']) : ('');
 	}
 
 	// $s_page fixed
@@ -159,13 +179,11 @@ break;
 	// Paragraph edit enabled or not
 	$short = htmlsc('Edit');
 
-	if ($fixed_heading_anchor_edit && $editable && $ispage && !$isfreeze) {
+	if (($fixed_heading_anchor_edit) && ($editable) && ($ispage) && (!$isfreeze)) {
 		// Paragraph editing
 		$id = rawurlencode($id);
 		$title = htmlsc(sprintf('Edit %s', $page));
-		$icon = '<img src="'.IMAGE_DIR.'paraedit.png'.
-			'" width="9" height="9" alt="'.
-			$short.'" title="'.$title.'" /> ';
+		$icon = '<img src="'.IMAGE_DIR.'paraedit.png" width="9" height="9" alt="'.$short.'" title="'.$title.'" /> ';
 		$class = ' class="anchor_super"';
 	} else {
 		// Normal editing / unfreeze
@@ -178,22 +196,24 @@ break;
 			$title = 'Edit %s';
 			$icon = 'edit.png';
 		}
+
 		$title = htmlsc(sprintf($title, $s_page));
-		$icon = '<img src="'.IMAGE_DIR.$icon.
-			'" width="20" height="20" alt="'.
-			$short.'" title="'.$title.'" />';
+		$icon = '<img src="'.IMAGE_DIR.$icon.'" width="20" height="20" alt="'.$short.'" title="'.$title.'" />';
 		$class = '';
 	}
 
 	if ($_noicon) {
+		// No more icon
 		$icon = '';
-	} // No more icon
+	}
 
 	if ($_nolabel) {
 		if (!$_noicon) {
-			$s_label = '';     // No label with an icon
+			// No label with an icon
+			$s_label = '';
 		} else {
-			$s_label = $short; // Short label without an icon
+			// Short label without an icon
+			$s_label = $short;
 		}
 	} else {
 		if ($s_label == '') {
@@ -207,9 +227,10 @@ break;
 	if ($isfreeze) {
 		$url = $script.'?cmd=unfreeze&amp;page='.rawurlencode($s_page);
 	} else {
-		$s_id = ($id == '') ? '' : '&amp;id='.$id;
+		$s_id = ($id == '') ? ('') : ('&amp;id='.$id);
 		$url = $script.'?cmd=edit&amp;page='.rawurlencode($s_page).$s_id;
 	}
+
 	$atag = '<a'.$class.' href="'.$url.'" title="'.$title.'">';
 	static $atags = '</a>';
 
@@ -218,8 +239,7 @@ break;
 		return $atag.$icon.$s_label.$atags;
 	} else {
 		// Dangling edit link
-		return '<span class="noexists">'.$atag.$icon.$atags.
-			$s_label.$atag.'?'.$atags.'</span>';
+		return '<span class="noexists">'.$atag.$icon.$atags.$s_label.$atag.'?'.$atags.'</span>';
 	}
 }
 
@@ -227,15 +247,22 @@ break;
 function plugin_edit_write()
 {
 	global $vars;
-	global $_title_collided, $_msg_collided_auto, $_msg_collided, $_title_deleted;
-	global $notimeupdate, $_msg_invalidpass, $do_update_diff_table;
+	global $_title_collided;
+	global $_msg_collided_auto;
+	global $_msg_collided;
+	global $_title_deleted;
+	global $notimeupdate;
+	global $_msg_invalidpass;
+	global $do_update_diff_table;
 
-	$page = isset($vars['page']) ? $vars['page'] : '';
-	$add = isset($vars['add']) ? $vars['add'] : '';
-	$digest = isset($vars['digest']) ? $vars['digest'] : '';
+	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
+	$add = (isset($vars['add'])) ? ($vars['add']) : ('');
+	$digest = (isset($vars['digest'])) ? ($vars['digest']) : ('');
 
 	$vars['msg'] = preg_replace(PLUGIN_EDIT_FREEZE_REGEX, '', $vars['msg']);
-	$msg = &$vars['msg']; // Reference
+
+	// Reference
+	$msg = &$vars['msg'];
 
 	$retvars = [];
 
@@ -244,14 +271,15 @@ function plugin_edit_write()
 	$oldpagemd5 = md5($oldpagesrc);
 
 	if ($digest !== $oldpagemd5) {
-		$vars['digest'] = $oldpagemd5; // Reset
+		// Reset
+		$vars['digest'] = $oldpagemd5;
 
-		$original = isset($vars['original']) ? $vars['original'] : '';
+		$original = (isset($vars['original'])) ? ($vars['original']) : ('');
 		$old_body = remove_author_info($oldpagesrc);
 		[$postdata_input, $auto] = do_update_diff($old_body, $msg, $original);
 
 		$retvars['msg'] = $_title_collided;
-		$retvars['body'] = ($auto ? $_msg_collided_auto : $_msg_collided)."\n";
+		$retvars['body'] = (($auto) ? ($_msg_collided_auto) : ($_msg_collided))."\n";
 		$retvars['body'] .= $do_update_diff_table;
 		$retvars['body'] .= edit_form($page, $postdata_input, $oldpagemd5, false);
 
@@ -261,17 +289,19 @@ function plugin_edit_write()
 	// Action?
 	if ($add) {
 		// Add
-		if (isset($vars['add_top']) && $vars['add_top']) {
+		if ((isset($vars['add_top'])) && ($vars['add_top'])) {
 			$postdata = $msg."\n\n".@implode('', get_source($page));
 		} else {
 			$postdata = @implode('', get_source($page))."\n\n".$msg;
 		}
 	} else {
 		// Edit or Remove
-		$postdata = &$msg; // Reference
+
+		// Reference
+		$postdata = &$msg;
 	}
 
-	// NULL POSTING, OR removing existing page
+	// null POSTING, OR removing existing page
 	if ($postdata === '') {
 		page_write($page, $postdata);
 		$retvars['msg'] = $_title_deleted;
@@ -281,9 +311,9 @@ function plugin_edit_write()
 	}
 
 	// $notimeupdate: Checkbox 'Do not change timestamp'
-	$notimestamp = isset($vars['notimestamp']) && $vars['notimestamp'] != '';
+	$notimestamp = (isset($vars['notimestamp'])) && ($vars['notimestamp'] != '');
 
-	if ($notimeupdate > 1 && $notimestamp && !pkwk_login($vars['pass'])) {
+	if (($notimeupdate > 1) && ($notimestamp) && (!pkwk_login($vars['pass']))) {
 		// Enable only administrator & password error
 		$retvars['body'] = '<p><strong>'.$_msg_invalidpass.'</strong></p>'."\n";
 		$retvars['body'] .= edit_form($page, $msg, $digest, false);
@@ -291,7 +321,7 @@ function plugin_edit_write()
 		return $retvars;
 	}
 
-	page_write($page, $postdata, $notimeupdate != 0 && $notimestamp);
+	page_write($page, $postdata, (($notimeupdate != 0) && ($notimestamp)));
 	pkwk_headers_sent();
 	header('Location: '.get_page_uri($page, PKWK_URI_ROOT));
 
@@ -302,6 +332,7 @@ function plugin_edit_write()
 function plugin_edit_cancel() : void
 {
 	global $vars;
+
 	pkwk_headers_sent();
 	header('Location: '.get_page_uri($vars['page'], PKWK_URI_ROOT));
 
@@ -316,11 +347,13 @@ function plugin_edit_setup_initial_pages() : void
 	global $autoalias;
 
 	// Related: Rename plugin
-	if (exist_plugin('rename') && function_exists('plugin_rename_setup_initial_pages')) {
+	if ((exist_plugin('rename')) && (function_exists('plugin_rename_setup_initial_pages'))) {
 		plugin_rename_setup_initial_pages();
 	}
+
 	// AutoTicketLinkName page
 	init_autoticketlink_def_page();
+
 	// AutoAliasName page
 	if ($autoalias) {
 		init_autoalias_def_page();

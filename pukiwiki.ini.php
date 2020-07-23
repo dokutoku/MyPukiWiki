@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone
 // pukiwiki.ini.php
 // Copyright
@@ -24,8 +26,9 @@ if (!defined('PKWK_OPTIMISE')) {
 // PKWK_READONLY - Prohibits editing and maintain via WWW
 //   NOTE: Counter-related functions will work now (counter, attach count, etc)
 if (!defined('PKWK_READONLY')) {
+	// 0 or 1
 	define('PKWK_READONLY', 0);
-} // 0 or 1
+}
 
 // PKWK_SAFE_MODE - Prohibits some unsafe(but compatible) functions
 if (!defined('PKWK_SAFE_MODE')) {
@@ -43,7 +46,8 @@ if (!defined('PKWK_DISABLE_INLINE_IMAGE_FROM_URI')) {
 // PKWK_QUERY_STRING_MAX
 //   Max length of GET method, prohibits some worm attack ASAP
 //   NOTE: Keep (page-name + attach-file-name) <= PKWK_QUERY_STRING_MAX
-define('PKWK_QUERY_STRING_MAX', 640); // Bytes, 0 = OFF
+// Bytes, 0 = OFF
+define('PKWK_QUERY_STRING_MAX', 640);
 
 /////////////////////////////////////////////////
 // Experimental features
@@ -57,7 +61,8 @@ define('PKWK_QUERY_STRING_MAX', 640); // Bytes, 0 = OFF
 //   argsN+1
 //   }}
 //   #memo(This makes '#memo(foo)' to this)
-define('PKWKEXP_DISABLE_MULTILINE_PLUGIN_HACK', 1); // 1 = Disabled
+// 1 = Disabled
+define('PKWKEXP_DISABLE_MULTILINE_PLUGIN_HACK', 1);
 
 /////////////////////////////////////////////////
 // Language / Encoding settings
@@ -66,7 +71,8 @@ define('PKWKEXP_DISABLE_MULTILINE_PLUGIN_HACK', 1); // 1 = Disabled
 define('LANG', 'ja');
 
 // UI_LANG - Content encoding for buttons, menus,  etc
-define('UI_LANG', LANG); // 'en' for Internationalized wikisite
+// 'en' for Internationalized wikisite
+define('UI_LANG', LANG);
 
 /////////////////////////////////////////////////
 // Directory settings I (ended with '/', permission '777')
@@ -74,13 +80,26 @@ define('UI_LANG', LANG); // 'en' for Internationalized wikisite
 // You may hide these directories (from web browsers)
 // by setting DATA_HOME at index.php.
 
-define('DATA_DIR', DATA_HOME.'wiki/'); // Latest wiki texts
-define('DIFF_DIR', DATA_HOME.'diff/'); // Latest diffs
-define('BACKUP_DIR', DATA_HOME.'backup/'); // Backups
-define('CACHE_DIR', DATA_HOME.'cache/'); // Some sort of caches
-define('UPLOAD_DIR', DATA_HOME.'attach/'); // Attached files and logs
-define('COUNTER_DIR', DATA_HOME.'counter/'); // Counter plugin's counts
-define('PLUGIN_DIR', DATA_HOME.'plugin/'); // Plugin directory
+// Latest wiki texts
+define('DATA_DIR', DATA_HOME.'wiki/');
+
+// Latest diffs
+define('DIFF_DIR', DATA_HOME.'diff/');
+
+// Backups
+define('BACKUP_DIR', DATA_HOME.'backup/');
+
+// Some sort of caches
+define('CACHE_DIR', DATA_HOME.'cache/');
+
+// Attached files and logs
+define('UPLOAD_DIR', DATA_HOME.'attach/');
+
+// Counter plugin's counts
+define('COUNTER_DIR', DATA_HOME.'counter/');
+
+// Plugin directory
+define('PLUGIN_DIR', DATA_HOME.'plugin/');
 
 /////////////////////////////////////////////////
 // Directory settings II (ended with '/')
@@ -100,17 +119,21 @@ define('IMAGE_DIR', 'image/');
 /////////////////////////////////////////////////
 // Local time setting
 
-switch (LANG) { // or specifiy one
-case 'ja':
-	define('ZONE', 'JST');
-	define('ZONETIME', 9 * 3600); // JST = GMT + 9
+// or specifiy one
+switch (LANG) {
+	case 'ja':
+		define('ZONE', 'JST');
 
-	break;
-default:
-	define('ZONE', 'GMT');
-	define('ZONETIME', 0);
+		// JST = GMT + 9
+		define('ZONETIME', 9 * 3600);
 
-	break;
+		break;
+
+	default:
+		define('ZONE', 'GMT');
+		define('ZONETIME', 0);
+
+		break;
 }
 
 /////////////////////////////////////////////////
@@ -131,13 +154,27 @@ $modifier = 'anonymous';
 $modifierlink = 'http://pukiwiki.example.com/';
 
 // Default page name
-$defaultpage = 'FrontPage';     // Top / Default page
-$whatsnew = 'RecentChanges'; // Modified page list
-$whatsdeleted = 'RecentDeleted'; // Removeed page list
-$interwiki = 'InterWikiName'; // Set InterWiki definition here
-$aliaspage = 'AutoAliasName'; // Set AutoAlias definition here
-$menubar = 'MenuBar';       // Menu
-$rightbar_name = 'RightBar';     // RightBar
+
+// Top / Default page
+$defaultpage = 'FrontPage';
+
+// Modified page list
+$whatsnew = 'RecentChanges';
+
+// Removeed page list
+$whatsdeleted = 'RecentDeleted';
+
+// Set InterWiki definition here
+$interwiki = 'InterWikiName';
+
+// Set AutoAlias definition here
+$aliaspage = 'AutoAliasName';
+
+// Menu
+$menubar = 'MenuBar';
+
+// RightBar
+$rightbar_name = 'RightBar';
 
 /////////////////////////////////////////////////
 // Change default Document Type Definition
@@ -145,7 +182,9 @@ $rightbar_name = 'RightBar';     // RightBar
 // Some web browser's bug, and / or Java apprets may needs not-Strict DTD.
 // Some plugin (e.g. paint) set this PKWK_DTD_XHTML_1_0_TRANSITIONAL.
 
-//$pkwk_dtd = PKWK_DTD_XHTML_1_1; // Default
+// Default
+//$pkwk_dtd = PKWK_DTD_XHTML_1_1;
+
 //$pkwk_dtd = PKWK_DTD_XHTML_1_0_STRICT;
 //$pkwk_dtd = PKWK_DTD_XHTML_1_0_TRANSITIONAL;
 //$pkwk_dtd = PKWK_DTD_HTML_4_01_STRICT;
@@ -154,7 +193,8 @@ $rightbar_name = 'RightBar';     // RightBar
 /////////////////////////////////////////////////
 // Always output "nofollow,noindex" attribute
 
-$nofollow = 0; // 1 = Try hiding from search engines
+// 1 = Try hiding from search engines
+$nofollow = 0;
 
 /////////////////////////////////////////////////
 
@@ -170,17 +210,20 @@ $nowikiname = 0;
 // Automatic link to existing pages
 
 // AutoLink minimum length of page name
-$autolink = 0; // Bytes, 0 = OFF (try 8)
+// Bytes, 0 = OFF (try 8)
+$autolink = 0;
 
 /////////////////////////////////////////////////
 // AutoAlias feature
 // Automatic link from specified word, to specifiled URI, page or InterWiki
 
 // AutoAlias minimum length of alias "from" word
-$autoalias = 0; // Bytes, 0 = OFF (try 8)
+// Bytes, 0 = OFF (try 8)
+$autoalias = 0;
 
 // Limit loading valid alias pairs
-$autoalias_max_words = 50; // pairs
+// pairs
+$autoalias_max_words = 50;
 
 /////////////////////////////////////////////////
 // Enable Freeze / Unfreeze feature
@@ -198,13 +241,27 @@ $notimeupdate = 1;
 $adminpass = '{x-php-md5}!';
 
 // Sample:
-//$adminpass = 'pass'; // Cleartext
-//$adminpass = '{x-php-md5}1a1dc91c907325c69271ddf0c944bc72'; // PHP md5()  'pass'
-//$adminpass = '{x-php-sha256}d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1'; // PHP sha256  'pass'
-//$adminpass = '{CRYPT}$1$AR.Gk94x$uCe8fUUGMfxAPH83psCZG/';   // LDAP CRYPT 'pass'
-//$adminpass = '{MD5}Gh3JHJBzJcaScd3wyUS8cg==';               // LDAP MD5   'pass'
-//$adminpass = '{SMD5}o7lTdtHFJDqxFOVX09C8QnlmYmZnd2Qx';      // LDAP SMD5  'pass'
-//$adminpass = '{SHA256}10/w7o2juYBrGMh32/KbveULW9jk2tejpyUAD+uC6PE=' // LDAP SHA256 'pass'
+
+// Cleartext
+//$adminpass = 'pass';
+
+// PHP md5()  'pass'
+//$adminpass = '{x-php-md5}1a1dc91c907325c69271ddf0c944bc72';
+
+// PHP sha256  'pass'
+//$adminpass = '{x-php-sha256}d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1';
+
+// LDAP CRYPT 'pass'
+//$adminpass = '{CRYPT}$1$AR.Gk94x$uCe8fUUGMfxAPH83psCZG/';
+
+// LDAP MD5   'pass'
+//$adminpass = '{MD5}Gh3JHJBzJcaScd3wyUS8cg==';
+
+// LDAP SMD5  'pass'
+//$adminpass = '{SMD5}o7lTdtHFJDqxFOVX09C8QnlmYmZnd2Qx';
+
+// LDAP SHA256 'pass'
+//$adminpass = '{SHA256}10/w7o2juYBrGMh32/KbveULW9jk2tejpyUAD+uC6PE='
 
 /////////////////////////////////////////////////
 // Page-reading feature settings
@@ -219,8 +276,12 @@ $pagereading_enable = 0;
 $pagereading_kanji2kana_converter = 'none';
 
 // Specify Kanji encoding to pass data between PukiWiki and the converter
-$pagereading_kanji2kana_encoding = 'EUC'; // Default for Unix
-//$pagereading_kanji2kana_encoding = 'SJIS'; // Default for Windows
+
+// Default for Unix
+$pagereading_kanji2kana_encoding = 'EUC';
+
+// Default for Windows
+//$pagereading_kanji2kana_encoding = 'SJIS';
 
 // Absolute path of the converter (ChaSen)
 $pagereading_chasen_path = '/usr/local/bin/chasen';
@@ -244,7 +305,10 @@ $pagereading_config_dict = ':config/PageReading/dict';
 
 /////////////////////////////////////////////////
 // LDAP
-$ldap_user_account = 0; // (0: Disabled, 1: Enabled)
+
+// (0: Disabled, 1: Enabled)
+$ldap_user_account = 0;
+
 // $ldap_server = 'ldap://ldapserver:389';
 // $ldap_base_dn = 'ou=Users,dc=ldap,dc=example,dc=com';
 // $ldap_bind_dn = 'uid=$login,dc=example,dc=com';
@@ -259,31 +323,46 @@ $auth_provider_user_prefix_saml = 'saml:';
 
 /////////////////////////////////////////////////
 // User definition
-$auth_users = [
-	// Username => password
-	'foo'=>'foo_passwd', // Cleartext
-	'bar'=>'{x-php-md5}f53ae779077e987718cc285b14dfbe86', // PHP md5() 'bar_passwd'
-	'hoge'=>'{SMD5}OzJo/boHwM4q5R+g7LCOx2xGMkFKRVEx',      // LDAP SMD5 'hoge_passwd'
+$auth_users =
+[
+	// Username=>password
+
+	// Cleartext
+	'foo'=>'foo_passwd',
+
+	// PHP md5() 'bar_passwd'
+	'bar'=>'{x-php-md5}f53ae779077e987718cc285b14dfbe86',
+
+	// LDAP SMD5 'hoge_passwd'
+	'hoge'=>'{SMD5}OzJo/boHwM4q5R+g7LCOx2xGMkFKRVEx',
 ];
 
 // Group definition
-$auth_groups = [
-	// Groupname => group members(users)
-	'valid-user'=>'', // Reserved 'valid-user' group contains all authenticated users
+$auth_groups =
+[
+	// Groupname=>group members(users)
+
+	// Reserved 'valid-user' group contains all authenticated users
+	'valid-user'=>'',
+
 	'groupfoobar'=>'foo,bar',
 ];
 
 /////////////////////////////////////////////////
 // Authentication method
 
-$auth_method_type = 'pagename';	// By Page name
-//$auth_method_type	= 'contents';	// By Page contents
+// By Page name
+$auth_method_type = 'pagename';
+
+// By Page contents
+//$auth_method_type	= 'contents';
 
 /////////////////////////////////////////////////
 // Read auth (0:Disable, 1:Enable)
 $read_auth = 0;
 
-$read_auth_pages = [
+$read_auth_pages =
+[
 	// Regex		   Groupname or Username
 	'#PageForAllValidUsers#'=>'valid-user',
 	'#HogeHoge#'=>'hoge',
@@ -294,7 +373,8 @@ $read_auth_pages = [
 // Edit auth (0:Disable, 1:Enable)
 $edit_auth = 0;
 
-$edit_auth_pages = [
+$edit_auth_pages =
+[
 	// Regex		   Username
 	'#BarDiary#'=>'bar',
 	'#HogeHoge#'=>'hoge',
@@ -309,34 +389,41 @@ $search_auth = 0;
 
 /////////////////////////////////////////////////
 // AutoTicketLink
-$ticket_link_sites = [
+$ticket_link_sites =
+[
 	/*
-	array(
-		'key' => 'phpbug',
-		'type' => 'redmine', // type: redmine, jira or git
-		'title' => 'PHP :: Bug #$1',
-		'base_url' => 'https://bugs.php.net/bug.php?id=',
-	),
-	array(
-		'key' => 'asfjira',
-		'type' => 'jira',
-		'title' => 'ASF JIRA [$1]',
-		'base_url' => 'https://issues.apache.org/jira/browse/',
-	),
-	array(
-		'key' => 'pukiwiki-commit',
-		'type' => 'git',
-		'title' => 'PukiWiki revision $1',
-		'base_url' => 'https://ja.osdn.net/projects/pukiwiki/scm/git/pukiwiki/commits/',
-	),
+	[
+		'key'=>'phpbug',
+
+		// type: redmine, jira or git
+		'type'=>'redmine',
+
+		'title'=>'PHP :: Bug #$1',
+		'base_url'=>'https://bugs.php.net/bug.php?id=',
+	],
+	[
+		'key'=>'asfjira',
+		'type'=>'jira',
+		'title'=>'ASF JIRA [$1]',
+		'base_url'=>'https://issues.apache.org/jira/browse/',
+	],
+	[
+		'key'=>'pukiwiki-commit',
+		'type'=>'git',
+		'title'=>'PukiWiki revision $1',
+		'base_url'=>'https://ja.osdn.net/projects/pukiwiki/scm/git/pukiwiki/commits/',
+	],
 */
 ];
+
 // AutoTicketLink - JIRA Default site
 /*
-$ticket_jira_default_site = array(
-	'title' => 'My JIRA - $1',
-	'base_url' => 'https://issues.example.com/jira/browse/',
-);
+$ticket_jira_default_site =
+[
+	'title'=>'My JIRA - $1',
+	'base_url'=>'https://issues.example.com/jira/browse/',
+];
+
 //*/
 
 /////////////////////////////////////////////////
@@ -344,16 +431,22 @@ $ticket_jira_default_site = array(
 // 0: Disabled
 // 1: Enabled
 $external_link_cushion_page = 0;
-$external_link_cushion = [
+
+$external_link_cushion =
+[
 	// Wait N seconds before jumping to an external site
 	'wait_seconds'=>5,
+
 	// Internal site domain list
-	'internal_domains'=>[
+	'internal_domains'=>
+	[
 		'localhost',
 		// '*.example.com',
 	],
+
 	// Don't show extenal link icons on these domains
-	'silent_external_domains'=>[
+	'silent_external_domains'=>
+	[
 		'pukiwiki.osdn.jp',
 		'pukiwiki.example.com',
 	],
@@ -373,7 +466,8 @@ $html_meta_referrer_policy = '';
 
 /////////////////////////////////////////////////
 // Output custom HTTP response headers
-$http_response_custom_headers = [
+$http_response_custom_headers =
+[
 	// 'Strict-Transport-Security: max-age=86400',
 	// 'X-Content-Type-Options: nosniff',
 ];
@@ -415,8 +509,12 @@ $do_backup = 1;
 $del_backup = 0;
 
 // Bacukp interval and generation
-$cycle = 3; // Wait N hours between backup (0 = no wait)
-$maxage = 120; // Stock latest N backups
+
+// Wait N hours between backup (0 = no wait)
+$cycle = 3;
+
+// Stock latest N backups
+$maxage = 120;
 
 // NOTE: $cycle x $maxage / 24 = Minimum days to lost your data
 //          3   x   120   / 24 = 15
@@ -452,12 +550,23 @@ $proxy_auth_user = 'username';
 $proxy_auth_pass = 'password';
 
 // Hosts that proxy server will not be needed
-$no_proxy = [
-	'localhost',	// localhost
-	'127.0.0.0/8',	// loopback
-	//	'10.0.0.0/8'	// private class A
-	//	'172.16.0.0/12'	// private class B
-	//	'192.168.0.0/16'	// private class C
+$no_proxy =
+[
+	// localhost
+	'localhost',
+
+	// loopback
+	'127.0.0.0/8',
+
+	// private class A
+	//	'10.0.0.0/8'
+
+	// private class B
+	//	'172.16.0.0/12'
+
+	// private class C
+	//	'192.168.0.0/16'
+
 	//	'no-proxy.com',
 ];
 
@@ -474,8 +583,12 @@ $notify_diff_only = 1;
 $smtp_server = 'localhost';
 
 // Mail recipient (To:) and sender (From:)
-$notify_to = 'to@example.com';	// To:
-$notify_from = 'from@example.com';	// From:
+
+// To:
+$notify_to = 'to@example.com';
+
+// From:
+$notify_from = 'from@example.com';
 
 // Subject: ($page = Page name wll be replaced)
 $notify_subject = '[PukiWiki] $page';
@@ -511,16 +624,18 @@ $non_list = '^\:';
 $search_non_list = 1;
 
 // Page redirect rules
-$page_redirect_rules = [
-	//'#^FromProject($|(/(.+)$))#' => 'ToProject$1',
-	//'#^FromProject($|(/(.+)$))#' => function($matches) { return 'ToProject' . $matches[1]; },
+$page_redirect_rules =
+[
+	//'#^FromProject($|(/(.+)$))#'=>'ToProject$1',
+	//'#^FromProject($|(/(.+)$))#'=>function($matches) { return 'ToProject' . $matches[1]; },
 ];
 
 /////////////////////////////////////////////////
 // Template setting
 
 $auto_template_func = 1;
-$auto_template_rules = [
+$auto_template_rules =
+[
 	'((.+)\/([^\/]+))'=>'\2/template',
 ];
 
@@ -554,7 +669,8 @@ $logging_updates_log_dir = '/var/log/pukiwiki';
 // If you want to to ignore desktop-PC browsers for simple wikisite,
 // copy keitai.ini.php to default.ini.php and customize it.
 
-$agents = [
+$agents =
+[
 	// pattern: A regular-expression that matches device(browser)'s name and version
 	// profile: A group of browsers
 
@@ -582,7 +698,9 @@ $agents = [
 	['pattern'=>'#\b(NetFront)/([0-9\.]+)#',	'profile'=>'keitai'],
 	['pattern'=>'#\b(CNF)/([0-9\.]+)#',	'profile'=>'keitai'],
 	['pattern'=>'#\b(AveFront)/([0-9\.]+)#',	'profile'=>'keitai'],
-	['pattern'=>'#\b(AVE-Front)/([0-9\.]+)#',	'profile'=>'keitai'], // The same?
+
+	// The same?
+	['pattern'=>'#\b(AVE-Front)/([0-9\.]+)#',	'profile'=>'keitai'],
 
 	// NTT-DoCoMo, i-mode (embeded Compact NetFront) and FOMA (embedded NetFront) phones
 	// Sample: "DoCoMo/1.0/F501i", "DoCoMo/1.0/N504i/c10/TB/serXXXX" // c以降は可変
@@ -646,5 +764,6 @@ $agents = [
 	// Loose default: Including something Mozilla
 	['pattern'=>'#^([a-zA-z0-9 ]+)/([0-9\.]+)\b#',	'profile'=>'default'],
 
-	['pattern'=>'#^#',	'profile'=>'default'],	// Sentinel
+	// Sentinel
+	['pattern'=>'#^#',	'profile'=>'default'],
 ];

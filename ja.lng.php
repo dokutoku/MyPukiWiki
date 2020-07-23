@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // ja.lng.php
 // Copyright
@@ -89,8 +91,12 @@ $_msg_auth = 'PukiWikiAuth';
 
 ///////////////////////////////////////
 // Page name
-$rule_page = 'FormattingRules';	// Formatting rules
-$help_page = 'Help';		// Help
+
+// Formatting rules
+$rule_page = 'FormattingRules';
+
+// Help
+$help_page = 'Help';
 
 /////////////////////////////////////////////////
 // 題名が未記入の場合の表記 (article)
@@ -109,22 +115,44 @@ $_LANG['skin']['backup'] = 'バックアップ';
 $_LANG['skin']['copy'] = '複製';
 $_LANG['skin']['diff'] = '差分';
 $_LANG['skin']['edit'] = '編集';
-$_LANG['skin']['filelist'] = 'ファイル名一覧';	// List of filenames
+
+// List of filenames
+$_LANG['skin']['filelist'] = 'ファイル名一覧';
+
 $_LANG['skin']['freeze'] = '凍結';
 $_LANG['skin']['help'] = 'ヘルプ';
-$_LANG['skin']['list'] = '一覧';	// List of pages
+
+// List of pages
+$_LANG['skin']['list'] = '一覧';
+
 $_LANG['skin']['new'] = '新規';
-$_LANG['skin']['rdf'] = '最終更新のRDF';	// RDF of RecentChanges
-$_LANG['skin']['recent'] = '最終更新';	// RecentChanges
+
+// RDF of RecentChanges
+$_LANG['skin']['rdf'] = '最終更新のRDF';
+
+// RecentChanges
+$_LANG['skin']['recent'] = '最終更新';
+
 $_LANG['skin']['reload'] = 'リロード';
-$_LANG['skin']['rename'] = '名前変更';	// Rename a page (and related)
-$_LANG['skin']['rss'] = '最終更新のRSS';	// RSS of RecentChanges
+
+// Rename a page (and related)
+$_LANG['skin']['rename'] = '名前変更';
+
+// RSS of RecentChanges
+$_LANG['skin']['rss'] = '最終更新のRSS';
+
 $_LANG['skin']['rss10'] = &$_LANG['skin']['rss'];
 $_LANG['skin']['rss20'] = &$_LANG['skin']['rss'];
 $_LANG['skin']['search'] = '検索';
-$_LANG['skin']['top'] = 'トップ';	// Top page
+
+// Top page
+$_LANG['skin']['top'] = 'トップ';
+
 $_LANG['skin']['unfreeze'] = '凍結解除';
-$_LANG['skin']['upload'] = '添付';	// Attach a file
+
+// Attach a file
+$_LANG['skin']['upload'] = '添付';
+
 $_LANG['skin']['login'] = 'ログイン';
 $_LANG['skin']['logout'] = 'ログアウト';
 
@@ -145,7 +173,8 @@ $_msg_article_mail_page = '投稿先: ';
 
 ///////////////////////////////////////
 // attach.inc.php
-$_attach_messages = [
+$_attach_messages =
+[
 	'msg_uploaded'=>'$1 にアップロードしました',
 	'msg_deleted'=>'$1 からファイルを削除しました',
 	'msg_freezed'=>'添付ファイルを凍結しました。',
@@ -298,7 +327,8 @@ $_msg_newpage = 'ページ新規作成';
 
 ///////////////////////////////////////
 // paint.inc.php
-$_paint_messages = [
+$_paint_messages =
+[
 	'field_name'=>'お名前',
 	'field_filename'=>'ファイル名',
 	'field_comment'=>'コメント',
@@ -306,13 +336,13 @@ $_paint_messages = [
 	'msg_max'=>'(最大 %d x %d)',
 	'msg_title'=>'Paint and Attach to $1',
 	'msg_title_collided'=>'$1 で【更新の衝突】が起きました',
-	'msg_collided'=>'あなたが画像を編集している間に、他の人が同じページを更新してしまったようです。<br />
-画像とコメントを追加しましたが、違う位置に挿入されているかもしれません。<br />',
+	'msg_collided'=>'あなたが画像を編集している間に、他の人が同じページを更新してしまったようです。<br />画像とコメントを追加しましたが、違う位置に挿入されているかもしれません。<br />',
 ];
 
 ///////////////////////////////////////
 // pcomment.inc.php
-$_pcmt_messages = [
+$_pcmt_messages =
+[
 	'btn_name'=>'お名前: ',
 	'btn_comment'=>'コメントの挿入',
 	'msg_comment'=>'コメント: ',
@@ -320,10 +350,10 @@ $_pcmt_messages = [
 	'msg_all'=>'コメントページを参照',
 	'msg_none'=>'コメントはありません。',
 	'title_collided'=>'$1 で【更新の衝突】が起きました',
-	'msg_collided'=>'あなたがこのページを編集している間に、他の人が同じページを更新してしまったようです。<br />
-コメントを追加しましたが、違う位置に挿入されているかもしれません。<br />',
+	'msg_collided'=>'あなたがこのページを編集している間に、他の人が同じページを更新してしまったようです。<br />コメントを追加しましたが、違う位置に挿入されているかもしれません。<br />',
 	'err_pagename'=>'ページ名 [[%s]] は使用できません。 正しいページ名を指定してください。',
 ];
+
 $_msg_pcomment_restrict = '閲覧制限がかかっているため、$1からはコメントを読みこむことができません。';
 
 ///////////////////////////////////////
@@ -338,7 +368,8 @@ $_recent_plugin_frame = '<h5>最新の%d件</h5>
 
 ///////////////////////////////////////
 // rename.inc.php
-$_rename_messages = [
+$_rename_messages =
+[
 	'err'=>'<p>エラー:%s</p>',
 	'err_nomatch'=>'マッチするページがありません。',
 	'err_notvalid'=>'リネーム後のページ名が正しくありません。',
@@ -381,7 +412,8 @@ $_search_detail = '詳細表示';
 
 ///////////////////////////////////////
 // source.inc.php
-$_source_messages = [
+$_source_messages =
+[
 	'msg_title'=>'$1のソース',
 	'msg_notfound'=>'$1が見つかりません',
 	'err_notfound'=>'ページのソースを表示できません。',
@@ -401,7 +433,8 @@ $_title_template = '$1 をテンプレートにして作成';
 
 ///////////////////////////////////////
 // tracker.inc.php
-$_tracker_messages = [
+$_tracker_messages =
+[
 	'msg_list'=>'$1 の項目一覧',
 	'msg_back'=>'<p>$1</p>',
 	'msg_limit'=>'全$1件中、上位$2件を表示しています。',
@@ -440,7 +473,8 @@ $_err_notexist = '未作成のページはありません。';
 
 ///////////////////////////////////////
 // loginform.inc.php
-$_loginform_messages = [
+$_loginform_messages =
+[
 	'username'=>'ユーザー名:',
 	'password'=>'パスワード:',
 	'login'=>'ログイン',
@@ -449,7 +483,8 @@ $_loginform_messages = [
 
 ///////////////////////////////////////
 // external_link.inc.php
-$_external_link_messages = [
+$_external_link_messages =
+[
 	'page_title'=>'外部リンク: %s',
 	'desc'=>'選択されたURLは本サイトのコンテンツではありません。',
 	'wait_n_seconds'=>'%s 秒後に自動的に移動します。',

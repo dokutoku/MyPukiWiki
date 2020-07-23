@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // $Id: online.inc.php,v 1.12 2007/02/10 06:21:53 henoheno Exp $
 // Copyright (C)
 //   2002-2005, 2007 PukiWiki Developers Team
@@ -7,7 +9,8 @@
 //
 // Online plugin -- Just show the number 'users-on-line'
 
-define('PLUGIN_ONLINE_TIMEOUT', 60 * 5); // Count users in N seconds
+// Count users in N seconds
+define('PLUGIN_ONLINE_TIMEOUT', 60 * 5);
 
 // ----
 
@@ -29,7 +32,9 @@ function plugin_online_inline()
 
 function plugin_online_itself($type = 0)
 {
-	static $count, $result, $base;
+	static $count;
+	static $result;
+	static $base;
 
 	if (!isset($count)) {
 		if (isset($_SERVER['REMOTE_ADDR'])) {
@@ -48,11 +53,13 @@ function plugin_online_itself($type = 0)
 	}
 
 	if ($result) {
-		return $count; // Integer
+		// Integer
+		return $count;
 	} else {
 		if (!isset($base)) {
 			$base = basename(PLUGIN_ONLINE_USER_LIST);
 		}
+
 		$error = '"COUNTER_DIR/'.$base.'" not writable';
 
 		if ($type == 0) {
@@ -61,7 +68,8 @@ function plugin_online_itself($type = 0)
 			$error = '&online: '.$error.';';
 		}
 
-		return $error; // String
+		// String
+		return $error;
 	}
 }
 
@@ -79,6 +87,7 @@ function plugin_online_check_online(&$count, $host = '')
 	if ($fp == false) {
 		return false;
 	}
+
 	set_file_buffer($fp, 0);
 
 	// Init
@@ -97,15 +106,13 @@ function plugin_online_check_online(&$count, $host = '')
 		}
 
 		// Ignore invalid-or-outdated lines
-		if (!preg_match(PLUGIN_ONLINE_LIST_REGEX, $line, $matches) ||
-			($matches[2] + PLUGIN_ONLINE_TIMEOUT) <= UTIME ||
-			$matches[2] > UTIME) {
+		if ((!preg_match(PLUGIN_ONLINE_LIST_REGEX, $line, $matches)) || (($matches[2] + PLUGIN_ONLINE_TIMEOUT) <= UTIME) || ($matches[2] > UTIME)) {
 			continue;
 		}
 
 		$count++;
 
-		if (!$found && $matches[1] == $host) {
+		if ((!$found) && ($matches[1] == $host)) {
 			$found = true;
 		}
 	}
@@ -116,7 +123,7 @@ function plugin_online_check_online(&$count, $host = '')
 		return false;
 	}
 
-	if (!$found && $host != '') {
+	if ((!$found) && ($host != '')) {
 		$count++;
 	} // About you
 
@@ -124,7 +131,7 @@ function plugin_online_check_online(&$count, $host = '')
 }
 
 // Cleanup outdated records, Add/Replace new record, Return the number of 'users in N seconds'
-// NOTE: Call this when plugin_online_check_online() returnes FALSE
+// NOTE: Call this when plugin_online_check_online() returnes false
 function plugin_online_sweep_records($host = '')
 {
 	// Open
@@ -133,6 +140,7 @@ function plugin_online_sweep_records($host = '')
 	if ($fp == false) {
 		return false;
 	}
+
 	set_file_buffer($fp, 0);
 
 	flock($fp, LOCK_EX);
@@ -145,16 +153,16 @@ function plugin_online_sweep_records($host = '')
 	}
 
 	// Need modify?
-	$line_count = $count = count($lines);
+	$count = count($lines);
+	$line_count = $count;
 	$matches = [];
 	$dirty = false;
 
 	for ($i = 0; $i < $line_count; $i++) {
-		if (!preg_match(PLUGIN_ONLINE_LIST_REGEX, $lines[$i], $matches) ||
-			($matches[2] + PLUGIN_ONLINE_TIMEOUT) <= UTIME ||
-			$matches[2] > UTIME ||
-			$matches[1] == $host) {
-			unset($lines[$i]); // Invalid or outdated or invalid date
+		if ((!preg_match(PLUGIN_ONLINE_LIST_REGEX, $lines[$i], $matches)) || (($matches[2] + PLUGIN_ONLINE_TIMEOUT) <= UTIME) || ($matches[2] > UTIME) || ($matches[1] == $host)) {
+			// Invalid or outdated or invalid date
+			unset($lines[$i]);
+
 			$count--;
 			$dirty = true;
 		}
@@ -172,6 +180,7 @@ function plugin_online_sweep_records($host = '')
 		if (!ftruncate($fp, 0)) {
 			return false;
 		}
+
 		rewind($fp);
 		fwrite($fp, implode('', $lines));
 	}
@@ -182,5 +191,6 @@ function plugin_online_sweep_records($host = '')
 		return false;
 	}
 
-	return $count; // Number of lines == Number of users online
+	// Number of lines == Number of users online
+	return $count;
 }

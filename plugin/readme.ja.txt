@@ -38,7 +38,7 @@
 
     GET・POSTメソッドでpluginを指定されたときに呼び出される
 
-    返値に array("msg" => "$1 is page") などを返すと $1 をページ名として
+    返値に ["msg"=>"$1 is page"] などを返すと $1 をページ名として
     ページタイトルに置換される
 
     die() を実行することにより、ページに戻らないようにできる
@@ -47,10 +47,12 @@
 
     プラグインが読み込まれる時に呼び出されます。
 
-    $_plugin_recent_messages = array(
-    '_recent_plugin_li'=>'・',
-    '_recent_plugin_frame '=>'<span align="center"><h5 class="side_label">最新の%d件</h5></span><small>%s</small>'
-    );
+    $_plugin_recent_messages =
+    [
+        '_recent_plugin_li'=>'・',
+        '_recent_plugin_frame '=>'<span align="center"><h5 class="side_label">最新の%d件</h5></span><small>%s</small>'
+    ];
+
     set_plugin_messages($_plugin_recent_messages);
 
     として置くと、*.lngファイルでボタンやメッセージを指定していない場合にのみ

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // diff.php
 // Copyright
@@ -19,9 +21,9 @@ function do_diff($strlines1, $strlines2)
 }
 
 // Visualize diff-style-text to text-with-CSS
-//   '+Added'   => '<span added>Added</span>'
-//   '-Removed' => '<span removed>Removed</span>'
-//   ' Nothing' => 'Nothing'
+//   '+Added'=>'<span added>Added</span>'
+//   '-Removed'=>'<span removed>Removed</span>'
+//   ' Nothing'=>'Nothing'
 function diff_style_to_css($str = '')
 {
 	// Cut diff markers ('+' or '-' or ' ')
@@ -48,6 +50,7 @@ function do_update_diff($pagestr, $poststr, $original)
 
 	if (PKWK_DIFF_SHOW_CONFLICT_DETAIL) {
 		global $do_update_diff_table;
+
 		$table = [];
 		$table[] = <<<'EOD'
 <p>l : between backup data and stored page data.<br />
@@ -71,13 +74,13 @@ EOD;
 				if (empty($text)) {
 					$text = '&nbsp;';
 				}
-				$table[] =
-					'  <'.$tags[$key].' class="style_'.$tags[$key].'">'.
-					$text.
-					'</'.$tags[$key].'>';
+
+				$table[] = '  <'.$tags[$key].' class="style_'.$tags[$key].'">'.$text.'</'.$tags[$key].'>';
 			}
+
 			$table[] = ' </tr>';
 		}
+
 		$table[] = '</table>';
 
 		$do_update_diff_table = implode("\n", $table)."\n";
@@ -87,7 +90,7 @@ EOD;
 	$body = [];
 
 	foreach ($arr as $_obj) {
-		if ($_obj->get('left') != '-' && $_obj->get('right') != '-') {
+		if (($_obj->get('left') != '-') && ($_obj->get('right') != '-')) {
 			$body[] = $_obj->text();
 		}
 	}
@@ -181,7 +184,8 @@ class line_diff
 		$this->m = count($this->arr1);
 		$this->n = count($this->arr2);
 
-		if ($this->m == 0 || $this->n == 0) { // No need to compare
+		// No need to compare
+		if (($this->m == 0) || ($this->n == 0)) {
 			$this->result = [['x'=>0, 'y'=>0]];
 
 			return;
@@ -206,7 +210,8 @@ class line_diff
 			unset($tmp);
 		}
 
-		$delta = $this->n - $this->m; // Must be >=0;
+		// Must be >=0;
+		$delta = $this->n - $this->m;
 
 		$fp = [];
 		$this->path = [];
@@ -217,17 +222,19 @@ class line_diff
 		}
 
 		for ($p = 0; ; $p++) {
-			for ($k = -$p; $k <= $delta - 1; $k++) {
+			for ($k = -$p; $k <= ($delta - 1); $k++) {
 				$fp[$k] = $this->snake($k, $fp[$k - 1], $fp[$k + 1]);
 			}
 
-			for ($k = $delta + $p; $k >= $delta + 1; $k--) {
+			for ($k = $delta + $p; $k >= ($delta + 1); $k--) {
 				$fp[$k] = $this->snake($k, $fp[$k - 1], $fp[$k + 1]);
 			}
+
 			$fp[$delta] = $this->snake($delta, $fp[$delta - 1], $fp[$delta + 1]);
 
 			if ($fp[$delta] >= $this->n) {
-				$this->pos = $this->path[$delta]; // 経路を決定
+				// 経路を決定
+				$this->pos = $this->path[$delta];
 
 				return;
 			}
@@ -243,14 +250,18 @@ class line_diff
 			$_k = $k + 1;
 			$y = $y2;
 		}
-		$this->path[$k] = $this->path[$_k]; // ここまでの経路をコピー
+
+		// ここまでの経路をコピー
+		$this->path[$k] = $this->path[$_k];
+
 		$x = $y - $k;
 
-		while ((($x + 1) < $this->m) && (($y + 1) < $this->n)
-			&& $this->arr1[$x + 1]->compare($this->arr2[$y + 1])) {
+		while ((($x + 1) < $this->m) && (($y + 1) < $this->n) && ($this->arr1[$x + 1]->compare($this->arr2[$y + 1]))) {
 			$x++;
 			$y++;
-			$this->path[$k][] = ['x'=>$x, 'y'=>$y]; // 経路を追加
+
+			// 経路を追加
+			$this->path[$k][] = ['x'=>$x, 'y'=>$y];
 		}
 
 		return $y;
@@ -260,7 +271,8 @@ class line_diff
 	{
 		$arr = [];
 
-		if ($this->reverse) { // 姑息な…
+		// 姑息な…
+		if ($this->reverse) {
 			$_x = 'y';
 			$_y = 'x';
 			$_m = $this->n;
@@ -274,9 +286,13 @@ class line_diff
 			$arr2 = $this->arr2;
 		}
 
-		$x = $y = 1;
-		$this->add_count = $this->delete_count = 0;
-		$this->pos[] = ['x'=>$this->m, 'y'=>$this->n]; // Sentinel
+		$y = 1;
+		$x = 1;
+		$this->delete_count = 0;
+		$this->add_count = 0;
+
+		// Sentinel
+		$this->pos[] = ['x'=>$this->m, 'y'=>$this->n];
 
 		foreach ($this->pos as $pos) {
 			$this->delete_count += ($pos[$_x] - $x);
@@ -297,6 +313,7 @@ class line_diff
 				$arr1[$x]->set($this->key, $this->equal);
 				$arr[] = $arr1[$x];
 			}
+
 			$x++;
 			$y++;
 		}
@@ -334,7 +351,7 @@ class DiffLine
 
 	public function get($key)
 	{
-		return isset($this->status[$key]) ? $this->status[$key] : '';
+		return (isset($this->status[$key])) ? ($this->status[$key]) : ('');
 	}
 
 	public function merge($obj) : void

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 /*
  * PukiWiki lsプラグイン
  *
@@ -16,7 +18,7 @@ function plugin_ls_convert()
 
 	if (func_num_args()) {
 		$args = func_get_args();
-		$with_title = in_array('title', $args);
+		$with_title = in_array('title', $args, true);
 	}
 
 	$prefix = $vars['page'].'/';
@@ -28,6 +30,7 @@ function plugin_ls_convert()
 			$pages[] = $page;
 		}
 	}
+
 	natcasesort($pages);
 
 	$ls = [];
@@ -42,7 +45,8 @@ function plugin_ls_convert()
 
 			$comment = '- '.preg_replace('/^[-*]+/', '', $comment);
 		}
-		$ls[] = "-[[{$page}]] {$comment}";
+
+		$ls[] = '-[['.$page.']] '.$comment;
 	}
 
 	return convert_html($ls);

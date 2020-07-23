@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // include.inc.php
 // Copyright 2002-2017 PukiWiki Development Team
@@ -44,7 +46,8 @@
 // ----
 
 // Default value of 'title|notitle' option
-define('PLUGIN_INCLUDE_WITH_TITLE', true);	// Default: TRUE(title)
+// Default: true(title)
+define('PLUGIN_INCLUDE_WITH_TITLE', true);
 
 // Max pages allowed to be included at a time
 define('PLUGIN_INCLUDE_MAX', 4);
@@ -54,7 +57,11 @@ define('PLUGIN_INCLUDE_USAGE', '#include(): Usage: (a-page-name-you-want-to-incl
 
 function plugin_include_convert()
 {
-	global $vars, $get, $post, $menubar, $_msg_include_restrict;
+	global $vars;
+	global $get;
+	global $post;
+	global $menubar;
+	global $_msg_include_restrict;
 	static $included = [];
 	static $count = 1;
 
@@ -70,29 +77,38 @@ function plugin_include_convert()
 	}
 
 	// Loop yourself
-	$root = isset($vars['page']) ? $vars['page'] : '';
+	$root = (isset($vars['page'])) ? ($vars['page']) : ('');
 	$included[$root] = true;
 
 	// Get arguments
 	$args = func_get_args();
+
 	// strip_bracket() is not necessary but compatible
-	$page = isset($args[0]) ? get_fullname(strip_bracket(array_shift($args)), $root) : '';
+	$page = (isset($args[0])) ? (get_fullname(strip_bracket(array_shift($args)), $root)) : ('');
 	$with_title = PLUGIN_INCLUDE_WITH_TITLE;
 
 	if (isset($args[0])) {
 		switch (strtolower(array_shift($args))) {
-		case 'title': $with_title = true;
+			case 'title':
+				$with_title = true;
 
-break;
-		case 'notitle': $with_title = false;
+				break;
 
-break;
+			case 'notitle':
+				$with_title = false;
+
+				break;
+
+			default:
+				break;
 		}
 	}
 
 	$s_page = htmlsc($page);
 	$r_page = pagename_urlencode($page);
-	$link = '<a href="'.get_page_uri($page).'">'.$s_page.'</a>'; // Read link
+
+	// Read link
+	$link = '<a href="'.get_page_uri($page).'">'.$s_page.'</a>';
 
 	// I'm stuffed
 	if (isset($included[$page])) {
@@ -113,23 +129,26 @@ break;
 	$included[$page] = true;
 
 	// Include A page, that probably includes another pages
-	$get['page'] = $post['page'] = $vars['page'] = $page;
+	$vars['page'] = $page;
+	$post['page'] = $page;
+	$get['page'] = $page;
 
 	if (check_readable($page, false, false)) {
 		$body = convert_html(get_source($page));
 	} else {
 		$body = str_replace('$1', $page, $_msg_include_restrict);
 	}
-	$get['page'] = $post['page'] = $vars['page'] = $root;
+
+	$vars['page'] = $root;
+	$post['page'] = $root;
+	$get['page'] = $root;
 
 	// Put a title-with-edit-link, before including document
 	if ($with_title) {
-		$link = '<a href="'.$script.'?cmd=edit&amp;page='.$r_page.
-			'">'.$s_page.'</a>';
+		$link = '<a href="'.$script.'?cmd=edit&amp;page='.$r_page.'">'.$s_page.'</a>';
 
 		if ($page === $menubar) {
-			$body = '<span align="center"><h5 class="side_label">'.
-				$link.'</h5></span><small>'.$body.'</small>';
+			$body = '<span align="center"><h5 class="side_label">'.$link.'</h5></span><small>'.$body.'</small>';
 		} else {
 			$body = '<h1>'.$link.'</h1>'."\n".$body."\n";
 		}

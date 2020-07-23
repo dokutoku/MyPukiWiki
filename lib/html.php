@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
+
 // PukiWiki - Yet another WikiWikiWeb clone.
 // html.php
 // Copyright
@@ -11,26 +13,50 @@
 // Show page-content
 function catbody($title, $page, $body) : void
 {
-	global $vars, $arg, $defaultpage, $whatsnew, $help_page, $hr;
-	global $attach_link, $related_link, $cantedit, $function_freeze;
-	global $search_word_color, $_msg_word, $foot_explain, $note_hr, $head_tags;
-	global $javascript, $nofollow;
-	global $_LANG, $_LINK, $_IMAGE;
-	global $auth_type, $auth_user;
+	global $vars;
+	global $arg;
+	global $defaultpage;
+	global $whatsnew;
+	global $help_page;
+	global $hr;
+	global $attach_link;
+	global $related_link;
+	global $cantedit;
+	global $function_freeze;
+	global $search_word_color;
+	global $_msg_word;
+	global $foot_explain;
+	global $note_hr;
+	global $head_tags;
+	global $javascript;
+	global $nofollow;
+	global $_LANG;
+	global $_LINK;
+	global $_IMAGE;
+	global $auth_type;
+	global $auth_user;
 	global $html_meta_referrer_policy;
 
-	global $pkwk_dtd;     // XHTML 1.1, XHTML1.0, HTML 4.01 Transitional...
-	global $page_title;   // Title of this site
-	global $do_backup;    // Do backup or not
-	global $modifier;     // Site administrator's  web page
-	global $modifierlink; // Site administrator's name
+	// XHTML 1.1, XHTML1.0, HTML 4.01 Transitional...
+	global $pkwk_dtd;
+
+	// Title of this site
+	global $page_title;
+
+	// Do backup or not
+	global $do_backup;
+
+	// Site administrator's  web page
+	global $modifier;
+
+	// Site administrator's name
+	global $modifierlink;
 
 	$script = get_base_uri();
 	$enable_login = false;
 	$enable_logout = false;
 
-	if (AUTH_TYPE_FORM === $auth_type || AUTH_TYPE_EXTERNAL === $auth_type ||
-		AUTH_TYPE_SAML === $auth_type) {
+	if ((AUTH_TYPE_FORM === $auth_type) || (AUTH_TYPE_EXTERNAL === $auth_type) || (AUTH_TYPE_SAML === $auth_type)) {
 		if ($auth_user) {
 			$enable_logout = true;
 		} else {
@@ -42,61 +68,74 @@ function catbody($title, $page, $body) : void
 		}
 	}
 
-	if (!file_exists(SKIN_FILE) || !is_readable(SKIN_FILE)) {
+	if ((!file_exists(SKIN_FILE)) || (!is_readable(SKIN_FILE))) {
 		die_message('SKIN_FILE is not found');
 	}
 
-	$_LINK = $_IMAGE = [];
+	$_IMAGE = [];
+	$_LINK = [];
 
-	$_page = isset($vars['page']) ? $vars['page'] : '';
+	$_page = (isset($vars['page'])) ? ($vars['page']) : ('');
 	$r_page = pagename_urlencode($_page);
 	$is_edit_preview = isset($vars['preview']);
 	// Canonical URL
 	$canonical_url = get_page_uri($_page, PKWK_URI_ABSOLUTE);
 
 	// Set $_LINK for skin
-	$_LINK['add'] = "{$script}?cmd=add&amp;page={$r_page}";
-	$_LINK['backup'] = "{$script}?cmd=backup&amp;page={$r_page}";
-	$_LINK['copy'] = "{$script}?plugin=template&amp;refer={$r_page}";
-	$_LINK['diff'] = "{$script}?cmd=diff&amp;page={$r_page}";
-	$_LINK['edit'] = "{$script}?cmd=edit&amp;page={$r_page}";
-	$_LINK['filelist'] = "{$script}?cmd=filelist";
-	$_LINK['freeze'] = "{$script}?cmd=freeze&amp;page={$r_page}";
+	$_LINK['add'] = $script.'?cmd=add&amp;page='.$r_page;
+	$_LINK['backup'] = $script.'?cmd=backup&amp;page='.$r_page;
+	$_LINK['copy'] = $script.'?plugin=template&amp;refer='.$r_page;
+	$_LINK['diff'] = $script.'?cmd=diff&amp;page='.$r_page;
+	$_LINK['edit'] = $script.'?cmd=edit&amp;page='.$r_page;
+	$_LINK['filelist'] = $script.'?cmd=filelist';
+	$_LINK['freeze'] = $script.'?cmd=freeze&amp;page='.$r_page;
 	$_LINK['help'] = get_page_uri($help_page);
-	$_LINK['list'] = "{$script}?cmd=list";
-	$_LINK['new'] = "{$script}?plugin=newpage&amp;refer={$r_page}";
-	$_LINK['rdf'] = "{$script}?cmd=rss&amp;ver=1.0";
+	$_LINK['list'] = $script.'?cmd=list';
+	$_LINK['new'] = $script.'?plugin=newpage&amp;refer='.$r_page;
+	$_LINK['rdf'] = $script.'?cmd=rss&amp;ver=1.0';
 	$_LINK['recent'] = get_page_uri($whatsnew);
 	$_LINK['reload'] = get_page_uri($_page);
-	$_LINK['rename'] = "{$script}?plugin=rename&amp;refer={$r_page}";
-	$_LINK['rss'] = "{$script}?cmd=rss";
-	$_LINK['rss10'] = "{$script}?cmd=rss&amp;ver=1.0"; // Same as 'rdf'
-	$_LINK['rss20'] = "{$script}?cmd=rss&amp;ver=2.0";
-	$_LINK['search'] = "{$script}?cmd=search";
+	$_LINK['rename'] = $script.'?plugin=rename&amp;refer='.$r_page;
+	$_LINK['rss'] = $script.'?cmd=rss';
+
+	// Same as 'rdf'
+	$_LINK['rss10'] = $script.'?cmd=rss&amp;ver=1.0';
+
+	$_LINK['rss20'] = $script.'?cmd=rss&amp;ver=2.0';
+	$_LINK['search'] = $script.'?cmd=search';
 	$_LINK['top'] = get_page_uri($defaultpage);
-	$_LINK['unfreeze'] = "{$script}?cmd=unfreeze&amp;page={$r_page}";
-	$_LINK['upload'] = "{$script}?plugin=attach&amp;pcmd=upload&amp;page={$r_page}";
+	$_LINK['unfreeze'] = $script.'?cmd=unfreeze&amp;page='.$r_page;
+	$_LINK['upload'] = $script.'?plugin=attach&amp;pcmd=upload&amp;page='.$r_page;
 	$_LINK['canonical_url'] = $canonical_url;
-	$login_link = '#LOGIN_ERROR'; // dummy link that is not used
+
+	// dummy link that is not used
+	$login_link = '#LOGIN_ERROR';
 
 	switch ($auth_type) {
 		case AUTH_TYPE_FORM:
-			$login_link = "{$script}?plugin=loginform&pcmd=login&page={$r_page}";
+			$login_link = $script.'?plugin=loginform&pcmd=login&page='.$r_page;
 
 			break;
+
 		case AUTH_TYPE_EXTERNAL:
 		case AUTH_TYPE_SAML:
-			$login_link = get_auth_external_login_url($_page,
-				get_page_uri($_page, PKWK_URI_ROOT));
+			$login_link = get_auth_external_login_url($_page, get_page_uri($_page, PKWK_URI_ROOT));
 
 			break;
+
+		default:
+			break;
 	}
+
 	$_LINK['login'] = htmlsc($login_link);
-	$_LINK['logout'] = "{$script}?plugin=loginform&amp;pcmd=logout&amp;page={$r_page}";
+	$_LINK['logout'] = $script.'?plugin=loginform&amp;pcmd=logout&amp;page='.$r_page;
 
 	// Compat: Skins for 1.4.4 and before
 	$link_add = &$_LINK['add'];
-	$link_new = &$_LINK['new'];	// New!
+
+	// New!
+	$link_new = &$_LINK['new'];
+
 	$link_edit = &$_LINK['edit'];
 	$link_diff = &$_LINK['diff'];
 	$link_top = &$_LINK['top'];
@@ -106,67 +145,80 @@ function catbody($title, $page, $body) : void
 	$link_whatsnew = &$_LINK['recent'];
 	$link_backup = &$_LINK['backup'];
 	$link_help = &$_LINK['help'];
-	$link_trackback = ''; // Removed (compat)
-	$link_rdf = &$_LINK['rdf'];		// New!
+
+	// Removed (compat)
+	$link_trackback = '';
+
+	// New!
+	$link_rdf = &$_LINK['rdf'];
+
 	$link_rss = &$_LINK['rss'];
-	$link_rss10 = &$_LINK['rss10'];		// New!
-	$link_rss20 = &$_LINK['rss20'];		// New!
+
+	// New!
+	$link_rss10 = &$_LINK['rss10'];
+
+	// New!
+	$link_rss20 = &$_LINK['rss20'];
+
 	$link_freeze = &$_LINK['freeze'];
 	$link_unfreeze = &$_LINK['unfreeze'];
 	$link_upload = &$_LINK['upload'];
 	$link_template = &$_LINK['copy'];
-	$link_refer = ''; // Removed (compat)
+
+	// Removed (compat)
+	$link_refer = '';
+
 	$link_rename = &$_LINK['rename'];
 
 	// Init flags
-	$is_page = (is_pagename($_page) && !arg_check('backup') && $_page != $whatsnew);
-	$is_read = (arg_check('read') && is_page($_page));
+	$is_page = (is_pagename($_page)) && (!arg_check('backup')) && ($_page != $whatsnew);
+	$is_read = (arg_check('read')) && (is_page($_page));
 	$is_freeze = is_freeze($_page);
 
 	// Last modification date (string) of the page
-	$lastmodified = $is_read ? format_date(get_filetime($_page)).
-		get_passage_html_span($_page) : '';
+	$lastmodified = ($is_read) ? (format_date(get_filetime($_page)).get_passage_html_span($_page)) : ('');
 
 	// List of attached files to the page
-	$show_attaches = $is_read || arg_check('edit');
-	$attaches = ($attach_link && $show_attaches && exist_plugin_action('attach')) ?
-		attach_filelist() : '';
+	$show_attaches = ($is_read) || (arg_check('edit'));
+	$attaches = (($attach_link) && ($show_attaches) && (exist_plugin_action('attach'))) ? (attach_filelist()) : ('');
 
 	// List of related pages
-	$related = ($related_link && $is_read) ? make_related($_page) : '';
+	$related = (($related_link) && ($is_read)) ? (make_related($_page)) : ('');
 
 	// List of footnotes
 	ksort($foot_explain, SORT_NUMERIC);
-	$notes = !empty($foot_explain) ? $note_hr.implode("\n", $foot_explain) : '';
+	$notes = (!empty($foot_explain)) ? ($note_hr.implode("\n", $foot_explain)) : ('');
 
 	// Tags will be inserted into <head></head>
-	$head_tag = !empty($head_tags) ? implode("\n", $head_tags)."\n" : '';
+	$head_tag = (!empty($head_tags)) ? (implode("\n", $head_tags)."\n") : ('');
 
 	// 1.3.x compat
 	// Last modification date (UNIX timestamp) of the page
-	$fmt = $is_read ? get_filetime($_page) + LOCALZONE : 0;
+	$fmt = ($is_read) ? (get_filetime($_page) + LOCALZONE) : (0);
 
 	// Output nofollow / noindex regardless os skin file
-	if (!$is_read || $nofollow) {
+	if ((!$is_read) || ($nofollow)) {
 		if (!headers_sent()) {
 			header('X-Robots-Tag: noindex,nofollow');
 		}
 	}
 
 	// Send Canonical URL for Search Engine Optimization
-	if ($is_read && !headers_sent()) {
-		header("Link: <{$canonical_url}>; rel=\"canonical\"");
+	if (($is_read) && (!headers_sent())) {
+		header('Link: <'.$canonical_url.'>; rel="canonical"');
 	}
 
 	// Search words
-	if ($search_word_color && isset($vars['word'])) {
-		$body = '<div class="small">'.$_msg_word.htmlsc($vars['word']).
-			'</div>'.$hr."\n".$body;
+	if (($search_word_color) && (isset($vars['word']))) {
+		$body = '<div class="small">'.$_msg_word.htmlsc($vars['word']).'</div>'.$hr."\n".$body;
 
 		// BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
 		// with array_splice(), array_flip()
 		$words = preg_split('/\s+/', $vars['word'], -1, PREG_SPLIT_NO_EMPTY);
-		$words = array_splice($words, 0, 10); // Max: 10 words
+
+		// Max: 10 words
+		$words = array_splice($words, 0, 10);
+
 		$words = array_flip($words);
 
 		$keys = [];
@@ -174,6 +226,7 @@ function catbody($title, $page, $body) : void
 		foreach ($words as $word=>$id) {
 			$keys[$word] = strlen($word);
 		}
+
 		arsort($keys, SORT_NUMERIC);
 		$keys = get_search_words(array_keys($keys), true);
 		$id = 0;
@@ -183,20 +236,30 @@ function catbody($title, $page, $body) : void
 			if (strlen($patterns) > 0) {
 				$patterns .= '|';
 			}
+
 			$patterns .= '('.$pattern.')';
 		}
 
 		if ($pattern) {
 			$whole_pattern = '/'.
-				'<textarea[^>]*>.*?<\/textarea>'.	// Ignore textareas
-				'|'.'<[^>]*>'.			// Ignore tags
-				'|'.'&[^;]+;'.			// Ignore entities
-				'|'.'('.$patterns.')'.		// $matches[1]: Regex for a search word
+				// Ignore textareas
+				'<textarea[^>]*>.*?<\/textarea>'.
+
+				// Ignore tags
+				'|<[^>]*>'.
+
+				// Ignore entities
+				'|&[^;]+;'.
+
+				// $matches[1]: Regex for a search word
+				'|('.$patterns.')'.
+
 				'/sS';
 			$body = preg_replace_callback($whole_pattern, '_decorate_Nth_word', $body);
 			$notes = preg_replace_callback($whole_pattern, '_decorate_Nth_word', $notes);
 		}
 	}
+
 	// Embed Scripting data
 	$html_scripting_data = get_html_scripting_data($_page, $is_edit_preview);
 
@@ -214,7 +277,7 @@ function _decorate_Nth_word($matches)
 	$index = -1;
 
 	for ($i = 2; $i < count($matches); $i++) {
-		if (isset($matches[$i]) && $matches[$i]) {
+		if ((isset($matches[$i])) && ($matches[$i])) {
 			$index = $i - 2;
 
 			break;
@@ -223,8 +286,7 @@ function _decorate_Nth_word($matches)
 
 	if (isset($matches[1])) {
 		// wordN highlight class: N=0...n
-		return '<strong class="word'.$index.'">'.
-			$matches[0].'</strong>';
+		return '<strong class="word'.$index.'">'.$matches[0].'</strong>';
 	}
 
 	return $matches[0];
@@ -238,16 +300,20 @@ function _decorate_Nth_word($matches)
  */
 function get_html_scripting_data($page, $in_editing)
 {
-	global $ticket_link_sites, $plugin;
-	global $external_link_cushion_page, $external_link_cushion;
+	global $ticket_link_sites;
+	global $plugin;
+	global $external_link_cushion_page;
+	global $external_link_cushion;
 	global $topicpath_title;
 	global $ticket_jira_default_site;
 	global $show_passage;
 
-	if (!isset($ticket_link_sites) || !is_array($ticket_link_sites)) {
+	if ((!isset($ticket_link_sites)) || (!is_array($ticket_link_sites))) {
 		return '';
 	}
-	$is_utf8 = (bool) defined('PKWK_UTF8_ENABLE');
+
+	$is_utf8 = (bool) (defined('PKWK_UTF8_ENABLE'));
+
 	// Require: PHP 5.4+
 	$json_enabled = defined('JSON_UNESCAPED_UNICODE');
 
@@ -259,15 +325,19 @@ EOS;
 
 		return $empty_data;
 	}
+
 	$is_show_passage = (bool) ($show_passage !== 0);
+
 	// Site basic Properties
-	$props = [
+	$props =
+	[
 		'is_utf8'=>$is_utf8,
 		'json_enabled'=>$json_enabled,
 		'show_passage'=>$is_show_passage,
 		'base_uri_pathname'=>get_base_uri(PKWK_URI_ROOT),
 		'base_uri_absolute'=>get_base_uri(PKWK_URI_ABSOLUTE),
 	];
+
 	$h_props = htmlsc_json($props);
 	$site_props = <<<EOS
 <input type="hidden" class="site-props" value="{$h_props}" />
@@ -282,7 +352,7 @@ EOS;
 <input type="hidden" class="page-name" value="{$h_page_name}" />
 EOS;
 	// Page is editing (preview)
-	$in_editing_value = ($plugin === 'edit' && $in_editing) ? 'true' : 'false';
+	$in_editing_value = (($plugin === 'edit') && ($in_editing)) ? ('true') : ('false');
 	$page_edit_data = <<<EOS
 <input type="hidden" class="page-in-edit" value="{$in_editing_value}" />
 EOS;
@@ -293,8 +363,10 @@ EOS;
 		if (!preg_match('/^([a-zA-Z0-9]+)([\.\-][a-zA-Z0-9]+)*$/', $s['key'])) {
 			continue;
 		}
+
 		array_push($filtered_ticket_link_sites, $s);
 	}
+
 	$h_ticket_link_sites = htmlsc_json($filtered_ticket_link_sites);
 	$ticketlink_data = <<<EOS
 <input type="hidden" class="ticketlink-def" value="{$h_ticket_link_sites}" />
@@ -309,14 +381,16 @@ EOS;
 <input type="hidden" class="ticketlink-jira-def" value="{$h_ticket_jira_projects}" />
 EOS;
 	}
+
 	$ticketlink_jira_default_data = '';
 
-	if (isset($ticket_jira_default_site) && is_array($ticket_jira_default_site)) {
+	if ((isset($ticket_jira_default_site)) && (is_array($ticket_jira_default_site))) {
 		$h_ticket_jira_default_site = htmlsc_json($ticket_jira_default_site);
 		$ticketlink_jira_default_data = <<<EOS
 <input type="hidden" class="ticketlink-jira-default-def" value="{$h_ticket_jira_default_site}" />
 EOS;
 	}
+
 	// External link cushion page
 	$external_link_cushion_data = '';
 
@@ -326,17 +400,18 @@ EOS;
 <input type="hidden" class="external-link-cushion" value="{$h_cushion}" />
 EOS;
 	}
+
 	// Topicpath title
 	$topicpath_data = '';
 
-	if ($topicpath_title && exist_plugin('topicpath') &&
-		function_exists('plugin_topicpath_parent_links')) {
+	if (($topicpath_title) && (exist_plugin('topicpath')) && (function_exists('plugin_topicpath_parent_links'))) {
 		$parents = plugin_topicpath_parent_links($page);
 		$h_topicpath = htmlsc_json($parents);
 		$topicpath_data = <<<EOS
 <input type="hidden" class="topicpath-links" value="{$h_topicpath}" />
 EOS;
 	}
+
 	$data = <<<EOS
 <div id="pukiwiki-site-properties" style="display:none;">
 {$site_props}
@@ -357,36 +432,49 @@ EOS;
 // Show 'edit' form
 function edit_form($page, $postdata, $digest = false, $b_template = true)
 {
-	global $vars, $rows, $cols;
-	global $_btn_preview, $_btn_repreview, $_btn_update, $_btn_cancel, $_msg_help;
-	global $_btn_template, $_btn_load, $load_template_func;
+	global $vars;
+	global $rows;
+	global $cols;
+	global $_btn_preview;
+	global $_btn_repreview;
+	global $_btn_update;
+	global $_btn_cancel;
+	global $_msg_help;
+	global $_btn_template;
+	global $_btn_load;
+	global $load_template_func;
 	global $notimeupdate;
-	global $_msg_edit_cancel_confirm, $_msg_edit_unloadbefore_message;
+	global $_msg_edit_cancel_confirm;
+	global $_msg_edit_unloadbefore_message;
 	global $rule_page;
 
 	$script = get_base_uri();
+
 	// Newly generate $digest or not
 	if ($digest === false) {
 		$digest = md5(implode('', get_source($page)));
 	}
-	$refer = $template = '';
+
+	$template = '';
+	$refer = '';
+
 	// Add plugin
-	$addtag = $add_top = '';
+	$add_top = '';
+	$addtag = '';
 
 	if (isset($vars['add'])) {
 		global $_btn_addtop;
+
 		$addtag = '<input type="hidden" name="add"    value="true" />';
-		$add_top = isset($vars['add_top']) ? ' checked="checked"' : '';
-		$add_top = '<input type="checkbox" name="add_top" '.
-			'id="_edit_form_add_top" value="true"'.$add_top.' />'."\n".
-			'  <label for="_edit_form_add_top">'.
-				'<span class="small">'.$_btn_addtop.'</span>'.
-			'</label>';
+		$add_top = (isset($vars['add_top'])) ? (' checked="checked"') : ('');
+		$add_top = '<input type="checkbox" name="add_top" id="_edit_form_add_top" value="true"'.$add_top.' />'."\n".'  <label for="_edit_form_add_top"><span class="small">'.$_btn_addtop.'</span></label>';
 	}
 
-	if ($load_template_func && $b_template) {
+	if (($load_template_func) && ($b_template)) {
 		$template_page_list = get_template_page_list();
-		$tpages = []; // Template pages
+
+		// Template pages
+		$tpages = [];
 
 		foreach ($template_page_list as $p) {
 			$ps = htmlsc($p);
@@ -398,6 +486,7 @@ function edit_form($page, $postdata, $digest = false, $b_template = true)
 		} else {
 			$s_tpages = '   <option value="">(no template pages)</option>';
 		}
+
 		$template = <<<EOD
   <select name="template_page">
    <option value="">-- {$_btn_template} --</option>
@@ -407,7 +496,7 @@ function edit_form($page, $postdata, $digest = false, $b_template = true)
   <br />
 EOD;
 
-		if (isset($vars['refer']) && $vars['refer'] != '') {
+		if ((isset($vars['refer'])) && ($vars['refer'] != '')) {
 			$refer = '[['.strip_bracket($vars['refer']).']]'."\n\n";
 		}
 	}
@@ -416,27 +505,26 @@ EOD;
 	$s_page = htmlsc($page);
 	$s_digest = htmlsc($digest);
 	$s_postdata = htmlsc($refer.$postdata);
-	$s_original = isset($vars['original']) ? htmlsc($vars['original']) : $s_postdata;
-	$b_preview = isset($vars['preview']); // TRUE when preview
-	$btn_preview = $b_preview ? $_btn_repreview : $_btn_preview;
+	$s_original = (isset($vars['original'])) ? (htmlsc($vars['original'])) : ($s_postdata);
+
+	// true when preview
+	$b_preview = isset($vars['preview']);
+
+	$btn_preview = ($b_preview) ? ($_btn_repreview) : ($_btn_preview);
 
 	// Checkbox 'do not change timestamp'
 	$add_notimestamp = '';
 
 	if ($notimeupdate != 0) {
 		global $_btn_notchangetimestamp;
-		$checked_time = isset($vars['notimestamp']) ? ' checked="checked"' : '';
+
+		$checked_time = (isset($vars['notimestamp'])) ? (' checked="checked"') : ('');
 		// Only for administrator
 		if ($notimeupdate == 2) {
-			$add_notimestamp = '   '.
-				'<input type="password" name="pass" size="12" />'."\n";
+			$add_notimestamp = '   <input type="password" name="pass" size="12" />'."\n";
 		}
-		$add_notimestamp = '<input type="checkbox" name="notimestamp" '.
-			'id="_edit_form_notimestamp" value="true"'.$checked_time.' />'."\n".
-			'   '.'<label for="_edit_form_notimestamp"><span class="small">'.
-			$_btn_notchangetimestamp.'</span></label>'."\n".
-			$add_notimestamp.
-			'&nbsp;';
+
+		$add_notimestamp = '<input type="checkbox" name="notimestamp" id="_edit_form_notimestamp" value="true"'.$checked_time.' />'."\n".'   <label for="_edit_form_notimestamp"><span class="small">'.$_btn_notchangetimestamp.'</span></label>'."\n".$add_notimestamp.'&nbsp;';
 	}
 
 	// 'margin-bottom', 'float:left', and 'margin-top'
@@ -471,9 +559,7 @@ EOD;
 </div>
 EOD;
 
-	$body .= '<ul><li><a href="'.
-		get_page_uri($rule_page).
-		'" target="_blank">'.$_msg_help.'</a></li></ul>';
+	$body .= '<ul><li><a href="'.get_page_uri($rule_page).'" target="_blank">'.$_msg_help.'</a></li></ul>';
 
 	return $body;
 }
@@ -484,7 +570,10 @@ EOD;
 function get_template_page_list()
 {
 	global $whatsnew;
-	$tpage_names = []; // Pages marked as template
+
+	// Pages marked as template
+	$tpage_names = [];
+
 	$template_page = ':config/Templates';
 	$page_max = 100;
 
@@ -494,13 +583,16 @@ function get_template_page_list()
 		if (!preg_match('#\-\s*\[\[([^\[\]]+)\]\]#', $_templates, $m)) {
 			continue;
 		}
+
 		$tpage = preg_replace('#^./#', "{$template_page}/", $m[1]);
 
 		if (!is_page($tpage)) {
 			continue;
 		}
+
 		$tpage_names[] = $tpage;
 	}
+
 	$page_names = [];
 	$page_list = get_existpages();
 
@@ -518,12 +610,13 @@ function get_template_page_list()
 	}
 
 	foreach ($target_pages as $_page) {
-		if ($_page == $whatsnew || check_non_list($_page) ||
-			!is_page_readable($_page)) {
+		if (($_page == $whatsnew) || (check_non_list($_page)) || (!is_page_readable($_page))) {
 			continue;
 		}
+
 		$tpage_names[] = $_page;
 	}
+
 	$tempalte_page_list = array_values(array_unique($tpage_names));
 	natcasesort($tempalte_page_list);
 
@@ -533,16 +626,20 @@ function get_template_page_list()
 // Related pages
 function make_related($page, $tag = '')
 {
-	global $vars, $rule_related_str, $related_str;
+	global $vars;
+	global $rule_related_str;
+	global $related_str;
 
 	$script = get_base_uri();
 	prepare_links_related($page);
 	$links = links_get_related($page);
 
 	if ($tag) {
-		ksort($links, SORT_STRING);		// Page name, alphabetical order
+		// Page name, alphabetical order
+		ksort($links, SORT_STRING);
 	} else {
-		arsort($links, SORT_NUMERIC);	// Last modified date, newer
+		// Last modified date, newer
+		arsort($links, SORT_NUMERIC);
 	}
 
 	$_links = [];
@@ -551,30 +648,28 @@ function make_related($page, $tag = '')
 		if (check_non_list($page)) {
 			continue;
 		}
+
 		$page_uri = get_page_uri($page);
 		$s_page = htmlsc($page);
 
 		if ($tag) {
 			$attrs = get_page_link_a_attrs($page);
-			$_links[] = '<a href="'.$page_uri.'" class="'.
-				$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].
-				'">'.$s_page.'</a>';
+			$_links[] = '<a href="'.$page_uri.'" class="'.$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].'">'.$s_page.'</a>';
 		} else {
 			$mtime_span = get_passage_mtime_html_span($lastmod + LOCALZONE);
-			$_links[] = '<a href="'.$page_uri.'">'.
-			$s_page.'</a>'.$mtime_span;
+			$_links[] = '<a href="'.$page_uri.'">'.$s_page.'</a>'.$mtime_span;
 		}
 	}
 
 	if (empty($_links)) {
+		// Nothing
 		return '';
-	} // Nothing
+	}
 
-	if ($tag == 'p') { // From the line-head
+	// From the line-head
+	if ($tag == 'p') {
 		$style = sprintf(pkwk_list_attrs_template(), 1, 1);
-		$retval = "\n".'<ul'.$style.'>'."\n".
-			'<li>'.implode($rule_related_str, $_links).'</li>'."\n".
-			'</ul>'."\n";
+		$retval = "\n".'<ul'.$style.'>'."\n".'<li>'.implode($rule_related_str, $_links).'</li>'."\n".'</ul>'."\n";
 	} elseif ($tag) {
 		$retval = implode($rule_related_str, $_links);
 	} else {
@@ -593,7 +688,8 @@ function _convert_line_rule_to_regex($a)
 function make_line_rules($str)
 {
 	global $line_rules;
-	static $pattern, $replace;
+	static $pattern;
+	static $replace;
 
 	if (!isset($pattern)) {
 		$pattern = array_map('_convert_line_rule_to_regex', array_keys($line_rules));
@@ -612,8 +708,7 @@ function strip_htmltag($str, $all = true)
 
 	if (!isset($noexists_pattern)) {
 		if ($_symbol_noexists != '') {
-			$noexists_pattern = '#<span class="noexists">([^<]*)<a[^>]+>'.
-				preg_quote($_symbol_noexists, '#').'</a></span>#';
+			$noexists_pattern = '#<span class="noexists">([^<]*)<a[^>]+>'.preg_quote($_symbol_noexists, '#').'</a></span>#';
 		} else {
 			$noexists_pattern = '';
 		}
@@ -645,8 +740,7 @@ function make_search($page)
 	$s_page = htmlsc($page);
 	$r_page = rawurlencode($page);
 
-	return '<a href="'.get_base_uri().'?plugin=related&amp;page='.$r_page.
-		'">'.$s_page.'</a> ';
+	return '<a href="'.get_base_uri().'?plugin=related&amp;page='.$r_page.'">'.$s_page.'</a> ';
 }
 
 // Make heading string (remove heading-related decorations from Wiki text)
@@ -684,7 +778,7 @@ function anchor_explode($page, $strict_editable = false)
 	}
 
 	// Ignore the last sharp letter
-	if ($pos + 1 == strlen($page)) {
+	if (($pos + 1) == strlen($page)) {
 		$pos = strpos(substr($page, $pos + 1), '#');
 
 		if ($pos === false) {
@@ -695,8 +789,9 @@ function anchor_explode($page, $strict_editable = false)
 	$s_page = substr($page, 0, $pos);
 	$anchor = substr($page, $pos + 1);
 
-	if ($strict_editable === true && preg_match('/^[a-z][a-f0-9]{7}$/', $anchor)) {
-		return [$s_page, $anchor, true]; // Seems fixed-anchor
+	if (($strict_editable === true) && (preg_match('/^[a-z][a-f0-9]{7}$/', $anchor))) {
+		// Seems fixed-anchor
+		return [$s_page, $anchor, true];
 	} else {
 		return [$s_page, $anchor, false];
 	}
@@ -706,17 +801,16 @@ function anchor_explode($page, $strict_editable = false)
 // there're blank lines or something out of php blocks
 function pkwk_headers_sent() : void
 {
-	if (PKWK_OPTIMISE) {
+	if ((defined('PKWK_OPTIMISE')) && (PKWK_OPTIMISE)) {
 		return;
 	}
 
-	$file = $line = '';
+	$line = '';
+	$file = '';
 
 	if (version_compare(PHP_VERSION, '4.3.0', '>=')) {
 		if (headers_sent($file, $line)) {
-			die('Headers already sent at '.
-				htmlsc($file).
-			' line '.$line.'.');
+			die('Headers already sent at '.htmlsc($file).' line '.$line.'.');
 		}
 	} else {
 		if (headers_sent()) {
@@ -730,7 +824,7 @@ function pkwk_common_headers() : void
 {
 	global $http_response_custom_headers;
 
-	if (!PKWK_OPTIMISE) {
+	if ((!defined('PKWK_OPTIMISE')) || (!PKWK_OPTIMISE)) {
 		pkwk_headers_sent();
 	}
 
@@ -741,8 +835,7 @@ function pkwk_common_headers() : void
 	if (defined('PKWK_ZLIB_LOADABLE_MODULE')) {
 		$matches = [];
 
-		if (ini_get('zlib.output_compression') &&
-			preg_match('/\b(gzip|deflate)\b/i', $_SERVER['HTTP_ACCEPT_ENCODING'], $matches)) {
+		if ((ini_get('zlib.output_compression')) && (preg_match('/\b(gzip|deflate)\b/i', $_SERVER['HTTP_ACCEPT_ENCODING'], $matches))) {
 			// Bug #29350 output_compression compresses everything _without header_ as loadable module
 			// http://bugs.php.net/bug.php?id=29350
 			header('Content-Encoding: '.$matches[1]);
@@ -752,12 +845,20 @@ function pkwk_common_headers() : void
 }
 
 // DTD definitions
-define('PKWK_DTD_XHTML_1_1', 17); // Strict only
-define('PKWK_DTD_XHTML_1_0', 16); // Strict
+
+// Strict only
+define('PKWK_DTD_XHTML_1_1', 17);
+
+// Strict
+define('PKWK_DTD_XHTML_1_0', 16);
+
 define('PKWK_DTD_XHTML_1_0_STRICT', 16);
 define('PKWK_DTD_XHTML_1_0_TRANSITIONAL', 15);
 define('PKWK_DTD_XHTML_1_0_FRAMESET', 14);
-define('PKWK_DTD_HTML_4_01', 3); // Strict
+
+// Strict
+define('PKWK_DTD_HTML_4_01', 3);
+
 define('PKWK_DTD_HTML_4_01_STRICT', 3);
 define('PKWK_DTD_HTML_4_01_TRANSITIONAL', 2);
 define('PKWK_DTD_HTML_4_01_FRAMESET', 1);
@@ -773,47 +874,49 @@ function pkwk_output_dtd($pkwk_dtd = PKWK_DTD_XHTML_1_1, $charset = CONTENT_CHAR
 	if (isset($called)) {
 		die('pkwk_output_dtd() already called. Why?');
 	}
-	$called = true;
 
+	$called = true;
 	$type = PKWK_DTD_TYPE_XHTML;
 	$option = '';
 
 	switch ($pkwk_dtd) {
-	case PKWK_DTD_XHTML_1_1:
-		$version = '1.1';
-		$dtd = 'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd';
+		case PKWK_DTD_XHTML_1_1:
+			$version = '1.1';
+			$dtd = 'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd';
 
-		break;
-	case PKWK_DTD_XHTML_1_0_STRICT:
-		$version = '1.0';
-		$option = 'Strict';
-		$dtd = 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd';
+			break;
 
-		break;
-	case PKWK_DTD_XHTML_1_0_TRANSITIONAL:
-		$version = '1.0';
-		$option = 'Transitional';
-		$dtd = 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd';
+		case PKWK_DTD_XHTML_1_0_STRICT:
+			$version = '1.0';
+			$option = 'Strict';
+			$dtd = 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd';
 
-		break;
+			break;
 
-	case PKWK_DTD_HTML_4_01_STRICT:
-		$type = PKWK_DTD_TYPE_HTML;
-		$version = '4.01';
-		$dtd = 'http://www.w3.org/TR/html4/strict.dtd';
+		case PKWK_DTD_XHTML_1_0_TRANSITIONAL:
+			$version = '1.0';
+			$option = 'Transitional';
+			$dtd = 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd';
 
-		break;
-	case PKWK_DTD_HTML_4_01_TRANSITIONAL:
-		$type = PKWK_DTD_TYPE_HTML;
-		$version = '4.01';
-		$option = 'Transitional';
-		$dtd = 'http://www.w3.org/TR/html4/loose.dtd';
+			break;
 
-		break;
+		case PKWK_DTD_HTML_4_01_STRICT:
+			$type = PKWK_DTD_TYPE_HTML;
+			$version = '4.01';
+			$dtd = 'http://www.w3.org/TR/html4/strict.dtd';
 
-	default: die('DTD not specified or invalid DTD');
+			break;
 
-		break;
+		case PKWK_DTD_HTML_4_01_TRANSITIONAL:
+			$type = PKWK_DTD_TYPE_HTML;
+			$version = '4.01';
+			$option = 'Transitional';
+			$dtd = 'http://www.w3.org/TR/html4/loose.dtd';
+
+			break;
+
+		default:
+			die('DTD not specified or invalid DTD');
 	}
 
 	$charset = htmlsc($charset);
@@ -824,28 +927,26 @@ function pkwk_output_dtd($pkwk_dtd = PKWK_DTD_XHTML_1_1, $charset = CONTENT_CHAR
 	}
 
 	// Output doctype
-	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD '.
-		($type == PKWK_DTD_TYPE_XHTML ? 'XHTML' : 'HTML').' '.
-		$version.
-		($option != '' ? ' '.$option : '').
-		'//EN" "'.
-		$dtd.
-		'">'."\n";
+	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD '.(($type == PKWK_DTD_TYPE_XHTML) ? ('XHTML') : ('HTML')).' '.$version.(($option != '') ? (' '.$option) : ('')).'//EN" "'.$dtd.'">'."\n";
 
 	// Output <html> start tag
 	echo '<html';
 
 	if ($type == PKWK_DTD_TYPE_XHTML) {
 		echo ' xmlns="http://www.w3.org/1999/xhtml"'; // dir="ltr" /* LeftToRight */
+
 		echo ' xml:lang="'.LANG.'"';
 
 		if ($version == '1.0') {
 			echo ' lang="'.LANG.'"';
 		} // Only XHTML 1.0
 	} else {
-		echo ' lang="'.LANG.'"'; // HTML
+		// HTML
+		echo ' lang="'.LANG.'"';
 	}
-	echo '>'."\n"; // <html>
+
+	// <html>
+	echo '>'."\n";
 
 	// Return content-type (with MIME type)
 	if ($type == PKWK_DTD_TYPE_XHTML) {
