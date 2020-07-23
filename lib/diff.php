@@ -126,6 +126,14 @@ class line_diff
 
 	public /* bool */ $reverse;
 
+	public /* array */ $result;
+
+	public /* array */ $path;
+
+	public /* int */ $delete_count;
+
+	public /* int */ $add_count;
+
 	public function line_diff(string $plus = '+', string $minus = '-', string $equal = ' ') : void
 	{
 		$this->__construct($plus, $minus, $equal);

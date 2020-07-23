@@ -307,6 +307,8 @@ class ShowRSS_XML
 
 	public /* int */ $modified_date;
 
+	public /* int */ $time;
+
 	public function parse(string $buf)
 	{
 		$this->items = [];

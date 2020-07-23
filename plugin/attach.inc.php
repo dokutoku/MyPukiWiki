@@ -527,6 +527,10 @@ class AttachFile
 
 	public /* array */ $status = ['count'=>[0], 'age'=>'', 'pass'=>'', 'freeze'=>false];
 
+	public /* bool */ $exist;
+
+	public /* string */ $type;
+
 	public function AttachFile(string $page, string $file, int $age = 0) : void
 	{
 		$this->__construct($page, $file, $age);

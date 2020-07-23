@@ -134,6 +134,10 @@ class MapNode
 
 	public /* string */ $hide_pattern;
 
+	public /* string */ $cache;
+
+	public /* string */ $mark;
+
 	public function MapNode(string $page, bool $reverse = false) : void
 	{
 		$this->__construct($page, $reverse);

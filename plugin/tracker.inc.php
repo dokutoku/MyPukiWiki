@@ -895,6 +895,14 @@ class Tracker_list
 
 	public /* array */ $newly_updated_pages = [];
 
+	public /* array */ $link_pages;
+
+	public /* bool */ $link_update_required;
+
+	public /* array */ $items;
+
+	public /* bool */ $pipe;
+
 	public function Tracker_list(string $page, string $refer, Config &$config, string $list, array &$cache_holder) : void
 	{
 		$this->__construct($page, $refer, $config, $list, $cache_holder);

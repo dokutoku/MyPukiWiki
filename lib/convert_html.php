@@ -414,6 +414,10 @@ class ListContainer extends Element
 
 class ListElement extends Element
 {
+	public /* int */ $level;
+
+	public /* string */ $head;
+
 	public function ListElement(int $level, string $head) : void
 	{
 		$this->__construct($level, $head);

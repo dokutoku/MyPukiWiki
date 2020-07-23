@@ -57,6 +57,8 @@ class InlineConverter
 
 	public /* array */ $result;
 
+	public /* string */ $page;
+
 	public function get_clone(object $obj) : object
 	{
 		static $clone_exists;
