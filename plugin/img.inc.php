@@ -169,7 +169,7 @@ function plugin_img_convert(string ...$args) : string
 	// Check the 2nd argument first, for compatibility
 	$arg = (isset($args[1])) ? (strtoupper($args[1])) : ('');
 
-	if (($a->file_path === '') && ($arg == 'CLEAR')) {
+	if (($p->file_path === '') && ($arg == 'CLEAR')) {
 		// Stop word-wrapping only (Ugly but compatible)
 		// Short usage: #img(,clear)
 		return PLUGIN_IMG_CLEAR;
