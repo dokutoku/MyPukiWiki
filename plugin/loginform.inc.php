@@ -131,22 +131,6 @@ function plugin_loginform_action() : array
 </div>
 </form>
 </div>
-<script><!--
-window.addEventListener && window.addEventListener("DOMContentLoaded", function() {
-  var f = window.document.forms.loginform;
-				console.log(f);
-				console.log(f.username);
-				console.log(f.password);
-  if (f && f.username && f.password) {
-    if (f.username.value) {
-     f.password.focus && f.password.focus();
-	} else {
-     f.username.focus && f.username.focus();
-	}
-  }
-});
-//-->
-</script>
 <?php
 		$body = ob_get_contents();
 		ob_end_clean();
