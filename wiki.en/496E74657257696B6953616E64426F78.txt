@@ -1,4 +1,0 @@
--[[WikiWikiWeb:FrontPage]]
--[[PukiWiki:FrontPage]] 
--[[Google:pukiwiki]]
--[[Yahoo:PHP]]
