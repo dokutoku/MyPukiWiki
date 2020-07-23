@@ -106,25 +106,25 @@ EOD;
 // Information Processing Letters 35, 6 (1990), 317-323.
 class line_diff
 {
-	public $arr1;
+	public /* array */ $arr1;
 
-	public $arr2;
+	public /* array */ $arr2;
 
-	public $m;
+	public /* int */ $m;
 
-	public $n;
+	public /* int */ $n;
 
-	public $pos;
+	public /* array */ $pos;
 
-	public $key;
+	public /* string */ $key;
 
-	public $plus;
+	public /* string */ $plus;
 
-	public $minus;
+	public /* string */ $minus;
 
-	public $equal;
+	public /* string */ $equal;
 
-	public $reverse;
+	public /* bool */ $reverse;
 
 	public function line_diff(string $plus = '+', string $minus = '-', string $equal = ' ') : void
 	{
@@ -324,9 +324,9 @@ class line_diff
 
 class DiffLine
 {
-	public $text;
+	public /* string */ $text;
 
-	public $status;
+	public /* array */ $status;
 
 	public function DiffLine(string $text) : void
 	{

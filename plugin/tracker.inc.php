@@ -297,25 +297,25 @@ function plugin_tracker_get_fields(string $base, string $refer, Config &$config)
 // フィールドクラス
 class Tracker_field
 {
-	public $name;
+	public /* string */ $name;
 
-	public $title;
+	public /* string */ $title;
 
-	public $values;
+	public /* array */ $values;
 
-	public $default_value;
+	public /* string */ $default_value;
 
-	public $page;
+	public /* string */ $page;
 
-	public $refer;
+	public /* string */ $refer;
 
-	public $config;
+	public /* Config */ $config;
 
-	public $data;
+	public /* string */ $data;
 
-	public $sort_type = SORT_REGULAR;
+	public /* int */ $sort_type = SORT_REGULAR;
 
-	public $id = 0;
+	public /* int */ $id = 0;
 
 	public function Tracker_field(array $field, string $page, string $refer, Config &$config) : void
 	{
@@ -366,7 +366,7 @@ class Tracker_field
 
 class Tracker_field_text extends Tracker_field
 {
-	public $sort_type = SORT_STRING;
+	public /* int */ $sort_type = SORT_STRING;
 
 	public function get_tag() : string
 	{
@@ -380,7 +380,7 @@ class Tracker_field_text extends Tracker_field
 
 class Tracker_field_page extends Tracker_field_text
 {
-	public $sort_type = SORT_STRING;
+	public /* int */ $sort_type = SORT_STRING;
 
 	public function format_value($value) : string
 	{
@@ -398,12 +398,12 @@ class Tracker_field_page extends Tracker_field_text
 
 class Tracker_field_real extends Tracker_field_text
 {
-	public $sort_type = SORT_REGULAR;
+	public /* int */ $sort_type = SORT_REGULAR;
 }
 
 class Tracker_field_title extends Tracker_field_text
 {
-	public $sort_type = SORT_STRING;
+	public /* int */ $sort_type = SORT_STRING;
 
 	public function format_cell(string $str) : string
 	{
@@ -415,7 +415,7 @@ class Tracker_field_title extends Tracker_field_text
 
 class Tracker_field_textarea extends Tracker_field
 {
-	public $sort_type = SORT_STRING;
+	public /* int */ $sort_type = SORT_STRING;
 
 	public function get_tag() : string
 	{
@@ -441,11 +441,11 @@ class Tracker_field_textarea extends Tracker_field
 
 class Tracker_field_format extends Tracker_field
 {
-	public $sort_type = SORT_STRING;
+	public /* int */ $sort_type = SORT_STRING;
 
-	public $styles = [];
+	public /* array */ $styles = [];
 
-	public $formats = [];
+	public /* array */ $formats = [];
 
 	public function Tracker_field_format(array $field, string $page, string $refer, Config &$config) : void
 	{
@@ -503,7 +503,7 @@ class Tracker_field_format extends Tracker_field
 
 class Tracker_field_file extends Tracker_field_format
 {
-	public $sort_type = SORT_STRING;
+	public /* int */ $sort_type = SORT_STRING;
 
 	public function get_tag() : string
 	{
@@ -532,7 +532,7 @@ class Tracker_field_file extends Tracker_field_format
 
 class Tracker_field_radio extends Tracker_field_format
 {
-	public $sort_type = SORT_NUMERIC;
+	public /* int */ $sort_type = SORT_NUMERIC;
 
 	public function get_tag() : string
 	{
@@ -571,7 +571,7 @@ class Tracker_field_radio extends Tracker_field_format
 
 class Tracker_field_select extends Tracker_field_radio
 {
-	public $sort_type = SORT_NUMERIC;
+	public /* int */ $sort_type = SORT_NUMERIC;
 
 	public function get_tag(bool $empty = false) : string
 	{
@@ -600,7 +600,7 @@ class Tracker_field_select extends Tracker_field_radio
 
 class Tracker_field_checkbox extends Tracker_field_radio
 {
-	public $sort_type = SORT_NUMERIC;
+	public /* int */ $sort_type = SORT_NUMERIC;
 
 	public function get_tag(bool $empty = false) : string
 	{
@@ -623,7 +623,7 @@ class Tracker_field_checkbox extends Tracker_field_radio
 
 class Tracker_field_hidden extends Tracker_field_radio
 {
-	public $sort_type = SORT_NUMERIC;
+	public /* int */ $sort_type = SORT_NUMERIC;
 
 	public function get_tag(bool $empty = false) : string
 	{
@@ -655,7 +655,7 @@ EOD;
 
 class Tracker_field_date extends Tracker_field
 {
-	public $sort_type = SORT_NUMERIC;
+	public /* int */ $sort_type = SORT_NUMERIC;
 
 	public function format_cell(string $timestamp) : string
 	{
@@ -665,7 +665,7 @@ class Tracker_field_date extends Tracker_field
 
 class Tracker_field_past extends Tracker_field
 {
-	public $sort_type = SORT_NUMERIC;
+	public /* int */ $sort_type = SORT_NUMERIC;
 
 	public function format_cell(string $timestamp) : string
 	{
@@ -873,27 +873,27 @@ function plugin_tracker_getlist(string $page, $refer, string $config_name, strin
 // 一覧クラス
 class Tracker_list
 {
-	public $page;
+	public /* string */ $page;
 
-	public $config;
+	public /* Config */ $config;
 
-	public $list;
+	public /* string */ $list;
 
-	public $fields;
+	public /* array */ $fields;
 
-	public $pattern;
+	public /* string */ $pattern;
 
-	public $pattern_fields;
+	public /* array */ $pattern_fields;
 
-	public $rows;
+	public /* array */ $rows;
 
-	public $order;
+	public /* array */ $order;
 
-	public $sort_keys;
+	public /* array */ $sort_keys;
 
-	public $newly_deleted_pages = [];
+	public /* array */ $newly_deleted_pages = [];
 
-	public $newly_updated_pages = [];
+	public /* array */ $newly_updated_pages = [];
 
 	public function Tracker_list(string $page, string $refer, Config &$config, string $list, array &$cache_holder) : void
 	{

@@ -505,27 +505,27 @@ EOD;
 // ファイル
 class AttachFile
 {
-	public $page;
+	public /* string */ $page;
 
-	public $file;
+	public /* string */ $file;
 
-	public $age;
+	public /* int */ $age;
 
-	public $basename;
+	public /* string */ $basename;
 
-	public $filename;
+	public /* string */ $filename;
 
-	public $logname;
+	public /* string */ $logname;
 
-	public $time = 0;
+	public /* int */ $time = 0;
 
-	public $size = 0;
+	public /* int */ $size = 0;
 
-	public $time_str = '';
+	public /* string */ $time_str = '';
 
-	public $size_str = '';
+	public /* string */ $size_str = '';
 
-	public $status = ['count'=>[0], 'age'=>'', 'pass'=>'', 'freeze'=>false];
+	public /* array */ $status = ['count'=>[0], 'age'=>'', 'pass'=>'', 'freeze'=>false];
 
 	public function AttachFile(string $page, string $file, int $age = 0) : void
 	{
@@ -895,9 +895,9 @@ EOD;
 // ファイルコンテナ
 class AttachFiles
 {
-	public $page;
+	public /* string */ $page;
 
-	public $files = [];
+	public /* array */ $files = [];
 
 	public function AttachFiles(string $page) : void
 	{
@@ -980,7 +980,7 @@ class AttachFiles
 // ページコンテナ
 class AttachPages
 {
-	public $pages = [];
+	public /* array */ $pages = [];
 
 	public function AttachPages(string $page = '', int $age = null) : void
 	{

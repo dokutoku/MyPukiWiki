@@ -26,12 +26,12 @@ define('PKWK_CONFIG_PREFIX', ':config/');
 // Configuration-page manager
 class Config
 {
-	public $name;
+	public /* string */ $name;
 
 	// Page name
-	public $page;
+	public /* string */ $page;
 
-	public $objs = [];
+	public /* array */ $objs = [];
 
 	public function Config(string $name) : void
 	{
@@ -158,16 +158,16 @@ class Config
 class ConfigTable
 {
 	// Table title
-	public $title = '';
+	public /* string */ $title = '';
 
 	// Page contents (except table ones)
-	public $before = [];
+	public /* array */ $before = [];
 
 	// Page contents (except table ones)
-	public $after = [];
+	public /* array */ $after = [];
 
 	// Table contents
-	public $values = [];
+	public /* array */ $values = [];
 
 	public function ConfigTable(string $title, ConfigTable $obj = null) : void
 	{
@@ -225,7 +225,7 @@ class ConfigTable_Sequential extends ConfigTable
 class ConfigTable_Direct extends ConfigTable
 {
 	// Used at initialization phase
-	public $_keys = [];
+	public /* array */ $_keys = [];
 
 	public function set_key(string $line) : void
 	{

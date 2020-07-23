@@ -423,15 +423,15 @@ define('TARLIB_KIND_TAR', 1);
 
 class tarlib
 {
-	public $filename;
+	public /* string */ $filename;
 
-	public $fp;
+	public /* bool */ $fp;
 
-	public $status;
+	public /* int */ $status;
 
-	public $arc_kind;
+	public /* int */ $arc_kind;
 
-	public $dummydata;
+	public /* string */ $dummydata;
 
 	public function tarlib() : void
 	{

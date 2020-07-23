@@ -122,9 +122,9 @@ function plugin_showrss_convert(string ...$argv) : string
 // Create HTML from RSS array()
 class ShowRSS_html
 {
-	public $items = [];
+	public /* array */ $items = [];
 
-	public $class = '';
+	public /* string */ $class = '';
 
 	public function ShowRSS_html(array $rss) : void
 	{
@@ -179,7 +179,7 @@ EOD;
 
 class ShowRSS_html_menubar extends ShowRSS_html
 {
-	public $class = ' class="small"';
+	public /* string */ $class = ' class="small"';
 
 	public function format_link(string $link) : string
 	{
@@ -194,7 +194,7 @@ class ShowRSS_html_menubar extends ShowRSS_html
 
 class ShowRSS_html_recent extends ShowRSS_html
 {
-	public $class = ' class="small"';
+	public /* string */ $class = ' class="small"';
 
 	public function format_link(string $link) : string
 	{
@@ -295,17 +295,17 @@ function plugin_showrss_cache_expire_file(string $filename, int $cachehour) : vo
 // Get RSS and array() them
 class ShowRSS_XML
 {
-	public $items;
+	public /* array */ $items;
 
-	public $item;
+	public /* array */ $item;
 
 	public $is_item;
 
-	public $tag;
+	public /* string */ $tag;
 
-	public $encoding;
+	public /* string */ $encoding;
 
-	public $modified_date;
+	public /* int */ $modified_date;
 
 	public function parse(string $buf)
 	{

@@ -49,13 +49,13 @@ function make_link(string $string, string $page = '') : string
 class InlineConverter
 {
 	// as array()
-	public $converters;
+	public /* array */ $converters;
 
-	public $pattern;
+	public /* string */ $pattern;
 
 	public $pos;
 
-	public $result;
+	public /* array */ $result;
 
 	public function get_clone(object $obj) : object
 	{
@@ -229,20 +229,20 @@ class InlineConverter
 class Link
 {
 	// Origin number of parentheses (0 origin)
-	public $start;
+	public /* int */ $start;
 
 	// Matched string
-	public $text;
+	public /* string */ $text;
 
-	public $type;
+	public /* string */ $type;
 
-	public $page;
+	public /* string */ $page;
 
-	public $name;
+	public /* string */ $name;
 
-	public $body;
+	public /* string */ $body;
 
-	public $alias;
+	public /* string */ $alias;
 
 	public function Link(int $start) : void
 	{
@@ -319,11 +319,11 @@ class Link
 // Inline plugins
 class Link_plugin extends Link
 {
-	public $pattern;
+	public /* string */ $pattern;
 
-	public $plain;
+	public /* string */ $plain;
 
-	public $param;
+	public /* string */ $param;
 
 	public function Link_plugin(int $start) : void
 	{
@@ -571,9 +571,9 @@ EOD;
 // mailto: URL schemes
 class Link_mailto extends Link
 {
-	public $is_image;
+	public /* bool */ $is_image;
 
-	public $image;
+	public /* bool */ $image;
 
 	public function Link_mailto(int $start) : void
 	{
@@ -620,11 +620,11 @@ EOD;
 // InterWikiName-rendered URLs
 class Link_interwikiname extends Link
 {
-	public $url = '';
+	public /* string */ $url = '';
 
-	public $param = '';
+	public /* string */ $param = '';
 
-	public $anchor = '';
+	public /* string */ $anchor = '';
 
 	public function Link_interwikiname(int $start) : void
 	{
@@ -690,9 +690,9 @@ EOD;
 // BracketNames
 class Link_bracketname extends Link
 {
-	public $anchor;
+	public /* string */ $anchor;
 
-	public $refer;
+	public /* string */ $refer;
 
 	public function Link_bracketname(int $start) : void
 	{
@@ -806,12 +806,12 @@ class Link_wikiname extends Link
 // AutoLinks
 class Link_autolink extends Link
 {
-	public $forceignorepages = [];
+	public /* array */ $forceignorepages = [];
 
-	public $auto;
+	public /* string */ $auto;
 
 	// alphabet only
-	public $auto_a;
+	public /* string */ $auto_a;
 
 	public function Link_autolink(int $start) : void
 	{
@@ -885,14 +885,14 @@ class Link_autolink_a extends Link_autolink
 // AutoAlias
 class Link_autoalias extends Link
 {
-	public $forceignorepages = [];
+	public /* array */ $forceignorepages = [];
 
-	public $auto;
+	public /* string */ $auto;
 
 	// alphabet only
-	public $auto_a;
+	public /* string */ $auto_a;
 
-	public $alias;
+	public /* string */ $alias;
 
 	public function Link_autoalias(int $start) : void
 	{

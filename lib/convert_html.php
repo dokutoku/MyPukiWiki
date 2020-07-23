@@ -35,13 +35,13 @@ function convert_html($lines) : string
 // Block elements
 class Element
 {
-	public $parent;
+	public /* object */ $parent;
 
 	// References of childs
-	public $elements;
+	public /* array */ $elements;
 
 	// Insert new one at the back of the $last
-	public $last;
+	public /* object */ $last;
 
 	public function Element() : void
 	{
@@ -229,7 +229,7 @@ class Inline extends Element
 // Paragraph: blank-line-separated sentences
 class Paragraph extends Element
 {
-	public $param;
+	public /* string */ $param;
 
 	public function Paragraph(string $text, string $param = '') : void
 	{
@@ -268,11 +268,11 @@ class Paragraph extends Element
 // *** Heading3
 class Heading extends Element
 {
-	public $level;
+	public /* int */ $level;
 
-	public $id;
+	public /* string */ $id;
 
-	public $msg_top;
+	public /* string */ $msg_top;
 
 	public function Heading(object &$root, string $text) : void
 	{
@@ -339,13 +339,13 @@ class HRule extends Element
 // Lists (UL, OL, DL)
 class ListContainer extends Element
 {
-	public $tag;
+	public /* string */ $tag;
 
-	public $tag2;
+	public /* string */ $tag2;
 
-	public $level;
+	public /* int */ $level;
 
-	public $style;
+	public /* string */ $style;
 
 	public function ListContainer(string $tag, string $tag2, string $head, string $text) : void
 	{
@@ -496,7 +496,7 @@ class DList extends ListContainer
 // > like E-mail text
 class BQuote extends Element
 {
-	public $level;
+	public /* int */ $level;
 
 	public function BQuote(object &$root, string $text) : void
 	{
@@ -572,14 +572,14 @@ class BQuote extends Element
 class TableCell extends Element
 {
 	// {td|th}
-	public $tag = 'td';
+	public /* string */ $tag = 'td';
 
-	public $colspan = 1;
+	public /* int */ $colspan = 1;
 
-	public $rowspan = 1;
+	public /* int */ $rowspan = 1;
 
 	// is array('width'=>, 'align'=>...);
-	public $style;
+	public /* array */ $style;
 
 	public function TableCell(string $text, bool $is_template = false) : void
 	{
@@ -672,12 +672,12 @@ class TableCell extends Element
 // | cell4  | cell5  | cell6  |
 class Table extends Element
 {
-	public $type;
+	public /* string */ $type;
 
-	public $types;
+	public /* array */ $types;
 
 	// number of column
-	public $col;
+	public /* int */ $col;
 
 	public function Table(array $out) : void
 	{
@@ -812,7 +812,7 @@ class Table extends Element
 class YTable extends Element
 {
 	// Number of columns
-	public $col;
+	public /* int */ $col;
 
 	public function YTable(array $row = ['cell1 ', ' cell2 ', ' cell3']) : void
 	{
@@ -945,9 +945,9 @@ class Pre extends Element
 // Block plugin: #something (started with '#')
 class Div extends Element
 {
-	public $name;
+	public /* string */ $name;
 
-	public $param;
+	public /* string */ $param;
 
 	public function Div(array $out) : void
 	{
@@ -975,7 +975,7 @@ class Div extends Element
 // LEFT:/CENTER:/RIGHT:
 class Align extends Element
 {
-	public $align;
+	public /* string */ $align;
 
 	public function Align(string $align) : void
 	{
@@ -1002,15 +1002,15 @@ class Align extends Element
 // Body
 class Body extends Element
 {
-	public $id;
+	public /* string */ $id;
 
-	public $count = 0;
+	public /* int */ $count = 0;
 
-	public $contents;
+	public /* object */ $contents;
 
-	public $contents_last;
+	public /* object */ $contents_last;
 
-	public $classes =
+	public /* array */ $classes =
 	[
 		'-'=>'UList',
 		'+'=>'OList',
@@ -1018,7 +1018,7 @@ class Body extends Element
 		'<'=>'BQuote',
 	];
 
-	public $factories =
+	public /* array */ $factories =
 	[
 		':'=>'DList',
 		'|'=>'Table',

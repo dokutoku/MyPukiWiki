@@ -118,21 +118,21 @@ function plugin_map_action() : array
 
 class MapNode
 {
-	public $page;
+	public /* string */ $page;
 
-	public $is_page;
+	public /* bool */ $is_page;
 
-	public $link;
+	public /* string */ $link;
 
-	public $id;
+	public /* int */ $id;
 
-	public $rels;
+	public /* array */ $rels;
 
-	public $parent_id = 0;
+	public /* int */ $parent_id = 0;
 
-	public $done;
+	public /* bool */ $done;
 
-	public $hide_pattern;
+	public /* string */ $hide_pattern;
 
 	public function MapNode(string $page, bool $reverse = false) : void
 	{
