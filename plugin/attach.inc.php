@@ -598,7 +598,7 @@ class AttachFile
 	}
 
 	// 日付の比較関数
-	public function datecomp(AttachFile $a, AttachFile $b) : int
+	static function datecomp(AttachFile $a, AttachFile $b) : int
 	{
 		return ($a->time == $b->time) ? (0) : (($a->time > $b->time) ? (-1) : (1));
 	}
