@@ -55,7 +55,7 @@ define('PLUGIN_INCLUDE_MAX', 4);
 // ----
 define('PLUGIN_INCLUDE_USAGE', '#include(): Usage: (a-page-name-you-want-to-include[,title|,notitle])');
 
-function plugin_include_convert()
+function plugin_include_convert(string ...$args) : string
 {
 	global $vars;
 	global $get;
@@ -79,9 +79,6 @@ function plugin_include_convert()
 	// Loop yourself
 	$root = (isset($vars['page'])) ? ($vars['page']) : ('');
 	$included[$root] = true;
-
-	// Get arguments
-	$args = func_get_args();
 
 	// strip_bracket() is not necessary but compatible
 	$page = (isset($args[0])) ? (get_fullname(strip_bracket(array_shift($args)), $root)) : ('');

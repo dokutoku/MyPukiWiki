@@ -39,7 +39,7 @@ define('PAINT_FORMAT', "\x08MSG\x08 -- \x08NAME\x08 \x08NOW\x08");
 //メッセージがない場合
 define('PAINT_FORMAT_NOMSG', "\x08NAME\x08 \x08NOW\x08");
 
-function plugin_paint_action()
+function plugin_paint_action() : array
 {
 	global $vars;
 	global $_paint_messages;
@@ -154,7 +154,7 @@ EOD;
 	return $retval;
 }
 
-function plugin_paint_convert()
+function plugin_paint_convert(string ...$args) : string
 {
 	global $vars;
 	global $digest;
@@ -180,7 +180,6 @@ function plugin_paint_convert()
 	//文字列を取得
 	$height = 0;
 	$width = 0;
-	$args = func_get_args();
 
 	if (func_num_args() >= 2) {
 		$width = array_shift($args);
@@ -218,7 +217,8 @@ EOD;
 
 	return $ret;
 }
-function paint_insert_ref($filename)
+
+function paint_insert_ref(string $filename) : array
 {
 	global $vars;
 	global $now;

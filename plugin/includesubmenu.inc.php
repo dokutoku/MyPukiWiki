@@ -8,7 +8,7 @@ declare(strict_types=1);
 //
 // Including submenu
 
-function plugin_includesubmenu_convert()
+function plugin_includesubmenu_convert(string ...$aryargs) : string
 {
 	global $vars;
 
@@ -16,8 +16,6 @@ function plugin_includesubmenu_convert()
 	$ShowPageName = false;
 
 	if (func_num_args()) {
-		$aryargs = func_get_args();
-
 		if ($aryargs[0] == 'showpagename') {
 			$ShowPageName = true;
 		}

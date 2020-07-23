@@ -8,7 +8,7 @@ declare(strict_types=1);
 //
 // Yet list plugin - Show a list of dangling links (not yet created)
 
-function plugin_yetlist_action()
+function plugin_yetlist_action() : array
 {
 	global $_title_yetlist;
 	global $_err_notexist;

@@ -12,7 +12,7 @@ declare(strict_types=1);
 //	#setlinebreak(off)     : OFF (from this line)
 //	#setlinebreak(default) : Reset
 
-function plugin_setlinebreak_convert()
+function plugin_setlinebreak_convert(string ...$args) : string
 {
 	global $line_break;
 	static $default;
@@ -25,8 +25,6 @@ function plugin_setlinebreak_convert()
 		// Invert
 		$line_break = !$line_break;
 	} else {
-		$args = func_get_args();
-
 		switch (strtolower($args[0])) {
 			case 'on':
 			case 'true':

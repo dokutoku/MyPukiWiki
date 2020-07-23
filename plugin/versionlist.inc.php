@@ -10,7 +10,7 @@ declare(strict_types=1);
 //
 // Listing cvs revisions of files
 
-function plugin_versionlist_action()
+function plugin_versionlist_action() : array
 {
 	global $_title_versionlist;
 
@@ -21,7 +21,7 @@ function plugin_versionlist_action()
 	return ['msg'=>$_title_versionlist, 'body'=>plugin_versionlist_convert()];
 }
 
-function plugin_versionlist_convert()
+function plugin_versionlist_convert() : string
 {
 	if (PKWK_SAFE_MODE) {
 		// Show nothing

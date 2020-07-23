@@ -20,7 +20,7 @@ define('TRACKER_LIST_SHOW_ERROR_PAGE', true);
 // Use cache
 define('TRACKER_LIST_USE_CACHE', true);
 
-function plugin_tracker_convert()
+function plugin_tracker_convert(string ...$args) : string
 {
 	global $vars;
 
@@ -38,28 +38,24 @@ function plugin_tracker_convert()
 	$form = 'form';
 	$options = [];
 
-	if (func_num_args()) {
-		$args = func_get_args();
+	switch (func_num_args()) {
+		case 3:
+			$options = array_splice($args, 2);
+			//ToDo: FALLTHROUGH?
 
-		switch (func_num_args()) {
-			case 3:
-				$options = array_splice($args, 2);
-				//ToDo: FALLTHROUGH?
+		case 2:
+			$args[1] = get_fullname($args[1], $base);
+			$base = (is_pagename($args[1])) ? ($args[1]) : ($base);
+			//ToDo: FALLTHROUGH?
 
-			case 2:
-				$args[1] = get_fullname($args[1], $base);
-				$base = (is_pagename($args[1])) ? ($args[1]) : ($base);
-				//ToDo: FALLTHROUGH?
+		case 1:
+			$config_name = ($args[0] != '') ? ($args[0]) : ($config_name);
+			[$config_name,$form] = array_pad(explode('/', $config_name, 2), 2, $form);
 
-			case 1:
-				$config_name = ($args[0] != '') ? ($args[0]) : ($config_name);
-				[$config_name,$form] = array_pad(explode('/', $config_name, 2), 2, $form);
+			break;
 
-				break;
-
-			default:
-				break;
-		}
+		default:
+			break;
 	}
 
 	$config = new Config('plugin/tracker/'.$config_name);
@@ -102,7 +98,8 @@ function plugin_tracker_convert()
 </form>
 EOD;
 }
-function plugin_tracker_action()
+
+function plugin_tracker_action() : array
 {
 	global $post;
 	global $vars;
@@ -212,7 +209,7 @@ function plugin_tracker_action()
 /**
  * Page_list comparator.
  */
-function _plugin_tracker_list_paganame_compare($a, $b)
+function _plugin_tracker_list_paganame_compare(string $a, string $b) : int
 {
 	return strnatcmp($a['name'], $b['name']);
 }
@@ -220,7 +217,7 @@ function _plugin_tracker_list_paganame_compare($a, $b)
 /**
  * Get page list for "$page/".
  */
-function plugin_tracker_get_page_list($page, $needs_filetime)
+function plugin_tracker_get_page_list(string $page, bool $needs_filetime) : array
 {
 	$page_list = [];
 	$pattern = $page.'/';
@@ -240,7 +237,7 @@ function plugin_tracker_get_page_list($page, $needs_filetime)
 }
 
 // フィールドオブジェクトを構築する
-function plugin_tracker_get_fields($base, $refer, &$config)
+function plugin_tracker_get_fields(string $base, string $refer, Config &$config) : array
 {
 	global $now;
 	global $_tracker_messages;
@@ -320,12 +317,12 @@ class Tracker_field
 
 	public $id = 0;
 
-	public function Tracker_field($field, $page, $refer, &$config) : void
+	public function Tracker_field(array $field, string $page, string $refer, Config &$config) : void
 	{
 		$this->__construct($field, $page, $refer, $config);
 	}
 
-	public function __construct($field, $page, $refer, &$config)
+	public function __construct(array $field, string $page, string $refer, Config &$config)
 	{
 		global $post;
 		static $id = 0;
@@ -341,26 +338,27 @@ class Tracker_field
 		$this->data = (array_key_exists($this->name, $post)) ? ($post[$this->name]) : ('');
 	}
 
-	public function get_tag() : void
+	public function get_tag() : string
 	{
+		return '';
 	}
 
-	public function get_style($str)
+	public function get_style(string $str) : string
 	{
 		return '%s';
 	}
 
-	public function format_value($value)
+	public function format_value($value) : string
 	{
 		return $value;
 	}
 
-	public function format_cell($str)
+	public function format_cell(string $str) : string
 	{
 		return $str;
 	}
 
-	public function get_value($value)
+	public function get_value(string $value) : string
 	{
 		return $value;
 	}
@@ -370,7 +368,7 @@ class Tracker_field_text extends Tracker_field
 {
 	public $sort_type = SORT_STRING;
 
-	public function get_tag()
+	public function get_tag() : string
 	{
 		$s_name = htmlsc($this->name);
 		$s_size = htmlsc($this->values[0]);
@@ -384,7 +382,7 @@ class Tracker_field_page extends Tracker_field_text
 {
 	public $sort_type = SORT_STRING;
 
-	public function format_value($value)
+	public function format_value($value) : string
 	{
 		global $WikiName;
 
@@ -407,7 +405,7 @@ class Tracker_field_title extends Tracker_field_text
 {
 	public $sort_type = SORT_STRING;
 
-	public function format_cell($str)
+	public function format_cell(string $str) : string
 	{
 		make_heading($str);
 
@@ -419,7 +417,7 @@ class Tracker_field_textarea extends Tracker_field
 {
 	public $sort_type = SORT_STRING;
 
-	public function get_tag()
+	public function get_tag() : string
 	{
 		$s_name = htmlsc($this->name);
 		$s_cols = htmlsc($this->values[0]);
@@ -429,7 +427,7 @@ class Tracker_field_textarea extends Tracker_field
 		return '<textarea name="'.$s_name.'" cols="'.$s_cols.'" rows="'.$s_rows.'">'.$s_value.'</textarea>';
 	}
 
-	public function format_cell($str)
+	public function format_cell(string $str) : string
 	{
 		$str = preg_replace('/[\r\n]+/', '', $str);
 
@@ -449,12 +447,12 @@ class Tracker_field_format extends Tracker_field
 
 	public $formats = [];
 
-	public function Tracker_field_format($field, $page, $refer, &$config) : void
+	public function Tracker_field_format(array $field, string $page, string $refer, Config &$config) : void
 	{
 		$this->__construct($field, $page, $refer, $config);
 	}
 
-	public function __construct($field, $page, $refer, &$config)
+	public function __construct(array $field, string $page, string $refer, Config &$config)
 	{
 		parent::__construct($field, $page, $refer, $config);
 
@@ -471,7 +469,7 @@ class Tracker_field_format extends Tracker_field
 		}
 	}
 
-	public function get_tag()
+	public function get_tag() : string
 	{
 		$s_name = htmlsc($this->name);
 		$s_size = htmlsc($this->values[0]);
@@ -479,12 +477,12 @@ class Tracker_field_format extends Tracker_field
 		return '<input type="text" name="'.$s_name.'" size="'.$s_size.'" />';
 	}
 
-	public function get_key($str)
+	public function get_key(string $str) : string
 	{
 		return ($str == '') ? ('IS NULL') : ('IS NOT NULL');
 	}
 
-	public function format_value($str)
+	public function format_value($str) : string
 	{
 		if (is_array($str)) {
 			return implode(', ', array_map([$this, 'format_value'], $str));
@@ -495,7 +493,7 @@ class Tracker_field_format extends Tracker_field
 		return (array_key_exists($key, $this->formats)) ? (str_replace('%s', $str, $this->formats[$key])) : ($str);
 	}
 
-	public function get_style($str)
+	public function get_style(string $str) : string
 	{
 		$key = $this->get_key($str);
 
@@ -507,7 +505,7 @@ class Tracker_field_file extends Tracker_field_format
 {
 	public $sort_type = SORT_STRING;
 
-	public function get_tag()
+	public function get_tag() : string
 	{
 		$s_name = htmlsc($this->name);
 		$s_size = htmlsc($this->values[0]);
@@ -515,7 +513,7 @@ class Tracker_field_file extends Tracker_field_format
 		return '<input type="file" name="'.$s_name.'" size="'.$s_size.'" />';
 	}
 
-	public function format_value($str)
+	public function format_value($str) : string
 	{
 		if (array_key_exists($this->name, $_FILES)) {
 			require_once PLUGIN_DIR.'attach.inc.php';
@@ -536,7 +534,7 @@ class Tracker_field_radio extends Tracker_field_format
 {
 	public $sort_type = SORT_NUMERIC;
 
-	public function get_tag()
+	public function get_tag() : string
 	{
 		$s_name = htmlsc($this->name);
 		$retval = '';
@@ -553,12 +551,12 @@ class Tracker_field_radio extends Tracker_field_format
 		return $retval;
 	}
 
-	public function get_key($str)
+	public function get_key(string $str) : string
 	{
 		return $str;
 	}
 
-	public function get_value($value)
+	public function get_value(string $value) : string
 	{
 		static $options = [];
 
@@ -575,7 +573,7 @@ class Tracker_field_select extends Tracker_field_radio
 {
 	public $sort_type = SORT_NUMERIC;
 
-	public function get_tag($empty = false)
+	public function get_tag(bool $empty = false) : string
 	{
 		$s_name = htmlsc($this->name);
 		$s_size = ((array_key_exists(0, $this->values)) && (is_numeric($this->values[0]))) ? (' size="'.htmlsc($this->values[0]).'"') : ('');
@@ -604,7 +602,7 @@ class Tracker_field_checkbox extends Tracker_field_radio
 {
 	public $sort_type = SORT_NUMERIC;
 
-	public function get_tag($empty = false)
+	public function get_tag(bool $empty = false) : string
 	{
 		$s_name = htmlsc($this->name);
 		$defaults = array_flip(preg_split('/\s*,\s*/', $this->default_value, -1, PREG_SPLIT_NO_EMPTY));
@@ -627,7 +625,7 @@ class Tracker_field_hidden extends Tracker_field_radio
 {
 	public $sort_type = SORT_NUMERIC;
 
-	public function get_tag($empty = false)
+	public function get_tag(bool $empty = false) : string
 	{
 		$s_name = htmlsc($this->name);
 		$s_default = htmlsc($this->default_value);
@@ -638,7 +636,7 @@ class Tracker_field_hidden extends Tracker_field_radio
 
 class Tracker_field_submit extends Tracker_field
 {
-	public function get_tag()
+	public function get_tag() : string
 	{
 		$s_title = htmlsc($this->title);
 		$s_page = htmlsc($this->page);
@@ -659,9 +657,9 @@ class Tracker_field_date extends Tracker_field
 {
 	public $sort_type = SORT_NUMERIC;
 
-	public function format_cell($timestamp)
+	public function format_cell(string $timestamp) : string
 	{
-		return format_date($timestamp);
+		return format_date((int) ($timestamp));
 	}
 }
 
@@ -669,20 +667,20 @@ class Tracker_field_past extends Tracker_field
 {
 	public $sort_type = SORT_NUMERIC;
 
-	public function format_cell($timestamp)
+	public function format_cell(string $timestamp) : string
 	{
 		return '&passage("'.get_date_atom($timestamp + LOCALZONE).'");';
 	}
 
-	public function get_value($value)
+	public function get_value(string $value) : string
 	{
-		return UTIME - $value;
+		return (string) (UTIME - ((int) ($value)));
 	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
 // 一覧表示
-function plugin_tracker_list_convert()
+function plugin_tracker_list_convert(string ...$args) : string
 {
 	global $vars;
 	global $_title_cannotread;
@@ -697,42 +695,38 @@ function plugin_tracker_list_convert()
 	$start_n = null;
 	$last_n = null;
 
-	if (func_num_args()) {
-		$args = func_get_args();
+	switch (func_num_args()) {
+		case 4:
+			$range_m = null;
 
-		switch (func_num_args()) {
-			case 4:
-				$range_m = null;
-
-				if (is_numeric($args[3])) {
-					$limit = $args[3];
-				} else {
-					if (preg_match('#^(\d+)-(\d+)$#', $args[3], $range_m)) {
-						$start_n = (int) ($range_m[1]);
-						$last_n = (int) ($range_m[2]);
-					}
+			if (is_numeric($args[3])) {
+				$limit = $args[3];
+			} else {
+				if (preg_match('#^(\d+)-(\d+)$#', $args[3], $range_m)) {
+					$start_n = (int) ($range_m[1]);
+					$last_n = (int) ($range_m[2]);
 				}
+			}
 
-				//ToDo: FALLTHROUGH?
+			//ToDo: FALLTHROUGH?
 
-			case 3:
-				$order = $args[2];
-				//ToDo: FALLTHROUGH?
+		case 3:
+			$order = $args[2];
+			//ToDo: FALLTHROUGH?
 
-			case 2:
-				$args[1] = get_fullname($args[1], $page);
-				$page = (is_pagename($args[1])) ? ($args[1]) : ($page);
-				//ToDo: FALLTHROUGH?
+		case 2:
+			$args[1] = get_fullname($args[1], $page);
+			$page = (is_pagename($args[1])) ? ($args[1]) : ($page);
+			//ToDo: FALLTHROUGH?
 
-			case 1:
-				$config = ($args[0] != '') ? ($args[0]) : ($config);
-				[$config,$list] = array_pad(explode('/', $config, 2), 2, $list);
+		case 1:
+			$config = ($args[0] != '') ? ($args[0]) : ($config);
+			[$config,$list] = array_pad(explode('/', $config, 2), 2, $list);
 
-				break;
+			break;
 
-			default:
-				break;
-		}
+		default:
+			break;
 	}
 
 	if (!is_page_readable($page)) {
@@ -743,7 +737,8 @@ function plugin_tracker_list_convert()
 
 	return plugin_tracker_getlist($page, $refer, $config, $list, $order, $limit, $start_n, $last_n);
 }
-function plugin_tracker_list_action()
+
+function plugin_tracker_list_action() : array
 {
 	global $vars;
 	global $_tracker_messages;
@@ -764,7 +759,8 @@ function plugin_tracker_list_action()
 
 	return ['msg'=>$_tracker_messages['msg_list'], 'body'=>str_replace('$1', $s_page, $_tracker_messages['msg_back']).plugin_tracker_getlist($page, $refer, $config, $list, $order)];
 }
-function plugin_tracker_getlist($page, $refer, $config_name, $list, $order = '', $limit = null, $start_n = null, $last_n = null)
+
+function plugin_tracker_getlist(string $page, $refer, string $config_name, string $list, string $order = '', ?int $limit = null, ?int $start_n = null, ?int $last_n = null) : string
 {
 	global $whatsdeleted;
 
@@ -899,12 +895,12 @@ class Tracker_list
 
 	public $newly_updated_pages = [];
 
-	public function Tracker_list($page, $refer, &$config, $list, &$cache_holder) : void
+	public function Tracker_list(string $page, string $refer, Config &$config, string $list, array &$cache_holder) : void
 	{
 		$this->__construct($page, $refer, $config, $list, $cache_holder);
 	}
 
-	public function __construct($page, $refer, &$config, $list, &$cache_holder)
+	public function __construct(string $page, string $refer, Config &$config, string $list, array &$cache_holder)
 	{
 		global $whatsdeleted;
 		global $_cached_page_filetime;
@@ -1119,7 +1115,7 @@ class Tracker_list
 		}
 	}
 
-	public function decode_cached_rows($decoded_rows)
+	public function decode_cached_rows(array $decoded_rows) : array
 	{
 		$ar = [];
 
@@ -1130,7 +1126,7 @@ class Tracker_list
 		return $ar;
 	}
 
-	public function get_all_links()
+	public function get_all_links() : array
 	{
 		$ar = [];
 
@@ -1143,7 +1139,7 @@ class Tracker_list
 		return array_keys($ar);
 	}
 
-	public function get_filetimes($pages)
+	public function get_filetimes(array $pages) : array
 	{
 		$filetimes = [];
 
@@ -1158,7 +1154,7 @@ class Tracker_list
 		return $filetimes;
 	}
 
-	public function add($page, $name)
+	public function add(string $page, string $name)
 	{
 		static $moved = [];
 
@@ -1225,7 +1221,7 @@ class Tracker_list
 		$this->rows[$name] = $row;
 	}
 
-	public function compare($a, $b)
+	public function compare(array $a, array $b) : int
 	{
 		foreach ($this->sort_keys as $sort_key) {
 			$field = $sort_key['field'];
@@ -1246,7 +1242,7 @@ class Tracker_list
 		return 0;
 	}
 
-	public function sort($order) : void
+	public function sort(string $order) : void
 	{
 		if ($order == '') {
 			return;
@@ -1298,7 +1294,7 @@ class Tracker_list
 		usort($this->rows, [$this, 'compare']);
 	}
 
-	public function replace_item($arr)
+	public function replace_item(string $arr) : string
 	{
 		$params = explode(',', $arr[1]);
 		$name = array_shift($params);
@@ -1324,7 +1320,7 @@ class Tracker_list
 		return ($this->pipe) ? (str_replace('|', '&#x7c;', $str)) : ($str);
 	}
 
-	public function replace_title($arr)
+	public function replace_title(array $arr) : string
 	{
 		$sort = $arr[1];
 		$field = $sort;
@@ -1376,7 +1372,7 @@ class Tracker_list
 		return '[['.$title.$arrow.'>'.$script.'?plugin=tracker_list&refer='.$r_page.'&config='.$r_config.'&list='.$r_list.'&order='.$r_order.']]';
 	}
 
-	public function toString($limit = null, $start_n = null, $last_n = null)
+	public function toString(?int $limit = null, ?int $start_n = null, ?int $last_n = null) : string
 	{
 		global $_tracker_messages;
 
@@ -1432,7 +1428,8 @@ class Tracker_list
 		return convert_html($source);
 	}
 }
-function plugin_tracker_get_source($page)
+
+function plugin_tracker_get_source(string $page) : string
 {
 	$source = get_source($page);
 

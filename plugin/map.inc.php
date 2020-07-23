@@ -22,7 +22,7 @@ declare(strict_types=1);
 // 0, 1
 define('PLUGIN_MAP_SHOW_HIDDEN', 0);
 
-function plugin_map_action()
+function plugin_map_action() : array
 {
 	global $vars;
 	global $whatsnew;
@@ -134,12 +134,12 @@ class MapNode
 
 	public $hide_pattern;
 
-	public function MapNode($page, $reverse = false) : void
+	public function MapNode(string $page, bool $reverse = false) : void
 	{
 		$this->__construct($page, $reverse);
 	}
 
-	public function __construct($page, $reverse = false)
+	public function __construct(string $page, bool $reverse = false)
 	{
 		global $non_list;
 
@@ -158,7 +158,7 @@ class MapNode
 		$this->mark = '<a id="rel_'.$this->id.'" href="'.get_base_uri().'?plugin=map&amp;refer='.rawurlencode($this->page).'">'.$mark.'</a>';
 	}
 
-	public function hide(&$pages)
+	public function hide(&$pages) : array
 	{
 		if (!PLUGIN_MAP_SHOW_HIDDEN) {
 			$pages = array_diff($pages, preg_grep($this->hide_pattern, $pages));
@@ -167,7 +167,7 @@ class MapNode
 		return $pages;
 	}
 
-	public function ref()
+	public function ref() : array
 	{
 		$refs = [];
 		$file = $this->cache.'.ref';
@@ -185,7 +185,7 @@ class MapNode
 		return $refs;
 	}
 
-	public function rel()
+	public function rel() : array
 	{
 		$rels = [];
 		$file = $this->cache.'.rel';
@@ -200,7 +200,7 @@ class MapNode
 		return $rels;
 	}
 
-	public function chain(&$nodes) : void
+	public function chain(array &$nodes) : void
 	{
 		if ($this->done) {
 			return;
@@ -227,7 +227,7 @@ class MapNode
 		}
 	}
 
-	public function toString(&$nodes, $level = 1, $parent_id = -1)
+	public function toString(array &$nodes, int $level = 1, int $parent_id = -1) : string
 	{
 		$indent = str_repeat(' ', $level);
 

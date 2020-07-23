@@ -14,7 +14,7 @@ define('MEMO_COLS', 60);
 // Rows of textarea
 define('MEMO_ROWS', 5);
 
-function plugin_memo_action()
+function plugin_memo_action() : array
 {
 	global $vars;
 	global $cols;
@@ -94,7 +94,7 @@ EOD;
 	return $retvars;
 }
 
-function plugin_memo_convert()
+function plugin_memo_convert(string ...$data) : string
 {
 	global $vars;
 	global $digest;
@@ -106,8 +106,6 @@ function plugin_memo_convert()
 	}
 
 	$memo_no = $numbers[$vars['page']]++;
-
-	$data = func_get_args();
 
 	// Care all arguments
 	$data = implode(',', $data);

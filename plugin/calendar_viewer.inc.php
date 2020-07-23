@@ -54,7 +54,7 @@ define('PLUGIN_CALENDAR_VIEWER_USAGE', '#calendar_viewer(pagename,this|yyyy-mm|n
  *    #calendar_viewer(pagename,this,past)
  */
 
-function plugin_calendar_viewer_convert()
+function plugin_calendar_viewer_convert(string ...$func_args) : string
 {
 	global $vars;
 	global $get;
@@ -71,8 +71,6 @@ function plugin_calendar_viewer_convert()
 	if (func_num_args() < 2) {
 		return PLUGIN_CALENDAR_VIEWER_USAGE.'<br />'."\n";
 	}
-
-	$func_args = func_get_args();
 
 	// Default values
 
@@ -341,7 +339,7 @@ function plugin_calendar_viewer_convert()
 	return $return_body;
 }
 
-function plugin_calendar_viewer_action()
+function plugin_calendar_viewer_action() : array
 {
 	global $vars;
 	global $get;
@@ -390,7 +388,7 @@ function plugin_calendar_viewer_action()
 	return $return_vars_array;
 }
 
-function plugin_calendar_viewer_isValidDate($aStr, $aSepList = '-/ .')
+function plugin_calendar_viewer_isValidDate(string $aStr, string $aSepList = '-/ .') : bool
 {
 	$matches = [];
 

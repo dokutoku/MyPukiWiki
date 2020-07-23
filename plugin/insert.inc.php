@@ -17,7 +17,7 @@ define('INSERT_ROWS', 5);
 // Order of insertion (1:before the textarea, 0:after)
 define('INSERT_INS', 1);
 
-function plugin_insert_action()
+function plugin_insert_action() : array
 {
 	global $vars;
 	global $cols;
@@ -33,7 +33,7 @@ function plugin_insert_action()
 	}
 
 	if ((!isset($vars['msg'])) || ($vars['msg'] == '')) {
-		return;
+		return [];
 	}
 
 	$vars['msg'] = preg_replace('/'."\r".'/', '', $vars['msg']);
@@ -96,7 +96,7 @@ EOD;
 	return $retvars;
 }
 
-function plugin_insert_convert()
+function plugin_insert_convert() : string
 {
 	global $vars;
 	global $digest;

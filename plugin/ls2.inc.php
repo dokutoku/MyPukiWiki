@@ -35,7 +35,7 @@ define('PLUGIN_LS2_ANCHOR_ORIGIN', 0);
 // 見出しレベルを調整する(デフォルト値)
 define('PLUGIN_LS2_LIST_COMPACT', false);
 
-function plugin_ls2_action()
+function plugin_ls2_action() : array
 {
 	global $vars;
 	global $_ls2_msg_title;
@@ -53,7 +53,7 @@ function plugin_ls2_action()
 	return ['body'=>$body, 'msg'=>str_replace('$1', htmlsc($prefix), $_ls2_msg_title)];
 }
 
-function plugin_ls2_convert()
+function plugin_ls2_convert(string ...$args) : string
 {
 	global $vars;
 	global $_ls2_msg_title;
@@ -69,11 +69,9 @@ function plugin_ls2_convert()
 		'_done'=>false,
 	];
 
-	$args = [];
 	$prefix = '';
 
 	if (func_num_args()) {
-		$args = func_get_args();
 		$prefix = array_shift($args);
 	}
 
@@ -108,7 +106,7 @@ function plugin_ls2_convert()
 	return '<p><a href="'.get_base_uri().'?'.implode('&amp;', $tmp).'">'.$title.'</a></p>'."\n";
 }
 
-function plugin_ls2_show_lists($prefix, &$params)
+function plugin_ls2_show_lists(string $prefix, array &$params) : string
 {
 	global $_ls2_err_nopages;
 
@@ -151,8 +149,7 @@ function plugin_ls2_show_lists($prefix, &$params)
 	}
 }
 
-function plugin_ls2_get_headings($page, &$params, $level, $include,
-	&$read_pages) : void
+function plugin_ls2_get_headings(string $page, array &$params, int $level, bool $include, array &$read_pages) : void
 {
 	static $_ls2_anchor = 0;
 
@@ -228,7 +225,7 @@ function plugin_ls2_get_headings($page, &$params, $level, $include,
 }
 
 //リスト構造を構築する
-function plugin_ls2_list_push(&$params, $level) : void
+function plugin_ls2_list_push(array &$params, int $level) : void
 {
 	$result = &$params['result'];
 	$saved = &$params['saved'];
@@ -273,7 +270,7 @@ function plugin_ls2_list_push(&$params, $level) : void
 }
 
 // オプションを解析する
-function plugin_ls2_check_arg($value, &$params) : void
+function plugin_ls2_check_arg(string $value, array &$params) : void
 {
 	if ($value == '') {
 		$params['_done'] = true;

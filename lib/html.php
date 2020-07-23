@@ -11,7 +11,7 @@ declare(strict_types=1);
 // HTML-publishing related functions
 
 // Show page-content
-function catbody($title, $page, $body) : void
+function catbody(string $title, string $page, string $body) : void
 {
 	global $vars;
 	global $arg;
@@ -269,7 +269,7 @@ function catbody($title, $page, $body) : void
 	require SKIN_FILE;
 }
 
-function _decorate_Nth_word($matches)
+function _decorate_Nth_word(array $matches) : string
 {
 	// $matches[0]: including both words to skip and to decorate
 	// $matches[1]: word to decorate
@@ -298,7 +298,7 @@ function _decorate_Nth_word($matches)
  * @param $page page name
  * @param $in_editing true if preview in editing
  */
-function get_html_scripting_data($page, $in_editing)
+function get_html_scripting_data(string $page, bool $in_editing) : string
 {
 	global $ticket_link_sites;
 	global $plugin;
@@ -430,7 +430,7 @@ EOS;
 }
 
 // Show 'edit' form
-function edit_form($page, $postdata, $digest = false, $b_template = true)
+function edit_form(string $page, string $postdata, $digest = false, bool $b_template = true) : string
 {
 	global $vars;
 	global $rows;
@@ -567,7 +567,7 @@ EOD;
 /**
  * Get template page list.
  */
-function get_template_page_list()
+function get_template_page_list() : array
 {
 	global $whatsnew;
 
@@ -624,7 +624,7 @@ function get_template_page_list()
 }
 
 // Related pages
-function make_related($page, $tag = '')
+function make_related(string $page, string $tag = '') : string
 {
 	global $vars;
 	global $rule_related_str;
@@ -679,13 +679,13 @@ function make_related($page, $tag = '')
 	return $retval;
 }
 
-function _convert_line_rule_to_regex($a)
+function _convert_line_rule_to_regex(string $a) : string
 {
 	return '/'.$a.'/';
 }
 
 // User-defined rules (convert without replacing source)
-function make_line_rules($str)
+function make_line_rules(string $str) : string
 {
 	global $line_rules;
 	static $pattern;
@@ -701,7 +701,7 @@ function make_line_rules($str)
 }
 
 // Remove all HTML tags(or just anchor tags), and WikiName-speific decorations
-function strip_htmltag($str, $all = true)
+function strip_htmltag(string $str, bool $all = true) : string
 {
 	global $_symbol_noexists;
 	static $noexists_pattern;
@@ -729,13 +729,13 @@ function strip_htmltag($str, $all = true)
 }
 
 // Remove AutoLink marker with AutLink itself
-function strip_autolink($str)
+function strip_autolink(string $str) : string
 {
 	return preg_replace('#<!--autolink--><a [^>]+>|</a><!--/autolink-->#', '', $str);
 }
 
 // Make a backlink. searching-link of the page name, by the page name, for the page name
-function make_search($page)
+function make_search(string $page) : string
 {
 	$s_page = htmlsc($page);
 	$r_page = rawurlencode($page);
@@ -744,7 +744,7 @@ function make_search($page)
 }
 
 // Make heading string (remove heading-related decorations from Wiki text)
-function make_heading(&$str, $strip = true)
+function make_heading(string &$str, bool $strip = true) : string
 {
 	global $NotePattern;
 
@@ -769,7 +769,7 @@ function make_heading(&$str, $strip = true)
 
 // Separate a page-name(or URL or null string) and an anchor
 // (last one standing) without sharp
-function anchor_explode($page, $strict_editable = false)
+function anchor_explode(string $page, bool $strict_editable = false) : array
 {
 	$pos = strrpos($page, '#');
 
@@ -867,7 +867,7 @@ define('PKWK_DTD_TYPE_XHTML', 1);
 define('PKWK_DTD_TYPE_HTML', 0);
 
 // Output HTML DTD, <html> start tag. Return content-type.
-function pkwk_output_dtd($pkwk_dtd = PKWK_DTD_XHTML_1_1, $charset = CONTENT_CHARSET)
+function pkwk_output_dtd(int $pkwk_dtd = PKWK_DTD_XHTML_1_1, string $charset = CONTENT_CHARSET) : string
 {
 	static $called;
 
@@ -960,7 +960,7 @@ function pkwk_output_dtd($pkwk_dtd = PKWK_DTD_XHTML_1_1, $charset = CONTENT_CHAR
 /**
  * Get template of List (ul, ol, dl) attributes.
  */
-function pkwk_list_attrs_template()
+function pkwk_list_attrs_template() : string
 {
 	return ' class="list%d list-indent%d"';
 }

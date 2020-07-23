@@ -37,7 +37,7 @@ function plugin_links_init() : void
 	set_plugin_messages($messages);
 }
 
-function plugin_links_action()
+function plugin_links_action() : array
 {
 	global $post;
 	global $vars;

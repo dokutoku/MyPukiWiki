@@ -21,7 +21,7 @@ declare(strict_types=1);
 
  */
 
-function plugin_random_convert()
+function plugin_random_convert(string ...$args) : string
 {
 	global $vars;
 
@@ -31,14 +31,13 @@ function plugin_random_convert()
 	$title = '[Random Link]';
 
 	if (func_num_args()) {
-		$args = func_get_args();
 		$title = $args[0];
 	}
 
 	return '<p><a href="'.$script.'?plugin=random&amp;refer='.pagename_urlencode($vars['page']).'">'.htmlsc($title).'</a></p>';
 }
 
-function plugin_random_action()
+function plugin_random_action() : array
 {
 	global $vars;
 

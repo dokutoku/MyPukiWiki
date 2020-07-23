@@ -8,9 +8,9 @@ declare(strict_types=1);
 //
 // Show passage by Client JavaScript
 
-function plugin_passage_inline()
+function plugin_passage_inline(string ...$args) : string
 {
-	[$date_atom] = func_get_args();
+	$date_atom = $args[0];
 	$time = strtotime($date_atom);
 	$yyyyMMdd = date('Y-m-d', $time);
 

@@ -29,7 +29,7 @@ declare(strict_types=1);
 
 define('PLUGIN_POPULAR_DEFAULT', 10);
 
-function plugin_popular_convert()
+function plugin_popular_convert(string ...$array) : string
 {
 	global $vars;
 	global $_popular_plugin_frame;
@@ -38,7 +38,6 @@ function plugin_popular_convert()
 	$max = PLUGIN_POPULAR_DEFAULT;
 	$except = '';
 
-	$array = func_get_args();
 	$today = false;
 	$today_param = $array[2];
 

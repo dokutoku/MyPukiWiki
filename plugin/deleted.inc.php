@@ -11,7 +11,7 @@ declare(strict_types=1);
 //   index.php?plugin=deleted[&file=on]
 //   index.php?plugin=deleted&dir=diff[&file=on]
 
-function plugin_deleted_action()
+function plugin_deleted_action() : array
 {
 	global $vars;
 	global $_deleted_plugin_title;

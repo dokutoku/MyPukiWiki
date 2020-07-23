@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 define('PLUGIN_RENAME_LOGPAGE', ':RenameLog');
 
-function plugin_rename_action()
+function plugin_rename_action() : array
 {
 	global $whatsnew;
 
@@ -68,7 +68,7 @@ function plugin_rename_action()
 }
 
 // 変数を取得する
-function plugin_rename_getvar($key)
+function plugin_rename_getvar($key) : string
 {
 	global $vars;
 
@@ -76,7 +76,7 @@ function plugin_rename_getvar($key)
 }
 
 // エラーメッセージを作る
-function plugin_rename_err($err, $page = '')
+function plugin_rename_err(string $err, string $page = '') : string
 {
 	global $_rename_messages;
 
@@ -106,7 +106,7 @@ function plugin_rename_err($err, $page = '')
 }
 
 //第一段階:ページ名または正規表現の入力
-function plugin_rename_phase1($err = '', $page = '')
+function plugin_rename_phase1(string $err = '', string $page = '') : array
 {
 	global $_rename_messages;
 
@@ -153,7 +153,7 @@ EOD;
 }
 
 //第二段階:新しい名前の入力
-function plugin_rename_phase2($err = '')
+function plugin_rename_phase2(string $err = '') : array
 {
 	global $_rename_messages;
 
@@ -209,7 +209,7 @@ EOD;
 }
 
 //ページ名と関連するページを列挙し、phase3へ
-function plugin_rename_refer()
+function plugin_rename_refer() : array
 {
 	$page = plugin_rename_getvar('page');
 	$refer = plugin_rename_getvar('refer');
@@ -229,7 +229,7 @@ function plugin_rename_refer()
 }
 
 //正規表現でページを置換
-function plugin_rename_regex($arr_from, $arr_to)
+function plugin_rename_regex(array $arr_from, array $arr_to) : array
 {
 	$exists = [];
 
@@ -252,7 +252,7 @@ function plugin_rename_regex($arr_from, $arr_to)
 	}
 }
 
-function plugin_rename_phase3($pages)
+function plugin_rename_phase3(array $pages) : array
 {
 	global $_rename_messages;
 
@@ -274,7 +274,7 @@ function plugin_rename_phase3($pages)
 	$pass = plugin_rename_getvar('pass');
 
 	if (($pass != '') && (pkwk_login($pass))) {
-		return plugin_rename_proceed($pages, $files, $exists);
+		plugin_rename_proceed($pages, $files, $exists);
 	} elseif ($pass != '') {
 		$msg = plugin_rename_err('adminpass');
 	}
@@ -354,7 +354,7 @@ EOD;
 	return $ret;
 }
 
-function plugin_rename_get_files($pages)
+function plugin_rename_get_files(array $pages) : array
 {
 	$files = [];
 	$dirs = [BACKUP_DIR, DIFF_DIR, DATA_DIR];
@@ -399,7 +399,7 @@ function plugin_rename_get_files($pages)
 	return $files;
 }
 
-function plugin_rename_proceed($pages, $files, $exists) : void
+function plugin_rename_proceed(array $pages, array $files, array $exists) : void
 {
 	global $now;
 	global $_rename_messages;
@@ -490,7 +490,7 @@ function plugin_rename_proceed($pages, $files, $exists) : void
 	exit;
 }
 
-function plugin_rename_getrelated($page)
+function plugin_rename_getrelated(string $page) : array
 {
 	$related = [];
 	$pages = plugin_rename_get_existpages();
@@ -509,7 +509,7 @@ function plugin_rename_getrelated($page)
 	return $related;
 }
 
-function plugin_rename_getselecttag($page)
+function plugin_rename_getselecttag(string $page) : string
 {
 	global $whatsnew;
 
@@ -539,7 +539,7 @@ EOD;
 /**
  * List exist pages and deleted pages.
  */
-function plugin_rename_get_existpages()
+function plugin_rename_get_existpages() : array
 {
 	$list1 = array_values(get_existpages());
 	$list2 = array_values(get_existpages(DIFF_DIR, '.txt'));
@@ -554,7 +554,7 @@ function plugin_rename_get_existpages()
 /**
  * Return where the page exists or existed.
  */
-function plugin_rename_is_page($page)
+function plugin_rename_is_page(string $page) : bool
 {
 	$enc = encode($page);
 

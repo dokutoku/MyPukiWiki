@@ -8,7 +8,7 @@ declare(strict_types=1);
 //
 // Read plugin: Show a page and InterWiki
 
-function plugin_read_action()
+function plugin_read_action() : array
 {
 	global $vars;
 	global $_title_invalidwn;
@@ -43,7 +43,7 @@ function plugin_read_action()
 				header('HTTP/1.0 302 Found');
 				header('Location: '.$uri);
 
-				return;
+				return [];
 			}
 		}
 

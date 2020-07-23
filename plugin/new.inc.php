@@ -33,12 +33,11 @@ function plugin_new_init() : void
 	set_plugin_messages($messages);
 }
 
-function plugin_new_inline()
+function plugin_new_inline(string ...$args) : string
 {
 	global $vars;
 
 	$retval = '';
-	$args = func_get_args();
 
 	// {date} always exists
 	$date = strip_autolink(array_pop($args));

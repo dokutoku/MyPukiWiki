@@ -15,7 +15,7 @@ define('PLUGIN_BR_ESCAPE_BLOCKQUOTE', 1);
 
 define('PLUGIN_BR_TAG', '<br class="spacer" />');
 
-function plugin_br_convert()
+function plugin_br_convert() : string
 {
 	if (PLUGIN_BR_ESCAPE_BLOCKQUOTE) {
 		return '<div class="spacer">&nbsp;</div>';
@@ -24,7 +24,7 @@ function plugin_br_convert()
 	}
 }
 
-function plugin_br_inline()
+function plugin_br_inline() : string
 {
 	return PLUGIN_BR_TAG;
 }

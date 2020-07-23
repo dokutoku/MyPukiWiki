@@ -56,7 +56,7 @@ define('PLUGIN_ATTACH_FILE_ICON', '<img src="'.IMAGE_DIR.'file.png" width="20" h
 define('PLUGIN_ATTACH_CONFIG_PAGE_MIME', 'plugin/attach/mime-type');
 
 //-------- convert
-function plugin_attach_convert()
+function plugin_attach_convert(string ...$args) : string
 {
 	global $vars;
 
@@ -66,7 +66,7 @@ function plugin_attach_convert()
 	$nolist = false;
 
 	if (func_num_args() > 0) {
-		foreach (func_get_args() as $arg) {
+		foreach ($args as $arg) {
 			$arg = strtolower($arg);
 			$nolist |= ($arg == 'nolist');
 			$noform |= ($arg == 'noform');
@@ -88,7 +88,7 @@ function plugin_attach_convert()
 }
 
 //-------- action
-function plugin_attach_action()
+function plugin_attach_action() : array
 {
 	global $vars;
 	global $_attach_messages;
@@ -178,7 +178,7 @@ function plugin_attach_action()
 }
 
 //-------- call from skin
-function attach_filelist()
+function attach_filelist() : string
 {
 	global $vars;
 	global $_attach_messages;
@@ -198,7 +198,7 @@ function attach_filelist()
 // ファイルアップロード
 // $pass = null : パスワードが指定されていない
 // $pass = true : アップロード許可
-function attach_upload($file, $page, $pass = null)
+function attach_upload(array $file, string $page, $pass = null) : array
 {
 	global $_attach_messages;
 	global $notify;
@@ -267,7 +267,7 @@ function attach_upload($file, $page, $pass = null)
 }
 
 // 詳細フォームを表示
-function attach_info($err = '')
+function attach_info(string $err = '') : array
 {
 	global $vars;
 	global $_attach_messages;
@@ -276,13 +276,13 @@ function attach_info($err = '')
 		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
 	}
 
-	$obj = new AttachFile($refer, $file, $age);
+	$obj = new AttachFile($refer, $file, (int) ($age));
 
 	return ($obj->getstatus()) ? ($obj->info($err)) : (['msg'=>$_attach_messages['err_notfound']]);
 }
 
 // 削除
-function attach_delete()
+function attach_delete() : array
 {
 	global $vars;
 	global $_attach_messages;
@@ -295,7 +295,7 @@ function attach_delete()
 		return ['msg'=>$_attach_messages['err_noparm']];
 	}
 
-	$obj = new AttachFile($refer, $file, $age);
+	$obj = new AttachFile($refer, $file, (int) ($age));
 
 	if (!$obj->getstatus()) {
 		return ['msg'=>$_attach_messages['err_notfound']];
@@ -305,7 +305,7 @@ function attach_delete()
 }
 
 // 凍結
-function attach_freeze($freeze)
+function attach_freeze(string $freeze) : array
 {
 	global $vars;
 	global $_attach_messages;
@@ -317,14 +317,14 @@ function attach_freeze($freeze)
 	if ((is_freeze($refer)) || (!is_editable($refer))) {
 		return ['msg'=>$_attach_messages['err_noparm']];
 	} else {
-		$obj = new AttachFile($refer, $file, $age);
+		$obj = new AttachFile($refer, $file, (int) ($age));
 
 		return ($obj->getstatus()) ? ($obj->freeze($freeze, $pass)) : (['msg'=>$_attach_messages['err_notfound']]);
 	}
 }
 
 // リネーム
-function attach_rename()
+function attach_rename() : array
 {
 	global $vars;
 	global $_attach_messages;
@@ -337,7 +337,7 @@ function attach_rename()
 		return ['msg'=>$_attach_messages['err_noparm']];
 	}
 
-	$obj = new AttachFile($refer, $file, $age);
+	$obj = new AttachFile($refer, $file, (int) ($age));
 
 	if (!$obj->getstatus()) {
 		return ['msg'=>$_attach_messages['err_notfound']];
@@ -347,7 +347,7 @@ function attach_rename()
 }
 
 // ダウンロード
-function attach_open()
+function attach_open() : array
 {
 	global $vars;
 	global $_attach_messages;
@@ -356,13 +356,13 @@ function attach_open()
 		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
 	}
 
-	$obj = new AttachFile($refer, $file, $age);
+	$obj = new AttachFile($refer, $file, (int) ($age));
 
 	return ($obj->getstatus()) ? ($obj->open()) : (['msg'=>$_attach_messages['err_notfound']]);
 }
 
 // 一覧取得
-function attach_list()
+function attach_list() : array
 {
 	global $vars;
 	global $_attach_messages;
@@ -378,7 +378,7 @@ function attach_list()
 }
 
 // アップロードフォームを表示 (action時)
-function attach_showform()
+function attach_showform() : array
 {
 	global $vars;
 	global $_attach_messages;
@@ -392,7 +392,7 @@ function attach_showform()
 
 //-------- サービス
 // mime-typeの決定
-function attach_mime_content_type($filename, $displayname)
+function attach_mime_content_type($filename, $displayname) : string
 {
 	// default
 	$type = 'application/octet-stream';
@@ -449,7 +449,7 @@ function attach_mime_content_type($filename, $displayname)
 }
 
 // アップロードフォームの出力
-function attach_form($page)
+function attach_form(string $page) : string
 {
 	global $vars;
 	global $_attach_messages;
@@ -527,12 +527,12 @@ class AttachFile
 
 	public $status = ['count'=>[0], 'age'=>'', 'pass'=>'', 'freeze'=>false];
 
-	public function AttachFile($page, $file, $age = 0) : void
+	public function AttachFile(string $page, string $file, int $age = 0) : void
 	{
 		$this->__construct($page, $file, $age);
 	}
 
-	public function __construct($page, $file, $age = 0)
+	public function __construct(string $page, string $file, int $age = 0)
 	{
 		$this->page = $page;
 		$this->file = preg_replace('#^.*/#', '', $file);
@@ -545,13 +545,13 @@ class AttachFile
 		$this->time = ($this->exist) ? (filemtime($this->filename) - LOCALZONE) : (0);
 	}
 
-	public function gethash()
+	public function gethash() : string
 	{
 		return ($this->exist) ? (md5_file($this->filename)) : ('');
 	}
 
 	// ファイル情報取得
-	public function getstatus()
+	public function getstatus() : bool
 	{
 		// ログファイル取得
 		if (file_exists($this->logname)) {
@@ -598,12 +598,12 @@ class AttachFile
 	}
 
 	// 日付の比較関数
-	public function datecomp($a, $b)
+	public function datecomp(AttachFile $a, AttachFile $b) : int
 	{
 		return ($a->time == $b->time) ? (0) : (($a->time > $b->time) ? (-1) : (1));
 	}
 
-	public function toString($showicon, $showinfo)
+	public function toString(bool $showicon, bool $showinfo) : string
 	{
 		global $_attach_messages;
 
@@ -630,7 +630,7 @@ class AttachFile
 	}
 
 	// 情報表示
-	public function info($err)
+	public function info(string $err) : array
 	{
 		global $_attach_messages;
 
@@ -710,7 +710,7 @@ EOD;
 		return $retval;
 	}
 
-	public function delete($pass)
+	public function delete(string $pass) : array
 	{
 		global $_attach_messages;
 		global $notify;
@@ -766,7 +766,7 @@ EOD;
 		return ['msg'=>$_attach_messages['msg_deleted']];
 	}
 
-	public function rename($pass, $newname)
+	public function rename(string $pass, string $newname) : array
 	{
 		global $_attach_messages;
 		global $notify;
@@ -834,7 +834,7 @@ EOD;
 		return ['msg'=>$_attach_messages['msg_renamed']];
 	}
 
-	public function freeze($freeze, $pass)
+	public function freeze(string $freeze, string $pass) : array
 	{
 		global $_attach_messages;
 
@@ -899,23 +899,23 @@ class AttachFiles
 
 	public $files = [];
 
-	public function AttachFiles($page) : void
+	public function AttachFiles(string $page) : void
 	{
 		$this->__construct($page);
 	}
 
-	public function __construct($page)
+	public function __construct(string $page)
 	{
 		$this->page = $page;
 	}
 
-	public function add($file, $age) : void
+	public function add(string $file, int $age) : void
 	{
 		$this->files[$file][$age] = new AttachFile($this->page, $file, $age);
 	}
 
 	// ファイル一覧を取得
-	public function toString($flat)
+	public function toString(bool $flat) : string
 	{
 		global $_title_cannotread;
 
@@ -956,7 +956,7 @@ class AttachFiles
 	}
 
 	// ファイル一覧を取得(inline)
-	public function to_flat()
+	public function to_flat() : string
 	{
 		$ret = '';
 		$files = [];
@@ -982,12 +982,12 @@ class AttachPages
 {
 	public $pages = [];
 
-	public function AttachPages($page = '', $age = null) : void
+	public function AttachPages(string $page = '', int $age = null) : void
 	{
 		$this->__construct($page, $age);
 	}
 
-	public function __construct($page = '', $age = null)
+	public function __construct(string $page = '', ?int $age = null)
 	{
 		if (!($dir = opendir(UPLOAD_DIR))) {
 			die('directory '.UPLOAD_DIR.' is not exist or not readable.');
@@ -1018,7 +1018,7 @@ class AttachPages
 		closedir($dir);
 	}
 
-	public function toString($page = '', $flat = false)
+	public function toString(string $page = '', bool $flat = false) : string
 	{
 		if ($page != '') {
 			if (!isset($this->pages[$page])) {

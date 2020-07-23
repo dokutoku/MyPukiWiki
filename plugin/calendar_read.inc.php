@@ -10,7 +10,7 @@ declare(strict_types=1);
 //
 // Calendar_read plugin (needs calendar plugin)
 
-function plugin_calendar_read_convert()
+function plugin_calendar_read_convert(string ...$args)
 {
 	global $command;
 
@@ -25,7 +25,6 @@ function plugin_calendar_read_convert()
 	}
 
 	$command = 'read';
-	$args = (func_num_args()) ? (func_get_args()) : ([]);
 
 	return call_user_func_array('plugin_calendar_convert', $args);
 }

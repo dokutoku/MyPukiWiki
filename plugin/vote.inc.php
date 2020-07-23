@@ -8,7 +8,7 @@ declare(strict_types=1);
 //
 // Vote box plugin
 
-function plugin_vote_action()
+function plugin_vote_action() : array
 {
 	global $vars;
 	global $cols;
@@ -93,7 +93,7 @@ EOD;
 	return ['msg'=>$title, 'body'=>$body];
 }
 
-function plugin_vote_convert()
+function plugin_vote_convert(string ...$args) : string
 {
 	global $vars;
 	global $digest;
@@ -123,7 +123,6 @@ function plugin_vote_convert()
 		$_submit = 'submit';
 	}
 
-	$args = func_get_args();
 	$s_page = htmlsc($page);
 	$s_digest = htmlsc($digest);
 

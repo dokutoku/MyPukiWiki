@@ -50,13 +50,13 @@ define('PLUGIN_REF_IMAGE', '/\.(gif|png|jpe?g|swf)$/i');
 // Usage (a part of)
 define('PLUGIN_REF_USAGE', '([pagename/]attached-file-name[,parameters, ... ][,title])');
 
-function plugin_ref_inline()
+function plugin_ref_inline(string ...$args) : string
 {
 	// Not reached, because of "$aryargs[] = & $body" at plugin.php
 	// if (! func_num_args())
 	//	return '&amp;ref(): Usage:' . PLUGIN_REF_USAGE . ';';
 
-	$params = plugin_ref_body(func_get_args());
+	$params = plugin_ref_body($args);
 
 	if ((isset($params['_error'])) && ($params['_error'] != '')) {
 		// Error
@@ -66,13 +66,13 @@ function plugin_ref_inline()
 	}
 }
 
-function plugin_ref_convert()
+function plugin_ref_convert(string ...$args) : string
 {
 	if (!func_num_args()) {
 		return '<p>#ref(): Usage:'.PLUGIN_REF_USAGE."</p>\n";
 	}
 
-	$params = plugin_ref_body(func_get_args());
+	$params = plugin_ref_body($args);
 
 	if ((isset($params['_error'])) && ($params['_error'] != '')) {
 		return "<p>#ref(): {$params['_error']}</p>\n";
@@ -111,7 +111,7 @@ EOD;
 	return '<div class="img_margin" style="'.$style.'">'.$params['_body'].'</div>'."\n";
 }
 
-function plugin_ref_body($args)
+function plugin_ref_body(array $args) : array
 {
 	global $vars;
 
@@ -432,7 +432,7 @@ function plugin_ref_body($args)
 }
 
 // オプションを解析する
-function ref_check_arg($val, &$params) : void
+function ref_check_arg(string $val, array &$params) : void
 {
 	if ($val == '') {
 		$params['_done'] = true;
@@ -455,8 +455,8 @@ function ref_check_arg($val, &$params) : void
 	$params['_args'][] = $val;
 }
 
-// Output an image (fast, non-logging <==> attach plugin)
-function plugin_ref_action()
+// Output an image (fast, non-logging<==>attach plugin)
+function plugin_ref_action() : array
 {
 	global $vars;
 

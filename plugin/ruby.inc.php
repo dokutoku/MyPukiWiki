@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 define('PLUGIN_RUBY_USAGE', '&ruby(pronunciation){words};');
 
-function plugin_ruby_inline()
+function plugin_ruby_inline(string ...$args) : string
 {
 	if (func_num_args() != 2) {
 		return PLUGIN_RUBY_USAGE;
 	}
 
-	[$ruby, $body] = func_get_args();
+	$ruby = $args[0];
+	$body = $args[1];
 
 	// strip_htmltag() is just for avoiding AutoLink insertion
 	$body = strip_htmltag($body);

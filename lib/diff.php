@@ -13,7 +13,7 @@ declare(strict_types=1);
 define('PKWK_DIFF_SHOW_CONFLICT_DETAIL', 1);
 
 // Create diff-style data between arrays
-function do_diff($strlines1, $strlines2)
+function do_diff(string $strlines1, string $strlines2) : string
 {
 	$obj = new line_diff();
 
@@ -24,7 +24,7 @@ function do_diff($strlines1, $strlines2)
 //   '+Added'=>'<span added>Added</span>'
 //   '-Removed'=>'<span removed>Removed</span>'
 //   ' Nothing'=>'Nothing'
-function diff_style_to_css($str = '')
+function diff_style_to_css(string $str = '') : string
 {
 	// Cut diff markers ('+' or '-' or ' ')
 	$str = preg_replace('/^\-(.*)$/m', '<span class="diff_removed">$1</span>', $str);
@@ -34,7 +34,7 @@ function diff_style_to_css($str = '')
 }
 
 // Merge helper (when it conflicts)
-function do_update_diff($pagestr, $poststr, $original)
+function do_update_diff(string $pagestr, string $poststr, string $original) : array
 {
 	$obj = new line_diff();
 
@@ -126,19 +126,19 @@ class line_diff
 
 	public $reverse;
 
-	public function line_diff($plus = '+', $minus = '-', $equal = ' ') : void
+	public function line_diff(string $plus = '+', string $minus = '-', string $equal = ' ') : void
 	{
 		$this->__construct($plus, $minus, $equal);
 	}
 
-	public function __construct($plus = '+', $minus = '-', $equal = ' ')
+	public function __construct(string $plus = '+', string $minus = '-', string $equal = ' ')
 	{
 		$this->plus = $plus;
 		$this->minus = $minus;
 		$this->equal = $equal;
 	}
 
-	public function arr_compare($key, $arr1, $arr2)
+	public function arr_compare(string $key, array $arr1, array $arr2) : array
 	{
 		$this->key = $key;
 		$this->arr1 = $arr1;
@@ -148,7 +148,7 @@ class line_diff
 		return $this->toArray();
 	}
 
-	public function set_str($key, $str1, $str2) : void
+	public function set_str(string $key, string $str1, string $str2) : void
 	{
 		$this->key = $key;
 		$this->arr1 = [];
@@ -165,7 +165,7 @@ class line_diff
 		}
 	}
 
-	public function str_compare($str1, $str2)
+	public function str_compare(string $str1, string $str2) : string
 	{
 		$this->set_str('diff', $str1, $str2);
 		$this->compare();
@@ -241,7 +241,7 @@ class line_diff
 		}
 	}
 
-	public function snake($k, $y1, $y2)
+	public function snake(int $k, int $y1, int $y2) : int
 	{
 		if ($y1 >= $y2) {
 			$_k = $k - 1;
@@ -267,7 +267,7 @@ class line_diff
 		return $y;
 	}
 
-	public function toArray()
+	public function toArray() : array
 	{
 		$arr = [];
 
@@ -328,38 +328,38 @@ class DiffLine
 
 	public $status;
 
-	public function DiffLine($text) : void
+	public function DiffLine(string $text) : void
 	{
 		$this->__construct($text);
 	}
 
-	public function __construct($text)
+	public function __construct(string $text)
 	{
 		$this->text = $text."\n";
 		$this->status = [];
 	}
 
-	public function compare($obj)
+	public function compare(DiffLine $obj)
 	{
 		return $this->text == $obj->text;
 	}
 
-	public function set($key, $status) : void
+	public function set(string $key, string $status) : void
 	{
 		$this->status[$key] = $status;
 	}
 
-	public function get($key)
+	public function get(string $key) : string
 	{
 		return (isset($this->status[$key])) ? ($this->status[$key]) : ('');
 	}
 
-	public function merge($obj) : void
+	public function merge(DiffLine $obj) : void
 	{
 		$this->status += $obj->status;
 	}
 
-	public function text()
+	public function text() : string
 	{
 		return $this->text;
 	}

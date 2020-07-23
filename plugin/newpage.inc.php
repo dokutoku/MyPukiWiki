@@ -8,7 +8,7 @@ declare(strict_types=1);
 //
 // Newpage plugin
 
-function plugin_newpage_convert()
+function plugin_newpage_convert(string ...$args) : string
 {
 	global $vars;
 	global $_btn_edit;
@@ -26,7 +26,7 @@ function plugin_newpage_convert()
 	$newpage = '';
 
 	if (func_num_args()) {
-		[$newpage] = func_get_args();
+		$newpage = $args[0];
 	}
 
 	if (!preg_match('/^'.$BracketName.'$/', $newpage)) {
@@ -52,7 +52,7 @@ EOD;
 	return $ret;
 }
 
-function plugin_newpage_action()
+function plugin_newpage_action() : array
 {
 	global $vars;
 	global $_btn_edit;

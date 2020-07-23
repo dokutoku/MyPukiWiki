@@ -21,7 +21,7 @@ if ((defined('PKWK_DISABLE_INLINE_IMAGE_FROM_URI')) && (PKWK_DISABLE_INLINE_IMAG
 	define('PLUGIN_IMG_SHOW_IMAGE', 1);
 }
 
-function plugin_img_get_style($args)
+function plugin_img_get_style(array $args) : string
 {
 	$style = '';
 
@@ -53,7 +53,7 @@ function plugin_img_get_style($args)
 /**
  * Determine link or not.
  */
-function plugin_img_get_islink($args)
+function plugin_img_get_islink(array $args) : bool
 {
 	for ($i = 1; $i <= 4; $i++) {
 		if (isset($args[$i])) {
@@ -71,7 +71,7 @@ function plugin_img_get_islink($args)
  *
  * @return [url, is_url, file_path, page, style, a_begin, a_end]
  */
-function plugin_img_get_props($args)
+function plugin_img_get_props(array $args) : object
 {
 	global $vars;
 
@@ -133,9 +133,8 @@ function plugin_img_get_props($args)
 	];
 }
 
-function plugin_img_inline()
+function plugin_img_inline(string ...$args) : string
 {
-	$args = func_get_args();
 	$p = plugin_img_get_props($args);
 
 	if (!PLUGIN_IMG_SHOW_IMAGE) {
@@ -163,9 +162,8 @@ EOD;
 	return '&amp;img(): File not found: '.htmlsc($p->file_path)."\n";
 }
 
-function plugin_img_convert()
+function plugin_img_convert(string ...$args) : string
 {
-	$args = func_get_args();
 	$p = plugin_img_get_props($args);
 
 	// Check the 2nd argument first, for compatibility

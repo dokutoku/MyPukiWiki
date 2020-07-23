@@ -7,7 +7,7 @@ declare(strict_types=1);
 // norelated plugin
 // - Stop showing related link automatically if $related_link = 1
 
-function plugin_norelated_convert()
+function plugin_norelated_convert() : string
 {
 	global $related_link;
 

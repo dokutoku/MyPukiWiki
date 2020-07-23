@@ -10,7 +10,7 @@ declare(strict_types=1);
 //
 // Showing colored-diff plugin
 
-function plugin_diff_action()
+function plugin_diff_action() : array
 {
 	global $vars;
 
@@ -34,7 +34,7 @@ function plugin_diff_action()
 	return $retval;
 }
 
-function plugin_diff_view($page)
+function plugin_diff_view(string $page) : array
 {
 	global $hr;
 	global $_msg_notfound;
@@ -89,7 +89,7 @@ EOD;
 	return ['msg'=>$_title_diff, 'body'=>$body.$msg];
 }
 
-function plugin_diff_delete($page)
+function plugin_diff_delete(string $page) : array
 {
 	global $vars;
 	global $_title_diff_delete;

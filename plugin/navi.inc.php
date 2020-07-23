@@ -49,7 +49,7 @@ define('PLUGIN_NAVI_LINK_TAGS', false);
 
 // ----
 
-function plugin_navi_convert()
+function plugin_navi_convert(string ...$args) : string
 {
 	global $vars;
 	global $script;
@@ -64,7 +64,7 @@ function plugin_navi_convert()
 	$reverse = false;
 
 	if (func_num_args()) {
-		[$home, $reverse] = array_pad(func_get_args(), 2, '');
+		[$home, $reverse] = array_pad($args, 2, '');
 		// strip_bracket() is not necessary but compatible
 		$home = get_fullname(strip_bracket($home), $current);
 		$is_home = ($home == $current);

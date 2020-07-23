@@ -31,7 +31,7 @@ declare(strict_types=1);
 // ------------------------------------------------------------
 
 // データベースから関連ページを得る
-function links_get_related_db($page)
+function links_get_related_db(string $page) : array
 {
 	$ref_name = CACHE_DIR.encode($page).'.ref';
 
@@ -54,7 +54,7 @@ function links_get_related_db($page)
 }
 
 //ページの関連を更新する
-function links_update($page) : void
+function links_update(string $page) : void
 {
 	if (PKWK_READONLY) {
 		// Do nothing
@@ -253,7 +253,7 @@ function links_init() : void
 	}
 }
 
-function links_add($page, $add, $rel_auto) : void
+function links_add(string $page, array $add, array $rel_auto) : void
 {
 	if (PKWK_READONLY) {
 		// Do nothing
@@ -296,7 +296,7 @@ function links_add($page, $add, $rel_auto) : void
 	}
 }
 
-function links_delete($page, $del) : void
+function links_delete(string $page, array $del) : void
 {
 	if (PKWK_READONLY) {
 		// Do nothing
@@ -340,8 +340,8 @@ function links_delete($page, $del) : void
 	}
 }
 
-function links_get_objects($page, $refresh = false)
-{
+function links_get_objects(string $page, bool $refresh = false) : array
+{ 
 	static $obj;
 
 	if ((!isset($obj)) || ($refresh)) {
@@ -360,7 +360,7 @@ function links_get_objects($page, $refresh = false)
  *
  * @return list of page name that contains $word
  */
-function links_do_search_page($word)
+function links_do_search_page(string $word) : array
 {
 	global $whatsnew;
 

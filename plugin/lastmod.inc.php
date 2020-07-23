@@ -7,13 +7,12 @@ declare(strict_types=1);
 // Lastmod plugin - Show lastmodifled date of the page
 // Originally written by Reimy, 2003
 
-function plugin_lastmod_inline()
+function plugin_lastmod_inline(string ...$args)
 {
 	global $vars;
 	global $WikiName;
 	global $BracketName;
 
-	$args = func_get_args();
 	$page = $args[0];
 
 	if ($page == '') {

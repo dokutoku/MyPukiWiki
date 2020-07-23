@@ -6,7 +6,7 @@ declare(strict_types=1);
 // Server information plugin
 // by Reimy http://pukiwiki.reimy.com/
 
-function plugin_server_convert()
+function plugin_server_convert() : string
 {
 	if (PKWK_SAFE_MODE) {
 		// Show nothing

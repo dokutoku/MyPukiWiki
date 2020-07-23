@@ -15,7 +15,7 @@ declare(strict_types=1);
 //	* LDAP MD5 / SMD5
 
 // User interface of pkwk_hash_compute() for system admin
-function plugin_md5_action()
+function plugin_md5_action() : array
 {
 	global $get;
 	global $post;
@@ -65,7 +65,7 @@ function plugin_md5_action()
 
 // $nophrase = Passphrase is (submitted but) empty
 // $value    = Default passphrase value
-function plugin_md5_show_form($nophrase = false, $value = '')
+function plugin_md5_show_form(bool $nophrase = false, string $value = '') : string
 {
 	if ((PKWK_SAFE_MODE) || (PKWK_READONLY)) {
 		die_message('Prohibited');
@@ -187,7 +187,7 @@ EOD;
 /**
  * Get availabilites of algos.
  */
-function plugin_md5_get_algos_enabled()
+function plugin_md5_get_algos_enabled() : object
 {
 	$sha1_enabled = function_exists('sha1');
 	$sha256_enabled = false;

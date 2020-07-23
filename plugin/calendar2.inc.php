@@ -12,7 +12,7 @@ declare(strict_types=1);
 //	#calendar2({[pagename|*],[yyyymm],[off]})
 //	off: Don't view today's
 
-function plugin_calendar2_convert()
+function plugin_calendar2_convert(string ...$args) : string
 {
 	global $vars;
 	global $post;
@@ -30,8 +30,6 @@ function plugin_calendar2_convert()
 	$today_view = true;
 
 	if (func_num_args()) {
-		$args = func_get_args();
-
 		foreach ($args as $arg) {
 			if ((is_numeric($arg)) && (strlen($arg) == 6)) {
 				$date_str = $arg;
@@ -190,7 +188,7 @@ EOD;
 	return $ret;
 }
 
-function plugin_calendar2_action()
+function plugin_calendar2_action() : array
 {
 	global $vars;
 

@@ -21,7 +21,7 @@ define('PKWK_URI_ROOT', 1);
 /** Absolute URI. */
 define('PKWK_URI_ABSOLUTE', 2);
 
-function pkwk_log($message) : void
+function pkwk_log(string $message) : void
 {
 	static $dateTimeExists;
 
@@ -48,7 +48,7 @@ function pkwk_log($message) : void
  *
  * @param $s target string
  */
-function get_ltsv_value($s)
+function get_ltsv_value(string $s) : string
 {
 	if (!$s) {
 		return '';
@@ -63,7 +63,7 @@ function get_ltsv_value($s)
  * @param $page page name
  * @param $diff_content diff expression
  */
-function pkwk_log_updates($page, $diff_content) : void
+function pkwk_log_updates(string $page, string $diff_content) : void
 {
 	global $auth_user;
 	global $logging_updates;
@@ -108,7 +108,7 @@ function pkwk_log_updates($page, $diff_content) : void
  * PHP official document says PHP4 has ctype_digit() function.
  * But sometimes it doen't exists on PHP 4.1.
  */
-function pkwk_ctype_digit($s)
+function pkwk_ctype_digit(?string $s) : bool
 {
 	static $ctype_digit_exists;
 
@@ -123,14 +123,14 @@ function pkwk_ctype_digit($s)
 	return (preg_match('/^[0-9]+$/', $s)) ? (true) : (false);
 }
 
-function is_interwiki($str)
+function is_interwiki(string $str)
 {
 	global $InterWikiName;
 
 	return preg_match('/^'.$InterWikiName.'$/', $str);
 }
 
-function is_pagename($str)
+function is_pagename(string $str) : bool
 {
 	global $BracketName;
 
@@ -160,7 +160,7 @@ function is_pagename($str)
 	return $is_pagename;
 }
 
-function is_url($str, $only_http = false)
+function is_url(string $str, bool $only_http = false)
 {
 	$scheme = ($only_http) ? ('https?') : ('https?|ftp|news');
 
@@ -168,7 +168,7 @@ function is_url($str, $only_http = false)
 }
 
 // If the page exists
-function is_page($page, $clearcache = false)
+function is_page(?string $page, bool $clearcache = false) : bool
 {
 	if ($clearcache) {
 		clearstatcache();
@@ -177,7 +177,7 @@ function is_page($page, $clearcache = false)
 	return file_exists(get_filename($page));
 }
 
-function is_editable($page)
+function is_editable(string $page) : bool
 {
 	global $cantedit;
 	static $is_editable = [];
@@ -189,7 +189,7 @@ function is_editable($page)
 	return $is_editable[$page];
 }
 
-function is_freeze($page, $clearcache = false)
+function is_freeze(string $page, bool $clearcache = false) : bool
 {
 	global $function_freeze;
 	static $is_freeze = [];
@@ -234,7 +234,7 @@ function is_freeze($page, $clearcache = false)
 
 // Handling $non_list
 // $non_list will be preg_quote($str, '/') later.
-function check_non_list($page = '')
+function check_non_list(string $page = '')
 {
 	global $non_list;
 	static $regex;
@@ -247,7 +247,7 @@ function check_non_list($page = '')
 }
 
 // Auto template
-function auto_template($page)
+function auto_template(string $page) : string
 {
 	global $auto_template_func;
 	global $auto_template_rules;
@@ -292,17 +292,18 @@ function auto_template($page)
 	return $body;
 }
 
-function _mb_convert_kana__enable($str, $option)
+function _mb_convert_kana__enable(string $str, string $option) : string
 {
 	return mb_convert_kana($str, $option, SOURCE_ENCODING);
 }
-function _mb_convert_kana__none($str, $option)
+
+function _mb_convert_kana__none(string $str, string $option) : string
 {
 	return $str;
 }
 
 // Expand all search-words to regexes and push them into an array
-function get_search_words($words = [], $do_escape = false)
+function get_search_words(array $words = [], bool $do_escape = false) : array
 {
 	static $init;
 	static $mb_convert_kana;
@@ -396,12 +397,12 @@ function get_search_words($words = [], $do_escape = false)
 	return $regex;
 }
 
-function get_passage_date_html_span($date_atom)
+function get_passage_date_html_span(string $date_atom) : string
 {
 	return '<span class="page_passage" data-mtime="'.$date_atom.'"></span>';
 }
 
-function get_passage_mtime_html_span($mtime)
+function get_passage_mtime_html_span(int $mtime) : string
 {
 	$date_atom = get_date_atom($mtime);
 
@@ -413,14 +414,14 @@ function get_passage_mtime_html_span($mtime)
  *
  * @param $page
  */
-function get_passage_html_span($page)
+function get_passage_html_span(string $page) : string
 {
 	$date_atom = get_page_date_atom($page);
 
 	return get_passage_date_html_span($date_atom);
 }
 
-function get_link_passage_class()
+function get_link_passage_class() : string
 {
 	return 'link_page_passage';
 }
@@ -432,7 +433,7 @@ function get_link_passage_class()
  *
  * @return ['data_mtime'=>page mtime or null, 'class'=>additinal classes]
  */
-function get_page_link_a_attrs($page)
+function get_page_link_a_attrs(string $page) : array
 {
 	global $show_passage;
 
@@ -460,7 +461,7 @@ function get_page_link_a_attrs($page)
  *
  * @return ['data_mtime'=>page mtime or null, 'class'=>additinal classes]
  */
-function get_filetime_a_attrs($filetime)
+function get_filetime_a_attrs(int $filetime) : array
 {
 	global $show_passage;
 
@@ -482,7 +483,7 @@ function get_filetime_a_attrs($filetime)
 }
 
 // 'Search' main function
-function do_search($word, $type = 'AND', $non_format = false, $base = '')
+function do_search(string $word, string $type = 'AND', bool $non_format = false, string $base = '') : string
 {
 	global $whatsnew;
 	global $non_list;
@@ -594,25 +595,25 @@ function do_search($word, $type = 'AND', $non_format = false, $base = '')
 }
 
 // Argument check for program
-function arg_check($str)
+function arg_check(string $str) : bool
 {
 	global $vars;
 
 	return (isset($vars['cmd'])) && (strpos($vars['cmd'], $str) === 0);
 }
 
-function _pagename_urlencode_callback($matches)
+function _pagename_urlencode_callback(array $matches) : string
 {
 	return urlencode($matches[0]);
 }
 
-function pagename_urlencode($page)
+function pagename_urlencode(string $page) : string
 {
 	return preg_replace_callback('|[^/:]+|', '_pagename_urlencode_callback', $page);
 }
 
 // Encode page-name
-function encode($str)
+function encode(?string $str) : string
 {
 	$str = (string) ($str);
 
@@ -622,13 +623,13 @@ function encode($str)
 }
 
 // Decode page name
-function decode($str)
+function decode(string $str) : string
 {
 	return pkwk_hex2bin($str);
 }
 
 // Inversion of bin2hex()
-function pkwk_hex2bin($hex_string)
+function pkwk_hex2bin(string $hex_string) : string
 {
 	// preg_match : Avoid warning : pack(): Type H: illegal hex digit ...
 	// (string)   : Always treat as string (not int etc). See BugTrack2/31
@@ -636,7 +637,7 @@ function pkwk_hex2bin($hex_string)
 }
 
 // Remove [[ ]] (brackets)
-function strip_bracket($str)
+function strip_bracket(string $str) : string
 {
 	$match = [];
 
@@ -648,7 +649,7 @@ function strip_bracket($str)
 }
 
 // Create list of pages
-function page_list($pages, $cmd = 'read', $withfilename = false)
+function page_list(array $pages, string $cmd = 'read', bool $withfilename = false) : string
 {
 	global $list_index;
 	global $_msg_symbol;
@@ -752,7 +753,7 @@ function page_list($pages, $cmd = 'read', $withfilename = false)
 }
 
 // Show text formatting rules
-function catrule()
+function catrule() : string
 {
 	global $rule_page;
 
@@ -764,7 +765,7 @@ function catrule()
 }
 
 // Show (critical) error message
-function die_message($msg) : void
+function die_message(string $msg) : void
 {
 	$page = 'Runtime error';
 	$title = $page;
@@ -803,7 +804,7 @@ EOD;
 }
 
 // Have the time (as microtime)
-function getmicrotime()
+function getmicrotime() : float
 {
 	[$usec, $sec] = explode(' ', microtime());
 
@@ -812,7 +813,7 @@ function getmicrotime()
 
 // Elapsed time by second
 //define('MUTIME', getmicrotime());
-function elapsedtime()
+function elapsedtime() : string
 {
 	$at_the_microtime = MUTIME;
 
@@ -820,7 +821,7 @@ function elapsedtime()
 }
 
 // Get the date
-function get_date($format, $timestamp = null)
+function get_date(string $format, int $timestamp = null) : string
 {
 	$format = preg_replace('/(?<!\\\)T/', preg_replace('/(.)/', '\\\$1', ZONE), $format);
 
@@ -830,7 +831,7 @@ function get_date($format, $timestamp = null)
 }
 
 // Format date string
-function format_date($val, $paren = false)
+function format_date(int $val, bool $paren = false) : string
 {
 	global $date_format;
 	global $time_format;
@@ -846,7 +847,7 @@ function format_date($val, $paren = false)
 /**
  * Format date in DATE_ATOM format.
  */
-function get_date_atom($timestamp)
+function get_date_atom(int $timestamp) : string
 {
 	// Compatible with DATE_ATOM format
 	// return date(DATE_ATOM, $timestamp);
@@ -856,7 +857,7 @@ function get_date_atom($timestamp)
 }
 
 // Get short string of the passage, 'N seconds/minutes/hours/days/years ago'
-function get_passage($time, $paren = true)
+function get_passage(int $time, bool $paren = true) : string
 {
 	static $units = ['m'=>60, 'h'=>24, 'd'=>1];
 
@@ -877,13 +878,13 @@ function get_passage($time, $paren = true)
 }
 
 // Hide <input type="(submit|button|image)"...>
-function drop_submit($str)
+function drop_submit(string $str) : string
 {
 	return preg_replace('/<input([^>]+)type="(submit|button|image)"/i', '<input$1type="hidden"', $str);
 }
 
 // Generate AutoLink patterns (thx to hirofummy)
-function get_autolink_pattern($pages, $min_length)
+function get_autolink_pattern(array $pages, int $min_length) : array
 {
 	global $WikiName;
 	global $nowikiname;
@@ -918,7 +919,7 @@ function get_autolink_pattern($pages, $min_length)
 	return [$result, $result_a, $forceignorepages];
 }
 
-function get_autolink_pattern_sub($pages, $start, $end, $pos)
+function get_autolink_pattern_sub(array $pages, int $start, int $end, int $pos) : string
 {
 	if ($end == 0) {
 		return '(?!)';
@@ -968,7 +969,7 @@ function get_autolink_pattern_sub($pages, $start, $end, $pos)
 }
 
 // Get AutoAlias value
-function get_autoalias_right_link($alias_name)
+function get_autoalias_right_link(string $alias_name) : string
 {
 	$pairs = get_autoaliases();
 
@@ -981,7 +982,7 @@ function get_autoalias_right_link($alias_name)
 }
 
 // Load setting pairs from AutoAliasName
-function get_autoaliases()
+function get_autoaliases() : array
 {
 	global $aliaspage;
 	global $autoalias_max_words;
@@ -1027,7 +1028,7 @@ EOD;
  * @param $uri_type relative or absolute option
  *        PKWK_URI_RELATIVE, PKWK_URI_ROOT or PKWK_URI_ABSOLUTE
  */
-function get_base_uri($uri_type = PKWK_URI_RELATIVE)
+function get_base_uri(int $uri_type = PKWK_URI_RELATIVE) : string
 {
 	$base_type = pkwk_base_uri_type_stack_peek();
 	$type = max($base_type, $uri_type);
@@ -1044,6 +1045,9 @@ function get_base_uri($uri_type = PKWK_URI_RELATIVE)
 
 		default:
 			die_message('Invalid uri_type in get_base_uri()');
+
+			//Not reached
+			return '';
 	}
 }
 
@@ -1054,7 +1058,7 @@ function get_base_uri($uri_type = PKWK_URI_RELATIVE)
  * @param $uri_type relative or absolute option
  *        PKWK_URI_RELATIVE, PKWK_URI_ROOT or PKWK_URI_ABSOLUTE
  */
-function get_page_uri($page, $uri_type = PKWK_URI_RELATIVE)
+function get_page_uri(string $page, int $uri_type = PKWK_URI_RELATIVE) : string
 {
 	global $defaultpage;
 
@@ -1066,7 +1070,7 @@ function get_page_uri($page, $uri_type = PKWK_URI_RELATIVE)
 }
 
 // Get absolute-URI of this script
-function get_script_uri()
+function get_script_uri() : string
 {
 	return get_base_uri(PKWK_URI_ABSOLUTE);
 }
@@ -1079,7 +1083,7 @@ function get_script_uri()
  * @param $initialize true if you initialize URI
  * @param $uri_set URI set manually
  */
-function pkwk_script_uri_base($uri_type, $initialize = null, $uri_set = null)
+function pkwk_script_uri_base(int $uri_type, bool $initialize = null, string $uri_set = null) : string
 {
 	global $script_directory_index;
 	static $initialized = false;
@@ -1088,7 +1092,7 @@ function pkwk_script_uri_base($uri_type, $initialize = null, $uri_set = null)
 	static $uri_relative;
 
 	if (!$initialized) {
-		if (isset($initialize) && $initialize) {
+		if ((isset($initialize)) && ($initialize)) {
 			if (isset($uri_set)) {
 				$uri_absolute = $uri_set;
 			} else {
@@ -1138,6 +1142,9 @@ function pkwk_script_uri_base($uri_type, $initialize = null, $uri_set = null)
 
 		default:
 			die_message('Invalid uri_type in pkwk_script_uri_base()');
+
+			//Not reached
+			return '';
 	}
 }
 
@@ -1147,7 +1154,7 @@ function pkwk_script_uri_base($uri_type, $initialize = null, $uri_set = null)
  * @param $uri_type relative or absolute option
  *        PKWK_URI_RELATIVE, PKWK_URI_ROOT or PKWK_URI_ABSOLUTE
  */
-function pkwk_base_uri_type_stack_push($uri_type) : void
+function pkwk_base_uri_type_stack_push(int $uri_type) : void
 {
 	_pkwk_base_uri_type_stack(false, true, $uri_type);
 }
@@ -1163,7 +1170,7 @@ function pkwk_base_uri_type_stack_pop() : void
 /**
  * Get current active uri_type status.
  */
-function pkwk_base_uri_type_stack_peek()
+function pkwk_base_uri_type_stack_peek() : int
 {
 	$type = _pkwk_base_uri_type_stack(true, false);
 
@@ -1187,7 +1194,7 @@ function pkwk_base_uri_type_stack_peek()
  *
  * @return $uri_type uri_type for peeking
  */
-function _pkwk_base_uri_type_stack($peek, $push, $uri_type = null)
+function _pkwk_base_uri_type_stack(bool $peek, bool $push, int $uri_type = null)
 {
 	static $uri_types = [];
 
@@ -1225,7 +1232,7 @@ function _pkwk_base_uri_type_stack($peek, $push, $uri_type = null)
  * SERVER_PORT: $_SERVER['SERVER_PORT'] converted in init.php
  * SERVER_NAME: $_SERVER['SERVER_NAME'] converted in init.php
  */
-function guess_script_absolute_uri()
+function guess_script_absolute_uri() : string
 {
 	$port = SERVER_PORT;
 	$is_ssl = ((isset($_SERVER['HTTPS'])) && ($_SERVER['HTTPS'] === 'on')) || ((isset($_SERVER['REQUEST_SCHEME'])) && ($_SERVER['REQUEST_SCHEME'] === 'https'));
@@ -1266,7 +1273,7 @@ function sanitize($param)
 }
 
 // Explode Comma-Separated Values to an array
-function csv_explode($separator, $string)
+function csv_explode(string $separator, string $string) : array
 {
 	$matches = [];
 	$retval = [];
@@ -1291,7 +1298,7 @@ function csv_explode($separator, $string)
 }
 
 // Implode an array with CSV data format (escape double quotes)
-function csv_implode($glue, $pieces)
+function csv_implode(string $glue, array $pieces) : string
 {
 	$_glue = ($glue != '') ? ('\\'.$glue[0]) : ('');
 	$arr = [];
@@ -1308,7 +1315,7 @@ function csv_implode($glue, $pieces)
 }
 
 // Sugar with default settings
-function htmlsc($string = '', $flags = ENT_COMPAT, $charset = CONTENT_CHARSET)
+function htmlsc(string $string = '', int $flags = ENT_COMPAT, string $charset = CONTENT_CHARSET) : string
 {
 	// htmlsc()
 	return htmlspecialchars($string, $flags, $charset);
@@ -1317,7 +1324,7 @@ function htmlsc($string = '', $flags = ENT_COMPAT, $charset = CONTENT_CHARSET)
 /**
  * Get JSON string with htmlspecialchars().
  */
-function htmlsc_json($obj)
+function htmlsc_json($obj) : string
 {
 	// json_encode: PHP 5.2+
 	// JSON_UNESCAPED_UNICODE: PHP 5.4+
@@ -1339,7 +1346,7 @@ function htmlsc_json($obj)
  *
  * @return new page name or false
  */
-function get_pagename_on_redirect($page)
+function get_pagename_on_redirect(string $page)
 {
 	global $page_redirect_rules;
 
@@ -1371,7 +1378,7 @@ function get_pagename_on_redirect($page)
  *
  * @return bool Inticates a redirection occurred or not
  */
-function manage_page_redirect()
+function manage_page_redirect() : bool
 {
 	global $vars;
 
@@ -1395,7 +1402,7 @@ function manage_page_redirect()
 // is_a --  Returns true if the object is of this class or has this class as one of its parents
 // (PHP 4 >= 4.2.0)
 if (!function_exists('is_a')) {
-	function is_a($class, $match)
+	function is_a(string $class, string $match) : bool
 	{
 		if (empty($class)) {
 			return false;
@@ -1415,7 +1422,7 @@ if (!function_exists('is_a')) {
 // array_fill -- Fill an array with values
 // (PHP 4 >= 4.2.0)
 if (!function_exists('array_fill')) {
-	function array_fill($start_index, $num, $value)
+	function array_fill(int $start_index, int $num, $value) : array
 	{
 		$ret = [];
 
@@ -1430,7 +1437,7 @@ if (!function_exists('array_fill')) {
 // md5_file -- Calculates the md5 hash of a given filename
 // (PHP 4 >= 4.2.0)
 if (!function_exists('md5_file')) {
-	function md5_file($filename)
+	function md5_file(string $filename)
 	{
 		if (!file_exists($filename)) {
 			return false;
@@ -1453,7 +1460,7 @@ if (!function_exists('md5_file')) {
 // (PHP 4 >= 4.3.0, PHP5)
 if (!function_exists('sha1')) {
 	if (extension_loaded('mhash')) {
-		function sha1($str)
+		function sha1(string $str) : string
 		{
 			return bin2hex(mhash(MHASH_SHA1, $str));
 		}

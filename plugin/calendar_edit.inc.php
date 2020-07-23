@@ -10,7 +10,7 @@ declare(strict_types=1);
 //
 // Calendar_ edit plugin (needs calendar plugin)
 
-function plugin_calendar_edit_convert()
+function plugin_calendar_edit_convert(string ...$args)
 {
 	global $command;
 
@@ -25,7 +25,6 @@ function plugin_calendar_edit_convert()
 	}
 
 	$command = 'edit';
-	$args = (func_num_args()) ? (func_get_args()) : ([]);
 
 	return call_user_func_array('plugin_calendar_convert', $args);
 }

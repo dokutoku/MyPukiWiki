@@ -33,19 +33,19 @@ class Config
 
 	public $objs = [];
 
-	public function Config($name) : void
+	public function Config(string $name) : void
 	{
 		$this->__construct($name);
 	}
 
-	public function __construct($name)
+	public function __construct(string $name)
 	{
 		$this->name = $name;
 		$this->page = PKWK_CONFIG_PREFIX.$name;
 	}
 
 	// Load the configuration-page
-	public function read()
+	public function read() : bool
 	{
 		if (!is_page($this->page)) {
 			return false;
@@ -106,7 +106,7 @@ class Config
 	}
 
 	// Get an array
-	public function get($title)
+	public function get(string $title)
 	{
 		$obj = $this->get_object($title);
 
@@ -114,21 +114,21 @@ class Config
 	}
 
 	// Set an array (Override)
-	public function put($title, $values) : void
+	public function put(string $title, array $values) : void
 	{
 		$obj = $this->get_object($title);
 		$obj->values = $values;
 	}
 
 	// Add a line
-	public function add($title, $value) : void
+	public function add(string $title, array $value) : void
 	{
 		$obj = $this->get_object($title);
 		$obj->values[] = $value;
 	}
 
 	// Get an object (or create it)
-	public function get_object($title)
+	public function get_object(string $title)
 	{
 		if (!isset($this->objs[$title])) {
 			$this->objs[$title] = new ConfigTable('*'.trim($title)."\n");
@@ -142,7 +142,7 @@ class Config
 		page_write($this->page, $this->toString());
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		$retval = '';
 
@@ -169,12 +169,12 @@ class ConfigTable
 	// Table contents
 	public $values = [];
 
-	public function ConfigTable($title, $obj = null) : void
+	public function ConfigTable(string $title, ConfigTable $obj = null) : void
 	{
 		$this->__construct($title, $obj);
 	}
 
-	public function __construct($title, $obj = null)
+	public function __construct(string $title, ?ConfigTable $obj = null)
 	{
 		if ($obj !== null) {
 			$this->title = $obj->title;
@@ -186,12 +186,12 @@ class ConfigTable
 	}
 
 	// Addi an  explanation
-	public function add_line($line) : void
+	public function add_line(string $line) : void
 	{
 		$this->after[] = $line;
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		return implode('', $this->before).implode('', $this->after);
 	}
@@ -200,12 +200,12 @@ class ConfigTable
 class ConfigTable_Sequential extends ConfigTable
 {
 	// Add a line
-	public function add_value($value) : void
+	public function add_value(array $value) : void
 	{
 		$this->values[] = (count($value) == 1) ? ($value[0]) : ($value);
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		$retval = implode('', $this->before);
 
@@ -227,14 +227,14 @@ class ConfigTable_Direct extends ConfigTable
 	// Used at initialization phase
 	public $_keys = [];
 
-	public function set_key($line) : void
+	public function set_key(string $line) : void
 	{
 		$level = strspn($line, '*');
 		$this->_keys[$level] = trim(substr($line, $level));
 	}
 
 	// Add a line
-	public function add_value($line) : void
+	public function add_value(string $line) : void
 	{
 		$level = strspn($line, '-');
 		$arr = $this->values;
@@ -246,7 +246,7 @@ class ConfigTable_Direct extends ConfigTable
 		$arr[] = trim(substr($line, $level));
 	}
 
-	public function toString($values = null, $level = 2)
+	public function toString(array $values = null, int $level = 2) : string
 	{
 		$retval = '';
 		$root = $values === null;

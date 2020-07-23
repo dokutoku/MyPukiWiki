@@ -17,13 +17,14 @@ define('PLUGIN_SIZE_MIN', 8);
 // ----
 define('PLUGIN_SIZE_USAGE', '&size(px){Text you want to change};');
 
-function plugin_size_inline()
+function plugin_size_inline(string ...$args) : string
 {
 	if (func_num_args() != 2) {
 		return PLUGIN_SIZE_USAGE;
 	}
 
-	[$size, $body] = func_get_args();
+	$size = $args[0];
+	$body = $args[1];
 
 	// strip_autolink() is not needed for size plugin
 	//$body = strip_htmltag($body);

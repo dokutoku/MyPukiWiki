@@ -25,7 +25,7 @@ define('PLUGIN_ANAME_ID_MAX', 40);
 define('PLUGIN_ANAME_ID_REGEX', '/^[A-Za-z][\w\-]*$/');
 
 // Show usage
-function plugin_aname_usage($convert = true, $message = '')
+function plugin_aname_usage(bool $convert = true, string $message = '') : string
 {
 	if ($convert) {
 		if ($message == '') {
@@ -43,7 +43,7 @@ function plugin_aname_usage($convert = true, $message = '')
 }
 
 // #aname
-function plugin_aname_convert()
+function plugin_aname_convert(string ...$args) : string
 {
 	$convert = true;
 
@@ -51,20 +51,18 @@ function plugin_aname_convert()
 		return plugin_aname_usage($convert);
 	}
 
-	return plugin_aname_tag(func_get_args(), $convert);
+	return plugin_aname_tag($args, $convert);
 }
 
 // &aname;
-function plugin_aname_inline()
+function plugin_aname_inline(string ...$args) : string
 {
 	$convert = false;
 
+	// ONE or more
 	if (func_num_args() < 2) {
 		return plugin_aname_usage($convert);
 	}
-
-	// ONE or more
-	$args = func_get_args();
 
 	// Strip anchor tags only
 	$body = strip_htmltag(array_pop($args), false);
@@ -75,7 +73,7 @@ function plugin_aname_inline()
 }
 
 // Aname plugin itself
-function plugin_aname_tag($args = [], $convert = true)
+function plugin_aname_tag(array $args = [], bool $convert = true) : string
 {
 	global $vars;
 	static $_id = [];

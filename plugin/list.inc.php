@@ -8,7 +8,7 @@ declare(strict_types=1);
 //
 // IndexPages plugin: Show a list of page names
 
-function plugin_list_action()
+function plugin_list_action() : array
 {
 	global $vars;
 	global $_title_list;
@@ -22,7 +22,7 @@ function plugin_list_action()
 }
 
 // Get a list
-function plugin_list_getlist($withfilename = false)
+function plugin_list_getlist(bool $withfilename = false) : string
 {
 	global $non_list;
 	global $whatsnew;

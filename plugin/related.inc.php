@@ -8,7 +8,7 @@ declare(strict_types=1);
 //
 // Related plugin: Show Backlinks for the page
 
-function plugin_related_convert()
+function plugin_related_convert() : string
 {
 	global $vars;
 
@@ -16,7 +16,7 @@ function plugin_related_convert()
 }
 
 // Show Backlinks: via related caches for the page
-function plugin_related_action()
+function plugin_related_action() : array
 {
 	global $vars;
 	global $defaultpage;

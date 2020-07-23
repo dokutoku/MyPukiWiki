@@ -122,7 +122,7 @@ header('Content-Type: text/html; charset='.CONTENT_CHARSET);
 <div id="navigator">
 <?php if (PKWK_SKIN_SHOW_NAVBAR) { ?>
 <?php
-function _navigator($key, $value = '', $javascript = '')
+function _navigator(string $key, string $value = '', string $javascript = '') : bool
 {
 	$lang = &$GLOBALS['_LANG']['skin'];
 	$link = &$GLOBALS['_LINK'];
@@ -238,7 +238,7 @@ $_IMAGE['skin']['rss10'] = &$_IMAGE['skin']['rss'];
 $_IMAGE['skin']['rss20'] = 'rss20.png';
 $_IMAGE['skin']['rdf'] = 'rdf.png';
 
-function _toolbar($key, $x = 20, $y = 20)
+function _toolbar(string $key, int $x = 20, int $y = 20) : bool
 {
 	$lang = &$GLOBALS['_LANG']['skin'];
 	$link = &$GLOBALS['_LINK'];

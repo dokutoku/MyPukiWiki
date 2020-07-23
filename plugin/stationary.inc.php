@@ -27,7 +27,7 @@ function plugin_stationary_init() : void
 }
 
 // Convert-type plugin: #stationary or #stationary(foo)
-function plugin_stationary_convert()
+function plugin_stationary_convert(string ...$args) : string
 {
 	// If you don't want this work at secure/productive site,
 	if (PKWK_SAFE_MODE) {
@@ -42,13 +42,10 @@ function plugin_stationary_convert()
 	}
 
 	// Init
-	$args = [];
 	$result = '';
 
 	// Get arguments
 	if (func_num_args()) {
-		$args = func_get_args();
-
 		foreach (array_keys($args) as $key) {
 			$args[$key] = trim($args[$key]);
 		}
@@ -60,7 +57,7 @@ function plugin_stationary_convert()
 }
 
 // In-line type plugin: &stationary; or &stationary(foo); , or &stationary(foo){bar};
-function plugin_stationary_inline()
+function plugin_stationary_inline(string ...$args) : string
 {
 	if ((PKWK_SAFE_MODE) || (PKWK_READONLY)) {
 		// See above
@@ -68,8 +65,6 @@ function plugin_stationary_inline()
 	}
 
 	// {bar} is always exists, and already sanitized
-	$args = func_get_args();
-
 	// {bar}
 	$body = strip_autolink(array_pop($args));
 
@@ -83,7 +78,7 @@ function plugin_stationary_inline()
 }
 
 // Action-type plugin: ?plugin=stationary&foo=bar
-function plugin_stationary_action()
+function plugin_stationary_action() : array
 {
 	// See above
 	if ((PKWK_SAFE_MODE) || (PKWK_READONLY)) {

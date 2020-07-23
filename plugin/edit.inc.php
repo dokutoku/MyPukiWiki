@@ -11,7 +11,7 @@ declare(strict_types=1);
 // Remove #freeze written by hand
 define('PLUGIN_EDIT_FREEZE_REGEX', '/^(?:#freeze(?!\w)\s*)+/im');
 
-function plugin_edit_action()
+function plugin_edit_action() : array
 {
 	global $vars;
 	global $_title_edit;
@@ -34,7 +34,7 @@ function plugin_edit_action()
 	} elseif (isset($vars['write'])) {
 		return plugin_edit_write();
 	} elseif (isset($vars['cancel'])) {
-		return plugin_edit_cancel();
+		plugin_edit_cancel();
 	}
 
 	$postdata = @implode('', get_source($page));
@@ -51,7 +51,7 @@ function plugin_edit_action()
 /**
  * Preview with template.
  */
-function plugin_edit_preview_with_template()
+function plugin_edit_preview_with_template() : array
 {
 	global $vars;
 
@@ -76,7 +76,7 @@ function plugin_edit_preview_with_template()
  *
  * @param msg preview target
  */
-function plugin_edit_preview($msg)
+function plugin_edit_preview(string $msg) : array
 {
 	global $vars;
 	global $_title_preview;
@@ -117,7 +117,7 @@ function plugin_edit_preview($msg)
 }
 
 // Inline: Show edit (or unfreeze text) link
-function plugin_edit_inline()
+function plugin_edit_inline(string ...$args) : string
 {
 	static $usage = '&edit(pagename#anchor[[,noicon],nolabel])[{label}];';
 
@@ -128,9 +128,6 @@ function plugin_edit_inline()
 		// Show nothing
 		return '';
 	}
-
-	// Arguments
-	$args = func_get_args();
 
 	// {label}. Strip anchor tags only
 	$s_label = strip_htmltag(array_pop($args), false);
@@ -244,7 +241,7 @@ function plugin_edit_inline()
 }
 
 // Write, add, or insert new comment
-function plugin_edit_write()
+function plugin_edit_write() : array
 {
 	global $vars;
 	global $_title_collided;

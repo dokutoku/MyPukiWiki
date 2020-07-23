@@ -26,7 +26,7 @@ define('PLUGIN_RECENT_USAGE', '#recent(number-to-show)');
 // Place of the cache of 'RecentChanges'
 define('PLUGIN_RECENT_CACHE', CACHE_DIR.'recent.dat');
 
-function plugin_recent_convert()
+function plugin_recent_convert(string ...$args) : string
 {
 	global $vars;
 	global $date_format;
@@ -36,12 +36,10 @@ function plugin_recent_convert()
 	$recent_lines = PLUGIN_RECENT_DEFAULT_LINES;
 
 	if (func_num_args()) {
-		$args = func_get_args();
-
 		if ((!is_numeric($args[0])) || (isset($args[1]))) {
 			return PLUGIN_RECENT_USAGE.'<br />';
 		} else {
-			$recent_lines = $args[0];
+			$recent_lines = (int) ($args[0]);
 		}
 	}
 
@@ -73,7 +71,7 @@ function plugin_recent_convert()
 	foreach ($lines as $line) {
 		[$time, $page] = explode("\t", rtrim($line));
 
-		$_date = get_date($date_format, $time);
+		$_date = get_date($date_format, (int) ($time));
 
 		if ($date != $_date) {
 			// End of the day

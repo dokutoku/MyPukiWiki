@@ -74,7 +74,7 @@ function plugin_rss_action() : void
 		switch ($version) {
 			case '0.91':
 			case '2.0':
-				$date = get_date('D, d M Y H:i:s T', $time);
+				$date = get_date('D, d M Y H:i:s T', (int) ($time));
 				$date = ($version == '0.91') ? (' <description>'.$date.'</description>') : (' <pubDate>'.$date.'</pubDate>');
 				$items .= <<<EOD
 <item>

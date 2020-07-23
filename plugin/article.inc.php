@@ -70,7 +70,7 @@ $_plugin_article_mailto =
 	'',
 ];
 
-function plugin_article_action()
+function plugin_article_action() : array
 {
 	global $post;
 	global $vars;
@@ -196,7 +196,7 @@ EOD;
 	return $retvars;
 }
 
-function plugin_article_convert()
+function plugin_article_convert() : string
 {
 	global $vars;
 	global $digest;

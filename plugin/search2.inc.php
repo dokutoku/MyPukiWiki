@@ -17,14 +17,12 @@ define('PLUGIN_SEARCH2_SEARCH_WAIT_MILLISECONDS', 1000);
 define('PLUGIN_SEARCH2_SEARCH_MAX_RESULTS', 1000);
 
 // Show a search box on a page
-function plugin_search2_convert()
+function plugin_search2_convert(string ...$args) : string
 {
-	$args = func_get_args();
-
 	return plugin_search_search_form('', '', $args);
 }
 
-function plugin_search2_action()
+function plugin_search2_action() : array
 {
 	global $vars;
 	global $_title_search;
@@ -56,16 +54,18 @@ function plugin_search2_action()
 		}
 	} elseif ($action === 'query') {
 		$q = (isset($vars['q'])) ? ($vars['q']) : ('');
-		$search_start_time = (isset($vars['search_start_time'])) ? ($vars['search_start_time']) : (null);
+		$search_start_time = (isset($vars['search_start_time'])) ? ((int) ($vars['search_start_time'])) : (null);
 		$modified_since = (int) ((isset($vars['modified_since'])) ? ($vars['modified_since']) : ('0'));
 		header('Content-Type: application/json; charset=UTF-8');
 		plugin_search2_do_search($q, $base, $start_index, $search_start_time, $modified_since);
 
 		exit;
 	}
+
+	return [];
 }
 
-function plugin_search2_get_base_url($search_text)
+function plugin_search2_get_base_url(string $search_text) : string
 {
 	global $vars;
 
@@ -94,7 +94,7 @@ function plugin_search2_get_base_url($search_text)
 	return $url;
 }
 
-function plugin_search2_urlencode_searchtext($search_text)
+function plugin_search2_urlencode_searchtext(string $search_text) : string
 {
 	$s2 = preg_replace('#^\s+|\s+$#', '', $search_text);
 
@@ -112,7 +112,7 @@ function plugin_search2_urlencode_searchtext($search_text)
 	return implode('+', $list);
 }
 
-function plugin_search2_do_search($query_text, $base, $start_index, $search_start_time, $modified_since) : void
+function plugin_search2_do_search(string $query_text, string $base, int $start_index, ?int $search_start_time, int $modified_since) : void
 {
 	global $whatsnew;
 	global $non_list;
@@ -312,7 +312,7 @@ function plugin_search2_do_search($query_text, $base, $start_index, $search_star
 	echo json_encode($obj, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 }
 
-function plugin_search2_search_form($search_text, $bases, $offset, $prev_offset_s = null)
+function plugin_search2_search_form(string $search_text, array $bases, int $offset, string $prev_offset_s = null) : string
 {
 	global $_btn_search;
 	global $_search_pages;

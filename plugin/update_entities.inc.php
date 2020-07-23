@@ -42,7 +42,7 @@ PHPの持つテーブルおよびW3CのDTDをスキャンして、キャッシ�
 	set_plugin_messages($messages);
 }
 
-function plugin_update_entities_action()
+function plugin_update_entities_action() : array
 {
 	global $vars;
 	global $_entities_messages;
@@ -84,12 +84,12 @@ EOD;
 }
 
 // Remove &amp;=>amp
-function plugin_update_entities_strtr($entity)
+function plugin_update_entities_strtr(string $entity) : string
 {
 	return strtr($entity, ['&'=>'', ';'=>'']);
 }
 
-function plugin_update_entities_create($do = false)
+function plugin_update_entities_create(bool $do = false) : array
 {
 	$files = ['xhtml-lat1.ent', 'xhtml-special.ent', 'xhtml-symbol.ent'];
 

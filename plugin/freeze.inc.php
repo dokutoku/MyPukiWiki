@@ -9,12 +9,12 @@ declare(strict_types=1);
 // Freeze(Lock) plugin
 
 // Reserve 'Do nothing'. '^#freeze' is for internal use only.
-function plugin_freeze_convert()
+function plugin_freeze_convert() : string
 {
 	return '';
 }
 
-function plugin_freeze_action()
+function plugin_freeze_action() : array
 {
 	global $vars;
 	global $function_freeze;

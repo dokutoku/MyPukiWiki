@@ -18,7 +18,7 @@ define('PLUGIN_SAML_AUTHUSER_DISPLAYNAME_ATTR', 'DisplayName');
 /**
  *  SAML Handler.
  */
-function plugin_saml_action()
+function plugin_saml_action() : array
 {
 	global $vars;
 

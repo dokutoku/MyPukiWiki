@@ -7,19 +7,19 @@ declare(strict_types=1);
 //
 // "Login form" plugin
 
-function plugin_loginform_inline()
+function plugin_loginform_inline() : string
 {
 	$logout_param = '?plugin=basicauthlogout';
 
 	return '<a href="'.htmlsc(get_base_uri().$logout_param).'">Log out</a>';
 }
 
-function plugin_loginform_convert()
+function plugin_loginform_convert() : string
 {
 	return '<div>'.plugin_basicauthlogout_inline().'</div>';
 }
 
-function plugin_loginform_action()
+function plugin_loginform_action() : array
 {
 	global $auth_user;
 	global $auth_type;

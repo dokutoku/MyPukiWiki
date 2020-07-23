@@ -14,7 +14,7 @@ define('PKWK_HTTP_REQUEST_URL_REDIRECT_MAX', 2);
 // We also define deprecated function 'http_request' for backward compatibility
 if (!function_exists('http_request')) {
 	// pecl_http extension also have the function named 'http_request'
-	function http_request($url, $method = 'GET', $headers = '', $post = [], $redirect_max = PKWK_HTTP_REQUEST_URL_REDIRECT_MAX, $content_charset = '')
+	function http_request(string $url, string $method = 'GET', string $headers = '', array $post = [], int $redirect_max = PKWK_HTTP_REQUEST_URL_REDIRECT_MAX, string $content_charset = '') : array
 	{
 		return pkwk_http_request($url, $method, $headers, $post, $redirect_max, $content_charset);
 	}
@@ -30,7 +30,7 @@ if (!function_exists('http_request')) {
  * $redirect_max : Max number of HTTP redirect
  * $content_charset : Content charset. Use '' or CONTENT_CHARSET
 */
-function pkwk_http_request($url, $method = 'GET', $headers = '', $post = [], $redirect_max = PKWK_HTTP_REQUEST_URL_REDIRECT_MAX, $content_charset = '')
+function pkwk_http_request(string $url, string $method = 'GET', string $headers = '', array $post = [], int $redirect_max = PKWK_HTTP_REQUEST_URL_REDIRECT_MAX, string $content_charset = '') : array
 {
 	global $use_proxy;
 	global $no_proxy;
@@ -193,7 +193,7 @@ function pkwk_http_request($url, $method = 'GET', $headers = '', $post = [], $re
 define('PKWK_CIDR_NETWORK_REGEX', '/^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(?:\/([0-9.]+))?$/');
 
 // Check if the $host is in the specified network(s)
-function in_the_net($networks = [], $host = '')
+function in_the_net(array $networks = [], string $host = '') : bool
 {
 	if ((empty($networks)) || ($host == '')) {
 		return false;

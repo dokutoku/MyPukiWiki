@@ -44,29 +44,29 @@ if (is_readable(JCODE_FILE)) {
 if (!function_exists('jcode_convert_encoding')) {
 	//	die_message('Multibyte functions cannot be used. Please read "mbstring.php" for an additional installation procedure of "jcode".');
 
-	function jstrlen($str)
+	function jstrlen(string $str) : int
 	{
 		return strlen($str);
 	}
 
-	function jsubstr($str, $start, $length)
+	function jsubstr(string $str, int $start, int $length) : string
 	{
 		return substr($str, $start, $length);
 	}
 
-	function AutoDetect($str)
+	function AutoDetect(string $str) : int
 	{
 		return 0;
 	}
 
-	function jcode_convert_encoding($str, $to_encoding, $from_encoding)
+	function jcode_convert_encoding($str, string $to_encoding, $from_encoding)
 	{
 		return $str;
 	}
 }
 
 // mb_convert_encoding -- 文字エンコーディングを変換する
-function mb_convert_encoding($str, $to_encoding, $from_encoding = '')
+function mb_convert_encoding($str, string $to_encoding, $from_encoding = '')
 {
 	// 拡張: 配列を受けられるように
 	// mb_convert_variable対策
@@ -82,7 +82,7 @@ function mb_convert_encoding($str, $to_encoding, $from_encoding = '')
 }
 
 // mb_convert_variables -- 変数の文字コードを変換する
-function mb_convert_variables($to_encoding, $from_encoding, &$vars)
+function mb_convert_variables(string $to_encoding, $from_encoding, &$vars) : string
 {
 	// 注: 可変長引数ではない。init.phpから呼ばれる1引数のパターンのみをサポート
 	// 正直に実装するなら、可変引数をリファレンスで受ける方法が必要
@@ -98,7 +98,7 @@ function mb_convert_variables($to_encoding, $from_encoding, &$vars)
 }
 
 // 補助関数:配列を再帰的にjoinする
-function join_array($glue, $pieces)
+function join_array(string $glue, array $pieces) : string
 {
 	$arr = [];
 
@@ -110,7 +110,7 @@ function join_array($glue, $pieces)
 }
 
 // mb_detect_encoding -- 文字エンコーディングを検出する
-function mb_detect_encoding($str, $encoding_list = '', $strict = false)
+function mb_detect_encoding(string $str, $encoding_list = '', bool $strict = false) : string
 {
 	static $codes = [0=>'ASCII', 1=>'EUC-JP', 2=>'SJIS', 3=>'JIS', 4=>'UTF-8'];
 
@@ -140,7 +140,7 @@ function mb_detect_order($encoding_list = null)
 }
 
 // mb_encode_mimeheader -- MIMEヘッダの文字列をエンコードする
-function mb_encode_mimeheader($str, $charset = 'ISO-2022-JP', $transfer_encoding = 'B', $linefeed = "\r\n")
+function mb_encode_mimeheader(string $str, string $charset = 'ISO-2022-JP', string $transfer_encoding = 'B', string $linefeed = "\r\n") : string
 {
 	// 注: $transfer_encodingに関わらずbase64エンコードを返す
 	$str = mb_convert_encoding($str, $charset, 'auto');
@@ -149,21 +149,21 @@ function mb_encode_mimeheader($str, $charset = 'ISO-2022-JP', $transfer_encoding
 }
 
 // mb_http_output -- HTTP出力文字エンコーディングの設定/取得
-function mb_http_output($encoding = '')
+function mb_http_output(string $encoding = '') : string
 {
 	// 注: 何もしない
 	return SOURCE_ENCODING;
 }
 
 // mb_internal_encoding --  内部文字エンコーディングの設定/取得
-function mb_internal_encoding($encoding = '')
+function mb_internal_encoding(string $encoding = '') : string
 {
 	// 注: 何もしない
 	return SOURCE_ENCODING;
 }
 
 // mb_language --  カレントの言語を設定/取得
-function mb_language($language = null)
+function mb_language(string $language = null) : bool
 {
 	static $mb_language = false;
 
@@ -178,7 +178,7 @@ function mb_language($language = null)
 }
 
 // mb_strimwidth -- 指定した幅で文字列を丸める
-function mb_strimwidth($str, $start, $width, $trimmarker = '', $encoding = '')
+function mb_strimwidth(string $str, int $start, int $width, string $trimmarker = '', string $encoding = '') : string
 {
 	if (($start == 0) && ($width <= strlen($str))) {
 		return $str;
@@ -223,14 +223,14 @@ function mb_strimwidth($str, $start, $width, $trimmarker = '', $encoding = '')
 }
 
 // mb_strlen -- 文字列の長さを得る
-function mb_strlen($str, $encoding = '')
+function mb_strlen(string $str, string $encoding = '') : int
 {
 	// 注: EUC-JP専用, $encodingを使用しない
 	return jstrlen($str);
 }
 
 // mb_substr -- 文字列の一部を得る
-function mb_substr($str, $start, $length = null, $encoding = '')
+function mb_substr(string $str, int $start, int $length = null, string $encoding = '') : string
 {
 	// 注: EUC-JP専用, $encodingを使用しない
 	return jsubstr($str, $start, ($length === null) ? (jstrlen($str)) : ($length));

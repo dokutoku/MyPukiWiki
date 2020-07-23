@@ -6,7 +6,7 @@ declare(strict_types=1);
 //
 // Clear plugin - inserts a CSS class 'clear', to set 'clear:both'
 
-function plugin_clear_convert()
+function plugin_clear_convert() : string
 {
 	return '<div class="clear"></div>';
 }

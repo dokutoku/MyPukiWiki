@@ -20,7 +20,8 @@ define('PLUGIN_BACK_ALLOW_JAVASCRIPT', true);
 
 // ----
 define('PLUGIN_BACK_USAGE', '#back([text],[center|left|right][,0(no hr)[,Page-or-URI-to-back]])');
-function plugin_back_convert()
+
+function plugin_back_convert(string ...$args) : string
 {
 	global $_msg_back_word;
 	global $script;
@@ -29,7 +30,7 @@ function plugin_back_convert()
 		return PLUGIN_BACK_USAGE;
 	}
 
-	[$word, $align, $hr, $href] = array_pad(func_get_args(), 4, '');
+	[$word, $align, $hr, $href] = array_pad($args, 4, '');
 
 	$word = trim($word);
 	$word = ($word == '') ? ($_msg_back_word) : (htmlsc($word));

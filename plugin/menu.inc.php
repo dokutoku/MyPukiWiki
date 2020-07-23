@@ -14,7 +14,7 @@ define('MENU_ENABLE_SUBMENU', false);
 // Name of Submenu
 define('MENU_SUBMENUBAR', 'MenuBar');
 
-function plugin_menu_convert()
+function plugin_menu_convert(string ...$args) : string
 {
 	global $vars;
 	global $menubar;
@@ -31,8 +31,6 @@ function plugin_menu_convert()
 		if ($menu !== null) {
 			return '#menu(): Already set: '.htmlsc($menu);
 		}
-
-		$args = func_get_args();
 
 		if (!is_page($args[0])) {
 			return '#menu(): No such page: '.htmlsc($args[0]);

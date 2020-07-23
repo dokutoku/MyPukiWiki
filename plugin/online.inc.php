@@ -20,17 +20,17 @@ define('PLUGIN_ONLINE_USER_LIST', COUNTER_DIR.'user.dat');
 // Regex of 'IP-address|last-access-time(seconds)'
 define('PLUGIN_ONLINE_LIST_REGEX', '/^([^\|]+)\|([0-9]+)$/');
 
-function plugin_online_convert()
+function plugin_online_convert() : string
 {
 	return plugin_online_itself(0);
 }
 
-function plugin_online_inline()
+function plugin_online_inline() : string
 {
 	return plugin_online_itself(1);
 }
 
-function plugin_online_itself($type = 0)
+function plugin_online_itself(int $type = 0) : string
 {
 	static $count;
 	static $result;
@@ -54,7 +54,7 @@ function plugin_online_itself($type = 0)
 
 	if ($result) {
 		// Integer
-		return $count;
+		return (string) ($count);
 	} else {
 		if (!isset($base)) {
 			$base = basename(PLUGIN_ONLINE_USER_LIST);
@@ -75,7 +75,7 @@ function plugin_online_itself($type = 0)
 
 // Check I am already online (recorded and not time-out)
 // & $count == Number of online users
-function plugin_online_check_online(&$count, $host = '')
+function plugin_online_check_online(int &$count, string $host = '') : bool
 {
 	if (!pkwk_touch_file(PLUGIN_ONLINE_USER_LIST)) {
 		return false;
@@ -132,7 +132,7 @@ function plugin_online_check_online(&$count, $host = '')
 
 // Cleanup outdated records, Add/Replace new record, Return the number of 'users in N seconds'
 // NOTE: Call this when plugin_online_check_online() returnes false
-function plugin_online_sweep_records($host = '')
+function plugin_online_sweep_records(string $host = '')
 {
 	// Open
 	$fp = @fopen(PLUGIN_ONLINE_USER_LIST, 'r+');

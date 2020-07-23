@@ -13,7 +13,7 @@ declare(strict_types=1);
 // Prohibit rendering old wiki texts (suppresses load, transfer rate, and security risk)
 define('PLUGIN_BACKUP_DISABLE_BACKUP_RENDERING', (PKWK_SAFE_MODE) || ((defined('PKWK_OPTIMISE')) && (PKWK_OPTIMISE)));
 
-function plugin_backup_action()
+function plugin_backup_action() : array
 {
 	global $vars;
 	global $do_backup;
@@ -34,7 +34,7 @@ function plugin_backup_action()
 	global $_title_backuplist;
 
 	if (!$do_backup) {
-		return;
+		return [];
 	}
 
 	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
@@ -144,7 +144,7 @@ function plugin_backup_action()
 }
 
 // Delete backup
-function plugin_backup_delete($page)
+function plugin_backup_delete(string $page) : array
 {
 	global $vars;
 	global $_title_backup_delete;
@@ -189,7 +189,7 @@ EOD;
 	return	['msg'=>$_title_backup_delete, 'body'=>$body];
 }
 
-function plugin_backup_diff($str)
+function plugin_backup_diff(string $str) : string
 {
 	global $_msg_addline;
 	global $_msg_delline;
@@ -206,7 +206,7 @@ EOD;
 	return $ul.'<pre>'.diff_style_to_css(htmlsc($str)).'</pre>'."\n";
 }
 
-function plugin_backup_get_list($page)
+function plugin_backup_get_list(string $page) : string
 {
 	global $_msg_backuplist;
 	global $_msg_diff;
@@ -277,7 +277,7 @@ EOD;
 }
 
 // List for all pages
-function plugin_backup_get_list_all($withfilename = false)
+function plugin_backup_get_list_all(bool $withfilename = false) : string
 {
 	global $cantedit;
 

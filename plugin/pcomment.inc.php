@@ -50,7 +50,7 @@ define('PLUGIN_PCOMMENT_FORMAT_NOW', '&new{$now};');
 // "\x01", "\x02", "\x03", and "\x08" are used just as markers
 define('PLUGIN_PCOMMENT_FORMAT_STRING', "\x08".'MSG'."\x08".' -- '."\x08".'NAME'."\x08".' '."\x08".'DATE'."\x08");
 
-function plugin_pcomment_action()
+function plugin_pcomment_action() : array
 {
 	global $vars;
 
@@ -78,7 +78,7 @@ function plugin_pcomment_action()
 	exit;
 }
 
-function plugin_pcomment_convert()
+function plugin_pcomment_convert(string ...$args) : string
 {
 	global $vars;
 	global $_pcmt_messages;
@@ -93,7 +93,7 @@ function plugin_pcomment_convert()
 		'_args'=>[],
 	];
 
-	foreach (func_get_args() as $arg) {
+	foreach ($args as $arg) {
 		plugin_pcomment_check_arg($arg, $params);
 	}
 
@@ -160,7 +160,7 @@ function plugin_pcomment_convert()
 		$s_page = htmlsc($page);
 		$s_refer = htmlsc($vars_page);
 		$s_nodate = htmlsc($params['nodate']);
-		$s_count = htmlsc($count);
+		$s_count = htmlsc((string) ($count));
 
 		$form_start = '<form action="'.get_base_uri().'" method="post" class="_p_pcomment_form">'."\n";
 		$form = <<<EOD
@@ -195,7 +195,7 @@ EOD;
 	}
 }
 
-function plugin_pcomment_insert()
+function plugin_pcomment_insert() : array
 {
 	global $vars;
 	global $now;
@@ -305,7 +305,8 @@ function plugin_pcomment_insert()
 
 		$postdata = implode('', $postdata);
 	}
-	page_write($page, $postdata, PLUGIN_PCOMMENT_TIMESTAMP);
+
+	page_write($page, $postdata, (bool) (PLUGIN_PCOMMENT_TIMESTAMP));
 
 	if (PLUGIN_PCOMMENT_TIMESTAMP) {
 		if ($refer != '') {
@@ -319,7 +320,7 @@ function plugin_pcomment_insert()
 }
 
 // Auto log rotation
-function plugin_pcomment_auto_log($page, $dir, $count, &$postdata) : void
+function plugin_pcomment_auto_log(string $page, string $dir, int $count, array &$postdata) : void
 {
 	if (!PLUGIN_PCOMMENT_AUTO_LOG) {
 		return;
@@ -354,7 +355,7 @@ function plugin_pcomment_auto_log($page, $dir, $count, &$postdata) : void
 }
 
 // Check arguments
-function plugin_pcomment_check_arg($val, &$params) : void
+function plugin_pcomment_check_arg(string $val, array &$params) : void
 {
 	if ($val != '') {
 		$l_val = strtolower($val);
@@ -371,7 +372,7 @@ function plugin_pcomment_check_arg($val, &$params) : void
 	$params['_args'][] = $val;
 }
 
-function plugin_pcomment_get_comments($page, $count, $dir, $reply)
+function plugin_pcomment_get_comments(string $page, int $count, int $dir, bool $reply) : array
 {
 	global $_msg_pcomment_restrict;
 

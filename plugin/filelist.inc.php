@@ -9,7 +9,7 @@ declare(strict_types=1);
 // Filelist plugin: redirect to list plugin
 // cmd=filelist
 
-function plugin_filelist_action()
+function plugin_filelist_action() : array
 {
 	return do_plugin_action('list');
 }

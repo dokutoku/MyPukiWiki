@@ -11,7 +11,7 @@ declare(strict_types=1);
 // Show edit form when unfreezed
 define('PLUGIN_UNFREEZE_EDIT', true);
 
-function plugin_unfreeze_action()
+function plugin_unfreeze_action() : array
 {
 	global $vars;
 	global $function_freeze;

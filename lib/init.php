@@ -423,7 +423,7 @@ if (empty($_POST)) {
  *
  * For example: ?//key1.value2//key2.value2
  */
-function parse_query_string_ext($query_string)
+function parse_query_string_ext(string $query_string) : array
 {
 	$vars = [];
 	$m = null;

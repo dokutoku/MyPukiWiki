@@ -52,7 +52,7 @@ $_STORAGE['BACKUP_DIR']['extract_filter'] = '^'.preg_quote(BACKUP_DIR, '/').'((?
 
 /////////////////////////////////////////////////
 // プラグイン本体
-function plugin_dump_action()
+function plugin_dump_action() : array
 {
 	global $vars;
 
@@ -110,7 +110,7 @@ function plugin_dump_action()
 
 /////////////////////////////////////////////////
 // ファイルのダウンロード
-function plugin_dump_download()
+function plugin_dump_download() : string
 {
 	global $vars;
 	global $_STORAGE;
@@ -163,7 +163,7 @@ function plugin_dump_download()
 
 /////////////////////////////////////////////////
 // ファイルのアップロード
-function plugin_dump_upload()
+function plugin_dump_upload() : array
 {
 	global $vars;
 	global $_STORAGE;
@@ -240,7 +240,7 @@ function plugin_dump_upload()
 
 /////////////////////////////////////////////////
 // tarファイルのダウンロード
-function download_tarfile($tempnam, $arc_kind) : void
+function download_tarfile(string $tempnam, string $arc_kind) : void
 {
 	$size = filesize($tempnam);
 
@@ -268,7 +268,7 @@ function download_tarfile($tempnam, $arc_kind) : void
 
 /////////////////////////////////////////////////
 // 入力フォームを表示
-function plugin_dump_disp_form()
+function plugin_dump_disp_form() : string
 {
 	global $defaultpage;
 
@@ -451,7 +451,7 @@ class tarlib
 	// 引数  : tarファイルを作成するパス
 	// 返り値: true .. 成功 , false .. 失敗
 	////////////////////////////////////////////////////////////
-	public function create($tempdir, $kind = 'tgz')
+	public function create(string $tempdir, string $kind = 'tgz') : bool
 	{
 		$tempnam = tempnam(realpath($tempdir), 'tarlib_create_');
 
@@ -488,7 +488,7 @@ class tarlib
 	//         $decode .. ページ名の変換をするか
 	// 返り値: 作成したファイル数
 	////////////////////////////////////////////////////////////
-	public function add_dir($dir, $mask, $decode = false)
+	public function add_dir(string $dir, string $mask, bool $decode = false) : int
 	{
 		$retvalue = 0;
 
@@ -596,7 +596,7 @@ class tarlib
 	//         $typeflag .. TypeFlag (file/link)
 	// 戻り値: tarヘッダ情報
 	////////////////////////////////////////////////////////////
-	public function _make_header($filename, $size, $mtime, $typeflag)
+	public function _make_header(string $filename, int $size, int $mtime, string $typeflag) : array
 	{
 		$tar_data = array_fill(0, TARLIB_HDR_LEN, "\0");
 
@@ -672,9 +672,9 @@ class tarlib
 	//         $size   .. データサイズ
 	// 戻り値: なし
 	////////////////////////////////////////////////////////////
-	public function _write_data($header, $body, $size) : void
+	public function _write_data(string $header, string $body, int $size) : void
 	{
-		$fixsize = (ceil($size / TARLIB_BLK_LEN) * TARLIB_BLK_LEN) - $size;
+		$fixsize = (int)((ceil($size / TARLIB_BLK_LEN) * TARLIB_BLK_LEN) - $size);
 
 		if ($this->arc_kind == TARLIB_KIND_TGZ) {
 			// Header
@@ -699,7 +699,7 @@ class tarlib
 	// 引数  : tarファイル名
 	// 返り値: true .. 成功 , false .. 失敗
 	////////////////////////////////////////////////////////////
-	public function open($name = '', $kind = 'tgz')
+	public function open(string $name = '', string $kind = 'tgz') : bool
 	{
 		if (!PLUGIN_DUMP_ALLOW_RESTORE) {
 			// Not allowed
@@ -735,7 +735,7 @@ class tarlib
 	// 返り値: 展開したファイル名の一覧
 	// 補足  : ARAIさんのattachプラグインパッチを参考にしました
 	////////////////////////////////////////////////////////////
-	public function extract($pattern)
+	public function extract(string $pattern) : array
 	{
 		if ($this->status != TARLIB_STATUS_OPEN) {
 			// Not opened
@@ -810,7 +810,7 @@ class tarlib
 
 			// ceil
 			// データブロックは512byteでパディングされている
-			$pdsz = ceil($size / TARLIB_BLK_LEN) * TARLIB_BLK_LEN;
+			$pdsz = (int) (ceil($size / TARLIB_BLK_LEN) * TARLIB_BLK_LEN);
 
 			// 最終更新時刻
 			$strmtime = '';

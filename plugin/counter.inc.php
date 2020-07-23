@@ -34,14 +34,13 @@ if (PLUGIN_COUNTER_USE_DB) {
 }
 
 // Report one
-function plugin_counter_inline()
+function plugin_counter_inline(string ...$args) : string
 {
 	global $vars;
 
 	// BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
-	// with array_shift()
-	$args = func_get_args();
 
+	// with array_shift()
 	$arg = strtolower(array_shift($args));
 
 	switch ($arg) {
@@ -54,7 +53,7 @@ function plugin_counter_inline()
 		case 'yesterday':
 			$counter = plugin_counter_get_count($vars['page']);
 
-			return $counter[$arg];
+			return (string) ($counter[$arg]);
 
 		default:
 			return '&counter([total|today|yesterday]);';
@@ -62,7 +61,7 @@ function plugin_counter_inline()
 }
 
 // Report all
-function plugin_counter_convert()
+function plugin_counter_convert() : string
 {
 	global $vars;
 
@@ -78,7 +77,7 @@ EOD;
 }
 
 // Return a summary
-function plugin_counter_get_count($page)
+function plugin_counter_get_count(string $page) :array
 {
 	global $vars;
 	global $plugin_counter_db_options;
@@ -248,7 +247,7 @@ function plugin_counter_get_count($page)
 	return $c;
 }
 
-function plugin_counter_get_popular_list($today, $except, $max)
+function plugin_counter_get_popular_list(string $today, string $except, int $max)
 {
 	if (PLUGIN_COUNTER_USE_DB === 0) {
 		return plugin_counter_get_popular_list_file($today, $except, $max);
@@ -257,7 +256,7 @@ function plugin_counter_get_popular_list($today, $except, $max)
 	}
 }
 
-function plugin_counter_get_popular_list_file($today, $except, $max)
+function plugin_counter_get_popular_list_file(string $today, string $except, int $max)
 {
 	global $whatsnew;
 
@@ -298,7 +297,7 @@ function plugin_counter_get_popular_list_file($today, $except, $max)
 	return $counters;
 }
 
-function plugin_counter_get_popular_list_db($today, $except, $max)
+function plugin_counter_get_popular_list_db(string $today, string $except, int $max)
 {
 	global $whatsnew;
 
@@ -366,7 +365,7 @@ function plugin_counter_get_popular_list_db($today, $except, $max)
 	}
 }
 
-function plugin_counter_page_rename($pages) : void
+function plugin_counter_page_rename(array $pages) : void
 {
 	global $plugin_counter_db_options;
 

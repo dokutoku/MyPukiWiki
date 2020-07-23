@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 define('PLUGIN_LOOKUP_USAGE', '#lookup(interwikiname[,button_name[,default]])');
 
-function plugin_lookup_convert()
+function plugin_lookup_convert(string ...$args) : string
 {
 	global $vars;
 	static $id = 0;
@@ -23,7 +23,6 @@ function plugin_lookup_convert()
 		return PLUGIN_LOOKUP_USAGE;
 	}
 
-	$args = func_get_args();
 	$interwiki = htmlsc(trim($args[0]));
 	$button = (isset($args[1])) ? (trim($args[1])) : ('');
 	$button = ($button != '') ? (htmlsc($button)) : ('lookup');
@@ -48,7 +47,7 @@ EOD;
 	return $ret;
 }
 
-function plugin_lookup_action()
+function plugin_lookup_action() : array
 {
 	// Deny GET method to avlid GET loop
 	global $post;

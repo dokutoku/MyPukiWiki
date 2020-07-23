@@ -11,7 +11,7 @@ declare(strict_types=1);
 // function 'convert_html()', wiki text parser
 // and related classes-and-functions
 
-function convert_html($lines)
+function convert_html($lines) : string
 {
 	global $vars;
 	global $digest;
@@ -20,7 +20,9 @@ function convert_html($lines)
 	// Set digest
 	$digest = md5(implode('', get_source($vars['page'])));
 
-	if (!is_array($lines)) {
+	if ($lines === null) {
+		$lines = [];
+	} elseif (!is_array($lines)) {
 		$lines = explode("\n", $lines);
 	}
 
@@ -52,12 +54,12 @@ class Element
 		$this->last = $this;
 	}
 
-	public function setParent(&$parent) : void
+	public function setParent(object &$parent) : void
 	{
 		$this->parent = &$parent;
 	}
 
-	public function add($obj)
+	public function add(object $obj)
 	{
 		if ($this->canContain($obj)) {
 			return $this->insert($obj);
@@ -66,7 +68,7 @@ class Element
 		}
 	}
 
-	public function insert($obj)
+	public function insert(object $obj) : object
 	{
 		$obj->setParent($this);
 		$this->elements[] = $obj;
@@ -74,17 +76,17 @@ class Element
 		return $this->last = $obj->last;
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return true;
 	}
 
-	public function wrap($string, $tag, $param = '', $canomit = true)
+	public function wrap(string $string, string $tag, string $param = '', bool $canomit = true) : string
 	{
 		return (($canomit) && ($string == '')) ? ('') : ('<'.$tag.$param.'>'.$string.'</'.$tag.'>');
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		$ret = [];
 
@@ -95,7 +97,7 @@ class Element
 		return implode("\n", $ret);
 	}
 
-	public function dump($indent = 0)
+	public function dump(int $indent = 0) : string
 	{
 		$ret = str_repeat(' ', $indent).get_class($this)."\n";
 		$indent += 2;
@@ -110,7 +112,7 @@ class Element
 }
 
 // Returns inline-related object
-function Factory_Inline($text)
+function Factory_Inline(string $text) : object
 {
 	// Check the first letter of the line
 	if (substr($text, 0, 1) == '~') {
@@ -120,7 +122,7 @@ function Factory_Inline($text)
 	}
 }
 
-function Factory_DList(&$root, $text)
+function Factory_DList(object &$root, string $text) : object
 {
 	$out = explode('|', ltrim($text), 2);
 
@@ -132,7 +134,7 @@ function Factory_DList(&$root, $text)
 }
 
 // '|'-separated table
-function Factory_Table(&$root, $text)
+function Factory_Table(object &$root, string $text) : object
 {
 	if (!preg_match('/^\|(.+)\|([hHfFcC]?)$/', $text, $out)) {
 		return Factory_Inline($text);
@@ -142,7 +144,7 @@ function Factory_Table(&$root, $text)
 }
 
 // Comma-separated table
-function Factory_YTable(&$root, $text)
+function Factory_YTable(object &$root, string $text) : object
 {
 	if ($text == ',') {
 		return Factory_Inline($text);
@@ -151,7 +153,7 @@ function Factory_YTable(&$root, $text)
 	}
 }
 
-function Factory_Div(&$root, $text)
+function Factory_Div(object &$root, string $text) : object
 {
 	$matches = [];
 
@@ -185,37 +187,37 @@ function Factory_Div(&$root, $text)
 // Inline elements
 class Inline extends Element
 {
-	public function Inline($text) : void
+	public function Inline(string $text) : void
 	{
 		$this->__construct($text);
 	}
 
-	public function __construct($text)
+	public function __construct(string $text)
 	{
 		parent::__construct();
 		$this->elements[] = trim((substr($text, 0, 1) === "\n") ? ($text) : (make_link($text)));
 	}
 
-	public function insert($obj)
+	public function insert(object $obj) : object
 	{
 		$this->elements[] = $obj->elements[0];
 
 		return $this;
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return is_a($obj, 'Inline');
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		global $line_break;
 
 		return implode((($line_break) ? ('<br />'."\n") : ("\n")), $this->elements);
 	}
 
-	public function toPara($class = '')
+	public function toPara(string $class = '') : object
 	{
 		$obj = new Paragraph('', $class);
 		$obj->insert($this);
@@ -229,12 +231,12 @@ class Paragraph extends Element
 {
 	public $param;
 
-	public function Paragraph($text, $param = '') : void
+	public function Paragraph(string $text, string $param = '') : void
 	{
 		$this->__construct($text, $param);
 	}
 
-	public function __construct($text, $param = '')
+	public function __construct(string $text, string $param = '')
 	{
 		parent::__construct();
 		$this->param = $param;
@@ -250,12 +252,12 @@ class Paragraph extends Element
 		$this->insert(Factory_Inline($text));
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return is_a($obj, 'Inline');
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		return $this->wrap(parent::toString(), 'p', $this->param);
 	}
@@ -272,12 +274,12 @@ class Heading extends Element
 
 	public $msg_top;
 
-	public function Heading(&$root, $text) : void
+	public function Heading(object &$root, string $text) : void
 	{
 		$this->__construct($root, $text);
 	}
 
-	public function __construct(&$root, $text)
+	public function __construct(object &$root, string $text)
 	{
 		parent::__construct();
 
@@ -289,19 +291,19 @@ class Heading extends Element
 		$this->level++;
 	}
 
-	public function insert($obj)
+	public function insert(object $obj) : object
 	{
 		parent::insert($obj);
 
 		return $this->last = $this;
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return false;
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		return $this->msg_top.$this->wrap(parent::toString(), 'h'.$this->level, ' id="'.$this->id.'"');
 	}
@@ -311,22 +313,22 @@ class Heading extends Element
 // Horizontal Rule
 class HRule extends Element
 {
-	public function HRule(&$root, $text) : void
+	public function HRule(object &$root, string $text) : void
 	{
 		$this->__construct($root, $text);
 	}
 
-	public function __construct(&$root, $text)
+	public function __construct(object &$root, string $text)
 	{
 		parent::__construct();
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return false;
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		global $hr;
 
@@ -345,12 +347,12 @@ class ListContainer extends Element
 
 	public $style;
 
-	public function ListContainer($tag, $tag2, $head, $text) : void
+	public function ListContainer(string $tag, string $tag2, string $head, string $text) : void
 	{
 		$this->__construct($tag, $tag2, $head, $text);
 	}
 
-	public function __construct($tag, $tag2, $head, $text)
+	public function __construct(string $tag, string $tag2, string $head, string $text)
 	{
 		parent::__construct();
 
@@ -366,12 +368,12 @@ class ListContainer extends Element
 		}
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return (!is_a($obj, 'ListContainer')) || (($this->tag === $obj->tag) && ($this->level === $obj->level));
 	}
 
-	public function setParent(&$parent) : void
+	public function setParent(object &$parent) : void
 	{
 		parent::setParent($parent);
 
@@ -384,7 +386,7 @@ class ListContainer extends Element
 		$this->style = sprintf(pkwk_list_attrs_template(), $this->level, $step);
 	}
 
-	public function insert($obj)
+	public function insert(object $obj) : object
 	{
 		if (!is_a($obj, get_class($this))) {
 			return $this->last = $this->last->insert($obj);
@@ -404,7 +406,7 @@ class ListContainer extends Element
 		return $this->last;
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		return $this->wrap(parent::toString(), $this->tag, $this->style);
 	}
@@ -412,24 +414,24 @@ class ListContainer extends Element
 
 class ListElement extends Element
 {
-	public function ListElement($level, $head) : void
+	public function ListElement(int $level, string $head) : void
 	{
 		$this->__construct($level, $head);
 	}
 
-	public function __construct($level, $head)
+	public function __construct(int $level, string $head)
 	{
 		parent::__construct();
 		$this->level = $level;
 		$this->head = $head;
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return (!is_a($obj, 'ListContainer')) || ($obj->level > $this->level);
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		return $this->wrap(parent::toString(), $this->head);
 	}
@@ -440,12 +442,12 @@ class ListElement extends Element
 // - Three
 class UList extends ListContainer
 {
-	public function UList(&$root, $text) : void
+	public function UList(object &$root, string $text) : void
 	{
 		$this->__construct($root, $text);
 	}
 
-	public function __construct(&$root, $text)
+	public function __construct(object &$root, string $text)
 	{
 		parent::__construct('ul', 'li', '-', $text);
 	}
@@ -456,12 +458,12 @@ class UList extends ListContainer
 // + Three
 class OList extends ListContainer
 {
-	public function OList(&$root, $text) : void
+	public function OList(object &$root, string $text) : void
 	{
 		$this->__construct($root, $text);
 	}
 
-	public function __construct(&$root, $text)
+	public function __construct(object &$root, string $text)
 	{
 		parent::__construct('ol', 'li', '+', $text);
 	}
@@ -472,12 +474,12 @@ class OList extends ListContainer
 // : definition3 | description3
 class DList extends ListContainer
 {
-	public function DList($out) : void
+	public function DList(array $out) : void
 	{
 		$this->__construct($out);
 	}
 
-	public function __construct($out)
+	public function __construct(array $out)
 	{
 		assert(count($out) >= 2);
 
@@ -496,12 +498,12 @@ class BQuote extends Element
 {
 	public $level;
 
-	public function BQuote(&$root, $text) : void
+	public function BQuote(object &$root, string $text) : void
 	{
 		$this->__construct($root, $text);
 	}
 
-	public function __construct(&$root, $text)
+	public function __construct(object &$root, string $text)
 	{
 		parent::__construct();
 
@@ -523,12 +525,12 @@ class BQuote extends Element
 		}
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return (!is_a($obj, get_class($this))) || ($obj->level >= $this->level);
 	}
 
-	public function insert($obj)
+	public function insert(object $obj) : object
 	{
 		// BugTrack/521, BugTrack/545
 		if (is_a($obj, 'inline')) {
@@ -546,12 +548,12 @@ class BQuote extends Element
 		return parent::insert($obj);
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		return $this->wrap(parent::toString(), 'blockquote');
 	}
 
-	public function end(&$root, $level)
+	public function end(object &$root, int $level) : object
 	{
 		$parent = &$root->last;
 
@@ -579,12 +581,12 @@ class TableCell extends Element
 	// is array('width'=>, 'align'=>...);
 	public $style;
 
-	public function TableCell($text, $is_template = false) : void
+	public function TableCell(string $text, bool $is_template = false) : void
 	{
 		$this->__construct($text, $is_template);
 	}
 
-	public function __construct($text, $is_template = false)
+	public function __construct(string $text, bool $is_template = false)
 	{
 		parent::__construct();
 		$matches = [];
@@ -631,7 +633,7 @@ class TableCell extends Element
 		$this->insert($obj);
 	}
 
-	public function setStyle(&$style) : void
+	public function setStyle(array &$style) : void
 	{
 		foreach ($style as $key=>$value) {
 			if (!isset($this->style[$key])) {
@@ -640,7 +642,7 @@ class TableCell extends Element
 		}
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		if (($this->rowspan == 0) || ($this->colspan == 0)) {
 			return '';
@@ -677,12 +679,12 @@ class Table extends Element
 	// number of column
 	public $col;
 
-	public function Table($out) : void
+	public function Table(array $out) : void
 	{
 		$this->__construct($out);
 	}
 
-	public function __construct($out)
+	public function __construct(array $out)
 	{
 		parent::__construct();
 
@@ -700,12 +702,12 @@ class Table extends Element
 		$this->elements[] = $row;
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return is_a($obj, 'Table') && ($obj->col == $this->col);
 	}
 
-	public function insert($obj)
+	public function insert(object $obj) : object
 	{
 		$this->elements[] = $obj->elements[0];
 		$this->types[] = $obj->type;
@@ -713,7 +715,7 @@ class Table extends Element
 		return $this;
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		static $parts = ['h'=>'thead', 'f'=>'tfoot', ''=>'tbody'];
 
@@ -812,7 +814,7 @@ class YTable extends Element
 	// Number of columns
 	public $col;
 
-	public function YTable($row = ['cell1 ', ' cell2 ', ' cell3']) : void
+	public function YTable(array $row = ['cell1 ', ' cell2 ', ' cell3']) : void
 	{
 		$this->__construct($row);
 	}
@@ -820,7 +822,7 @@ class YTable extends Element
 	// TODO: Seems unable to show literal '==' without tricks.
 	//       But it will be imcompatible.
 	// TODO: Why toString() or toXHTML() here
-	public function __construct($row = ['cell1 ', ' cell2 ', ' cell3'])
+	public function __construct(array $row = ['cell1 ', ' cell2 ', ' cell3'])
 	{
 		parent::__construct();
 
@@ -878,19 +880,19 @@ class YTable extends Element
 		$this->elements[] = implode('', $str);
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return is_a($obj, 'YTable') && ($obj->col == $this->col);
 	}
 
-	public function insert($obj)
+	public function insert(object $obj) : object
 	{
 		$this->elements[] = $obj->elements[0];
 
 		return $this;
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		$rows = '';
 
@@ -909,12 +911,12 @@ class YTable extends Element
 // ' 'Space-beginning sentence
 class Pre extends Element
 {
-	public function Pre(&$root, $text) : void
+	public function Pre(object &$root, string $text) : void
 	{
 		$this->__construct($root, $text);
 	}
 
-	public function __construct(&$root, $text)
+	public function __construct(object &$root, string $text)
 	{
 		global $preformat_ltrim;
 
@@ -922,19 +924,19 @@ class Pre extends Element
 		$this->elements[] = htmlsc(((!$preformat_ltrim) || ($text == '') || ($text[0] != ' ')) ? ($text) : (substr($text, 1)));
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return is_a($obj, 'Pre');
 	}
 
-	public function insert($obj)
+	public function insert(object $obj) : object
 	{
 		$this->elements[] = $obj->elements[0];
 
 		return $this;
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		return $this->wrap(implode("\n", $this->elements), 'pre');
 	}
@@ -947,23 +949,23 @@ class Div extends Element
 
 	public $param;
 
-	public function Div($out) : void
+	public function Div(array $out) : void
 	{
 		$this->__construct($out);
 	}
 
-	public function __construct($out)
+	public function __construct(array $out)
 	{
 		parent::__construct();
 		[, $this->name, $this->param] = array_pad($out, 3, '');
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return false;
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		// Call #plugin
 		return do_plugin_convert($this->name, $this->param);
@@ -975,23 +977,23 @@ class Align extends Element
 {
 	public $align;
 
-	public function Align($align) : void
+	public function Align(string $align) : void
 	{
 		$this->__construct($align);
 	}
 
-	public function __construct($align)
+	public function __construct(string $align)
 	{
 		parent::__construct();
 		$this->align = $align;
 	}
 
-	public function canContain($obj)
+	public function canContain(object $obj) : bool
 	{
 		return is_a($obj, 'Inline');
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		return $this->wrap(parent::toString(), 'div', ' style="text-align:'.$this->align.'"');
 	}
@@ -1024,20 +1026,20 @@ class Body extends Element
 		'#'=>'Div',
 	];
 
-	public function Body($id) : void
+	public function Body(int $id) : void
 	{
 		$this->__construct($id);
 	}
 
-	public function __construct($id)
+	public function __construct(int $id)
 	{
-		$this->id = $id;
+		$this->id = (string) ($id);
 		$this->contents = new Element();
 		$this->contents_last = $this->contents;
 		parent::__construct();
 	}
 
-	public function parse(&$lines) : void
+	public function parse(array &$lines) : void
 	{
 		$this->last = $this;
 		$matches = [];
@@ -1142,7 +1144,7 @@ class Body extends Element
 		}
 	}
 
-	public function getAnchor($text, $level)
+	public function getAnchor(string $text, int $level) : array
 	{
 		global $top;
 		global $_symbol_anchor;
@@ -1172,7 +1174,7 @@ class Body extends Element
 		return [$text.$anchor, (($this->count > 1) ? ("\n".$top) : ('')), $autoid];
 	}
 
-	public function insert($obj)
+	public function insert(object $obj) : object
 	{
 		if (is_a($obj, 'Inline')) {
 			$obj = $obj->toPara();
@@ -1181,7 +1183,7 @@ class Body extends Element
 		return parent::insert($obj);
 	}
 
-	public function toString()
+	public function toString() : string
 	{
 		global $vars;
 
@@ -1193,7 +1195,7 @@ class Body extends Element
 		return $text."\n";
 	}
 
-	public function replace_contents($arr)
+	public function replace_contents(array $arr) : string
 	{
 		return '<div class="contents">'."\n".'<a id="contents_'.$this->id.'"></a>'."\n".$this->contents->toString()."\n".'</div>'."\n";
 	}
@@ -1201,12 +1203,12 @@ class Body extends Element
 
 class Contents_UList extends ListContainer
 {
-	public function Contents_UList($text, $level, $id) : void
+	public function Contents_UList(string $text, int $level, string $id) : void
 	{
 		$this->__construct($text, $level, $id);
 	}
 
-	public function __construct($text, $level, $id)
+	public function __construct(string $text, int $level, string $id)
 	{
 		// Reformatting $text
 		// A line started with "\n" means "preformatted" ... X(
@@ -1216,7 +1218,7 @@ class Contents_UList extends ListContainer
 		$this->insert(Factory_Inline($text));
 	}
 
-	public function setParent(&$parent) : void
+	public function setParent(object &$parent) : void
 	{
 		parent::setParent($parent);
 		$step = $this->level;

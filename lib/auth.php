@@ -24,7 +24,7 @@ define('AUTH_TYPE_SAML', 6);
 
 // Passwd-auth related ----
 
-function pkwk_login($pass = '')
+function pkwk_login(string $pass = '') : bool
 {
 	global $adminpass;
 
@@ -43,7 +43,7 @@ function pkwk_login($pass = '')
 // $scheme : Specify '{scheme}' or '{scheme}salt'
 // $prefix : Output with a scheme-prefix or not
 // $canonical : Correct or Preserve $scheme prefix
-function pkwk_hash_compute($phrase = '', $scheme = '{x-php-md5}', $prefix = true, $canonical = false)
+function pkwk_hash_compute(string $phrase = '', string $scheme = '{x-php-md5}', bool $prefix = true, bool $canonical = false)
 {
 	if ((!is_string($phrase)) || (!is_string($scheme))) {
 		return false;
@@ -199,7 +199,7 @@ function pkwk_hash_compute($phrase = '', $scheme = '{x-php-md5}', $prefix = true
 
 // LDAP related functions
 
-function _pkwk_ldap_escape_callback($matches)
+function _pkwk_ldap_escape_callback(array $matches) : string
 {
 	return sprintf('\\%02x', ord($matches[0]));
 }
@@ -225,7 +225,7 @@ function pkwk_ldap_escape_dn($value)
 // Basic-auth related ----
 
 // Check edit-permission
-function check_editable($page, $auth_enabled = true, $exit_on_fail = true)
+function check_editable(string $page, bool $auth_enabled = true, bool $exit_on_fail = true) : bool
 {
 	global $_title_cannotedit;
 	global $_msg_unfreeze;
@@ -258,7 +258,7 @@ function check_editable($page, $auth_enabled = true, $exit_on_fail = true)
 /**
  * Whether the page is readable from current user or not.
  */
-function is_page_readable($page)
+function is_page_readable(string $page) : bool
 {
 	global $read_auth_pages;
 
@@ -268,7 +268,7 @@ function is_page_readable($page)
 /**
  * Whether the page is writable from current user or not.
  */
-function is_page_writable($page)
+function is_page_writable(string $page) : bool
 {
 	global $edit_auth_pages;
 
@@ -283,7 +283,7 @@ function is_page_writable($page)
  *
  * @return true if a current user can access the page
  */
-function _is_page_accessible($page, $auth_pages)
+function _is_page_accessible(string $page, array $auth_pages) : bool
 {
 	global $auth_method_type;
 	global $auth_user_groups;
@@ -330,7 +330,7 @@ function _is_page_accessible($page, $auth_pages)
  *
  * @param $page page
  */
-function ensure_page_readable($page)
+function ensure_page_readable(string $page) : bool
 {
 	global $read_auth;
 	global $read_auth_pages;
@@ -348,7 +348,7 @@ function ensure_page_readable($page)
  *
  * @param $page page
  */
-function ensure_page_writable($page)
+function ensure_page_writable(string $page) : bool
 {
 	global $edit_auth;
 	global $edit_auth_pages;
@@ -370,12 +370,12 @@ function ensure_page_writable($page)
  *
  * @return true if the page is readable
  */
-function check_readable($page, $auth_enabled = true, $exit_on_fail = true)
+function check_readable(string $page, bool $auth_enabled = true, bool $exit_on_fail = true) : bool
 {
 	return read_auth($page, $auth_enabled, $exit_on_fail);
 }
 
-function edit_auth($page, $auth_enabled = true, $exit_on_fail = true)
+function edit_auth(string $page, bool $auth_enabled = true, bool $exit_on_fail = true) : bool
 {
 	global $edit_auth;
 	global $edit_auth_pages;
@@ -384,7 +384,7 @@ function edit_auth($page, $auth_enabled = true, $exit_on_fail = true)
 	return ($edit_auth) ? (basic_auth($page, $auth_enabled, $exit_on_fail, $edit_auth_pages, $_title_cannotedit)) : (true);
 }
 
-function read_auth($page, $auth_enabled = true, $exit_on_fail = true)
+function read_auth(string $page, bool $auth_enabled = true, bool $exit_on_fail = true) : bool
 {
 	global $read_auth;
 	global $read_auth_pages;
@@ -402,7 +402,7 @@ function read_auth($page, $auth_enabled = true, $exit_on_fail = true)
  * @param $auth_pages accessible users -> pages pattern map
  * @param $title_cannot forbidden message
  */
-function basic_auth($page, $auth_enabled, $exit_on_fail, $auth_pages, $title_cannot)
+function basic_auth(string $page, bool $auth_enabled, bool $exit_on_fail, array $auth_pages, string $title_cannot) : bool
 {
 	global $auth_users;
 	global $_msg_auth;
@@ -463,7 +463,7 @@ function basic_auth($page, $auth_enabled, $exit_on_fail, $auth_pages, $title_can
  *
  * @return true if valid, false if invalid credentials
  */
-function ensure_valid_auth_user()
+function ensure_valid_auth_user() : bool
 {
 	global $auth_type;
 	global $auth_users;
@@ -599,7 +599,7 @@ function ensure_valid_auth_user()
  *
  * @return array
  */
-function get_groups_from_username($user)
+function get_groups_from_username(string $user) : array
 {
 	global $auth_groups;
 
@@ -637,7 +637,7 @@ function get_groups_from_username($user)
  *
  * @return type
  */
-function get_auth_user()
+function get_auth_user() : string
 {
 	global $auth_user;
 
@@ -652,7 +652,7 @@ function get_auth_user()
  *
  * @return true is sign in is OK
  */
-function form_auth($username, $password)
+function form_auth(string $username, string $password)
 {
 	global $ldap_user_account;
 	global $auth_users;
@@ -682,7 +682,7 @@ function form_auth($username, $password)
 	return false;
 }
 
-function ldap_auth($username, $password)
+function ldap_auth(string $username, string $password) : bool
 {
 	global $ldap_server;
 	global $ldap_base_dn;
@@ -748,7 +748,7 @@ function ldap_auth($username, $password)
 }
 
 // Get LDAP user info via bind DN
-function ldap_get_simple_user_info($username)
+function ldap_get_simple_user_info(string $username)
 {
 	global $ldap_server;
 	global $ldap_base_dn;
@@ -787,7 +787,7 @@ function ldap_get_simple_user_info($username)
  *
  * @return bool
  */
-function get_ldap_user_info($ldapconn, $username, $base_dn)
+function get_ldap_user_info($ldapconn, string $username, string $base_dn)
 {
 	$username_esc = pkwk_ldap_escape_filter($username);
 	$filter = '(|(uid='.$username_esc.')(sAMAccountName='.$username_esc.'))';
@@ -839,7 +839,7 @@ function get_ldap_user_info($ldapconn, $username, $base_dn)
  * @param type $location
  * @param type $page
  */
-function form_auth_redirect($location, $page) : void
+function form_auth_redirect(string $location, string $page) : void
 {
 	header('HTTP/1.0 302 Found');
 
@@ -854,7 +854,7 @@ function form_auth_redirect($location, $page) : void
 /**
  * Get External Auth log-in URL.
  */
-function get_auth_external_login_url($page, $url_after_login)
+function get_auth_external_login_url(string $page, string $url_after_login) : string
 {
 	global $auth_external_login_url_base;
 
@@ -869,7 +869,7 @@ function get_auth_external_login_url($page, $url_after_login)
 	return $url;
 }
 
-function get_auth_user_prefix()
+function get_auth_user_prefix() : string
 {
 	global $ldap_user_account;
 	global $auth_type;
@@ -914,7 +914,7 @@ function get_auth_user_prefix()
 	return $user_prefix;
 }
 
-function get_ldap_related_groups()
+function get_ldap_related_groups() : array
 {
 	global $read_auth_pages;
 	global $edit_auth_pages;
@@ -956,7 +956,7 @@ function get_ldap_related_groups()
  *
  * @return array
  */
-function get_ldap_groups_with_user($ldapconn, $user, $is_ad)
+function get_ldap_groups_with_user($ldapconn, string $user, bool $is_ad) : array
 {
 	global $auth_provider_user_prefix_ldap;
 	global $ldap_base_dn;

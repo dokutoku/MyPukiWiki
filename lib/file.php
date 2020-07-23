@@ -30,7 +30,7 @@ define('PKWK_AUTOALIAS_REGEX_CACHE', 'autoalias.dat');
  *
  * @return false if error occurerd
  */
-function get_source($page = null, $lock = true, $join = false, $raw = false)
+function get_source(string $page = null, bool $lock = true, bool $join = false, bool $raw = false)
 {
 	// File is not found
 	//$result = null;
@@ -93,7 +93,7 @@ function get_source($page = null, $lock = true, $join = false, $raw = false)
 }
 
 // Get last-modified filetime of the page
-function get_filetime($page)
+function get_filetime(string $page) : int
 {
 	return (is_page($page)) ? (filemtime(get_filename($page)) - LOCALZONE) : (0);
 }
@@ -103,21 +103,23 @@ function get_filetime($page)
  *
  * @param $page
  */
-function get_page_date_atom($page)
+function get_page_date_atom(string $page) : string
 {
 	if (is_page($page)) {
 		return get_date_atom(filemtime(get_filename($page)));
 	}
+
+	return '';
 }
 
 // Get physical file name of the page
-function get_filename($page)
+function get_filename(?string $page) : string
 {
 	return DATA_DIR.encode($page).'.txt';
 }
 
 // Put a data(wiki text) into a physical file(diff, backup, text)
-function page_write($page, $postdata, $notimestamp = false) : void
+function page_write(string $page, string $postdata, bool $notimestamp = false) : void
 {
 	global $autoalias;
 	global $aliaspage;
@@ -167,7 +169,7 @@ function page_write($page, $postdata, $notimestamp = false) : void
 }
 
 // Modify original text with user-defined / system-defined rules
-function make_str_rules($source)
+function make_str_rules(string $source) : string
 {
 	global $str_rules;
 	global $fixed_heading_anchor;
@@ -236,7 +238,7 @@ function make_str_rules($source)
  * @param string $wikitext
  * @param int $timestamp_to_keep Set null when not to keep timestamp
  */
-function add_author_info($wikitext, $timestamp_to_keep)
+function add_author_info(string $wikitext, ?int $timestamp_to_keep) : string
 {
 	global $auth_user;
 	global $auth_user_fullname;
@@ -262,7 +264,7 @@ function add_author_info($wikitext, $timestamp_to_keep)
 	return $author_text.$wikitext;
 }
 
-function remove_author_info($wikitext)
+function remove_author_info(string $wikitext) : string
 {
 	return preg_replace('/^\s*#author\([^\n]*(\n|$)/m', '', $wikitext);
 }
@@ -270,7 +272,7 @@ function remove_author_info($wikitext)
 /**
  * Remove author line from wikitext.
  */
-function remove_author_header($wikitext)
+function remove_author_header(string $wikitext) : string
 {
 	$start = 0;
 
@@ -301,7 +303,7 @@ function remove_author_header($wikitext)
 /**
  * Get author info from wikitext.
  */
-function get_author_info($wikitext)
+function get_author_info(string $wikitext)
 {
 	$start = 0;
 
@@ -325,7 +327,7 @@ function get_author_info($wikitext)
 /**
  * Get updated datetime from author.
  */
-function get_update_datetime_from_author($author_line)
+function get_update_datetime_from_author(string $author_line)
 {
 	$m = null;
 
@@ -339,7 +341,7 @@ function get_update_datetime_from_author($author_line)
 }
 
 // Generate ID
-function generate_fixed_heading_anchor_id($seed)
+function generate_fixed_heading_anchor_id(string $seed) : string
 {
 	// A random alphabetic letter + 7 letters of random strings from md5()
 	return chr(mt_rand(ord('a'), ord('z'))).substr(md5(uniqid(substr($seed, 0, 100), true)), mt_rand(0, 24), 7);
@@ -347,7 +349,7 @@ function generate_fixed_heading_anchor_id($seed)
 
 // Read top N lines as an array
 // (Use PHP file() function if you want to get ALL lines)
-function file_head($file, $count = 1, $lock = true, $buffer = 8192)
+function file_head(string $file, int $count = 1, bool $lock = true, int $buffer = 8192)
 {
 	$array = [];
 
@@ -390,7 +392,7 @@ function file_head($file, $count = 1, $lock = true, $buffer = 8192)
 }
 
 // Output to a file
-function file_write($dir, $page, $str, $notimestamp = false, $is_delete = false) : void
+function file_write(string $dir, string $page, string $str, bool $notimestamp = false, bool $is_delete = false) : void
 {
 	global $_msg_invalidiwn;
 	global $notify;
@@ -502,7 +504,7 @@ function file_write($dir, $page, $str, $notimestamp = false, $is_delete = false)
 }
 
 // Update RecentDeleted
-function add_recent($page, $recentpage, $subject = '', $limit = 0) : void
+function add_recent(string $page, string $recentpage, string $subject = '', int $limit = 0) : void
 {
 	if ((PKWK_READONLY) || ($limit == 0) || ($page == '') || ($recentpage == '') || (check_non_list($page))) {
 		return;
@@ -551,7 +553,7 @@ function add_recent($page, $recentpage, $subject = '', $limit = 0) : void
 
 // Update PKWK_MAXSHOW_CACHE itself (Add or renew about the $page) (Light)
 // Use without $autolink
-function lastmodified_add($update = '', $remove = '') : void
+function lastmodified_add(string $update = '', string $remove = '') : void
 {
 	global $maxshow;
 	global $whatsnew;
@@ -767,7 +769,7 @@ function put_lastmodified() : void
  *
  * @return array of (file=>time)
  */
-function get_recent_files()
+function get_recent_files() : array
 {
 	$recentfile = CACHE_DIR.PKWK_MAXSHOW_CACHE;
 	$lines = file($recentfile);
@@ -796,9 +798,9 @@ function delete_recent_changes_cache() : void
 }
 
 // update autolink data
-function autolink_pattern_write($filename, $autolink_pattern) : void
+function autolink_pattern_write(string $filename, int $autolink_pattern) : void
 {
-	[$pattern, $pattern_a, $forceignorelist] = $autolink_pattern;
+	[$pattern, $pattern_a, $forceignorelist] = (string) ($autolink_pattern);
 
 	if (!($fp = fopen($filename, 'w'))) {
 		die_message('Cannot open '.$filename);
@@ -832,7 +834,7 @@ function update_autoalias_cache_file() : void
 }
 
 // Get elapsed date of the page
-function get_pg_passage($page, $sw = true)
+function get_pg_passage(string $page, bool $sw = true) : string
 {
 	global $show_passage;
 
@@ -847,7 +849,7 @@ function get_pg_passage($page, $sw = true)
 }
 
 // Last-Modified header
-function header_lastmod($page = null) : void
+function header_lastmod(string $page = null) : void
 {
 	global $lastmod;
 
@@ -858,7 +860,7 @@ function header_lastmod($page = null) : void
 }
 
 // Get a list of encoded files (must specify a directory and a suffix)
-function get_existfiles($dir = DATA_DIR, $ext = '.txt')
+function get_existfiles(string $dir = DATA_DIR, string $ext = '.txt') : array
 {
 	$aryret = [];
 	$pattern = '/^(?:[0-9A-F]{2})+'.preg_quote($ext, '/').'$/';
@@ -885,7 +887,7 @@ function get_existfiles($dir = DATA_DIR, $ext = '.txt')
  *
  * @return true if can use page list cache
  */
-function is_pagelist_cache_enabled($newvalue = null)
+function is_pagelist_cache_enabled(bool $newvalue = null)
 {
 	static $cache_enabled = null;
 
@@ -904,7 +906,7 @@ function is_pagelist_cache_enabled($newvalue = null)
 }
 
 // Get a page list of this wiki
-function get_existpages($dir = DATA_DIR, $ext = '.txt')
+function get_existpages(string $dir = DATA_DIR, string $ext = '.txt') : array
 {
 	// Cached wikitext page list
 	static $cached_list = null;
@@ -945,7 +947,7 @@ function get_existpages($dir = DATA_DIR, $ext = '.txt')
 }
 
 // Get PageReading(pronounce-annotated) data in an array()
-function get_readings()
+function get_readings() : array
 {
 	global $pagereading_enable;
 	global $pagereading_kanji2kana_converter;
@@ -1153,7 +1155,7 @@ function get_readings()
 }
 
 // Get a list of related pages of the page
-function links_get_related($page)
+function links_get_related(string $page) : array
 {
 	global $vars;
 	global $related;
@@ -1174,7 +1176,7 @@ function links_get_related($page)
 
 // _If needed_, re-create the file to change/correct ownership into PHP's
 // NOTE: Not works for Windows
-function pkwk_chown($filename, $preserve_time = true)
+function pkwk_chown(string $filename, bool $preserve_time = true) : bool
 {
 	// PHP's UID
 	static $php_uid;
@@ -1256,7 +1258,7 @@ function pkwk_chown($filename, $preserve_time = true)
 }
 
 // touch() with trying pkwk_chown()
-function pkwk_touch_file($filename, $time = false, $atime = false)
+function pkwk_touch_file(string $filename, $time = false, $atime = false) : bool
 {
 	// Is the owner incorrected and unable to correct?
 	if ((!file_exists($filename)) || (pkwk_chown($filename))) {
@@ -1279,7 +1281,7 @@ function pkwk_touch_file($filename, $time = false, $atime = false)
  *
  * Require: PHP5+
  */
-function pkwk_file_get_contents($filename)
+function pkwk_file_get_contents(string $filename) : string
 {
 	if (!file_exists($filename)) {
 		return false;
@@ -1316,7 +1318,7 @@ function prepare_display_materials() : void
 /**
  * Prepare page related links and references for links_get_related().
  */
-function prepare_links_related($page) : void
+function prepare_links_related(string $page) : void
 {
 	global $defaultpage;
 

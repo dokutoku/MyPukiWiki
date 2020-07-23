@@ -8,7 +8,7 @@ declare(strict_types=1);
 //
 // author plugin
 
-function plugin_author_convert()
+function plugin_author_convert() : string
 {
 	return '';
 }

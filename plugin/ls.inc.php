@@ -10,14 +10,13 @@ declare(strict_types=1);
  * $Id: ls.inc.php,v 1.9 2004/07/31 03:09:20 henoheno Exp $
  */
 
-function plugin_ls_convert()
+function plugin_ls_convert(string ...$args) : string
 {
 	global $vars;
 
 	$with_title = false;
 
 	if (func_num_args()) {
-		$args = func_get_args();
 		$with_title = in_array('title', $args, true);
 	}
 

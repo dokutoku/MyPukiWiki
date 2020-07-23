@@ -14,7 +14,7 @@ define('RIGHTBAR_ENABLE_SUBMENU', false);
 // Name of Submenu
 define('RIGHTBAR_SUBMENUBAR', 'RightBar');
 
-function plugin_rightbar_convert()
+function plugin_rightbar_convert(string ...$args) : string
 {
 	global $vars;
 	global $rightbar_name;
@@ -32,8 +32,6 @@ function plugin_rightbar_convert()
 		if ($menu !== null) {
 			return '#rightbar(): Already set: '.htmlsc($menu);
 		}
-
-		$args = func_get_args();
 
 		if (!is_page($args[0])) {
 			return '#rightbar(): No such page: '.htmlsc($args[0]);

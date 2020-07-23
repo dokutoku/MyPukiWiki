@@ -13,7 +13,7 @@ declare(strict_types=1);
 define('PKWK_PLUGIN_CALL_TIME_LIMIT', 768);
 
 // Set global variables for plugins
-function set_plugin_messages($messages) : void
+function set_plugin_messages(array $messages) : void
 {
 	foreach ($messages as $name=>$val) {
 		if (!isset($GLOBALS[$name])) {
@@ -23,7 +23,7 @@ function set_plugin_messages($messages) : void
 }
 
 // Check plugin '$name' is here
-function exist_plugin($name)
+function exist_plugin(string $name) : bool
 {
 	global $vars;
 	static $exist = [];
@@ -54,26 +54,26 @@ function exist_plugin($name)
 }
 
 // Check if plugin API 'action' exists
-function exist_plugin_action($name)
+function exist_plugin_action(string $name) : bool
 {
 	return (function_exists('plugin_'.$name.'_action')) ? (true) : ((exist_plugin($name)) ? (function_exists('plugin_'.$name.'_action')) : (false));
 }
 
 // Check if plugin API 'convert' exists
-function exist_plugin_convert($name)
+function exist_plugin_convert(string $name) : bool
 {
 	return (function_exists('plugin_'.$name.'_convert')) ? (true) : ((exist_plugin($name)) ? (function_exists('plugin_'.$name.'_convert')) : (false));
 }
 
 // Check if plugin API 'inline' exists
-function exist_plugin_inline($name)
+function exist_plugin_inline(string $name) : bool
 {
 	return (function_exists('plugin_'.$name.'_inline')) ? (true) : ((exist_plugin($name)) ? (function_exists('plugin_'.$name.'_inline')) : (false));
 }
 
 // Call 'init' function for the plugin
 // NOTE: Returning false means "An erorr occurerd"
-function do_plugin_init($name)
+function do_plugin_init(string $name) : bool
 {
 	static $done = [];
 
@@ -86,7 +86,7 @@ function do_plugin_init($name)
 }
 
 // Call API 'action' of the plugin
-function do_plugin_action($name)
+function do_plugin_action(string $name)
 {
 	if (!exist_plugin_action($name)) {
 		return [];
@@ -107,7 +107,7 @@ function do_plugin_action($name)
 }
 
 // Call API 'convert' of the plugin
-function do_plugin_convert($name, $args = '')
+function do_plugin_convert(string $name, string $args = '') : string
 {
 	global $digest;
 
@@ -158,7 +158,7 @@ function do_plugin_convert($name, $args = '')
 }
 
 // Call API 'inline' of the plugin
-function do_plugin_inline($name, $args, &$body)
+function do_plugin_inline(string $name, string $args, string &$body) : string
 {
 	global $digest;
 

@@ -8,19 +8,19 @@ declare(strict_types=1);
 //
 // "Basic auth logout" plugin
 
-function plugin_basicauthlogout_inline()
+function plugin_basicauthlogout_inline() : string
 {
 	$logout_param = '?plugin=basicauthlogout';
 
 	return '<a href="'.htmlsc(get_base_uri().$logout_param).'">Log out</a>';
 }
 
-function plugin_basicauthlogout_convert()
+function plugin_basicauthlogout_convert() : string
 {
 	return '<div>'.plugin_basicauthlogout_inline().'</div>';
 }
 
-function plugin_basicauthlogout_action()
+function plugin_basicauthlogout_action() : array
 {
 	global $auth_flag;
 	global $_msg_auth;

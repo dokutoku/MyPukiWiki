@@ -7,7 +7,7 @@ declare(strict_types=1);
 // Add plugin - Append new text below/above existing page
 // Usage: cmd=add&page=pagename
 
-function plugin_add_action()
+function plugin_add_action() : array
 {
 	global $get;
 	global $post;

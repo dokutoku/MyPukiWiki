@@ -11,7 +11,7 @@ declare(strict_types=1);
 // E-mail related functions
 
 // Send a mail to the administrator
-function pkwk_mail_notify($subject, $message, $footer = [])
+function pkwk_mail_notify(string $subject, string $message, array $footer = []) : bool
 {
 	global $smtp_server;
 	global $smtp_auth;
@@ -113,7 +113,7 @@ function pkwk_mail_notify($subject, $message, $footer = [])
 }
 
 // APOP/POP Before SMTP
-function pop_before_smtp($pop_userid = '', $pop_passwd = '', pop_server = 'localhost', $pop_port = 110)
+function pop_before_smtp(string $pop_userid = '', string $pop_passwd = '', string $pop_server = 'localhost', int $pop_port = 110)
 {
 	// Always try APOP, by default
 	$pop_auth_use_apop = true;

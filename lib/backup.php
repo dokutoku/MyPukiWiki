@@ -32,7 +32,7 @@ declare(strict_types=1);
  * @return    void
  */
 
-function make_backup($page, $is_delete, $wikitext) : void
+function make_backup(string $page, bool $is_delete, string $wikitext) : void
 {
 	global $cycle;
 	global $maxage;
@@ -130,7 +130,7 @@ function make_backup($page, $is_delete, $wikitext) : void
  * @return    string    バックアップ       ($age != 0)
  *            Array     バックアップの配列 ($age == 0)
  */
-function get_backup($page, $age = 0)
+function get_backup(string $page, int $age = 0)
 {
 	$lines = _backup_file($page);
 
@@ -180,7 +180,7 @@ function get_backup($page, $age = 0)
  *
  * @return    string    バックアップのファイル名
  */
-function _backup_get_filename($page)
+function _backup_get_filename(string $page) : string
 {
 	return BACKUP_DIR.encode($page).BACKUP_EXT;
 }
@@ -195,7 +195,7 @@ function _backup_get_filename($page)
  *
  * @return    bool   true:ある false:ない
  */
-function _backup_file_exists($page)
+function _backup_file_exists(string $page) : bool
 {
 	return file_exists(_backup_get_filename($page));
 }
@@ -211,7 +211,7 @@ function _backup_file_exists($page)
  * @return    int   ファイルの更新時刻(GMT)
  */
 
-function _backup_get_filetime($page)
+function _backup_get_filetime(string $page) : int
 {
 	return (_backup_file_exists($page)) ? (filemtime(_backup_get_filename($page)) - LOCALZONE) : (0);
 }
@@ -226,7 +226,7 @@ function _backup_get_filetime($page)
  *
  * @return    bool   false:失敗
  */
-function _backup_delete($page)
+function _backup_delete(string $page) : bool
 {
 	return unlink(_backup_get_filename($page));
 }
@@ -249,7 +249,7 @@ if (extension_loaded('zlib')) {
 	 *
 	 * @return    bool   false:失敗
 	 */
-	function _backup_fopen($page, $mode)
+	function _backup_fopen(string $page, string $mode)
 	{
 		return gzopen(_backup_get_filename($page), $mode);
 	}
@@ -265,7 +265,7 @@ if (extension_loaded('zlib')) {
 	 *
 	 * @return    bool   false:失敗 その他:書き込んだバイト数
 	 */
-	function _backup_fputs($zp, $str)
+	function _backup_fputs($zp, string $str)
 	{
 		return gzputs($zp, $str);
 	}
@@ -295,7 +295,7 @@ if (extension_loaded('zlib')) {
 	 *
 	 * @return    array     ファイルの内容
 	 */
-	function _backup_file($page)
+	function _backup_file(string $page) : array
 	{
 		return (_backup_file_exists($page)) ? (gzfile(_backup_get_filename($page))) : ([]);
 	}
@@ -314,7 +314,7 @@ if (extension_loaded('zlib')) {
 	 *
 	 * @return    bool   false:失敗
 	 */
-	function _backup_fopen($page, $mode)
+	function _backup_fopen(string $page, string $mode)
 	{
 		return fopen(_backup_get_filename($page), $mode);
 	}
@@ -330,7 +330,7 @@ if (extension_loaded('zlib')) {
 	 *
 	 * @return    bool   false:失敗 その他:書き込んだバイト数
 	 */
-	function _backup_fputs($zp, $str)
+	function _backup_fputs($zp, string $str)
 	{
 		return fwrite($zp, $str);
 	}
@@ -345,7 +345,7 @@ if (extension_loaded('zlib')) {
 	 *
 	 * @return    bool   false:失敗
 	 */
-	function _backup_fclose($zp)
+	function _backup_fclose($zp) : bool
 	{
 		return fclose($zp);
 	}
@@ -360,7 +360,7 @@ if (extension_loaded('zlib')) {
 	 *
 	 * @return    array     ファイルの内容
 	 */
-	function _backup_file($page)
+	function _backup_file(string $page) : array
 	{
 		return (_backup_file_exists($page)) ? (file(_backup_get_filename($page))) : ([]);
 	}

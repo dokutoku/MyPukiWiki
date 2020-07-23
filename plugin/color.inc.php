@@ -18,10 +18,8 @@ define('PLUGIN_COLOR_ALLOW_CSS', true);
 define('PLUGIN_COLOR_USAGE', '&color(foreground[,background]){text};');
 define('PLUGIN_COLOR_REGEX', '/^(#[0-9a-f]{3}|#[0-9a-f]{6}|[a-z-]+)$/i');
 
-function plugin_color_inline()
+function plugin_color_inline(string ...$args) : string
 {
-	$args = func_get_args();
-
 	// Already htmlsc(text)
 	$text = strip_autolink(array_pop($args));
 

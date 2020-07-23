@@ -20,14 +20,12 @@ define('PLUGIN_SEARCH_MAX_LENGTH', 80);
 define('PLUGIN_SEARCH_MAX_BASE', 16);
 
 // Show a search box on a page
-function plugin_search_convert()
+function plugin_search_convert(string ...$args) : string
 {
-	$args = func_get_args();
-
 	return plugin_search_search_form('', '', $args);
 }
 
-function plugin_search_action()
+function plugin_search_action() : array
 {
 	global $post;
 	global $vars;
@@ -72,7 +70,7 @@ function plugin_search_action()
 	return ['msg'=>$msg, 'body'=>$body];
 }
 
-function plugin_search_search_form($s_word = '', $type = '', $bases = [])
+function plugin_search_search_form(string $s_word = '', string $type = '', array $bases = []) : string
 {
 	global $_btn_and;
 	global $_btn_or;

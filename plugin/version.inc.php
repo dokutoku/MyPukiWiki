@@ -6,7 +6,7 @@ declare(strict_types=1);
 //
 // Show PukiWiki version
 
-function plugin_version_convert()
+function plugin_version_convert() : string
 {
 	if (PKWK_SAFE_MODE) {
 		// Show nothing
@@ -16,7 +16,7 @@ function plugin_version_convert()
 	return '<p>'.S_VERSION.'</p>';
 }
 
-function plugin_version_inline()
+function plugin_version_inline() : string
 {
 	if (PKWK_SAFE_MODE) {
 		// Show nothing

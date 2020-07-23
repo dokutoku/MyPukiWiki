@@ -7,7 +7,7 @@ declare(strict_types=1);
 // Source plugin
 
 // Output source text of the page
-function plugin_source_action()
+function plugin_source_action() : array
 {
 	global $vars;
 	global $_source_messages;

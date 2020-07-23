@@ -10,14 +10,13 @@ declare(strict_types=1);
 //
 // Calendar plugin
 
-function plugin_calendar_convert()
+function plugin_calendar_convert(string ...$args)
 {
 	global $weeklabels;
 	global $vars;
 	global $command;
 
 	$script = get_base_uri();
-	$args = func_get_args();
 	$date_str = get_date('Ym');
 	$page = '';
 

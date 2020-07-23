@@ -115,7 +115,7 @@ function plugin_amazon_init() : void
 EOD;
 }
 
-function plugin_amazon_convert()
+function plugin_amazon_convert(string ...$aryargs)
 {
 	global $vars;
 	global $asin;
@@ -158,7 +158,6 @@ EOD;
 		return $ret;
 	}
 
-	$aryargs = func_get_args();
 	$align = strtolower($aryargs[1]);
 
 	if ($align == 'clear') {
@@ -225,7 +224,7 @@ EOD;
 	return plugin_amazon_print_object($align, $alt, $title);
 }
 
-function plugin_amazon_action()
+function plugin_amazon_action() : array
 {
 	global $vars;
 	global $edit_auth;
@@ -274,7 +273,7 @@ function plugin_amazon_action()
 	return $retvars;
 }
 
-function plugin_amazon_inline()
+function plugin_amazon_inline(string ...$args)
 {
 	global $amazon_aid;
 	global $asin;
@@ -282,7 +281,7 @@ function plugin_amazon_inline()
 
 	assert(func_num_args() >= 1);
 
-	[$asin_all] = func_get_args();
+	$asin_all = $args[0];
 
 	// for XSS
 	$asin_all = htmlsc($asin_all);
@@ -300,7 +299,7 @@ function plugin_amazon_inline()
 	}
 }
 
-function plugin_amazon_print_object($align, $alt, $title)
+function plugin_amazon_print_object($align, $alt, $title) : string
 {
 	global $amazon_aid;
 	global $asin;
@@ -330,7 +329,7 @@ function plugin_amazon_print_object($align, $alt, $title)
 	return $div;
 }
 
-function plugin_amazon_get_asin_title()
+function plugin_amazon_get_asin_title() : string
 {
 	global $asin;
 	global $asin_ext;
@@ -382,7 +381,7 @@ function plugin_amazon_get_asin_title()
 }
 
 // タイトルキャッシュがあるか調べる
-function plugin_amazon_cache_title_fetch($dir)
+function plugin_amazon_cache_title_fetch(string $dir)
 {
 	global $asin;
 	global $asin_ext;
@@ -419,7 +418,7 @@ function plugin_amazon_cache_title_fetch($dir)
 }
 
 // 画像キャッシュがあるか調べる
-function plugin_amazon_cache_image_fetch($dir)
+function plugin_amazon_cache_image_fetch(string $dir)
 {
 	global $asin;
 	global $asin_ext;
@@ -494,7 +493,7 @@ function plugin_amazon_cache_image_fetch($dir)
 }
 
 // Save title cache
-function plugin_amazon_cache_title_save($data, $dir)
+function plugin_amazon_cache_title_save(string $data, string $dir) : string
 {
 	global $asin;
 	global $asin_ext;
@@ -509,7 +508,7 @@ function plugin_amazon_cache_title_save($data, $dir)
 }
 
 // Save image cache
-function plugin_amazon_cache_image_save($data, $dir)
+function plugin_amazon_cache_image_save(string $data, string $dir) : string
 {
 	global $asin;
 	global $asin_ext;
@@ -524,7 +523,7 @@ function plugin_amazon_cache_image_save($data, $dir)
 }
 
 // Save book data
-function plugin_amazon_review_save($page, $data)
+function plugin_amazon_review_save(string $page, string $data) : bool
 {
 	global $asin;
 	global $asin_ext;
@@ -543,7 +542,7 @@ function plugin_amazon_review_save($page, $data)
 	}
 }
 
-function plugin_amazon_get_page($url)
+function plugin_amazon_get_page(string $url) : string
 {
 	$data = pkwk_http_request($url);
 
@@ -551,7 +550,7 @@ function plugin_amazon_get_page($url)
 }
 
 // is ASIN?
-function is_asin()
+function is_asin() : bool
 {
 	global $asin;
 	global $asin_ext;

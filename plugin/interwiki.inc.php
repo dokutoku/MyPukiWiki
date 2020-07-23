@@ -8,7 +8,7 @@ declare(strict_types=1);
 //
 // InterWiki redirection plugin (OBSOLETE)
 
-function plugin_interwiki_action()
+function plugin_interwiki_action() : array
 {
 	global $vars;
 	global $InterWikiName;
@@ -36,7 +36,7 @@ function plugin_interwiki_action()
 	exit;
 }
 
-function plugin_interwiki_invalid($page)
+function plugin_interwiki_invalid(string $page) : array
 {
 	global $_title_invalidiwn;
 	global $_msg_invalidiwn;

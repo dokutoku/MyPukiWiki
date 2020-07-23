@@ -6,7 +6,7 @@ declare(strict_types=1);
 //
 // Horizontal rule plugin
 
-function plugin_hr_convert()
+function plugin_hr_convert() : string
 {
 	return '<hr class="short_line" />';
 }

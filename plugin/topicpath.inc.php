@@ -27,12 +27,12 @@ define('PLUGIN_TOPICPATH_THIS_PAGE_DISPLAY', 1);
 // If PLUGIN_TOPICPATH_THIS_PAGE_DISPLAY, add a link to itself
 define('PLUGIN_TOPICPATH_THIS_PAGE_LINK', 0);
 
-function plugin_topicpath_convert()
+function plugin_topicpath_convert() : string
 {
 	return '<div>'.plugin_topicpath_inline().'</div>';
 }
 
-function plugin_topicpath_parent_links($page)
+function plugin_topicpath_parent_links(string $page) : array 
 {
 	$links = plugin_topicpath_parent_all_links($page);
 
@@ -57,7 +57,7 @@ function plugin_topicpath_parent_links($page)
 	return $links;
 }
 
-function plugin_topicpath_parent_all_links($page)
+function plugin_topicpath_parent_all_links(string $page) : array
 {
 	$parts = explode('/', $page);
 	$parents = [];
@@ -76,7 +76,7 @@ function plugin_topicpath_parent_all_links($page)
 	return $parents;
 }
 
-function plugin_topicpath_inline()
+function plugin_topicpath_inline() : string
 {
 	global $vars;
 	global $defaultpage;

@@ -22,7 +22,7 @@ define('PLUGIN_COMMENT_FORMAT_NAME', '[[$name]]');
 define('PLUGIN_COMMENT_FORMAT_NOW', '&new{$now};');
 define('PLUGIN_COMMENT_FORMAT_STRING', "\x08MSG\x08 -- \x08NAME\x08 \x08NOW\x08");
 
-function plugin_comment_action()
+function plugin_comment_action() : array
 {
 	global $vars;
 	global $now;
@@ -120,7 +120,7 @@ function plugin_comment_action()
 	return $retvars;
 }
 
-function plugin_comment_convert()
+function plugin_comment_convert(string ...$options) : string
 {
 	global $vars;
 	global $digest;
@@ -142,8 +142,6 @@ function plugin_comment_convert()
 	}
 
 	$comment_no = $numbers[$page]++;
-
-	$options = (func_num_args()) ? (func_get_args()) : ([]);
 
 	if (in_array('noname', $options, true)) {
 		$nametags = '<label for="_p_comment_comment_'.$comment_no.'">'.$_msg_comment.'</label>';

@@ -65,7 +65,7 @@ function plugin_bugtrack_init() : void
 }
 
 // #bugtrack: Show bugtrack form
-function plugin_bugtrack_convert()
+function plugin_bugtrack_convert(string ...$args) : string
 {
 	global $vars;
 
@@ -78,7 +78,7 @@ function plugin_bugtrack_convert()
 	$category = [];
 
 	if (func_num_args()) {
-		$category = func_get_args();
+		$category = $args;
 		$_base = get_fullname(strip_bracket(array_shift($category)), $base);
 
 		if (is_pagename($_base)) {
@@ -89,7 +89,7 @@ function plugin_bugtrack_convert()
 	return plugin_bugtrack_print_form($base, $category);
 }
 
-function plugin_bugtrack_print_form($base, $category)
+function plugin_bugtrack_print_form(string $base, array $category) : string
 {
 	global $_plugin_bugtrack;
 	static $id = 0;
@@ -194,7 +194,7 @@ EOD;
 }
 
 // Add new issue
-function plugin_bugtrack_action()
+function plugin_bugtrack_action() : bool
 {
 	global $post;
 
@@ -214,7 +214,7 @@ function plugin_bugtrack_action()
 	exit;
 }
 
-function plugin_bugtrack_write($base, $pagename, $summary, $name, $priority, $state, $category, $version, $body)
+function plugin_bugtrack_write(string $base, string $pagename, string $summary, string $name, string $priority, string $state, string $category, string $version, string $body) : string
 {
 	global $post;
 
@@ -257,7 +257,7 @@ function plugin_bugtrack_write($base, $pagename, $summary, $name, $priority, $st
 }
 
 // Generate new page contents
-function plugin_bugtrack_template($base, $summary, $name, $priority, $state, $category, $version, $body)
+function plugin_bugtrack_template(string $base, string $summary, string $name, string $priority, string $state, string $category, string $version, string $body) : string
 {
 	global $_plugin_bugtrack;
 
@@ -297,7 +297,7 @@ EOD;
 // ----------------------------------------
 // BugTrack-List plugin
 
-function _plugin_bugtrack_list_paganame_compare($a, $b)
+function _plugin_bugtrack_list_paganame_compare(array $a, array $b) : int
 {
 	return strnatcmp($a['name'], $b['name']);
 }
@@ -305,7 +305,7 @@ function _plugin_bugtrack_list_paganame_compare($a, $b)
 /**
  * Get page list for "$page/".
  */
-function plugin_bugtrack_get_page_list($page, $needs_filetime)
+function plugin_bugtrack_get_page_list(string $page, bool $needs_filetime) : array
 {
 	$page_list = [];
 	$pattern = $page.'/';
@@ -332,7 +332,7 @@ function plugin_bugtrack_get_page_list($page, $needs_filetime)
  * * Use cached values for articles that have the unchaged filemtime
  * * Invalidate all cache data everyday
  */
-function plugin_bugtrack_list_convert()
+function plugin_bugtrack_list_convert(string ...$args) : string
 {
 	global $vars;
 	global $_plugin_bugtrack;
@@ -352,7 +352,7 @@ function plugin_bugtrack_list_convert()
 	$page = $vars['page'];
 
 	if (func_num_args()) {
-		[$_page] = func_get_args();
+		$_page = $args[0];
 		$_page = get_fullname(strip_bracket($_page), $page);
 
 		if (is_pagename($_page)) {
@@ -549,7 +549,7 @@ EOD;
 }
 
 // Get one set of data from a page (or a page moved to $page)
-function plugin_bugtrack_list_pageinfo($page, $no = null, $recurse = true, $filetime = null)
+function plugin_bugtrack_list_pageinfo(string $page, ?int $no = null, $recurse = true, $filetime = null) : array
 {
 	global $WikiName;
 	global $InterWikiName;

@@ -8,7 +8,7 @@ declare(strict_types=1);
 // NoFollow plugin
 
 // Output contents with "nofollow,noindex" option
-function plugin_nofollow_convert()
+function plugin_nofollow_convert() : string
 {
 	global $vars;
 	global $nofollow;
