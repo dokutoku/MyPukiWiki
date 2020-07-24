@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 // PukiWiki version / Copyright / Licence
 define('S_VERSION', '1.5.3');
-define('S_COPYRIGHT', '<strong>PukiWiki '.S_VERSION.'</strong> &copy; 2001-2020 <a href="https://pukiwiki.osdn.jp/">PukiWiki Development Team</a>');
+define('S_COPYRIGHT', '<strong>MyPukiWiki '.S_VERSION.'</strong> &copy; 2020 <a href="https://gitlab.com/dokutoku/mypukiwiki" rel="external,nofollow">MyPukiWiki Development Team</a>');
 
 /////////////////////////////////////////////////
 // Session security options
