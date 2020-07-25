@@ -659,7 +659,7 @@ function lastmodified_add(string $update = '', string $remove = '') : void
 	rewind($fp);
 
 	foreach ($recent_pages as $_page=>$time) {
-		fwrite($fp, '-'.htmlsc(format_date($time)).' - [['.htmlsc($_page).']]'."\n");
+		fwrite($fp, '-'.htmlsc(format_date((int) ($time))).' - [['.htmlsc($_page).']]'."\n");
 	}
 
 	// :)

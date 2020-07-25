@@ -108,7 +108,7 @@ function plugin_backup_action() : array
 		$body .= "\t\t".'<ul>'."\n";
 
 		foreach ($backups as $age=>$val) {
-			$date = format_date($val['time'], true);
+			$date = format_date((int) ($val['time']), true);
 			$body .= ($age == $s_age) ? ("\t\t\t".'<li><em>'.$age.' '.$date.'</em></li>'."\n") : ("\t\t\t".'<li><a href="'.$script.'?cmd=backup&amp;action='.$r_action.'&amp;page='.$r_page.'&amp;age='.$age.'">'.$age.' '.$date.'</a></li>'."\n");
 		}
 
@@ -256,7 +256,7 @@ EOD;
 			$_anchor_to = '</a>';
 		}
 
-		$date = format_date($data['time'], true);
+		$date = format_date((int) ($data['time']), true);
 		$author_info = '';
 
 		if (isset($data['author'])) {
