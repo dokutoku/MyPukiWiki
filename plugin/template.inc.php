@@ -108,15 +108,15 @@ function plugin_template_action()
 	$s_page = ($page == '') ? (str_replace('$1', $s_refer, $_msg_template_page)) : ($_page);
 	$ret = <<<EOD
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden" name="plugin" value="template" />
-  <input type="hidden" name="refer"  value="{$s_refer}" />
-  {$_msg_template_start} <select name="begin" size="10">{$begin_select}</select><br /><br />
-  {$_msg_template_end}   <select name="end"   size="10">{$end_select}</select><br /><br />
-  <label for="_p_template_refer">{$_msg_template_refer}</label>
-  <input type="text" name="page" id="_p_template_refer" value="{$s_page}" />
-  <input type="submit" name="submit" value="{$_btn_template_create}" /> {$tag}
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="template" />
+		<input type="hidden" name="refer"  value="{$s_refer}" />
+		{$_msg_template_start} <select name="begin" size="10">{$begin_select}</select><br /><br />
+		{$_msg_template_end}   <select name="end"   size="10">{$end_select}</select><br /><br />
+		<label for="_p_template_refer">{$_msg_template_refer}</label>
+		<input type="text" name="page" id="_p_template_refer" value="{$s_page}" />
+		<input type="submit" name="submit" value="{$_btn_template_create}" /> {$tag}
+	</div>
 </form>
 EOD;
 

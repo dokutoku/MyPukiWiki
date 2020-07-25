@@ -233,7 +233,7 @@ class MapNode
 
 	public function toString(array &$nodes, int $level = 1, int $parent_id = -1) : string
 	{
-		$indent = str_repeat(' ', $level);
+		$indent = str_repeat("\t", $level);
 
 		if (!$this->is_page) {
 			return $indent.'<li>'.$this->link.'</li>'."\n";
@@ -254,7 +254,7 @@ class MapNode
 			}
 
 			if (!empty($childs)) {
-				$retval .= $indent.' <ul>'."\n".implode('', $childs).$indent.' </ul>'."\n";
+				$retval .= $indent."\t".'<ul>'."\n".implode('', $childs).$indent.' </ul>'."\n";
 			}
 		}
 

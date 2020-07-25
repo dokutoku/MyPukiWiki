@@ -94,9 +94,9 @@ function plugin_ref_convert(string ...$args) : string
 		$margin_align = ($params['_align'] == 'center') ? ('') : (";margin-{$params['_align']}:0");
 		$params['_body'] = <<<EOD
 <table class="style_table" style="margin:{$margin}{$margin_align}">
- <tr>
-  <td class="style_td">{$params['_body']}</td>
- </tr>
+	<tr>
+		<td class="style_td">{$params['_body']}</td>
+	</tr>
 </table>
 EOD;
 	}

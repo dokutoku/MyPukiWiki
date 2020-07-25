@@ -149,13 +149,14 @@ function plugin_article_action() : array
 		$s_refer = htmlsc($post['refer']);
 		$s_digest = htmlsc($post['digest']);
 		$s_postdata = htmlsc($postdata_input);
+		$s_postdata = str_replace("\n", '&NewLine;', $s_postdata);
 		$body .= <<<EOD
 <form action="{$script}?cmd=preview" method="post">
- <div>
-  <input type="hidden" name="refer" value="{$s_refer}" />
-  <input type="hidden" name="digest" value="{$s_digest}" />
-  <textarea name="msg" rows="{$rows}" cols="{$cols}" id="textarea">{$s_postdata}</textarea><br />
- </div>
+	div>
+		<input type="hidden" name="refer" value="{$s_refer}" />
+		<input type="hidden" name="digest" value="{$s_digest}" />
+		<textarea name="msg" rows="{$rows}" cols="{$cols}" id="textarea">{$s_postdata}</textarea><br />
+	</div>
 </form>
 EOD;
 	} else {
@@ -226,18 +227,18 @@ function plugin_article_convert() : string
 	$article_cols = PLUGIN_ARTICLE_COLS;
 	$string = <<<EOD
 <form action="{$script}" method="post" class="_p_article_form">
- <div>
-  <input type="hidden" name="article_no" value="{$article_no}" />
-  <input type="hidden" name="plugin" value="article" />
-  <input type="hidden" name="digest" value="{$s_digest}" />
-  <input type="hidden" name="refer" value="{$s_page}" />
-  <label for="_p_article_name_{$article_no}">{$_btn_name}</label>
-  <input type="text" name="name" id="_p_article_name_{$article_no}" size="{$name_cols}" /><br />
-  <label for="_p_article_subject_{$article_no}">{$_btn_subject}</label>
-  <input type="text" name="subject" id="_p_article_subject_{$article_no}" size="{$subject_cols}" /><br />
-  <textarea name="msg" rows="{$article_rows}" cols="{$article_cols}">\n</textarea><br />
-  <input type="submit" name="article" value="{$_btn_article}" />
- </div>
+	<div>
+		<input type="hidden" name="article_no" value="{$article_no}" />
+		<input type="hidden" name="plugin" value="article" />
+		<input type="hidden" name="digest" value="{$s_digest}" />
+		<input type="hidden" name="refer" value="{$s_page}" />
+		<label for="_p_article_name_{$article_no}">{$_btn_name}</label>
+		<input type="text" name="name" id="_p_article_name_{$article_no}" size="{$name_cols}" /><br />
+		<label for="_p_article_subject_{$article_no}">{$_btn_subject}</label>
+		<input type="text" name="subject" id="_p_article_subject_{$article_no}" size="{$subject_cols}" /><br />
+		<textarea name="msg" rows="{$article_rows}" cols="{$article_cols}">\n</textarea><br />
+		<input type="submit" name="article" value="{$_btn_article}" />
+	</div>
 </form>
 EOD;
 

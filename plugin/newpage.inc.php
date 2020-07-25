@@ -39,13 +39,13 @@ function plugin_newpage_convert(string ...$args) : string
 
 	$ret = <<<EOD
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden" name="plugin" value="newpage" />
-  <input type="hidden" name="refer"  value="{$s_page}" />
-  <label for="_p_newpage_{$id}">{$_msg_newpage}:</label>
-  <input type="text"   name="page" id="_p_newpage_{$id}" value="{$s_newpage}" size="30" />
-  <input type="submit" value="{$_btn_edit}" />
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="newpage" />
+		<input type="hidden" name="refer" value="{$s_page}" />
+		<label for="_p_newpage_{$id}">{$_msg_newpage}:</label>
+		<input type="text" name="page" id="_p_newpage_{$id}" value="{$s_newpage}" size="30" />
+		<input type="submit" value="{$_btn_edit}" />
+	</div>
 </form>
 EOD;
 

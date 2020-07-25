@@ -102,34 +102,34 @@ function plugin_loginform_action() : array
   }
 </style>
 <div class="loginformcontainer">
-<form name="loginform" class="loginform" action="<?php echo htmlsc($action_url); ?>" method="post">
-<div>
-<table style="border:0">
-  <tbody>
-  <tr>
-    <td class="label"><label for="_plugin_loginform_username"><?php echo htmlsc($_loginform_messages['username']); ?></label></td>
-    <td><input type="text" name="username" value="<?php echo htmlsc($username); ?>" id="_plugin_loginform_username"></td>
-  </tr>
-  <tr>
-  <td class="label"><label for="_plugin_loginform_password"><?php echo htmlsc($_loginform_messages['password']); ?></label></td>
-  <td><input type="password" name="password" id="_plugin_loginform_password"></td>
-  </tr>
+	<form name="loginform" class="loginform" action="<?php echo htmlsc($action_url); ?>" method="post">
+		<div>
+			<table style="border:0">
+				<tbody>
+					<tr>
+						<td class="label"><label for="_plugin_loginform_username"><?php echo htmlsc($_loginform_messages['username']); ?></label></td>
+						<td><input type="text" name="username" value="<?php echo htmlsc($username); ?>" id="_plugin_loginform_username"></td>
+					</tr>
+					<tr>
+						<td class="label"><label for="_plugin_loginform_password"><?php echo htmlsc($_loginform_messages['password']); ?></label></td>
+						<td><input type="password" name="password" id="_plugin_loginform_password"></td>
+					</tr>
 <?php if ($isset_user_credential) { ?>
-  <tr>
-    <td></td>
-    <td class="errormessage"><?php echo $_loginform_messages['invalid_username_or_password']; ?></td>
-  </tr>
+					<tr>
+						<td></td>
+						<td class="errormessage"><?php echo $_loginform_messages['invalid_username_or_password']; ?></td>
+					</tr>
+
 <?php } ?>
-  <tr>
-    <td></td>
-    <td class="login-button-container"><input type="submit" value="<?php echo htmlsc($_loginform_messages['login']); ?>" class="loginbutton"></td>
-  </tr>
-  </tbody>
-</table>
-</div>
-<div>
-</div>
-</form>
+					<tr>
+						<td></td>
+						<td class="login-button-container"><input type="submit" value="<?php echo htmlsc($_loginform_messages['login']); ?>" class="loginbutton"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div></div>
+	</form>
 </div>
 <?php
 		$body = ob_get_contents();

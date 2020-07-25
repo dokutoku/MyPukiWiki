@@ -105,14 +105,14 @@ function plugin_bugtrack_print_form(string $base, array $category) : string
 			$selected = ' selected="selected"';
 		} // The last one
 		$priority_list = htmlsc($_plugin_bugtrack['priority_list'][$i]);
-		$select_priority .= '    <option value="'.$priority_list.'"'.$selected.'>'.$priority_list.'</option>'."\n";
+		$select_priority .= "\t\t\t\t".'<option value="'.$priority_list.'"'.$selected.'>'.$priority_list.'</option>'."\n";
 	}
 
 	$select_state = "\n";
 
 	for ($i = 0; $i < count($_plugin_bugtrack['state_list']); $i++) {
 		$state_list = htmlsc($_plugin_bugtrack['state_list'][$i]);
-		$select_state .= '    <option value="'.$state_list.'">'.$state_list.'</option>'."\n";
+		$select_state .= "\t\t\t\t".'<option value="'.$state_list.'">'.$state_list.'</option>'."\n";
 	}
 
 	if (empty($category)) {
@@ -143,50 +143,50 @@ function plugin_bugtrack_print_form(string $base, array $category) : string
 	$s_submit = htmlsc($_plugin_bugtrack['submit']);
 	$body = <<<EOD
 <form action="{$script}" method="post" class="_p_bugtrack_form">
- <table border="0">
-  <tr>
-   <th><label for="_p_bugtrack_name_{$id}">{$s_name}</label></th>
-   <td><input  id="_p_bugtrack_name_{$id}" name="name" size="20" type="text" /></td>
-  </tr>
-  <tr>
-   <th><label for="_p_bugtrack_category_{$id}">{$s_category}</label></th>
-   <td>{$encoded_category}</td>
-  </tr>
-  <tr>
-   <th><label for="_p_bugtrack_priority_{$id}">{$s_priority}</label></th>
-   <td><select id="_p_bugtrack_priority_{$id}" name="priority">{$select_priority}   </select></td>
-  </tr>
-  <tr>
-   <th><label for="_p_bugtrack_state_{$id}">{$s_state}</label></th>
-   <td><select id="_p_bugtrack_state_{$id}" name="state">{$select_state}   </select></td>
-  </tr>
-  <tr>
-   <th><label for="_p_bugtrack_pagename_{$id}">{$s_pname}</label></th>
-   <td><input  id="_p_bugtrack_pagename_{$id}" name="pagename" size="20" type="text" />
-    <small>{$s_pnamec}</small></td>
-  </tr>
-  <tr>
-   <th><label for="_p_bugtrack_version_{$id}">{$s_version}</label></th>
-   <td><input  id="_p_bugtrack_version_{$id}" name="version" size="10" type="text" />
-    <small>{$s_versionc}</small></td>
-  </tr>
-  <tr>
-   <th><label for="_p_bugtrack_summary_{$id}">{$s_summary}</label></th>
-   <td><input  id="_p_bugtrack_summary_{$id}" name="summary" size="60" type="text" /></td>
-  </tr>
-  <tr>
-   <th><label   for="_p_bugtrack_body_{$id}">{$s_body}</label></th>
-   <td><textarea id="_p_bugtrack_body_{$id}" name="body" cols="60" rows="6"></textarea></td>
-  </tr>
-  <tr>
-   <td colspan="2" align="center">
-    <input type="submit" value="{$s_submit}" />
-    <input type="hidden" name="plugin" value="bugtrack" />
-    <input type="hidden" name="mode"   value="submit" />
-    <input type="hidden" name="base"   value="{$s_base}" />
-   </td>
-  </tr>
- </table>
+	<table border="0">
+		<tr>
+			<th><label for="_p_bugtrack_name_{$id}">{$s_name}</label></th>
+			<td><input id="_p_bugtrack_name_{$id}" name="name" size="20" type="text" /></td>
+		</tr>
+		<tr>
+			<th><label for="_p_bugtrack_category_{$id}">{$s_category}</label></th>
+			<td>{$encoded_category}</td>
+		</tr>
+		<tr>
+			<th><label for="_p_bugtrack_priority_{$id}">{$s_priority}</label></th>
+			<td><select id="_p_bugtrack_priority_{$id}" name="priority">{$select_priority}   </select></td>
+		</tr>
+		<tr>
+			<th><label for="_p_bugtrack_state_{$id}">{$s_state}</label></th>
+			<td><select id="_p_bugtrack_state_{$id}" name="state">{$select_state}   </select></td>
+		</tr>
+		<tr>
+			<th><label for="_p_bugtrack_pagename_{$id}">{$s_pname}</label></th>
+			<td><input id="_p_bugtrack_pagename_{$id}" name="pagename" size="20" type="text" />
+				<small>{$s_pnamec}</small></td>
+		</tr>
+		<tr>
+			<th><label for="_p_bugtrack_version_{$id}">{$s_version}</label></th>
+			<td><input id="_p_bugtrack_version_{$id}" name="version" size="10" type="text" />
+				<small>{$s_versionc}</small></td>
+		</tr>
+		<tr>
+			<th><label for="_p_bugtrack_summary_{$id}">{$s_summary}</label></th>
+			<td><input id="_p_bugtrack_summary_{$id}" name="summary" size="60" type="text" /></td>
+		</tr>
+		<tr>
+			<th><label for="_p_bugtrack_body_{$id}">{$s_body}</label></th>
+			<td><textarea id="_p_bugtrack_body_{$id}" name="body" cols="60" rows="6"></textarea></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<input type="submit" value="{$s_submit}" />
+				<input type="hidden" name="plugin" value="bugtrack" />
+				<input type="hidden" name="mode" value="submit" />
+				<input type="hidden" name="base" value="{$s_base}" />
+			</td>
+		</tr>
+	</table>
 </form>
 EOD;
 
@@ -477,14 +477,14 @@ function plugin_bugtrack_list_convert(string ...$args) : string
 			$cssclass = htmlsc($_plugin_bugtrack['state_class'][$state_no]);
 
 			$row = <<<EOD
- <tr class="{$cssclass}">
-  <td>{$page_link}</td>
-  <td>{$state}</td>
-  <td>{$priority}</td>
-  <td>{$category}</td>
-  <td>{$name}</td>
-  <td>{$summary}</td>
- </tr>
+	<tr class="{$cssclass}">
+		<td>{$page_link}</td>
+		<td>{$state}</td>
+		<td>{$priority}</td>
+		<td>{$category}</td>
+		<td>{$name}</td>
+		<td>{$summary}</td>
+	</tr>
 EOD;
 
 			// Reduce space size
@@ -522,7 +522,7 @@ EOD;
 		$table[$state_no][$no] = $html;
 	}
 
-	$table_html = ' <tr class="bugtrack_list_header">';
+	$table_html = "\t".'<tr class="bugtrack_list_header">';
 
 	foreach (['pagename', 'state', 'priority', 'category', 'name', 'summary'] as $item) {
 		$table_html .= '<th>'.htmlsc($_plugin_bugtrack[$item]).'</th>';

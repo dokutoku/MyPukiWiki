@@ -106,28 +106,27 @@ function plugin_search_search_form(string $s_word = '', string $type = '', array
 			$base_str = '<strong>'.$s_base.'</strong>';
 			$base_label = str_replace('$1', $base_str, $_search_pages);
 			$base_msg .= <<<EOD
- <div>
-  <label><input type="radio" name="base" value="{$s_base}" {$check} /> {$base_label}</label>
- </div>
+		<div>
+			<label><input type="radio" name="base" value="{$s_base}" {$check} /> {$base_label}</label>
+		</div>
 EOD;
 			$check = '';
 		}
 
 		$base_msg .= <<<EOD
-  <label><input type="radio" name="base" value="" /> {$_search_all}</label>
+		<label><input type="radio" name="base" value="" /> {$_search_all}</label>
 EOD;
-		$base_option = '<div class="small">'.$base_msg.'</div>';
+		$base_option = "\n\t".'<div class="small">'."\n".$base_msg."\n\t".'</div>';
 	}
 
 	return <<<EOD
 <form action="{$script}?cmd=search" method="post">
- <div>
-  <input type="text"  name="word" value="{$s_word}" size="20" />
-  <label><input type="radio" name="type" value="AND" {$and_check} /> {$_btn_and}</label>
-  <label><input type="radio" name="type" value="OR" {$or_check} /> {$_btn_or}</label>
-  &nbsp;<input type="submit" value="{$_btn_search}" />
- </div>
-{$base_option}
+	<div>
+		<input type="text"  name="word" value="{$s_word}" size="20" />
+		<label><input type="radio" name="type" value="AND" {$and_check} /> {$_btn_and}</label>
+		<label><input type="radio" name="type" value="OR" {$or_check} /> {$_btn_or}</label>
+		&nbsp;<input type="submit" value="{$_btn_search}" />
+	</div>{$base_option}
 </form>
 EOD;
 }

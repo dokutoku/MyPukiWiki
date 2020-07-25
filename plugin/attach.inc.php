@@ -458,18 +458,15 @@ function attach_form(string $page) : string
 	$r_page = rawurlencode($page);
 	$s_page = htmlsc($page);
 	$navi = <<<EOD
-  <span class="small">
-   [<a href="{$script}?plugin=attach&amp;pcmd=list&amp;refer={$r_page}">{$_attach_messages['msg_list']}</a>]
-   [<a href="{$script}?plugin=attach&amp;pcmd=list">{$_attach_messages['msg_listall']}</a>]
-  </span><br />
+		<span class="small">[<a href="{$script}?plugin=attach&amp;pcmd=list&amp;refer={$r_page}">{$_attach_messages['msg_list']}</a>] [<a href="{$script}?plugin=attach&amp;pcmd=list">{$_attach_messages['msg_listall']}</a>] </span><br />
 EOD;
 
 	if (!ini_get('file_uploads')) {
-		return '#attach(): file_uploads disabled<br />'.$navi;
+		return '#attach(): file_uploads disabled<br />'."\n".$navi;
 	}
 
 	if (!is_page($page)) {
-		return '#attach(): No such page<br />'.$navi;
+		return '#attach(): No such page<br />'."\n".$navi;
 	}
 
 	$maxsize = PLUGIN_ATTACH_MAX_FILESIZE;
@@ -484,19 +481,17 @@ EOD;
 
 	return <<<EOD
 <form enctype="multipart/form-data" action="{$script}" method="post">
- <div>
-  <input type="hidden" name="plugin" value="attach" />
-  <input type="hidden" name="pcmd"   value="post" />
-  <input type="hidden" name="refer"  value="{$s_page}" />
-  <input type="hidden" name="max_file_size" value="{$maxsize}" />
-  {$navi}
-  <span class="small">
-   {$msg_maxsize}
-  </span><br />
-  <label for="_p_attach_file">{$_attach_messages['msg_file']}:</label> <input type="file" name="attach_file" id="_p_attach_file" />
-  {$pass}
-  <input type="submit" value="{$_attach_messages['btn_upload']}" />
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="attach" />
+		<input type="hidden" name="pcmd" value="post" />
+		<input type="hidden" name="refer" value="{$s_page}" />
+		<input type="hidden" name="max_file_size" value="{$maxsize}" />
+{$navi}
+		<span class="small">{$msg_maxsize}</span><br />
+		<label for="_p_attach_file">{$_attach_messages['msg_file']}:</label> <input type="file" name="attach_file" id="_p_attach_file" />
+		{$pass}
+		<input type="submit" value="{$_attach_messages['btn_upload']}" />
+	</div>
 </form>
 EOD;
 }
@@ -677,37 +672,34 @@ class AttachFile
 
 		$retval = ['msg'=>sprintf($_attach_messages['msg_info'], htmlsc($this->file))];
 		$retval['body'] = <<< EOD
-<p class="small">
- [<a href="{$script}?plugin=attach&amp;pcmd=list&amp;refer={$r_page}">{$_attach_messages['msg_list']}</a>]
- [<a href="{$script}?plugin=attach&amp;pcmd=list">{$_attach_messages['msg_listall']}</a>]
-</p>
+<p class="small"> [<a href="{$script}?plugin=attach&amp;pcmd=list&amp;refer={$r_page}">{$_attach_messages['msg_list']}</a>]  [<a href="{$script}?plugin=attach&amp;pcmd=list">{$_attach_messages['msg_listall']}</a>] </p>
 <dl>
- <dt>{$info}</dt>
- <dd>{$_attach_messages['msg_page']}:{$s_page}</dd>
- <dd>{$_attach_messages['msg_filename']}:{$this->filename}</dd>
- <dd>{$_attach_messages['msg_md5hash']}:{$hash}</dd>
- <dd>{$_attach_messages['msg_filesize']}:{$this->size_str} ({$this->size} bytes)</dd>
- <dd>Content-type:{$this->type}</dd>
- <dd>{$_attach_messages['msg_date']}:{$this->time_str}</dd>
- <dd>{$_attach_messages['msg_dlcount']}:{$this->status['count'][$this->age]}</dd>
- {$msg_freezed}
+	<dt>{$info}</dt>
+	<dd>{$_attach_messages['msg_page']}:{$s_page}</dd>
+	<dd>{$_attach_messages['msg_filename']}:{$this->filename}</dd>
+	<dd>{$_attach_messages['msg_md5hash']}:{$hash}</dd>
+	<dd>{$_attach_messages['msg_filesize']}:{$this->size_str} ({$this->size} bytes)</dd>
+	<dd>Content-type:{$this->type}</dd>
+	<dd>{$_attach_messages['msg_date']}:{$this->time_str}</dd>
+	<dd>{$_attach_messages['msg_dlcount']}:{$this->status['count'][$this->age]}</dd>
+	{$msg_freezed}
 </dl>
 <hr />
 {$s_err}
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden" name="plugin" value="attach" />
-  <input type="hidden" name="refer" value="{$s_page}" />
-  <input type="hidden" name="file" value="{$s_file}" />
-  <input type="hidden" name="age" value="{$this->age}" />
-  {$msg_delete}
-  {$msg_freeze}
-  {$msg_rename}
-  <br />
-  <label for="_p_attach_password">{$_attach_messages['msg_password']}:</label>
-  <input type="password" name="pass" id="_p_attach_password" size="8" />
-  <input type="submit" value="{$_attach_messages['btn_submit']}" />
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="attach" />
+		<input type="hidden" name="refer" value="{$s_page}" />
+		<input type="hidden" name="file" value="{$s_file}" />
+		<input type="hidden" name="age" value="{$this->age}" />
+		{$msg_delete}
+		{$msg_freeze}
+		{$msg_rename}
+		<br />
+		<label for="_p_attach_password">{$_attach_messages['msg_password']}:</label>
+		<input type="password" name="pass" id="_p_attach_password" size="8" />
+		<input type="submit" value="{$_attach_messages['btn_submit']}" />
+	div>
 </form>
 EOD;
 
@@ -947,13 +939,13 @@ class AttachFiles
 			ksort($_files, SORT_NUMERIC);
 			$_file = $_files[0];
 			unset($_files[0]);
-			$ret .= ' <li>'.$_file."\n";
+			$ret .= "\t".'<li>'.$_file."\n";
 
 			if (count($_files)) {
-				$ret .= "<ul>\n<li>".implode("</li>\n<li>", $_files)."</li>\n</ul>\n";
+				$ret .= "\t\t".'<ul>'."\n\t\t\t".'<li>'.implode('</li>'."\n\t\t\t".'<li>', $_files)."\t\t\t".'</li>'."\n\t\t".'</ul>'."\n";
 			}
 
-			$ret .= " </li>\n";
+			$ret .= "\t".'</li>'."\n";
 		}
 
 		return make_pagelink($this->page)."\n".'<ul>'."\n".$ret.'</ul>'."\n";

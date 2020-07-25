@@ -68,11 +68,7 @@ function plugin_counter_convert() : string
 	$counter = plugin_counter_get_count($vars['page']);
 
 	return <<<EOD
-<div class="counter">
-Counter:   {$counter['total']},
-today:     {$counter['today']},
-yesterday: {$counter['yesterday']}
-</div>
+<div class="counter">Counter:   {$counter['total']}, today:     {$counter['today']}, yesterday: {$counter['yesterday']}</div>
 EOD;
 }
 

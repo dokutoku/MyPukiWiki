@@ -28,7 +28,7 @@ function diff_style_to_css(string $str = '') : string
 {
 	// Cut diff markers ('+' or '-' or ' ')
 	$str = preg_replace('/^\-(.*)$/m', '<span class="diff_removed">$1</span>', $str);
-	$str = preg_replace('/^\+(.*)$/m', '<span class="diff_added"  >$1</span>', $str);
+	$str = preg_replace('/^\+(.*)$/m', '<span class="diff_added">$1</span>', $str);
 
 	return preg_replace('/^ (.*)$/m', '$1', $str);
 }
@@ -53,19 +53,18 @@ function do_update_diff(string $pagestr, string $poststr, string $original) : ar
 
 		$table = [];
 		$table[] = <<<'EOD'
-<p>l : between backup data and stored page data.<br />
- r : between backup data and your post data.</p>
+<p>l : between backup data and stored page data.<br /> r : between backup data and your post data.</p>
 <table class="style_table">
- <tr>
-  <th>l</th>
-  <th>r</th>
-  <th>text</th>
- </tr>
+	<tr>
+		<th>l</th>
+		<th>r</th>
+		<th>text</th>
+	</tr>
 EOD;
 		$tags = ['th', 'th', 'td'];
 
 		foreach ($arr as $_obj) {
-			$table[] = ' <tr>';
+			$table[] = "\t".'<tr>';
 			$params = [$_obj->get('left'), $_obj->get('right'), $_obj->text()];
 
 			foreach ($params as $key=>$text) {
@@ -75,10 +74,10 @@ EOD;
 					$text = '&nbsp;';
 				}
 
-				$table[] = '  <'.$tags[$key].' class="style_'.$tags[$key].'">'.$text.'</'.$tags[$key].'>';
+				$table[] = "\t\t".'<'.$tags[$key].' class="style_'.$tags[$key].'">'.$text.'</'.$tags[$key].'>';
 			}
 
-			$table[] = ' </tr>';
+			$table[] = "\t".'</tr>';
 		}
 
 		$table[] = '</table>';

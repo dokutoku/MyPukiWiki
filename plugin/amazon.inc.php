@@ -145,13 +145,13 @@ function plugin_amazon_convert(string ...$aryargs)
 
 		$ret = <<<EOD
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden" name="plugin" value="amazon" />
-  <input type="hidden" name="refer" value="{$s_page}" />
-  ASIN:
-  <input type="text" name="asin" size="30" value="" />
-  <input type="submit" value="レビュー編集" /> (ISBN 10 桁 or ASIN 12 桁)
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="amazon" />
+		<input type="hidden" name="refer" value="{$s_page}" />
+		ASIN:
+		<input type="text" name="asin" size="30" value="" />
+		<input type="submit" value="レビュー編集" /> (ISBN 10 桁 or ASIN 12 桁)
+	</div>
 </form>
 EOD;
 
@@ -313,16 +313,16 @@ function plugin_amazon_print_object($align, $alt, $title) : string
 	if ($title == '') {
 		// Show image only
 		$div = '<div style="float:'.$align.';margin:16px 16px 16px 16px;'.$center.'">'."\n";
-		$div .= ' <a href="'.$url_shop.'"><img src="'.$url.'" alt="'.$alt.'" /></a>'."\n";
+		$div .= "\t".'<a href="'.$url_shop.'"><img src="'.$url.'" alt="'.$alt.'" /></a>'."\n";
 		$div .= '</div>'."\n";
 	} else {
 		// Show image and title
 		$div = '<div style="float:'.$align.';padding:.5em 1.5em .5em 1.5em;'.$center.'">'."\n";
-		$div .= ' <table style="width:110px;border:0;'.$center.'">'."\n";
-		$div .= '  <tr><td style="'.$center.'">'."\n";
-		$div .= '   <a href="'.$url_shop.'"><img src="'.$url.'" alt="'.$alt.'" /></a></td></tr>'."\n";
-		$div .= '  <tr><td style="'.$center.'"><a href="'.$url_shop.'">'.$title.'</a></td></tr>'."\n";
-		$div .= ' </table>'."\n";
+		$div .= "\t".'<table style="width:110px;border:0;'.$center.'">'."\n";
+		$div .= "\t\t".'<tr><td style="'.$center.'">'."\n";
+		$div .= "\t\t\t".'<a href="'.$url_shop.'"><img src="'.$url.'" alt="'.$alt.'" /></a></td></tr>'."\n";
+		$div .= "\t\t".'<tr><td style="'.$center.'"><a href="'.$url_shop.'">'.$title.'</a></td></tr>'."\n";
+		$div .= "\t".'</table>'."\n";
 		$div .= '</div>'."\n";
 	}
 

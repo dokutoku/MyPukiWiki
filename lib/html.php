@@ -187,7 +187,7 @@ function catbody(string $title, string $page, string $body) : void
 
 	// List of footnotes
 	ksort($foot_explain, SORT_NUMERIC);
-	$notes = (!empty($foot_explain)) ? ($note_hr.implode("\n", $foot_explain)) : ('');
+	$notes = (!empty($foot_explain)) ? ($note_hr."\n".implode("\n", $foot_explain)) : ('');
 
 	// Tags will be inserted into <head></head>
 	$head_tag = (!empty($head_tags)) ? (implode("\n", $head_tags)."\n") : ('');
@@ -210,7 +210,7 @@ function catbody(string $title, string $page, string $body) : void
 
 	// Search words
 	if (($search_word_color) && (isset($vars['word']))) {
-		$body = '<div class="small">'.$_msg_word.htmlsc($vars['word']).'</div>'.$hr."\n".$body;
+		$body = '<div class="small">'.$_msg_word.htmlsc($vars['word']).'</div>'."\n".$hr."\n".$body;
 
 		// BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
 		// with array_splice(), array_flip()
@@ -316,6 +316,7 @@ function get_html_scripting_data(string $page, bool $in_editing) : string
 
 	// Require: PHP 5.4+
 	$json_enabled = defined('JSON_UNESCAPED_UNICODE');
+	$data = '<div id="pukiwiki-site-properties" style="display:none;">'."\n";
 
 	if (!$json_enabled) {
 		$empty_data = <<<'EOS'
@@ -339,22 +340,27 @@ EOS;
 	];
 
 	$h_props = htmlsc_json($props);
-	$site_props = <<<EOS
-<input type="hidden" class="site-props" value="{$h_props}" />
+	$data .= <<<EOS
+	<input type="hidden" class="site-props" value="{$h_props}" />
+
 EOS;
 	$h_plugin = htmlsc($plugin);
-	$plugin_prop = <<<EOS
-<input type="hidden" class="plugin-name" value="{$h_plugin}" />
+	$data .= <<<EOS
+	<input type="hidden" class="plugin-name" value="{$h_plugin}" />
+
 EOS;
+
 	// Page name
 	$h_page_name = htmlsc($page);
-	$page_name_data = <<<EOS
-<input type="hidden" class="page-name" value="{$h_page_name}" />
+	$data .= <<<EOS
+	<input type="hidden" class="page-name" value="{$h_page_name}" />
+
 EOS;
 	// Page is editing (preview)
 	$in_editing_value = (($plugin === 'edit') && ($in_editing)) ? ('true') : ('false');
-	$page_edit_data = <<<EOS
-<input type="hidden" class="page-in-edit" value="{$in_editing_value}" />
+	$data .= <<<EOS
+	<input type="hidden" class="page-in-edit" value="{$in_editing_value}" />
+
 EOS;
 	// AutoTicketLink
 	$filtered_ticket_link_sites = [];
@@ -368,65 +374,50 @@ EOS;
 	}
 
 	$h_ticket_link_sites = htmlsc_json($filtered_ticket_link_sites);
-	$ticketlink_data = <<<EOS
-<input type="hidden" class="ticketlink-def" value="{$h_ticket_link_sites}" />
+	$data .= <<<EOS
+	<input type="hidden" class="ticketlink-def" value="{$h_ticket_link_sites}" />
+
 EOS;
+
 	// AutoTicketLink - JIRA
 	$ticket_jira_projects = get_ticketlink_jira_projects();
-	$ticketlink_jira_data = '';
 
 	if (count($ticket_jira_projects) > 0) {
 		$h_ticket_jira_projects = htmlsc_json($ticket_jira_projects);
-		$ticketlink_jira_data = <<<EOS
-<input type="hidden" class="ticketlink-jira-def" value="{$h_ticket_jira_projects}" />
+		$data .= <<<EOS
+	<input type="hidden" class="ticketlink-jira-def" value="{$h_ticket_jira_projects}" />
+
 EOS;
 	}
 
-	$ticketlink_jira_default_data = '';
-
 	if ((isset($ticket_jira_default_site)) && (is_array($ticket_jira_default_site))) {
 		$h_ticket_jira_default_site = htmlsc_json($ticket_jira_default_site);
-		$ticketlink_jira_default_data = <<<EOS
-<input type="hidden" class="ticketlink-jira-default-def" value="{$h_ticket_jira_default_site}" />
+		$data .= <<<EOS
+	<input type="hidden" class="ticketlink-jira-default-def" value="{$h_ticket_jira_default_site}" />
+
 EOS;
 	}
 
 	// External link cushion page
-	$external_link_cushion_data = '';
-
 	if ($external_link_cushion_page) {
 		$h_cushion = htmlsc_json($external_link_cushion);
-		$external_link_cushion_data = <<<EOS
-<input type="hidden" class="external-link-cushion" value="{$h_cushion}" />
+		$data .= <<<EOS
+	<input type="hidden" class="external-link-cushion" value="{$h_cushion}" />
+
 EOS;
 	}
 
 	// Topicpath title
-	$topicpath_data = '';
-
 	if (($topicpath_title) && (exist_plugin('topicpath')) && (function_exists('plugin_topicpath_parent_links'))) {
 		$parents = plugin_topicpath_parent_links($page);
 		$h_topicpath = htmlsc_json($parents);
-		$topicpath_data = <<<EOS
-<input type="hidden" class="topicpath-links" value="{$h_topicpath}" />
+		$data .= <<<EOS
+	<input type="hidden" class="topicpath-links" value="{$h_topicpath}" />
+
 EOS;
 	}
 
-	$data = <<<EOS
-<div id="pukiwiki-site-properties" style="display:none;">
-{$site_props}
-{$plugin_prop}
-{$page_name_data}
-{$page_edit_data}
-{$ticketlink_data}
-{$ticketlink_jira_data}
-{$ticketlink_jira_default_data}
-{$external_link_cushion_data}
-{$topicpath_data}
-</div>
-EOS;
-
-	return $data;
+	return rtrim($data)."\n".'</div>';
 }
 
 // Show 'edit' form
@@ -465,9 +456,9 @@ function edit_form(string $page, string $postdata, $digest = false, bool $b_temp
 	if (isset($vars['add'])) {
 		global $_btn_addtop;
 
-		$addtag = '<input type="hidden" name="add"    value="true" />';
+		$addtag = '<input type="hidden" name="add" value="true" />';
 		$add_top = (isset($vars['add_top'])) ? (' checked="checked"') : ('');
-		$add_top = '<input type="checkbox" name="add_top" id="_edit_form_add_top" value="true"'.$add_top.' />'."\n".'  <label for="_edit_form_add_top"><span class="small">'.$_btn_addtop.'</span></label>';
+		$add_top = '<input type="checkbox" name="add_top" id="_edit_form_add_top" value="true"'.$add_top.' />'."\n\t\t".'<label for="_edit_form_add_top"><span class="small">'.$_btn_addtop.'</span></label>';
 	}
 
 	if (($load_template_func) && ($b_template)) {
@@ -478,22 +469,22 @@ function edit_form(string $page, string $postdata, $digest = false, bool $b_temp
 
 		foreach ($template_page_list as $p) {
 			$ps = htmlsc($p);
-			$tpages[] = '   <option value="'.$ps.'">'.$ps.'</option>';
+			$tpages[] = "\t\t\t".'<option value="'.$ps.'">'.$ps.'</option>';
 		}
 
 		if (count($template_page_list) > 0) {
 			$s_tpages = implode("\n", $tpages);
 		} else {
-			$s_tpages = '   <option value="">(no template pages)</option>';
+			$s_tpages = "\t\t\t".'<option value="">(no template pages)</option>';
 		}
 
 		$template = <<<EOD
-  <select name="template_page">
-   <option value="">-- {$_btn_template} --</option>
+		<select name="template_page">
+			<option value="">-- {$_btn_template} --</option>
 {$s_tpages}
-  </select>
-  <input type="submit" name="template" value="{$_btn_load}" accesskey="r" />
-  <br />
+		</select>
+		<input type="submit" name="template" value="{$_btn_load}" accesskey="r" />
+		<br />
 EOD;
 
 		if ((isset($vars['refer'])) && ($vars['refer'] != '')) {
@@ -521,41 +512,44 @@ EOD;
 		$checked_time = (isset($vars['notimestamp'])) ? (' checked="checked"') : ('');
 		// Only for administrator
 		if ($notimeupdate == 2) {
-			$add_notimestamp = '   <input type="password" name="pass" size="12" />'."\n";
+			$add_notimestamp = "\t\t\t".'<input type="password" name="pass" size="12" />'."\n";
 		}
 
-		$add_notimestamp = '<input type="checkbox" name="notimestamp" id="_edit_form_notimestamp" value="true"'.$checked_time.' />'."\n".'   <label for="_edit_form_notimestamp"><span class="small">'.$_btn_notchangetimestamp.'</span></label>'."\n".$add_notimestamp.'&nbsp;';
+		$add_notimestamp = '<input type="checkbox" name="notimestamp" id="_edit_form_notimestamp" value="true"'.$checked_time.' />'."\n\t\t\t".'<label for="_edit_form_notimestamp"><span class="small">'.$_btn_notchangetimestamp.'</span></label>'."\n".$add_notimestamp.'&nbsp;';
 	}
 
 	// 'margin-bottom', 'float:left', and 'margin-top'
 	// are for layout of 'cancel button'
 	$h_msg_edit_cancel_confirm = htmlsc($_msg_edit_cancel_confirm);
 	$h_msg_edit_unloadbefore_message = htmlsc($_msg_edit_unloadbefore_message);
+	$s_postdata = str_replace("\n", '&NewLine;', $s_postdata);
+	$s_original = str_replace("\n", '&NewLine;', $s_original);
+
 	$body = <<<EOD
 <div class="edit_form">
- <form action="{$script}" method="post" class="_plugin_edit_edit_form" style="margin-bottom:0;">
+	<form action="{$script}" method="post" class="_plugin_edit_edit_form" style="margin-bottom:0;">
 {$template}
-  {$addtag}
-  <input type="hidden" name="cmd"    value="edit" />
-  <input type="hidden" name="page"   value="{$s_page}" />
-  <input type="hidden" name="digest" value="{$s_digest}" />
-  <input type="hidden" id="_msg_edit_cancel_confirm" value="{$h_msg_edit_cancel_confirm}" />
-  <input type="hidden" id="_msg_edit_unloadbefore_message" value="{$h_msg_edit_unloadbefore_message}" />
-  <textarea name="msg" rows="{$rows}" cols="{$cols}">{$s_postdata}</textarea>
-  <br />
-  <div style="float:left;">
-   <input type="submit" name="preview" value="{$btn_preview}" accesskey="p" />
-   <input type="submit" name="write"   value="{$_btn_update}" accesskey="s" />
-   {$add_top}
-   {$add_notimestamp}
-  </div>
-  <textarea name="original" rows="1" cols="1" style="display:none">{$s_original}</textarea>
- </form>
- <form action="{$script}" method="post" class="_plugin_edit_cancel" style="margin-top:0;">
-  <input type="hidden" name="cmd"    value="edit" />
-  <input type="hidden" name="page"   value="{$s_page}" />
-  <input type="submit" name="cancel" value="{$_btn_cancel}" accesskey="c" />
- </form>
+		{$addtag}
+		<input type="hidden" name="cmd" value="edit" />
+		<input type="hidden" name="page" value="{$s_page}" />
+		<input type="hidden" name="digest" value="{$s_digest}" />
+		<input type="hidden" id="_msg_edit_cancel_confirm" value="{$h_msg_edit_cancel_confirm}" />
+		<input type="hidden" id="_msg_edit_unloadbefore_message" value="{$h_msg_edit_unloadbefore_message}" />
+		<textarea name="msg" rows="{$rows}" cols="{$cols}">{$s_postdata}</textarea>
+		<br />
+		<div style="float:left;">
+			<input type="submit" name="preview" value="{$btn_preview}" accesskey="p" />
+			<input type="submit" name="write" value="{$_btn_update}" accesskey="s" />
+			{$add_top}
+			{$add_notimestamp}
+			</div>
+		<textarea name="original" rows="1" cols="1" style="display:none">{$s_original}</textarea>
+	</form>
+	<form action="{$script}" method="post" class="_plugin_edit_cancel" style="margin-top:0;">
+		<input type="hidden" name="cmd" value="edit" />
+		<input type="hidden" name="page" value="{$s_page}" />
+		<input type="submit" name="cancel" value="{$_btn_cancel}" accesskey="c" />
+	</form>
 </div>
 EOD;
 

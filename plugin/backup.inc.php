@@ -70,31 +70,31 @@ function plugin_backup_action() : array
 	$script = get_base_uri();
 
 	$body = '<ul>'."\n";
-	$body .= ' <li><a href="'.$script.'?cmd=backup">'.$_msg_backuplist.'</a></li>'."\n";
+	$body .= "\t".'<li><a href="'.$script.'?cmd=backup">'.$_msg_backuplist.'</a></li>'."\n";
 
 	$href = $script.'?cmd=backup&amp;page='.$r_page.'&amp;age='.$s_age;
 	$is_page = is_page($page);
 
 	if (($is_page) && ($action != 'diff')) {
-		$body .= ' <li>'.str_replace('$1', '<a href="'.$href.'&amp;action=diff">'.$_msg_diff.'</a>', $_msg_view).'</li>'."\n";
+		$body .= "\t".'<li>'.str_replace('$1', '<a href="'.$href.'&amp;action=diff">'.$_msg_diff.'</a>', $_msg_view).'</li>'."\n";
 	}
 
 	if (($is_page) && ($action != 'nowdiff')) {
-		$body .= ' <li>'.str_replace('$1', '<a href="'.$href.'&amp;action=nowdiff">'.$_msg_nowdiff.'</a>', $_msg_view).'</li>'."\n";
+		$body .= "\t".'<li>'.str_replace('$1', '<a href="'.$href.'&amp;action=nowdiff">'.$_msg_nowdiff.'</a>', $_msg_view).'</li>'."\n";
 	}
 
 	if ($action != 'source') {
-		$body .= ' <li>'.str_replace('$1', '<a href="'.$href.'&amp;action=source">'.$_msg_source.'</a>', $_msg_view).'</li>'."\n";
+		$body .= "\t".'<li>'.str_replace('$1', '<a href="'.$href.'&amp;action=source">'.$_msg_source.'</a>', $_msg_view).'</li>'."\n";
 	}
 
 	if ((!PLUGIN_BACKUP_DISABLE_BACKUP_RENDERING) && ($action)) {
-		$body .= ' <li>'.str_replace('$1', '<a href="'.$href.'">'.$_msg_backup.'</a>', $_msg_view).'</li>'."\n";
+		$body .= "\t".'<li>'.str_replace('$1', '<a href="'.$href.'">'.$_msg_backup.'</a>', $_msg_view).'</li>'."\n";
 	}
 
 	if ($is_page) {
-		$body .= ' <li>'.str_replace('$1', '<a href="'.$script.'?'.$r_page.'">'.$s_page.'</a>', $_msg_goto)."\n";
+		$body .= "\t".'<li>'.str_replace('$1', '<a href="'.$script.'?'.$r_page.'">'.$s_page.'</a>', $_msg_goto)."\n";
 	} else {
-		$body .= ' <li>'.str_replace('$1', $s_page, $_msg_deleted)."\n";
+		$body .= "\t".'<li>'.str_replace('$1', $s_page, $_msg_deleted)."\n";
 	}
 
 	$backups = get_backup($page);
@@ -105,17 +105,17 @@ function plugin_backup_action() : array
 	}
 
 	if ($backups_count > 0) {
-		$body .= '  <ul>'."\n";
+		$body .= "\t\t".'<ul>'."\n";
 
 		foreach ($backups as $age=>$val) {
 			$date = format_date($val['time'], true);
-			$body .= ($age == $s_age) ? ('   <li><em>'.$age.' '.$date.'</em></li>'."\n") : ('   <li><a href="'.$script.'?cmd=backup&amp;action='.$r_action.'&amp;page='.$r_page.'&amp;age='.$age.'">'.$age.' '.$date.'</a></li>'."\n");
+			$body .= ($age == $s_age) ? ("\t\t\t".'<li><em>'.$age.' '.$date.'</em></li>'."\n") : ("\t\t\t".'<li><a href="'.$script.'?cmd=backup&amp;action='.$r_action.'&amp;page='.$r_page.'&amp;age='.$age.'">'.$age.' '.$date.'</a></li>'."\n");
 		}
 
-		$body .= '  </ul>'."\n";
+		$body .= "\t\t".'</ul>'."\n";
 	}
 
-	$body .= ' </li>'."\n";
+	$body .= "\t".'</li>'."\n";
 	$body .= '</ul>'."\n";
 
 	if ($action == 'diff') {
@@ -130,7 +130,7 @@ function plugin_backup_action() : array
 		$body .= plugin_backup_diff(do_diff($old, $cur));
 	} elseif ($s_action == 'source') {
 		$title = &$_title_backupsource;
-		$body .= '<pre>'.htmlsc(implode('', $backups[$s_age]['data'])).'</pre>'."\n";
+		$body .= '<pre>'.str_replace("\n", '&NewLine;', htmlsc(implode('', $backups[$s_age]['data']))).'</pre>'."\n";
 	} else {
 		if (PLUGIN_BACKUP_DISABLE_BACKUP_RENDERING) {
 			die_message('This feature is prohibited');
@@ -176,13 +176,13 @@ function plugin_backup_delete(string $page) : array
 	$body .= <<<EOD
 <p>{$_msg_backup_adminpass}</p>
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden"   name="cmd"    value="backup" />
-  <input type="hidden"   name="page"   value="{$s_page}" />
-  <input type="hidden"   name="action" value="delete" />
-  <input type="password" name="pass"   size="12" />
-  <input type="submit"   name="ok"     value="{$_btn_delete}" />
- </div>
+	<div>
+		<input type="hidden" name="cmd" value="backup" />
+		<input type="hidden" name="page" value="{$s_page}" />
+		<input type="hidden" name="action" value="delete" />
+		<input type="password" name="pass" size="12" />
+		<input type="submit" name="ok" value="{$_btn_delete}" />
+	</div>
 </form>
 EOD;
 
@@ -198,12 +198,12 @@ function plugin_backup_diff(string $str) : string
 	$ul = <<<EOD
 {$hr}
 <ul>
- <li>{$_msg_addline}</li>
- <li>{$_msg_delline}</li>
+	<li>{$_msg_addline}</li>
+	<li>{$_msg_delline}</li>
 </ul>
 EOD;
 
-	return $ul.'<pre>'.diff_style_to_css(htmlsc($str)).'</pre>'."\n";
+	return $ul.'<pre>'.str_replace("\n", '&NewLine;', diff_style_to_css(htmlsc($str))).'</pre>'."\n";
 }
 
 function plugin_backup_get_list(string $page) : string
@@ -221,13 +221,13 @@ function plugin_backup_get_list(string $page) : string
 	$retval = [];
 	$retval[0] = <<<EOD
 <ul>
- <li><a href="{$script}?cmd=backup">{$_msg_backuplist}</a>
-  <ul>
+	<li><a href="{$script}?cmd=backup">{$_msg_backuplist}</a>
+		<ul>
 EOD;
 	$retval[1] = "\n";
 	$retval[2] = <<<'EOD'
-  </ul>
- </li>
+		</ul>
+	</li>
 </ul>
 EOD;
 
@@ -235,13 +235,13 @@ EOD;
 
 	if (empty($backups)) {
 		$msg = str_replace('$1', make_pagelink($page), $_msg_nobackup);
-		$retval[1] .= '   <li>'.$msg.'</li>'."\n";
+		$retval[1] .= "\t\t\t".'<li>'.$msg.'</li>'."\n";
 
 		return implode('', $retval);
 	}
 
 	if (!PKWK_READONLY) {
-		$retval[1] .= '   <li><a href="'.$script.'?cmd=backup&amp;action=delete&amp;page='.$r_page.'">';
+		$retval[1] .= "\t\t\t".'<li><a href="'.$script.'?cmd=backup&amp;action=delete&amp;page='.$r_page.'">';
 		$retval[1] .= str_replace('$1', $s_page, $_title_backup_delete);
 		$retval[1] .= '</a></li>'."\n";
 	}
@@ -264,12 +264,7 @@ EOD;
 		}
 
 		$retval[1] .= <<<EOD
-   <li>{$_anchor_from}{$age} {$date}{$_anchor_to}
-     [ <a href="{$href}{$age}&amp;action=diff">{$_msg_diff}</a>
-     | <a href="{$href}{$age}&amp;action=nowdiff">{$_msg_nowdiff}</a>
-     | <a href="{$href}{$age}&amp;action=source">{$_msg_source}</a>
-     ] {$author_info}
-   </li>
+			<li>{$_anchor_from}{$age} {$date}{$_anchor_to} [ <a href="{$href}{$age}&amp;action=diff">{$_msg_diff}</a> | <a href="{$href}{$age}&amp;action=nowdiff">{$_msg_nowdiff}</a> | <a href="{$href}{$age}&amp;action=source">{$_msg_source}</a> ] {$author_info}</li>
 EOD;
 	}
 

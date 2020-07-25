@@ -58,9 +58,9 @@ function plugin_diff_view(string $page) : array
 	$is_page = is_page($page);
 
 	if ($is_page) {
-		$menu[] = ' <li>'.str_replace('$1', '<a href="'.get_page_uri($page).'">'.$s_page.'</a>', $_msg_goto).'</li>';
+		$menu[] = '<li>'.str_replace('$1', '<a href="'.get_page_uri($page).'">'.$s_page.'</a>', $_msg_goto).'</li>';
 	} else {
-		$menu[] = ' <li>'.str_replace('$1', $s_page, $_msg_deleted).'</li>';
+		$menu[] = '<li>'.str_replace('$1', $s_page, $_msg_deleted).'</li>';
 	}
 
 	$filename = DIFF_DIR.encode($page).'.txt';
@@ -70,15 +70,15 @@ function plugin_diff_view(string $page) : array
 			$menu[] = '<li><a href="'.$script.'?cmd=diff&amp;action=delete&amp;page='.$r_page.'">'.str_replace('$1', $s_page, $_title_diff_delete).'</a></li>';
 		}
 
-		$msg = '<pre>'.diff_style_to_css(htmlsc(implode('', file($filename)))).'</pre>'."\n";
+		$msg = '<pre>'.str_replace("\n", '&NewLine;', diff_style_to_css(htmlsc(implode('', file($filename))))).'</pre>'."\n";
 	} elseif ($is_page) {
 		$diffdata = trim(htmlsc(implode('', get_source($page))));
-		$msg = '<pre><span class="diff_added">'.$diffdata.'</span></pre>'."\n";
+		$msg = '<pre><span class="diff_added">'.str_replace("\n", '&NewLine;', $diffdata).'</span></pre>'."\n";
 	} else {
 		return ['msg'=>$_title_diff, 'body'=>$_msg_notfound];
 	}
 
-	$menu = implode("\n", $menu);
+	$menu = implode("\n\t", $menu);
 	$body = <<<EOD
 <ul>
 {$menu}
@@ -128,13 +128,13 @@ function plugin_diff_delete(string $page) : array
 	$body .= <<<EOD
 <p>{$_msg_diff_adminpass}</p>
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden"   name="cmd"    value="diff" />
-  <input type="hidden"   name="page"   value="{$s_page}" />
-  <input type="hidden"   name="action" value="delete" />
-  <input type="password" name="pass"   size="12" />
-  <input type="submit"   name="ok"     value="{$_btn_delete}" />
- </div>
+	<div>
+		<input type="hidden" name="cmd" value="diff" />
+		<input type="hidden" name="page" value="{$s_page}" />
+		<input type="hidden" name="action" value="delete" />
+		<input type="password" name="pass" size="12" />
+		<input type="submit" name="ok" value="{$_btn_delete}" />
+	</div>
 </form>
 EOD;
 

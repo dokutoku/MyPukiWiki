@@ -163,7 +163,7 @@ function plugin_navi_convert(string ...$args) : string
 				if ($_page != '') {
 					$s_page = htmlsc($_page);
 					$r_page = pagename_urlencode($_page);
-					$head_tags[] = ' <link rel="'.$rel.'" href="'.$script.'?'.$r_page.'" title="'.$s_page.'" />';
+					$head_tags[] = "\t".'<link rel="'.$rel.'" href="'.$script.'?'.$r_page.'" title="'.$s_page.'" />';
 				}
 			}
 		}
@@ -182,11 +182,11 @@ function plugin_navi_convert(string ...$args) : string
 			$home = htmlsc($home);
 			$ret .= '#navi('.$home.'): No child page like: '.$home.'/Foo';
 		} else {
-			$ret .= '<ul>';
+			$ret .= '<ul>'."\n";
 
 			foreach ($pages as $page) {
 				if ($page !== $home) {
-					$ret .= ' <li>'.make_pagelink($page).'</li>';
+					$ret .= "\t".'<li>'.make_pagelink($page).'</li>'."\n";
 				}
 			}
 
@@ -196,9 +196,9 @@ function plugin_navi_convert(string ...$args) : string
 		// Header
 		$ret = <<<EOD
 <ul class="navi">
- <li class="navi_left">{$navi[$home]['prev1']}</li>
- <li class="navi_right">{$navi[$home]['next1']}</li>
- <li class="navi_none">{$navi[$home]['home']}</li>
+	<li class="navi_left">{$navi[$home]['prev1']}</li>
+	<li class="navi_right">{$navi[$home]['next1']}</li>
+	<li class="navi_none">{$navi[$home]['home']}</li>
 </ul>
 <hr class="full_hr" />
 EOD;
@@ -207,9 +207,9 @@ EOD;
 		$ret = <<<EOD
 <hr class="full_hr" />
 <ul class="navi">
- <li class="navi_left">{$navi[$home]['prev1']}<br />{$navi[$home]['prev']}</li>
- <li class="navi_right">{$navi[$home]['next1']}<br />{$navi[$home]['next']}</li>
- <li class="navi_none">{$navi[$home]['home1']}<br />{$navi[$home]['up']}</li>
+	<li class="navi_left">{$navi[$home]['prev1']}<br />{$navi[$home]['prev']}</li>
+	<li class="navi_right">{$navi[$home]['next1']}<br />{$navi[$home]['next']}</li>
+	<li class="navi_none">{$navi[$home]['home1']}<br />{$navi[$home]['up']}</li>
 </ul>
 EOD;
 	}

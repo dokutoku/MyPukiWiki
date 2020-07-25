@@ -58,13 +58,13 @@ function plugin_links_action() : array
 		$body = convert_html($_links_messages['msg_usage']);
 		$body .= <<<EOD
 <form method="post" action="{$script}">
- <div>
-  <input type="hidden" name="plugin" value="links" />
-  <input type="hidden" name="action" value="update" />
-  <label for="_p_links_adminpass">{$_links_messages['msg_adminpass']}</label>
-  <input type="password" name="adminpass" id="_p_links_adminpass" size="20" value="" />
-  <input type="submit" value="{$_links_messages['btn_submit']}" />
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="links" />
+		<input type="hidden" name="action" value="update" />
+		<label for="_p_links_adminpass">{$_links_messages['msg_adminpass']}</label>
+		<input type="password" name="adminpass" id="_p_links_adminpass" size="20" value="" />
+		<input type="submit" value="{$_links_messages['btn_submit']}" />
+	</div>
 </form>
 EOD;
 	} elseif ($vars['action'] == 'update') {

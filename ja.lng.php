@@ -363,8 +363,7 @@ $_popular_plugin_today_frame = '<h5>今日の%d件</h5><div>%s</div>';
 
 ///////////////////////////////////////
 // recent.inc.php
-$_recent_plugin_frame = '<h5>最新の%d件</h5>
-<div>%s</div>';
+$_recent_plugin_frame = '<h5>最新の%d件</h5>'."\n".'<div>'."\n".'%s'."\n".'</div>';
 
 ///////////////////////////////////////
 // rename.inc.php

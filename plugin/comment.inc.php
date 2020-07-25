@@ -157,18 +157,17 @@ function plugin_comment_convert(string ...$options) : string
 	$string = <<<EOD
 <br />
 <form action="{$script}" method="post" class="_p_comment_form">
- <div>
-  <input type="hidden" name="plugin" value="comment" />
-  <input type="hidden" name="refer"  value="{$s_page}" />
-  <input type="hidden" name="comment_no" value="{$comment_no}" />
-  <input type="hidden" name="nodate" value="{$nodate}" />
-  <input type="hidden" name="above"  value="{$above}" />
-  <input type="hidden" name="digest" value="{$digest}" />
-  {$nametags}
-  <input type="text"   name="msg" id="_p_comment_comment_{$comment_no}"
-   size="{$comment_cols}" required />
-  <input type="submit" name="comment" value="{$_btn_comment}" />
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="comment" />
+		<input type="hidden" name="refer" value="{$s_page}" />
+		<input type="hidden" name="comment_no" value="{$comment_no}" />
+		<input type="hidden" name="nodate" value="{$nodate}" />
+		<input type="hidden" name="above" value="{$above}" />
+		<input type="hidden" name="digest" value="{$digest}" />
+		{$nametags}
+		<input type="text" name="msg" id="_p_comment_comment_{$comment_no}" size="{$comment_cols}" required />
+		<input type="submit" name="comment" value="{$_btn_comment}" />
+	</div>
 </form>
 EOD;
 

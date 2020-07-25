@@ -613,137 +613,199 @@ header('Content-Type: text/html; charset='.CONTENT_CHARSET);
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo LANG; ?>">
-<head>
- <meta http-equiv="Content-Type" content="text/html; charset=<?php echo CONTENT_CHARSET; ?>" />
-<?php if (($nofollow) || (!$is_read)) { ?> <meta name="robots" content="NOINDEX,NOFOLLOW" /><?php } ?>
-<?php if ($html_meta_referrer_policy) { ?> <meta name="referrer" content="<?php echo htmlsc(html_meta_referrer_policy); ?>" /><?php } ?>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=<?php echo CONTENT_CHARSET; ?>" /><?php
 
- <title><?php echo $title; ?> - <?php echo $page_title; ?></title>
-
- <link rel="SHORTCUT ICON" href="<?php echo $image['favicon']; ?>" />
- <link rel="stylesheet" type="text/css" media="all" href="<?php echo SKIN_DIR; ?>theme/base.css" />
- <link rel="stylesheet" type="text/css" media="all" href="<?php echo SKIN_DIR; ?>theme/<?php echo $theme; ?>/<?php echo $theme; ?>.css" />
- <link rel="stylesheet" type="text/css" href="<?php echo SKIN_DIR; ?>tdiary.css" />
-<?php if ($css_theme === 'black') { ?> <link rel="stylesheet" type="text/css" href="<?php echo SKIN_DIR; ?>tdiary_black.css" /><?php } ?>
- <link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo $link['rss']; ?>" /><?php // RSS auto-discovery?>
-
-<?php echo $head_tag; ?>
-</head>
-<body>
-<?php echo $html_scripting_data; ?>
-<!-- Theme:<?php echo htmlsc($theme).' Sidebar:'.$sidebar; ?> -->
-
-<?php if (($menu) && ($sidebar == 'strict')) { ?>
-<!-- Sidebar top -->
-<div class="sidebar">
-	<div id="menubar">
-		<?php echo $menu_body; ?>
-	</div>
-</div><!-- class="sidebar" -->
-
-<div class="pkwk_body">
-<div class="main">
-<?php } // if (($menu) && ($sidebar == 'strict'))?>
-
-<!-- Navigation buttuns -->
-<?php if (PKWK_SKIN_SHOW_NAVBAR) { ?>
-<div class="adminmenu"><div id="navigator">
-<?php
-function _navigator(string $key, string $value = '', string $javascript = '') : bool
-{
-	$lang = $GLOBALS['_LANG']['skin'];
-	$link = $GLOBALS['_LINK'];
-
-	if (!isset($lang[$key])) {
-		echo 'LANG NOT FOUND';
-
-		return false;
-	}
-
-	if (!isset($link[$key])) {
-		echo 'LINK NOT FOUND';
-
-		return false;
-	}
-
-	echo '<span class="adminmenu"><a href="'.$link[$key].'" '.$javascript.'>'.(($value === '') ? ($lang[$key]) : ($value)).'</a></span>';
-
-	return true;
+if (($nofollow) || (!$is_read)) {
+	echo "\n\t\t".'<meta name="robots" content="NOINDEX,NOFOLLOW" />';
 }
 
+if ($html_meta_referrer_policy) {
+	echo "\n\t\t".'<meta name="referrer" content="'.htmlsc(html_meta_referrer_policy).'" />';
+} ?>
+
+		<title><?php echo $title; ?> - <?php echo $page_title; ?></title>
+		<link rel="SHORTCUT ICON" href="<?php echo $image['favicon']; ?>" />
+		<link rel="stylesheet" type="text/css" media="all" href="<?php echo SKIN_DIR; ?>theme/base.css" />
+		<link rel="stylesheet" type="text/css" media="all" href="<?php echo SKIN_DIR; ?>theme/<?php echo $theme; ?>/<?php echo $theme; ?>.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo SKIN_DIR; ?>tdiary.css" /><?php
+if ($css_theme === 'black') {
+	echo "\n\t\t".'<link rel="stylesheet" type="text/css" href="'.SKIN_DIR.'tdiary_black.css" />';
+}
 ?>
- <?php _navigator('top'); ?> &nbsp;
 
-<?php if ($is_page) { ?>
-  <?php if ($rw) { ?>
-	<?php _navigator('edit'); ?>
-	<?php if (($is_read) && ($function_freeze)) { ?>
-		<?php (!$is_freeze) ? (_navigator('freeze')) : (_navigator('unfreeze')); ?>
-	<?php } ?>
- <?php } ?>
-   <?php _navigator('diff'); ?>
- <?php if ($do_backup) { ?>
-	<?php _navigator('backup'); ?>
- <?php } ?>
- <?php if (($rw) && ((bool) (ini_get('file_uploads')))) { ?>
-	<?php _navigator('upload'); ?>
- <?php } ?>
-   <?php _navigator('reload'); ?>
-   &nbsp;
-<?php } ?>
+		<link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo $link['rss']; ?>" /><?php echo (!empty($head_tag)) ? ("\n\t\t".$head_tag."\n") : ("\n"); ?>
+	</head>
+	<body><?php echo "\n".((!empty($html_scripting_data)) ? ("\t\t".str_replace("\n", "\n\t\t", $html_scripting_data)."\n\n") : ('')); ?>
+		<!-- Theme:<?php echo htmlsc($theme).' Sidebar:'.$sidebar; ?> -->
 
- <?php if ($rw) { ?>
-	<?php _navigator('new'); ?>
- <?php } ?>
-   <?php _navigator('list'); ?>
- <?php if (arg_check('list')) { ?>
-   <?php _navigator('filelist'); ?>
- <?php } ?>
-   <?php _navigator('search'); ?>
-   <?php _navigator('recent'); ?>
-   <?php _navigator('help'); ?>
-   <?php if ($enable_login) { ?>
-     <?php _navigator('login'); ?>
-   <?php } ?>
-   <?php if ($enable_logout) { ?>
-     <?php _navigator('logout'); ?>
-   <?php } ?>
-</div></div>
-<?php } else { ?>
-<div id="navigator"></div>
-<?php } // PKWK_SKIN_SHOW_NAVBAR?>
+<?php
+if (($menu) && ($sidebar == 'strict')) {
+?>
+		<!-- Sidebar top -->
+		<div class="sidebar">
+			<div id="menubar">
+				<?php echo str_replace("\n", "\n\t\t\t\t", rtrim($menu_body)); ?>
 
-<h1><?php echo $page_title; ?></h1>
+			</div>
+		</div><!-- class="sidebar" -->
 
-<div class="calendar">
-<?php if (($is_page) && (TDIARY_CALENDAR_DESIGN !== null)) { ?>
-	<?php if (TDIARY_CALENDAR_DESIGN) { ?>
-		<a href="<?php echo $link['canonical_url']; ?>"><span class="small"><?php echo $link['canonical_url']; ?></span></a>
-	<?php } else { ?>
-		<?php require_once PLUGIN_DIR.'topicpath.inc.php'; echo plugin_topicpath_inline(); ?>
-	<?php } ?>
-<?php } ?>
-</div>
+		<div class="pkwk_body">
+			<div class="main">
+<?php
+}
+?>
 
+				<!-- Navigation buttuns -->
+<?php
+if (PKWK_SKIN_SHOW_NAVBAR) {
+?>
+				<div class="adminmenu">
+					<div id="navigator">
+<?php
+	function _navigator(string $key, string $value = '', string $javascript = '') : bool
+	{
+		$lang = $GLOBALS['_LANG']['skin'];
+		$link = $GLOBALS['_LINK'];
 
-<?php if (($menu) && ($sidebar == 'top')) { ?>
-<!-- Sidebar compat top -->
-<div class="sidebar">
-	<div id="menubar">
-		<?php echo $menu_body; ?>
-	</div>
-</div><!-- class="sidebar" -->
-<?php } // if (($menu) && ($sidebar == 'top'))?>
+		if (!isset($lang[$key])) {
+			echo 'LANG NOT FOUND';
 
+			return false;
+		}
 
-<?php if (($menu) && (($sidebar == 'top') || ($sidebar == 'bottom'))) { ?>
-<div class="pkwk_body">
-<div class="main">
-<?php } ?>
+		if (!isset($link[$key])) {
+			echo 'LINK NOT FOUND';
 
-<hr class="sep" />
+			return false;
+		}
 
-<div class="day">
+		echo '<span class="adminmenu"><a href="'.$link[$key].'" '.$javascript.'>'.(($value === '') ? ($lang[$key]) : ($value)).'</a></span>';
+
+		return true;
+	}
+
+	echo "\n\t\t\t\t\t\t";
+	_navigator('top');
+	echo ' nbsp;';
+
+	if ($is_page) {
+		if ($rw) {
+			echo "\n\t\t\t\t\t\t";
+			_navigator('edit');
+
+			if (($is_read) && ($function_freeze)) {
+				echo "\n\t\t\t\t\t\t";
+
+				if (!$is_freeze) {
+					_navigator('freeze');
+				} else {
+					_navigator('unfreeze');
+				}
+			}
+		}
+
+		echo "\n\t\t\t\t\t\t";
+		_navigator('diff');
+
+		if ($do_backup) {
+			echo "\n\t\t\t\t\t\t";
+			_navigator('backup');
+		}
+
+		if (($rw) && ((bool) (ini_get('file_uploads')))) {
+			echo "\n\t\t\t\t\t\t";
+			_navigator('upload');
+		}
+
+		echo "\n\t\t\t\t\t\t";
+		_navigator('reload');
+
+		echo "\n\t\t\t\t\t\t";
+		echo '&nbsp;';
+	}
+
+	if ($rw) {
+		echo "\n\t\t\t\t\t\t";
+		_navigator('new');
+	}
+
+	echo "\n\t\t\t\t\t\t";
+	_navigator('list');
+
+	if (arg_check('list')) {
+		echo "\n\t\t\t\t\t\t";
+		_navigator('filelist');
+	}
+
+	echo "\n\t\t\t\t\t\t";
+	_navigator('search');
+
+	echo "\n\t\t\t\t\t\t";
+	_navigator('recent');
+
+	echo "\n\t\t\t\t\t\t";
+	_navigator('help');
+
+	if ($enable_login) {
+		echo "\n\t\t\t\t\t\t";
+		_navigator('login');
+	}
+
+	if ($enable_logout) {
+		echo "\n\t\t\t\t\t\t";
+		_navigator('logout');
+	}
+
+	echo "\n\t\t\t\t\t";
+	echo '</div>'."\n\t\t\t\t".'</div>';
+
+} else {
+	echo "\n\t\t\t\t".'<div id="navigator"></div>';
+
+}
+?>
+
+				<h1><?php echo $page_title; ?></h1>
+
+				<div class="calendar">
+<?php
+if (($is_page) && (TDIARY_CALENDAR_DESIGN !== null)) {
+	if (TDIARY_CALENDAR_DESIGN) {
+		echo "\n\t\t\t\t\t".'<a href="'.$link['canonical_url'].'"><span class="small">'.$link['canonical_url'].'</span></a>';
+	} else {
+		require_once PLUGIN_DIR.'topicpath.inc.php';
+		echo "\n\t\t\t\t\t".plugin_topicpath_inline();
+	}
+}
+?>
+
+				</div>
+
+<?php
+if (($menu) && ($sidebar == 'top')) {
+?>
+				<!-- Sidebar compat top -->
+				<div class="sidebar">
+					<div id="menubar">
+						<?php echo str_replace("\n", "\n\t\t\t\t\t\t", rtrim($menu_body)); ?>
+
+					</div>
+				</div><!-- class="sidebar" -->
+<?php
+}
+
+if (($menu) && (($sidebar == 'top') || ($sidebar == 'bottom'))) {
+?>
+		<div class="pkwk_body">
+			<div class="main">
+<?php
+}
+?>
+
+				<hr class="sep" />
+
+				<div class="day">
 
 <?php
 // Page title (page name)
@@ -787,11 +849,11 @@ switch ($title_design_date) {
 }
 
 ?>
-<h2><span class="date"><?php echo $title_date; ?></span>
-    <span class="title"><?php echo $title_text; ?></span></h2>
+					<h2><span class="date"><?php echo $title_date; ?></span>
+					<span class="title"><?php echo $title_text; ?></span></h2>
 
-<div class="body">
-	<div class="section">
+					<div class="body">
+						<div class="section">
 <?php
 	// For read and preview: tDiary have no <h2> inside body
 	$body = preg_replace('#<h2 ([^>]*)>(.*?)<a class="anchor_super" ([^>]*)>.*?</a></h2>#', '<h3 $1><a $3><span class="sanchor">_</span></a> $2</h3>', $body);
@@ -800,206 +862,246 @@ switch ($title_design_date) {
 
 	if ($is_read) {
 		// Read
-		echo $body;
+		echo "\n\t\t\t\t\t\t\t".str_replace("\n", "\n\t\t\t\t\t\t\t", trim($body));
 	} else {
 		// Edit, preview, search, etc
-		echo preg_replace('/(<form) (action="'.preg_quote($script, '/').')/', '$1 class="update" $2', $body);
+		echo "\n\t\t\t\t\t\t\t".str_replace("\n", "\n\t\t\t\t\t\t\t", trim(preg_replace('/(<form) (action="'.preg_quote($script, '/').')/', '$1 class="update" $2', $body)));
 	}
 ?>
-	</div>
-</div><!-- class="body" -->
 
+						</div>
+					</div><!-- class="body" -->
 
-<?php if ($notes != '') { ?>
-<div class="comment"><!-- Design for tDiary "Comments" -->
-	<div class="caption">&nbsp;</div>
-	<div class="commentbody"><br />
-		<?php
-		$notes = preg_replace('#<span class="small">(.*?)</span>#', '<p>$1</p>', $notes);
-		echo preg_replace('#<a (id="notefoot_[^>]*)>(.*?)</a>#', '<div class="commentator"><a $1><span class="canchor"></span> <span class="commentator">$2</span></a><span class="commenttime"></span></div>', $notes);
-		?>
-	</div>
-</div>
-<?php } ?>
-
-<?php if ($attaches != '') { ?>
-<div class="comment">
-	<div class="caption">&nbsp;</div>
-	<div class="commentshort">
-		<?php echo $attaches; ?>
-	</div>
-</div>
-<?php } ?>
-
-<?php if ($related != '') { ?>
-<div class="comment">
-	<div class="caption">&nbsp;</div>
-	<div class="commentshort">
-		Link: <?php echo $related; ?>
-	</div>
-</div>
-<?php } ?>
-
-<!-- Design for tDiary "Today's referrer" -->
-<div class="referer"><?php if ($lastmodified != '') {
-			echo 'Last-modified: '.$lastmodified;
-		} ?></div>
-
-</div><!-- class="day" -->
-
-<hr class="sep" />
-
-
-<?php if (($menu) && ($sidebar == 'another')) { ?>
-</div><!-- class="main" -->
-</div><!-- class="pkwk_body" -->
-
-<!-- Sidebar another -->
-<div class="pkwk_body">
-	<h1>&nbsp;</h1>
-	<div class="calendar"></div>
-	<hr class="sep" />
-	<div class="day">
-		<h2><span class="date"></span><span class="title">&nbsp;</span></h2>
-		<div class="body">
-			<div class="section">
-				<?php echo $menu_body; ?>
-			</div>
-		</div>
-		<div class="referer"></div>
-	</div>
-	<hr class="sep" />
-</div><!-- class="pkwk_body" -->
-
-<div class="pkwk_body">
-<div class="main">
-<?php } // if (($menu) && ($sidebar == 'another'))?>
-
-
-<?php if (($menu) && (($sidebar == 'top') || ($sidebar == 'bottom'))) { ?>
-</div><!-- class="main" -->
-</div><!-- class="pkwk_body" -->
-<?php } ?>
-
-
-<?php if (($menu) && ($sidebar == 'bottom')) { ?>
-<!-- Sidebar compat bottom -->
-<div class="sidebar">
-	<div id="menubar">
-		<?php echo $menu_body; ?>
-	</div>
-</div><!-- class="sidebar" -->
-<?php } // if (($menu) && ($sidebar == 'bottom'))?>
-
-
-<div class="footer">
-<?php if (PKWK_SKIN_SHOW_TOOLBAR) { ?>
-<!-- Toolbar -->
 <?php
-
-// Set toolbar-specific images
-$_IMAGE['skin']['reload'] = 'reload.png';
-$_IMAGE['skin']['new'] = 'new.png';
-$_IMAGE['skin']['edit'] = 'edit.png';
-$_IMAGE['skin']['freeze'] = 'freeze.png';
-$_IMAGE['skin']['unfreeze'] = 'unfreeze.png';
-$_IMAGE['skin']['diff'] = 'diff.png';
-$_IMAGE['skin']['upload'] = 'file.png';
-$_IMAGE['skin']['copy'] = 'copy.png';
-$_IMAGE['skin']['rename'] = 'rename.png';
-$_IMAGE['skin']['top'] = 'top.png';
-$_IMAGE['skin']['list'] = 'list.png';
-$_IMAGE['skin']['search'] = 'search.png';
-$_IMAGE['skin']['recent'] = 'recentchanges.png';
-$_IMAGE['skin']['backup'] = 'backup.png';
-$_IMAGE['skin']['help'] = 'help.png';
-$_IMAGE['skin']['rss'] = 'rss.png';
-$_IMAGE['skin']['rss10'] = &$_IMAGE['skin']['rss'];
-$_IMAGE['skin']['rss20'] = 'rss20.png';
-$_IMAGE['skin']['rdf'] = 'rdf.png';
-
-function _toolbar(string $key, int $x = 20, int $y = 20) : bool
-{
-	$lang = &$GLOBALS['_LANG']['skin'];
-	$link = &$GLOBALS['_LINK'];
-	$image = &$GLOBALS['_IMAGE']['skin'];
-
-	if (!isset($lang[$key])) {
-		echo 'LANG NOT FOUND';
-
-		return false;
-	}
-
-	if (!isset($link[$key])) {
-		echo 'LINK NOT FOUND';
-
-		return false;
-	}
-
-	if (!isset($image[$key])) {
-		echo 'IMAGE NOT FOUND';
-
-		return false;
-	}
-
-	echo '<a href="'.$link[$key].'"><img src="'.IMAGE_DIR.$image[$key].'" width="'.((string) ($x)).'" height="'.((string) ($y)).'" alt="'.$lang[$key].'" title="'.$lang[$key].'" /></a>';
-
-	return true;
-}
-
+if ($notes != '') {
 ?>
- <?php _toolbar('top'); ?>
+					<!-- Design for tDiary "Comments" -->
+					<div class="comment">
+						<div class="caption">&nbsp;</div>
+						<div class="commentbody"><br />
+							<?php
+							$notes = preg_replace('#<span class="small">(.*?)</span>#', '<p>$1</p>', $notes);
+							echo str_replace("\n", "\n\t\t\t\t\t\t\t", preg_replace('#<a (id="notefoot_[^>]*)>(.*?)</a>#', '<div class="commentator"><a $1><span class="canchor"></span> <span class="commentator">$2</span></a><span class="commenttime"></span></div>', $notes));
+							?>
 
-<?php if ($is_page) { ?>
- &nbsp;
- <?php if ($rw) { ?>
-	<?php _toolbar('edit'); ?>
-	<?php if (($is_read) && ($function_freeze)) { ?>
-		<?php if (!$is_freeze) {
-	_toolbar('freeze');
-} else {
-	_toolbar('unfreeze');
-} ?>
-	<?php } ?>
- <?php } ?>
- <?php _toolbar('diff'); ?>
-<?php if ($do_backup) { ?>
-	<?php _toolbar('backup'); ?>
-<?php } ?>
- <?php if (($rw) && ((bool) (ini_get('file_uploads')))) { ?>
-	<?php _toolbar('upload'); ?>
- <?php } ?>
- <?php if ($rw) { ?>
-	<?php _toolbar('copy'); ?>
-	<?php _toolbar('rename'); ?>
- <?php } ?>
- <?php _toolbar('reload'); ?>
-<?php } ?>
- &nbsp;
- <?php if ($rw) { ?>
-	<?php _toolbar('new'); ?>
- <?php } ?>
- <?php _toolbar('list'); ?>
- <?php _toolbar('search'); ?>
- <?php _toolbar('recent'); ?>
- &nbsp; <?php _toolbar('help'); ?>
- &nbsp; <?php _toolbar('rss10', 36, 14); ?>
- <br />
-<?php } // PKWK_SKIN_SHOW_TOOLBAR?>
+						</div>
+					</div>
+<?php
+}
+?>
 
-<!-- Copyright etc -->
- Site admin: <a href="<?php echo $modifierlink; ?>"><?php echo $modifier; ?></a>
- <p>
- <?php echo S_COPYRIGHT; ?>.
- Powered by PHP <?php echo PHP_VERSION; ?><br />
- HTML convert time: <?php echo elapsedtime(); ?> sec.
- </p>
-</div><!-- class="footer" -->
+<?php
+if ($attaches != '') {
+?>
+					<div class="comment">
+						<div class="caption">&nbsp;</div>
+						<div class="commentshort">
+							<?php echo str_replace("\n", "\n\t\t\t\t\t\t\t", rtrim($attaches)); ?>
 
-<?php if (($menu) && (($sidebar != 'top') && ($sidebar != 'bottom'))) { ?>
-</div><!-- class="main" -->
-</div><!-- class="pkwk_body" -->
-<?php } ?>
+						</div>
+					</div>
+<?php
+}
+?>
 
-</body>
+<?php
+if ($related != '') {
+?>
+					<div class="comment">
+						<div class="caption">&nbsp;</div>
+						<div class="commentshort">
+							Link: <?php echo str_replace("\n", "\n\t\t\t\t\t\t\t", $related); ?>
+						</div>
+					</div>
+<?php
+}
+?>
+
+					<!-- Design for tDiary "Today's referrer" -->
+					<div class="referer"><?php if ($lastmodified != '') { echo 'Last-modified: '.$lastmodified; } ?></div>
+
+				</div><!-- class="day" -->
+
+				<hr class="sep" />
+
+
+<?php
+if (($menu) && ($sidebar == 'another')) {
+?>
+			</div><!-- class="main" -->
+		</div><!-- class="pkwk_body" -->
+
+		<!-- Sidebar another -->
+		<div class="pkwk_body">
+			<h1>&nbsp;</h1>
+			<div class="calendar"></div>
+
+			<hr class="sep" />
+
+			<div class="day">
+				<h2><span class="date"></span><span class="title">&nbsp;</span></h2>
+				<div class="body">
+					<div class="section">
+						<?php echo str_replace("\n", "\n\t\t\t\t\t\t", rtrim($menu_body)); ?>
+
+					</div>
+				</div>
+				<div class="referer"></div>
+			</div>
+
+			<hr class="sep" />
+		</div><!-- class="pkwk_body" -->
+
+		<div class="pkwk_body">
+			<div class="main">
+<?php
+}
+?>
+
+
+<?php
+if (($menu) && (($sidebar == 'top') || ($sidebar == 'bottom'))) {
+?>
+			</div><!-- class="main" -->
+		</div><!-- class="pkwk_body" -->
+<?php
+}
+?>
+
+
+<?php
+if (($menu) && ($sidebar == 'bottom')) {
+?>
+				<!-- Sidebar compat bottom -->
+				<div class="sidebar">
+					<div id="menubar">
+						<?php echo str_replace("\n", "\n\t\t\t\t\t\t", rtrim($menu_body)); ?>
+
+					</div>
+				</div><!-- class="sidebar" -->
+<?php
+}
+?>
+
+				<div class="footer">
+<?php
+if (true || PKWK_SKIN_SHOW_TOOLBAR) {
+	echo "\t\t\t\t\t".'<!-- Toolbar -->'."\n\t\t\t\t\t";
+
+	// Set toolbar-specific images
+	$_IMAGE['skin']['reload'] = 'reload.png';
+	$_IMAGE['skin']['new'] = 'new.png';
+	$_IMAGE['skin']['edit'] = 'edit.png';
+	$_IMAGE['skin']['freeze'] = 'freeze.png';
+	$_IMAGE['skin']['unfreeze'] = 'unfreeze.png';
+	$_IMAGE['skin']['diff'] = 'diff.png';
+	$_IMAGE['skin']['upload'] = 'file.png';
+	$_IMAGE['skin']['copy'] = 'copy.png';
+	$_IMAGE['skin']['rename'] = 'rename.png';
+	$_IMAGE['skin']['top'] = 'top.png';
+	$_IMAGE['skin']['list'] = 'list.png';
+	$_IMAGE['skin']['search'] = 'search.png';
+	$_IMAGE['skin']['recent'] = 'recentchanges.png';
+	$_IMAGE['skin']['backup'] = 'backup.png';
+	$_IMAGE['skin']['help'] = 'help.png';
+	$_IMAGE['skin']['rss'] = 'rss.png';
+	$_IMAGE['skin']['rss10'] = &$_IMAGE['skin']['rss'];
+	$_IMAGE['skin']['rss20'] = 'rss20.png';
+	$_IMAGE['skin']['rdf'] = 'rdf.png';
+
+	function _toolbar(string $key, int $x = 20, int $y = 20) : bool
+	{
+		$lang = &$GLOBALS['_LANG']['skin'];
+		$link = &$GLOBALS['_LINK'];
+		$image = &$GLOBALS['_IMAGE']['skin'];
+
+		if (!isset($lang[$key])) {
+			echo 'LANG NOT FOUND';
+
+			return false;
+		}
+
+		if (!isset($link[$key])) {
+			echo 'LINK NOT FOUND';
+
+			return false;
+		}
+
+		if (!isset($image[$key])) {
+			echo 'IMAGE NOT FOUND';
+
+			return false;
+		}
+
+		echo '<a href="'.$link[$key].'"><img src="'.IMAGE_DIR.$image[$key].'" width="'.((string) ($x)).'" height="'.((string) ($y)).'" alt="'.$lang[$key].'" title="'.$lang[$key].'" /></a>';
+
+		return true;
+	}
+
+	_toolbar('top');
+
+	if ($is_page) {
+		echo '&nbsp;';
+
+		if ($rw) {
+			_toolbar('edit');
+
+			if (($is_read) && ($function_freeze)) {
+				if (!$is_freeze) {
+					_toolbar('freeze');
+				} else {
+					_toolbar('unfreeze');
+				}
+			}
+		}
+
+		_toolbar('diff');
+
+		if ($do_backup) {
+			_toolbar('backup');
+		}
+
+		if (($rw) && ((bool) (ini_get('file_uploads')))) {
+			_toolbar('upload');
+		}
+
+		if ($rw) {
+			_toolbar('copy');
+			_toolbar('rename');
+		}
+
+		_toolbar('reload');
+	}
+
+	echo '&nbsp;';
+
+	if ($rw) {
+		_toolbar('new');
+	}
+
+	_toolbar('list');
+	_toolbar('search');
+	_toolbar('recent');
+	echo '&nbsp;';
+	_toolbar('help');
+	echo '&nbsp;';
+	_toolbar('rss10', 36, 14);
+
+	echo '<br />'."\n";
+}
+?>
+
+					<!-- Copyright etc -->
+					Site admin: <a href="<?php echo $modifierlink; ?>"><?php echo $modifier; ?></a>
+					<p><?php echo S_COPYRIGHT; ?>. Powered by PHP <?php echo PHP_VERSION; ?><br /> HTML convert time: <?php echo elapsedtime(); ?> sec.</p>
+				</div><!-- class="footer" -->
+
+<?php
+if (($menu) && (($sidebar != 'top') && ($sidebar != 'bottom'))) {
+	echo "\t\t\t".'</div><!-- class="main" -->';
+	echo "\t\t".'</div><!-- class="pkwk_body" -->';
+}
+?>
+
+	</body>
 </html>

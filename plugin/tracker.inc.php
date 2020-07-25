@@ -89,12 +89,11 @@ function plugin_tracker_convert(string ...$args) : string
 	}
 
 	return <<<EOD
-<form enctype="multipart/form-data" action="{$script}" method="post"
- class="_p_tracker_form">
-<div>
-{$retval}
-{$hiddens}
-</div>
+<form enctype="multipart/form-data" action="{$script}" method="post" class="_p_tracker_form">
+	<div>
+		{$retval}
+		{$hiddens}
+	</div>
 </form>
 EOD;
 }
@@ -423,6 +422,7 @@ class Tracker_field_textarea extends Tracker_field
 		$s_cols = htmlsc($this->values[0]);
 		$s_rows = htmlsc($this->values[1]);
 		$s_value = htmlsc($this->default_value);
+		$s_value = str_replace("\n", '&NewLine;', $s_value);
 
 		return '<textarea name="'.$s_name.'" cols="'.$s_cols.'" rows="'.$s_rows.'">'.$s_value.'</textarea>';
 	}
@@ -581,7 +581,7 @@ class Tracker_field_select extends Tracker_field_radio
 		$retval = '<select name="'.$s_name.'[]"'.$s_size.$s_multiple.'>'."\n";
 
 		if ($empty) {
-			$retval .= " <option value=\"\"></option>\n";
+			$retval .= "\t".'<option value=""></option>'."\n";
 		}
 
 		$defaults = array_flip(preg_split('/\s*,\s*/', $this->default_value, -1, PREG_SPLIT_NO_EMPTY));
@@ -589,7 +589,7 @@ class Tracker_field_select extends Tracker_field_radio
 		foreach ($this->config->get($this->name) as $option) {
 			$s_option = htmlsc($option[0]);
 			$selected = (array_key_exists(trim($option[0]), $defaults)) ? (' selected="selected"') : ('');
-			$retval .= ' <option value="'.$s_option.'"'.$selected.'>'.$s_option.'</option>'."\n";
+			$retval .= "\t".'<option value="'.$s_option.'"'.$selected.'>'.$s_option.'</option>'."\n";
 		}
 
 		$retval .= '</select>';

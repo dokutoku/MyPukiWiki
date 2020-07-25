@@ -86,32 +86,32 @@ function plugin_calendar2_convert(string ...$args) : string
 	$ret = '';
 
 	if ($today_view) {
-		$ret = '<table border="0" summary="calendar frame">'."\n".' <tr>'."\n".'  <td valign="top">'."\n";
+		$ret = '<table border="0" summary="calendar frame">'."\n\t".'<tr>'."\n\t\t".'<td valign="top">'."\n";
 	}
 
 	$ret .= <<<EOD
-   <table class="style_calendar" cellspacing="1" width="200" border="0" summary="calendar body">
-    <tr>
-     <td class="style_td_caltop" colspan="7">
-      <a href="{$script}?plugin=calendar2&amp;file={$r_base}&amp;date={$prev_date_str}">&lt;&lt;</a>
-      <strong>{$m_name}</strong>
-      <a href="{$script}?plugin=calendar2&amp;file={$r_base}&amp;date={$next_date_str}">&gt;&gt;</a>
+			<table class="style_calendar" cellspacing="1" width="200" border="0" summary="calendar body">
+				<tr>
+					<td class="style_td_caltop" colspan="7">
+						<a href="{$script}?plugin=calendar2&amp;file={$r_base}&amp;date={$prev_date_str}">&lt;&lt;</a>
+						<strong>{$m_name}</strong>
+						<a href="{$script}?plugin=calendar2&amp;file={$r_base}&amp;date={$next_date_str}">&gt;&gt;</a>
 EOD;
 
 	if ($prefix) {
-		$ret .= "\n".'      <br />[<a href="'.get_page_uri($base).'">'.$s_base.'</a>]';
+		$ret .= "\n\t\t\t\t\t\t".'<br />[<a href="'.get_page_uri($base).'">'.$s_base.'</a>]';
 	}
 
-	$ret .= "\n".'     </td>'."\n".'    </tr>'."\n".'    <tr>'."\n";
+	$ret .= "\n\t\t\t\t\t".'</td>'."\n\t\t\t\t".'</tr>'."\n\t\t\t\t".'<tr>'."\n";
 
 	foreach ($weeklabels as $label) {
-		$ret .= '     <td class="style_td_week">'.$label.'</td>'."\n";
+		$ret .= "\t\t\t\t\t".'<td class="style_td_week">'.$label.'</td>'."\n";
 	}
 
-	$ret .= '    </tr>'."\n".'    <tr>'."\n";
+	$ret .= "\t\t\t\t".'</tr>'."\n\t\t\t\t".'<tr>'."\n";
 	// Blank
 	for ($i = 0; $i < $wday; $i++) {
-		$ret .= '     <td class="style_td_blank">&nbsp;</td>'."\n";
+		$ret .= "\t\t\t\t\t".'<td class="style_td_blank">&nbsp;</td>'."\n";
 	}
 
 	while (checkdate($m_num, $day, $year)) {
@@ -121,7 +121,7 @@ EOD;
 		$s_page = htmlsc($page);
 
 		if (($wday == 0) && ($day > 1)) {
-			$ret .= '    </tr>'."\n".'    <tr>'."\n";
+			$ret .= "\t\t\t\t".'</tr>'."\n\t\t\t\t".'<tr>'."\n";
 		}
 
 		// Weekday
@@ -149,7 +149,7 @@ EOD;
 			}
 		}
 
-		$ret .= '     <td class="'.$style.'">'."\n".'      '.$link."\n".'     </td>'."\n";
+		$ret .= "\t\t\t\t\t".'<td class="'.$style.'">'."\n\t\t\t\t\t\t".$link."\n\t\t\t\t\t".'</td>'."\n";
 		$day++;
 		$wday = ++$wday % 7;
 	}
@@ -158,11 +158,11 @@ EOD;
 
 		// Blank
 		while ($wday++ < 7) {
-			$ret .= '     <td class="style_td_blank">&nbsp;</td>'."\n";
+			$ret .= "\t\t\t\t\t".'<td class="style_td_blank">&nbsp;</td>'."\n";
 		}
 	}
 
-	$ret .= '    </tr>'."\n".'   </table>'."\n";
+	$ret .= "\t\t\t\t".'</tr>'."\n\t\t\t".'</table>'."\n";
 
 	if ($today_view) {
 		$tpage = $prefix.sprintf('%4d-%02d-%02d', $today['year'], $today['mon'], $today['mday']);
@@ -174,7 +174,7 @@ EOD;
 			$post['page'] = $tpage;
 			$get['page'] = $tpage;
 			$str = convert_html(get_source($tpage));
-			$str .= '<hr /><a class="small" href="'.$script.'?cmd=edit&amp;page='.$r_tpage.'">'.$_calendar2_plugin_edit.'</a>';
+			$str .= "\n".'<hr />'."\n".'<a class="small" href="'.$script.'?cmd=edit&amp;page='.$r_tpage.'">'.$_calendar2_plugin_edit.'</a>';
 			$vars['page'] = $_page;
 			$post['page'] = $_page;
 			$get['page'] = $_page;
@@ -182,7 +182,7 @@ EOD;
 			$str = sprintf($_calendar2_plugin_empty, make_pagelink(sprintf('%s%4d-%02d-%02d', $prefix, $today['year'], $today['mon'], $today['mday'])));
 		}
 
-		$ret .= '  </td>'."\n".'  <td valign="top">'.$str.'</td>'."\n".' </tr>'."\n".'</table>'."\n";
+		$ret .= "\t\t".'</td>'."\n\t\t".'<td valign="top">'.$str.'</td>'."\n\t".'</tr>'."\n".'</table>'."\n";
 	}
 
 	return $ret;

@@ -55,7 +55,7 @@ function plugin_related_action() : array
 		foreach ($data as $page=>$time) {
 			$s_page = htmlsc($page);
 			$mtime_span = get_passage_mtime_html_span($time + LOCALZONE);
-			$retval .= ' <li><a href="'.get_page_uri($page).'">'.$s_page.'</a>'.$mtime_span.'</li>'."\n";
+			$retval .= "\t".'<li><a href="'.get_page_uri($page).'">'.$s_page.'</a>'.$mtime_span.'</li>'."\n";
 		}
 
 		$retval .= '</ul>'."\n";

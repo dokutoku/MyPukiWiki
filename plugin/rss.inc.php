@@ -75,12 +75,12 @@ function plugin_rss_action() : void
 			case '0.91':
 			case '2.0':
 				$date = get_date('D, d M Y H:i:s T', (int) ($time));
-				$date = ($version == '0.91') ? (' <description>'.$date.'</description>') : (' <pubDate>'.$date.'</pubDate>');
+				$date = ($version == '0.91') ? ('<description>'.$date.'</description>') : ('<pubDate>'.$date.'</pubDate>');
 				$items .= <<<EOD
 <item>
- <title>{$title}</title>
- <link>{$self}?{$r_page}</link>
-{$date}
+	<title>{$title}</title>
+	<link>{$self}?{$r_page}</link>
+	{$date}
 </item>
 
 EOD;
@@ -89,15 +89,15 @@ EOD;
 
 		case '1.0':
 			// Add <item> into <items>
-			$rdf_li .= '    <rdf:li rdf:resource="'.$self.'?'.$r_page.'" />'."\n";
+			$rdf_li .= "\t\t\t\t".'<rdf:li rdf:resource="'.$self.'?'.$r_page.'" />'."\n";
 
 			$date = substr_replace(get_date('Y-m-d\TH:i:sO', (int) ($time)), ':', -2, 0);
 			$items .= <<<EOD
 <item rdf:about="{$self}?{$r_page}">
- <title>{$title}</title>
- <link>{$self}?{$r_page}</link>
- <dc:date>{$date}</dc:date>
- <dc:identifier>{$self}?{$r_page}</dc:identifier>
+	<title>{$title}</title>
+	<link>{$self}?{$r_page}</link>
+	<dc:date>{$date}</dc:date>
+	<dc:identifier>{$self}?{$r_page}</dc:identifier>
 </item>
 
 EOD;
@@ -115,6 +115,7 @@ EOD;
 	echo '<?xml version="1.0" encoding="UTF-8"?>'."\n\n";
 
 	$r_whatsnew = pagename_urlencode($whatsnew);
+	$items = rtrim($items);
 
 	switch ($version) {
 		case '0.91':
@@ -122,40 +123,37 @@ EOD;
 			 // FALLTHROUGH
 
 		case '2.0':
+			$items = str_replace("\n", "\n\t\t", $items);
 			print <<<EOD
 <rss version="{$version}">
- <channel>
-  <title>{$page_title_utf8}</title>
-  <link>{$self}?{$r_whatsnew}</link>
-  <description>PukiWiki RecentChanges</description>
-  <language>{$lang}</language>
-
-{$items}
- </channel>
+	<channel>
+		<title>{$page_title_utf8}</title>
+		<link>{$self}?{$r_whatsnew}</link>
+		<description>PukiWiki RecentChanges</description>
+		<language>{$lang}</language>
+		{$items}
+	</channel>
 </rss>
 EOD;
 
 		break;
 
 		case '1.0':
+			$rdf_li = rtrim($rdf_li);
+			$items = str_replace("\n", "\n\t", $items);
 			print <<<EOD
-<rdf:RDF
-  xmlns:dc="http://purl.org/dc/elements/1.1/"
-  xmlns="http://purl.org/rss/1.0/"
-  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  xml:lang="{$lang}">
- <channel rdf:about="{$self}?{$r_whatsnew}">
-  <title>{$page_title_utf8}</title>
-  <link>{$self}?{$r_whatsnew}</link>
-  <description>PukiWiki RecentChanges</description>
-  <items>
-   <rdf:Seq>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns="http://purl.org/rss/1.0/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xml:lang="{$lang}">
+	<channel rdf:about="{$self}?{$r_whatsnew}">
+		<title>{$page_title_utf8}</title>
+		<link>{$self}?{$r_whatsnew}</link>
+		<description>PukiWiki RecentChanges</description>
+		<items>
+			<rdf:Seq>
 {$rdf_li}
-   </rdf:Seq>
-  </items>
- </channel>
-
-{$items}
+			</rdf:Seq>
+		</items>
+	</channel>
+	{$items}
 </rdf:RDF>
 EOD;
 

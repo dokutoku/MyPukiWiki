@@ -584,7 +584,7 @@ function do_search(string $word, string $type = 'AND', bool $non_format = false,
 		$r_page = rawurlencode($page);
 		$s_page = htmlsc($page);
 		$passage = ($show_passage) ? (' '.get_passage_html_span($page)) : ('');
-		$retval .= ' <li><a href="'.get_base_uri().'?cmd=read&amp;page='.$r_page.'&amp;word='.$r_word.'">'.$s_page.'</a>'.$passage.'</li>'."\n";
+		$retval .= "\t".'<li><a href="'.get_base_uri().'?cmd=read&amp;page='.$r_page.'&amp;word='.$r_word.'">'.$s_page.'</a>'.$passage.'</li>'."\n";
 	}
 
 	$retval .= '</ul>'."\n";
@@ -684,11 +684,11 @@ function page_list(array $pages, string $cmd = 'read', bool $withfilename = fals
 	foreach ($pages as $file=>$page) {
 		$r_page = pagename_urlencode($page);
 		$s_page = htmlsc($page, ENT_QUOTES);
-		$str = '   <li><a href="'.$href.$r_page.'">'.$s_page.'</a> '.get_pg_passage($page);
+		$str = "\t\t\t".'<li><a href="'.$href.$r_page.'">'.$s_page.'</a> '.get_pg_passage($page);
 
 		if ($withfilename) {
 			$s_file = htmlsc($file);
-			$str .= "\n".'    <ul><li>'.$s_file.'</li></ul>'."\n".'   ';
+			$str .= "\n\t\t\t\t".'<ul><li>'.$s_file.'</li></ul>'."\n\t\t\t";
 		}
 
 		$str .= '</li>';
@@ -727,13 +727,13 @@ function page_list(array $pages, string $cmd = 'read', bool $withfilename = fals
 		if ($list_index) {
 			$cnt++;
 			$arr_index[] = '<a id="top_'.$cnt.'" href="#head_'.$cnt.'"><strong>'.$head.'</strong></a>';
-			$retval .= ' <li><a id="head_'.$cnt.'" href="#top_'.$cnt.'"><strong>'.$head.'</strong></a>'."\n".'  <ul>'."\n";
+			$retval .= "\t".'<li><a id="head_'.$cnt.'" href="#top_'.$cnt.'"><strong>'.$head.'</strong></a>'."\n\t\t".'<ul>'."\n";
 		}
 
 		$retval .= implode("\n", $sub_pages);
 
 		if ($list_index) {
-			$retval .= "\n  </ul>\n </li>\n";
+			$retval .= "\n\t\t".'</ul>'."\n\t".'</li>'."\n";
 		}
 	}
 
@@ -789,13 +789,13 @@ EOD;
 		echo <<<EOD
 <!DOCTYPE html>
 <html>
- <head>
-  <meta http-equiv="content-type" content="text/html; charset={$charset}">
-  <title>{$title}</title>
- </head>
- <body>
- {$body}
- </body>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset={$charset}">
+		<title>{$title}</title>
+	</head>
+	<body>
+{$body}
+	</body>
 </html>
 EOD;
 	}

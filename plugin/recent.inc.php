@@ -76,29 +76,29 @@ function plugin_recent_convert(string ...$args) : string
 		if ($date != $_date) {
 			// End of the day
 			if ($date != '') {
-				$items .= '</ul>'."\n";
+				$items .= "\t".'</ul>'."\n\n";
 			}
 
 			// New day
 			$date = $_date;
-			$items .= '<strong>'.$date.'</strong>'."\n".'<ul class="recent_list">'."\n";
+			$items .= "\t".'<strong>'.$date.'</strong>'."\n\t".'<ul class="recent_list">'."\n";
 		}
 
 		$s_page = htmlsc($page);
 
 		if ($page === $vars['page']) {
 			// No need to link to the page you just read, or notify where you just read
-			$items .= ' <li>'.$s_page.'</li>'."\n";
+			$items .= "\t\t".'<li>'.$s_page.'</li>'."\n";
 		} else {
 			$attrs = get_page_link_a_attrs($page);
-			$items .= ' <li><a href="'.get_page_uri($page).'" class="'.$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].'">'.$s_page.'</a></li>'."\n";
+			$items .= "\t\t".'<li><a href="'.get_page_uri($page).'" class="'.$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].'">'.$s_page.'</a></li>'."\n";
 		}
 	}
 
 	// End of the day
 	if ($date != '') {
-		$items .= '</ul>'."\n";
+		$items .= "\t".'</ul>'."\n\n";
 	}
 
-	return sprintf($_recent_plugin_frame, count($lines), $items);
+	return sprintf($_recent_plugin_frame, count($lines), rtrim($items));
 }

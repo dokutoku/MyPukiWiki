@@ -33,14 +33,14 @@ function plugin_lookup_convert(string ...$args) : string
 	$script = get_base_uri();
 	$ret = <<<EOD
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden" name="plugin" value="lookup" />
-  <input type="hidden" name="refer"  value="{$s_page}" />
-  <input type="hidden" name="inter"  value="{$interwiki}" />
-  <label for="_p_lookup_{$id}">{$interwiki}:</label>
-  <input type="text" name="page" id="_p_lookup_{$id}" size="30" value="{$default}" />
-  <input type="submit" value="{$button}" />
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="lookup" />
+		<input type="hidden" name="refer" value="{$s_page}" />
+		<input type="hidden" name="inter" value="{$interwiki}" />
+		<label for="_p_lookup_{$id}">{$interwiki}:</label>
+		<input type="text" name="page" id="_p_lookup_{$id}" size="30" value="{$default}" />
+		<input type="submit" value="{$button}" />
+	</div>
 </form>
 EOD;
 

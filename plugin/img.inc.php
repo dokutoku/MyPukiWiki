@@ -202,9 +202,7 @@ function plugin_img_convert(string ...$args) : string
 		$a_end = $p->a_end;
 
 		return <<<EOD
-<div style="float:{$align};padding:.5em 1.5em .5em 1.5em;">
- {$a_begin}<img class="plugin-img-block" src="{$h_url}" style="{$style}" alt="" />{$a_end}
-</div>{$clear}
+<div style="float:{$align};padding:.5em 1.5em .5em 1.5em;">{$a_begin}<img class="plugin-img-block" src="{$h_url}" style="{$style}" alt="" />{$a_end}</div>{$clear}
 EOD;
 	}
 

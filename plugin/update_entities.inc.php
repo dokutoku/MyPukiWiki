@@ -62,13 +62,13 @@ function plugin_update_entities_action() : array
 		$body = convert_html(sprintf($_entities_messages['msg_usage'], implode("\n".'-', $items)));
 		$body .= <<<EOD
 <form method="post" action="{$script}">
- <div>
-  <input type="hidden" name="plugin" value="update_entities" />
-  <input type="hidden" name="action" value="update" />
-  <label for="_p_update_entities_adminpass">{$_entities_messages['msg_adminpass']}</label>
-  <input type="password" name="adminpass" id="_p_update_entities_adminpass" size="20" value="" />
-  <input type="submit" value="{$_entities_messages['btn_submit']}" />
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="update_entities" />
+		<input type="hidden" name="action" value="update" />
+		<label for="_p_update_entities_adminpass">{$_entities_messages['msg_adminpass']}</label>
+		<input type="password" name="adminpass" id="_p_update_entities_adminpass" size="20" value="" />
+		<input type="submit" value="{$_entities_messages['btn_submit']}" />
+	</div>
 </form>
 EOD;
 	} elseif ($vars['action'] == 'update') {

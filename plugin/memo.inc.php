@@ -70,14 +70,15 @@ function plugin_memo_action() : array
 		$s_refer = htmlsc($vars['refer']);
 		$s_digest = htmlsc($vars['digest']);
 		$s_postdata_input = htmlsc($postdata_input);
+		$s_postdata_input = str_replace("\n", '&NewLine;', $s_postdata_input);
 
 		$body .= <<<EOD
 <form action="{$script}?cmd=preview" method="post">
- <div>
-  <input type="hidden" name="refer"  value="{$s_refer}" />
-  <input type="hidden" name="digest" value="{$s_digest}" />
-  <textarea name="msg" rows="{$rows}" cols="{$cols}" id="textarea">{$s_postdata_input}</textarea><br />
- </div>
+	<div>
+		<input type="hidden" name="refer" value="{$s_refer}" />
+		<input type="hidden" name="digest" value="{$s_digest}" />
+		<textarea name="msg" rows="{$rows}" cols="{$cols}" id="textarea">{$s_postdata_input}</textarea><br />
+	</div>
 </form>
 EOD;
 	} else {
@@ -123,23 +124,24 @@ function plugin_memo_convert(string ...$data) : string
 		$_submit = '';
 	} else {
 		$_script = get_base_uri();
-		$_submit = '<input type="submit" name="memo"    value="'.$_btn_memo_update.'" />';
+		$_submit = '<input type="submit" name="memo" value="'.$_btn_memo_update.'" />';
 	}
 
 	$s_page = htmlsc($vars['page']);
 	$s_digest = htmlsc($digest);
 	$s_cols = MEMO_COLS;
 	$s_rows = MEMO_ROWS;
+	$data = str_replace("\n", '&NewLine;', $data);
 	$string = <<<EOD
 <form action="{$_script}" method="post" class="memo">
- <div>
-  <input type="hidden" name="memo_no" value="{$memo_no}" />
-  <input type="hidden" name="refer"   value="{$s_page}" />
-  <input type="hidden" name="plugin"  value="memo" />
-  <input type="hidden" name="digest"  value="{$s_digest}" />
-  <textarea name="msg" rows="{$s_rows}" cols="{$s_cols}">{$data}</textarea><br />
-  {$_submit}
- </div>
+	<div>
+		<input type="hidden" name="memo_no" value="{$memo_no}" />
+		<input type="hidden" name="refer" value="{$s_page}" />
+		<input type="hidden" name="plugin" value="memo" />
+		<input type="hidden" name="digest" value="{$s_digest}" />
+		<textarea name="msg" rows="{$s_rows}" cols="{$s_cols}">{$data}</textarea><br />
+		{$_submit}
+	</div>
 </form>
 EOD;
 

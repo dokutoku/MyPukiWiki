@@ -129,25 +129,25 @@ function plugin_paint_action() : array
 		}
 
 		$retval['body'] .= <<<EOD
- <div>
- {$link}
- {$message}
- <applet codebase="." archive="BBSPainter.jar" code="Main.class" width="{$w}" height="{$h}">
- <param name="size" value="{$f_w},{$f_h}" />
- <param name="action" value="{$script}" />
- <param name="image" value="attach_file" />
- <param name="form1" value="filename={$_paint_messages['field_filename']}=!" />
- <param name="form2" value="yourname={$_paint_messages['field_name']}" />
- <param name="comment" value="msg={$_paint_messages['field_comment']}" />
- <param name="param1" value="plugin=paint" />
- <param name="param2" value="refer={$f_refer}" />
- <param name="param3" value="digest={$f_digest}" />
- <param name="param4" value="max_file_size=1000000" />
- <param name="param5" value="paint_no={$f_no}" />
- <param name="enctype" value="multipart/form-data" />
- <param name="return.URL" value="{$page_uri}" />
- </applet>
- </div>
+<div>
+	{$link}
+	{$message}
+	<applet codebase="." archive="BBSPainter.jar" code="Main.class" width="{$w}" height="{$h}">
+		<param name="size" value="{$f_w},{$f_h}" />
+		<param name="action" value="{$script}" />
+		<param name="image" value="attach_file" />
+		<param name="form1" value="filename={$_paint_messages['field_filename']}=!" />
+		<param name="form2" value="yourname={$_paint_messages['field_name']}" />
+		<param name="comment" value="msg={$_paint_messages['field_comment']}" />
+		<param name="param1" value="plugin=paint" />
+		<param name="param2" value="refer={$f_refer}" />
+		<param name="param3" value="digest={$f_digest}" />
+		<param name="param4" value="max_file_size=1000000" />
+		<param name="param5" value="paint_no={$f_no}" />
+		<param name="enctype" value="multipart/form-data" />
+		<param name="return.URL" value="{$page_uri}" />
+	</applet>
+</div>
 EOD;
 	}
 
@@ -200,19 +200,19 @@ function plugin_paint_convert(string ...$args) : string
 	$max = sprintf($_paint_messages['msg_max'], PAINT_MAX_WIDTH, PAINT_MAX_HEIGHT);
 
 	$ret = <<<EOD
-  <form action="{$script}" method="post">
-  <div>
-  <input type="hidden" name="paint_no" value="{$paint_no}" />
-  <input type="hidden" name="digest" value="{$digest}" />
-  <input type="hidden" name="plugin" value="paint" />
-  <input type="hidden" name="refer" value="{$f_page}" />
-  <input type="text" name="width" size="3" value="{$width}" />
-  x
-  <input type="text" name="height" size="3" value="{$height}" />
-  {$max}
-  <input type="submit" value="{$_paint_messages['btn_submit']}" />
-  </div>
-  </form>
+<form action="{$script}" method="post">
+	<div>
+		<input type="hidden" name="paint_no" value="{$paint_no}" />
+		<input type="hidden" name="digest" value="{$digest}" />
+		<input type="hidden" name="plugin" value="paint" />
+		<input type="hidden" name="refer" value="{$f_page}" />
+		<input type="text" name="width" size="3" value="{$width}" />
+		x
+		<input type="text" name="height" size="3" value="{$height}" />
+		{$max}
+		<input type="submit" value="{$_paint_messages['btn_submit']}" />
+	</div>
+</form>
 EOD;
 
 	return $ret;

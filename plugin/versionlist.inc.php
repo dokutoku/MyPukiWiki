@@ -79,26 +79,26 @@ function plugin_versionlist_convert() : string
 	foreach ($comments as $comment) {
 		$retval .= <<<EOD
 
-  <tr>
-   <td>{$comment['file']}</td>
-   <td align="right">{$comment['rev']}</td>
-   <td>{$comment['date']}</td>
-  </tr>
+		<tr>
+			<td>{$comment['file']}</td>
+			<td align="right">{$comment['rev']}</td>
+			<td>{$comment['date']}</td>
+		</tr>
 EOD;
 	}
 
 	return <<<EOD
 <table border="1">
- <thead>
-  <tr>
-   <th>filename</th>
-   <th>revision</th>
-   <th>date</th>
-  </tr>
- </thead>
- <tbody>
+	<thead>
+		<tr>
+			<th>filename</th>
+			<th>revision</th>
+			<th>date</th>
+		</tr>
+	</thead>
+	<tbody>
 {$retval}
- </tbody>
+	</tbody>
 </table>
 EOD;
 }

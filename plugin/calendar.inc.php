@@ -80,24 +80,21 @@ function plugin_calendar_convert(string ...$args)
 
 	$ret = <<<EOD
 <table class="style_calendar" cellspacing="1" width="200" border="0">
- <tr>
-  <td class="style_td_caltop" colspan="7">
-   <strong>{$m_name}</strong><br />
-   [<a href="{$page_uri}">{$pre}</a>]
-  </td>
- </tr>
- <tr>
+	<tr>
+		<td class="style_td_caltop" colspan="7"><strong>{$m_name}</strong><br /> [<a href="{$page_uri}">{$pre}</a>]</td>
+	</tr>
+	<tr>
 EOD;
 
 	foreach ($weeklabels as $label) {
-		$ret .= '  <td class="style_td_week"><strong>'.$label.'</strong></td>'."\n";
+		$ret .= "\t\t".'<td class="style_td_week"><strong>'.$label.'</strong></td>'."\n";
 	}
 
-	$ret .= ' </tr>'."\n".' <tr>'."\n";
+	$ret .= "\t".'</tr>'."\n\t".'<tr>'."\n";
 
 	// Blank
 	for ($i = 0; $i < $wday; $i++) {
-		$ret .= '    <td class="style_td_blank">&nbsp;</td>'."\n";
+		$ret .= "\t\t\t\t".'<td class="style_td_blank">&nbsp;</td>'."\n";
 	}
 
 	while (checkdate($m_num, $day, $year)) {
@@ -115,21 +112,21 @@ EOD;
 		}
 
 		if (($wday == 0) && ($day > 1)) {
-			$ret .= '  </tr><tr>'."\n";
+			$ret .= "\t".'</tr>'."\n\t".'<tr>'."\n";
 		}
 
 		if ((!$other_month) && ($day == $today['mday']) && ($m_num == $today['mon']) && ($year == $today['year'])) {
 			//  Today
-			$ret .= '    <td class="style_td_today"><span class="small">'.$link.'</span></td>'."\n";
+			$ret .= "\t\t".'<td class="style_td_today"><span class="small">'.$link.'</span></td>'."\n";
 		} elseif ($wday == 0) {
 			//  Sunday
-			$ret .= '    <td class="style_td_sun"><span class="small">'.$link.'</span></td>'."\n";
+			$ret .= "\t\t".'<td class="style_td_sun"><span class="small">'.$link.'</span></td>'."\n";
 		} elseif ($wday == 6) {
 			//  Saturday
-			$ret .= '    <td class="style_td_sat"><span class="small">'.$link.'</span></td>'."\n";
+			$ret .= "\t\t".'<td class="style_td_sat"><span class="small">'.$link.'</span></td>'."\n";
 		} else {
 			// Weekday
-			$ret .= '    <td class="style_td_day"><span class="small">'.$link.'</span></td>'."\n";
+			$ret .= "\t\t".'<td class="style_td_day"><span class="small">'.$link.'</span></td>'."\n";
 		}
 
 		$day++;
@@ -140,12 +137,12 @@ EOD;
 	if ($wday > 0) {
 		while ($wday < 7) {
 			// Blank
-			$ret .= '    <td class="style_td_blank">&nbsp;</td>'."\n";
+			$ret .= "\t\t".'<td class="style_td_blank">&nbsp;</td>'."\n";
 			$wday++;
 		}
 	}
 
-	$ret .= '  </tr>'."\n".'</table>'."\n";
+	$ret .= "\t".'</tr>'."\n".'</table>'."\n";
 
 	return $ret;
 }

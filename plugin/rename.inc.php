@@ -134,18 +134,18 @@ function plugin_rename_phase1(string $err = '', string $page = '') : array
 	$ret['body'] = <<<EOD
 {$msg}
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden" name="plugin" value="rename" />
-  <input type="radio"  name="method" id="_p_rename_page" value="page"{$radio_page} />
-  <label for="_p_rename_page">{$_rename_messages['msg_page']}:</label>{$select_refer}<br />
-  <input type="radio"  name="method" id="_p_rename_regex" value="regex"{$radio_regex} />
-  <label for="_p_rename_regex">{$_rename_messages['msg_regex']}:</label><br />
-  <label for="_p_rename_from">From:</label><br />
-  <input type="text" name="src" id="_p_rename_from" size="80" value="{$s_src}" /><br />
-  <label for="_p_rename_to">To:</label><br />
-  <input type="text" name="dst" id="_p_rename_to"   size="80" value="{$s_dst}" /><br />
-  <input type="submit" value="{$_rename_messages['btn_next']}" /><br />
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="rename" />
+		<input type="radio" name="method" id="_p_rename_page" value="page"{$radio_page} />
+		<label for="_p_rename_page">{$_rename_messages['msg_page']}:</label>{$select_refer}<br />
+		<input type="radio" name="method" id="_p_rename_regex" value="regex"{$radio_regex} />
+		<label for="_p_rename_regex">{$_rename_messages['msg_regex']}:</label><br />
+		<label for="_p_rename_from">From:</label><br />
+		<input type="text" name="src" id="_p_rename_from" size="80" value="{$s_src}" /><br />
+		<label for="_p_rename_to">To:</label><br />
+		<input type="text" name="dst" id="_p_rename_to" size="80" value="{$s_dst}" /><br />
+		<input type="submit" value="{$_rename_messages['btn_next']}" /><br />
+	</div>
 </form>
 EOD;
 
@@ -182,24 +182,24 @@ function plugin_rename_phase2(string $err = '') : array
 	$ret['body'] = <<<EOD
 {$msg}
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden" name="plugin" value="rename" />
-  <input type="hidden" name="refer"  value="{$s_refer}" />
-  {$msg_rename}<br />
-  <label for="_p_rename_newname">{$_rename_messages['msg_newname']}:</label>
-  <input type="text" name="page" id="_p_rename_newname" size="80" value="{$s_page}" /><br />
-  {$msg_related}
-  <input type="submit" value="{$_rename_messages['btn_next']}" /><br />
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="rename" />
+		<input type="hidden" name="refer" value="{$s_refer}" />
+		{$msg_rename}<br />
+		<label for="_p_rename_newname">{$_rename_messages['msg_newname']}:</label>
+		<input type="text" name="page" id="_p_rename_newname" size="80" value="{$s_page}" /><br />
+		{$msg_related}
+		<input type="submit" value="{$_rename_messages['btn_next']}" /><br />
+	</div>
 </form>
 EOD;
 
 	if (!empty($related)) {
-		$ret['body'] .= '<hr /><p>'.$_rename_messages['msg_related'].'</p><ul>';
+		$ret['body'] .= "\n".'<hr />'."\n".'<p>'.$_rename_messages['msg_related'].'</p>'."\n".'<ul>'."\n";
 		sort($related, SORT_STRING);
 
 		foreach ($related as $name) {
-			$ret['body'] .= '<li>'.make_pagelink($name).'</li>';
+			$ret['body'] .= "\t".'<li>'.make_pagelink($name).'</li>'."\n";
 		}
 
 		$ret['body'] .= '</ul>';
@@ -276,7 +276,7 @@ function plugin_rename_phase3(array $pages) : array
 	if (($pass != '') && (pkwk_login($pass))) {
 		plugin_rename_proceed($pages, $files, $exists);
 	} elseif ($pass != '') {
-		$msg = plugin_rename_err('adminpass');
+		$msg = plugin_rename_err('adminpass')."\n";
 	}
 
 	$method = plugin_rename_getvar('method');
@@ -284,60 +284,60 @@ function plugin_rename_phase3(array $pages) : array
 	if ($method == 'regex') {
 		$s_src = htmlsc(plugin_rename_getvar('src'));
 		$s_dst = htmlsc(plugin_rename_getvar('dst'));
-		$msg .= $_rename_messages['msg_regex'].'<br />';
-		$input .= '<input type="hidden" name="method" value="regex" />';
-		$input .= '<input type="hidden" name="src"    value="'.$s_src.'" />';
-		$input .= '<input type="hidden" name="dst"    value="'.$s_dst.'" />';
+		$msg .= $_rename_messages['msg_regex'].'<br />'."\n";
+		$input .= '<input type="hidden" name="method" value="regex" />'."\n";
+		$input .= '<input type="hidden" name="src" value="'.$s_src.'" />'."\n";
+		$input .= '<input type="hidden" name="dst" value="'.$s_dst.'" />'."\n";
 	} else {
 		$s_refer = htmlsc(plugin_rename_getvar('refer'));
 		$s_page = htmlsc(plugin_rename_getvar('page'));
 		$s_related = htmlsc(plugin_rename_getvar('related'));
-		$msg .= $_rename_messages['msg_page'].'<br />';
-		$input .= '<input type="hidden" name="method"  value="page" />';
-		$input .= '<input type="hidden" name="refer"   value="'.$s_refer.'" />';
-		$input .= '<input type="hidden" name="page"    value="'.$s_page.'" />';
-		$input .= '<input type="hidden" name="related" value="'.$s_related.'" />';
+		$msg .= $_rename_messages['msg_page'].'<br />'."\n";
+		$input .= '<input type="hidden" name="method" value="page" />'."\n";
+		$input .= '<input type="hidden" name="refer" value="'.$s_refer.'" />'."\n";
+		$input .= '<input type="hidden" name="page" value="'.$s_page.'" />'."\n";
+		$input .= '<input type="hidden" name="related" value="'.$s_related.'" />'."\n";
 	}
 
 	if (!empty($exists)) {
-		$msg .= $_rename_messages['err_already_below'].'<ul>';
+		$msg .= $_rename_messages['err_already_below'].'<ul>'."\n";
 
 		foreach ($exists as $page=>$arr) {
-			$msg .= '<li>'.make_pagelink(decode($page));
+			$msg .= "\t".'<li>'.make_pagelink(decode($page));
 			$msg .= $_rename_messages['msg_arrow'];
 			$msg .= htmlsc(decode($pages[$page]));
 
 			if (!empty($arr)) {
-				$msg .= '<ul>'."\n";
+				$msg .= "\n\t\t".'<ul>'."\n";
 
 				foreach ($arr as $ofile=>$nfile) {
-					$msg .= '<li>'.$ofile.$_rename_messages['msg_arrow'].$nfile.'</li>'."\n";
+					$msg .= "\t\t\t".'<li>'.$ofile.$_rename_messages['msg_arrow'].$nfile.'</li>'."\n";
 				}
 
-				$msg .= '</ul>';
+				$msg .= "\t\t".'</ul>'."\n";
 			}
 
 			$msg .= '</li>'."\n";
 		}
 
-		$msg .= '</ul><hr />'."\n";
+		$msg .= '</ul>'."\n".'<hr />'."\n";
 
-		$input .= '<input type="radio" name="exist" value="0" checked="checked" />'.$_rename_messages['msg_exist_none'].'<br />';
-		$input .= '<input type="radio" name="exist" value="1" />'.$_rename_messages['msg_exist_overwrite'].'<br />';
+		$input .= '<input type="radio" name="exist" value="0" checked="checked" />'.$_rename_messages['msg_exist_none'].'<br />'."\n";
+		$input .= '<input type="radio" name="exist" value="1" />'.$_rename_messages['msg_exist_overwrite'].'<br />'."\n";
 	}
 
 	$ret = [];
 	$ret['msg'] = $_rename_messages['msg_title'];
-	$ret['body'] = <<<EOD
-<p>{$msg}</p>
+	$ret['body'] = '<p>'.((!empty($msg)) ? ("\n\t".$msg) : ('')).'</p>';
+	$ret['body'] .= <<<EOD
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden" name="plugin" value="rename" />
-  {$input}
-  <label for="_p_rename_adminpass">{$_rename_messages['msg_adminpass']}</label>
-  <input type="password" name="pass" id="_p_rename_adminpass" value="" />
-  <input type="submit" value="{$_rename_messages['btn_submit']}" />
- </div>
+	<div>
+		<input type="hidden" name="plugin" value="rename" />
+		{$input}
+		<label for="_p_rename_adminpass">{$_rename_messages['msg_adminpass']}</label>
+		<input type="password" name="pass" id="_p_rename_adminpass" value="" />
+		<input type="submit" value="{$_rename_messages['btn_submit']}" />
+	</div>
 </form>
 <p>{$_rename_messages['msg_confirm']}</p>
 EOD;
@@ -346,7 +346,7 @@ EOD;
 	$ret['body'] .= '<ul>'."\n";
 
 	foreach ($pages as $old=>$new) {
-		$ret['body'] .= '<li>'.make_pagelink(decode($old)).$_rename_messages['msg_arrow'].htmlsc(decode($new)).'</li>'."\n";
+		$ret['body'] .= "\t".'<li>'.make_pagelink(decode($old)).$_rename_messages['msg_arrow'].htmlsc(decode($new)).'</li>'."\n";
 	}
 
 	$ret['body'] .= '</ul>'."\n";
@@ -526,12 +526,12 @@ function plugin_rename_getselecttag(string $page) : string
 	}
 
 	ksort($pages, SORT_STRING);
-	$list = implode("\n".' ', $pages);
+	$list = implode("\n\t", $pages);
 
 	return <<<EOD
 <select name="refer">
- <option value=""></option>
- {$list}
+	<option value=""></option>
+	{$list}
 </select>
 EOD;
 }

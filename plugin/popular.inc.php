@@ -82,9 +82,9 @@ function plugin_popular_convert(string ...$array) : string
 			if ($page === $vars['page']) {
 				// No need to link itself, notifies where you just read
 				$attrs = get_page_link_a_attrs($page);
-				$items .= ' <li><span class="'.$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].'">'.$s_page.'<span class="counter">('.$count.')</span></span></li>'."\n";
+				$items .= "\t".'<li><span class="'.$attrs['class'].'" data-mtime="'.$attrs['data_mtime'].'">'.$s_page.'<span class="counter">('.$count.')</span></span></li>'."\n";
 			} else {
-				$items .= ' <li>'.make_pagelink($page, $s_page.'<span class="counter">('.$count.')</span>').'</li>'."\n";
+				$items .= "\t".'<li>'.make_pagelink($page, $s_page.'<span class="counter">('.$count.')</span>').'</li>'."\n";
 			}
 		}
 

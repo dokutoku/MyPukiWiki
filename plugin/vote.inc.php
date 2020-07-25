@@ -72,14 +72,15 @@ function plugin_vote_action() : array
 		$s_refer = htmlsc($vars['refer']);
 		$s_digest = htmlsc($vars['digest']);
 		$s_postdata_input = htmlsc($postdata_input);
+		$s_postdata_input = str_replace("\n", '&NewLine;', $s_postdata_input);
 		$body = <<<EOD
 {$_msg_collided}
 <form action="{$script}?cmd=preview" method="post">
- <div>
-  <input type="hidden" name="refer"  value="{$s_refer}" />
-  <input type="hidden" name="digest" value="{$s_digest}" />
-  <textarea name="msg" rows="{$rows}" cols="{$cols}" id="textarea">{$s_postdata_input}</textarea><br />
- </div>
+	<div>
+		<input type="hidden" name="refer" value="{$s_refer}" />
+		<input type="hidden" name="digest" value="{$s_digest}" />
+		<textarea name="msg" rows="{$rows}" cols="{$cols}" id="textarea">{$s_postdata_input}</textarea><br />
+	</div>
 </form>
 
 EOD;
@@ -128,16 +129,16 @@ function plugin_vote_convert(string ...$args) : string
 
 	$body = <<<EOD
 <form action="{$_script}" method="post">
- <table cellspacing="0" cellpadding="2" class="style_table" summary="vote">
-  <tr>
-   <td align="left" class="vote_label" style="padding-left:1em;padding-right:1em"><strong>{$_vote_plugin_choice}</strong>
-    <input type="hidden" name="plugin"  value="vote" />
-    <input type="hidden" name="refer"   value="{$s_page}" />
-    <input type="hidden" name="vote_no" value="{$vote_no}" />
-    <input type="hidden" name="digest"  value="{$s_digest}" />
-   </td>
-   <td align="center" class="vote_label"><strong>{$_vote_plugin_votes}</strong></td>
-  </tr>
+	<table cellspacing="0" cellpadding="2" class="style_table" summary="vote">
+		<tr>
+			<td align="left" class="vote_label" style="padding-left:1em;padding-right:1em"><strong>{$_vote_plugin_choice}</strong>
+				<input type="hidden" name="plugin" value="vote" />
+				<input type="hidden" name="refer" value="{$s_page}" />
+				<input type="hidden" name="vote_no" value="{$vote_no}" />
+				<input type="hidden" name="digest" value="{$s_digest}" />
+			</td>
+			<td align="center" class="vote_label"><strong>{$_vote_plugin_votes}</strong></td>
+		</tr>
 
 EOD;
 
@@ -159,18 +160,18 @@ EOD;
 		$cls = ($tdcnt++ % 2) ? ('vote_td1') : ('vote_td2');
 
 		$body .= <<<EOD
-  <tr>
-   <td align="left"  class="{$cls}" style="padding-left:1em;padding-right:1em;">{$link}</td>
-   <td align="right" class="{$cls}">{$cnt}&nbsp;&nbsp;
-    <input type="{$_submit}" name="vote_{$e_arg}" value="{$_vote_plugin_votes}" class="submit" />
-   </td>
-  </tr>
+		<tr>
+			<td align="left" class="{$cls}" style="padding-left:1em;padding-right:1em;">{$link}</td>
+			<td align="right" class="{$cls}">{$cnt}&nbsp;&nbsp;
+				<input type="{$_submit}" name="vote_{$e_arg}" value="{$_vote_plugin_votes}" class="submit" />
+			</td>
+		</tr>
 
 EOD;
 	}
 
 	$body .= <<<'EOD'
- </table>
+	</table>
 </form>
 
 EOD;

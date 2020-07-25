@@ -72,14 +72,15 @@ function plugin_insert_action() : array
 		$s_refer = htmlsc($vars['refer']);
 		$s_digest = htmlsc($vars['digest']);
 		$s_postdata_input = htmlsc($postdata_input);
+		$s_postdata_input = str_replace("\n", '&NewLine;', $s_postdata_input);
 
 		$body .= <<<EOD
 <form action="{$script}?cmd=preview" method="post">
- <div>
-  <input type="hidden" name="refer"  value="{$s_refer}" />
-  <input type="hidden" name="digest" value="{$s_digest}" />
-  <textarea name="msg" rows="{$rows}" cols="{$cols}" id="textarea">{$s_postdata_input}</textarea><br />
- </div>
+	<div>
+		<input type="hidden" name="refer" value="{$s_refer}" />
+		<input type="hidden" name="digest" value="{$s_digest}" />
+		<textarea name="msg" rows="{$rows}" cols="{$cols}" id="textarea">{$s_postdata_input}</textarea><br />
+	</div>
 </form>
 EOD;
 	} else {
@@ -122,14 +123,14 @@ function plugin_insert_convert() : string
 	$s_rows = INSERT_ROWS;
 	$string = <<<EOD
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden" name="insert_no" value="{$insert_no}" />
-  <input type="hidden" name="refer"  value="{$s_page}" />
-  <input type="hidden" name="plugin" value="insert" />
-  <input type="hidden" name="digest" value="{$s_digest}" />
-  <textarea name="msg" rows="{$s_rows}" cols="{$s_cols}"></textarea><br />
-  <input type="submit" name="insert" value="{$_btn_insert}" />
- </div>
+	<div>
+		<input type="hidden" name="insert_no" value="{$insert_no}" />
+		<input type="hidden" name="refer" value="{$s_page}" />
+		<input type="hidden" name="plugin" value="insert" />
+		<input type="hidden" name="digest" value="{$s_digest}" />
+		<textarea name="msg" rows="{$s_rows}" cols="{$s_cols}"></textarea><br />
+		<input type="submit" name="insert" value="{$_btn_insert}" />
+	</div>
 </form>
 EOD;
 

@@ -30,9 +30,9 @@ function plugin_external_link_action() : void
 	if (!$valid_url) {
 		$error_message = <<< 'EOM'
 <html>
-  <body>
-    The URL is invalid.
-  </body>
+	<body>
+		The URL is invalid.
+	</body>
 </html>
 EOM;
 		echo $error_message;
@@ -47,16 +47,16 @@ EOM;
 	$h_wait = htmlsc(str_replace('%s', (string) ($external_link_cushion['wait_seconds']), $_external_link_messages['wait_n_seconds']));
 	$body = <<< EOM
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
-    <meta http-equiv="Refresh" content="{$refreshwait};URL={$encoded_url}" />
-    <title>{$h_title}</title>
-  </head>
-  <body>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
+		<meta http-equiv="Refresh" content="{$refreshwait};URL={$encoded_url}" />
+		<title>{$h_title}</title>
+	</head>
+	<body>
 		<p>{$h_desc}</p>
 		<p>{$h_wait}</p>
 		<p><a href="{$encoded_url}">{$encoded_url}</a></p>
-  </body>
+	</body>
 </html>
 EOM;
 	echo $body;

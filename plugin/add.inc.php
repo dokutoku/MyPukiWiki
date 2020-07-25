@@ -26,5 +26,5 @@ function plugin_add_action() : array
 	$post['add'] = true;
 	$get['add'] = true;
 
-	return ['msg'=>$_title_add, 'body'=>'<ul>'."\n".' <li>'.$_msg_add.'</li>'."\n".'</ul>'."\n".edit_form($page, '')];
+	return ['msg'=>$_title_add, 'body'=>'<ul>'."\n\t".'<li>'.$_msg_add.'</li>'."\n".'</ul>'."\n".edit_form($page, '')];
 }

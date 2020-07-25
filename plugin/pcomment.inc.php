@@ -162,19 +162,20 @@ function plugin_pcomment_convert(string ...$args) : string
 		$s_nodate = htmlsc($params['nodate']);
 		$s_count = htmlsc((string) ($count));
 
-		$form_start = '<form action="'.get_base_uri().'" method="post" class="_p_pcomment_form">'."\n";
+		$form_start = '<form action="'.get_base_uri().'" method="post" class="_p_pcomment_form">';
 		$form = <<<EOD
-  <div>
-  <input type="hidden" name="digest" value="{$digest}" />
-  <input type="hidden" name="plugin" value="pcomment" />
-  <input type="hidden" name="refer"  value="{$s_refer}" />
-  <input type="hidden" name="page"   value="{$s_page}" />
-  <input type="hidden" name="nodate" value="{$s_nodate}" />
-  <input type="hidden" name="dir"    value="{$dir}" />
-  <input type="hidden" name="count"  value="{$count}" />
-  {$radio} {$title} {$name} {$comment}
-  <input type="submit" value="{$_pcmt_messages['btn_comment']}" />
-  </div>
+		<div>
+			<input type="hidden" name="digest" value="{$digest}" />
+			<input type="hidden" name="plugin" value="pcomment" />
+			<input type="hidden" name="refer" value="{$s_refer}" />
+			<input type="hidden" name="page" value="{$s_page}" />
+			<input type="hidden" name="nodate" value="{$s_nodate}" />
+			<input type="hidden" name="dir" value="{$dir}" />
+			<input type="hidden" name="count" value="{$count}" />
+			{$radio} {$title} {$name} {$comment}
+			<input type="submit" value="{$_pcmt_messages['btn_comment']}" />
+		</div>
+
 EOD;
 		$form_end = '</form>'."\n";
 	}
@@ -189,9 +190,9 @@ EOD;
 	}
 
 	if ($dir) {
-		return '<div><p>'.$recent.' '.$link.'</p>'."\n".$form_start.$comments."\n".$form.$form_end.'</div>'."\n";
+		return '<div>'."\n\t".'<p>'.$recent.' '.$link.'</p>'."\n\t".$form_start."\n\t\t".str_replace("\n", "\n\t\t", $comments)."\n".$form."\t".$form_end.'</div>'."\n";
 	} else {
-		return '<div>'.$form_start.$form.$comments."\n".$form_end.'<p>'.$recent.' '.$link.'</p>'."\n".'</div>'."\n";
+		return '<div>'."\n\t".$form_start."\n".$form.str_replace("\n", "\n\t\t", $comments)."\n\t".$form_end."\t".'<p>'.$recent.' '.$link.'</p>'."\n".'</div>'."\n";
 	}
 }
 

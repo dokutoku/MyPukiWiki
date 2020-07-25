@@ -353,11 +353,11 @@ function plugin_search2_search_form(string $search_text, array $bases, int $offs
 			$base_str = '<strong>'.$s_base.'</strong>';
 			$base_label = str_replace('$1', $base_str, $_search_pages);
 			$base_msg .= <<<EOD
- <div>
-  <label>
-   <input type="radio" name="base" value="{$s_base}" {$check}> {$base_label}
-  </label>
- </div>
+	<div>
+		<label>
+			<input type="radio" name="base" value="{$s_base}" {$check}> {$base_label}
+		</label>
+	</div>
 EOD;
 			$check = '';
 		}
@@ -365,7 +365,7 @@ EOD;
 		$base_msg .= <<<EOD
 <label><input type="radio" name="base" value=""> {$_search_all}</label>
 EOD;
-		$base_option = '<div class="small">'.$base_msg.'</div>';
+		$base_option = "\n\t".'<div class="small">'."\n".$base_msg."\n\t".'</div>';
 	}
 
 	$_search2_result_notfound = htmlsc($_msg_notfoundresult);
@@ -386,18 +386,17 @@ EOD;
 	$status_span_text = '<span class="_plugin_search2_search_status_text1"></span><span class="_plugin_search2_search_status_text2"></span>';
 	$form = <<<EOD
 <form action="{$script}" method="GET" class="_plugin_search2_form">
- <div>
-  <input type="hidden" name="cmd" value="search2">
-  <input type="search" name="q" value="{$h_search_text}" data-original-q="{$h_search_text}" size="40">
-  <input type="submit" value="{$_btn_search}">
- </div>
-{$base_option}
+	<div>
+		<input type="hidden" name="cmd" value="search2">
+		<input type="search" name="q" value="{$h_search_text}" data-original-q="{$h_search_text}" size="40">
+		<input type="submit" value="{$_btn_search}">
+	</div>{$base_option}
 </form>
 EOD;
 	$second_form = <<<EOD
 <div class="_plugin_search2_second_form" style="display:none;">
-<div class="_plugin_search2_search_status">{$status_span_text}</span></div>
-<div class="_plugin_search2_message"></div>
+	<div class="_plugin_search2_search_status">{$status_span_text}</span></div>
+	<div class="_plugin_search2_message"></div>
 {$form}
 </div>
 EOD;
@@ -410,19 +409,19 @@ EOD;
 	$prev_offset = (pkwk_ctype_digit($prev_offset_s)) ? ($prev_offset_s) : ('');
 	$search_props = <<<EOD
 <div style="display:none;">
-  <input type="hidden" id="_plugin_search2_auth_user" value="{$h_auth_user}">
-  <input type="hidden" id="_plugin_search2_base_url" value="{$h_base_url}">
-  <input type="hidden" id="_plugin_search2_msg_searching" value="{$_search_searching}">
-  <input type="hidden" id="_plugin_search2_msg_showing_result" value="{$_search_showing_result}">
-  <input type="hidden" id="_plugin_search2_msg_result_notfound" value="{$_search2_result_notfound}">
-  <input type="hidden" id="_plugin_search2_msg_result_found" value="{$_search2_result_found}">
-  <input type="hidden" id="_plugin_search2_msg_more_results" value="{$h_msg_more_results}">
-  <input type="hidden" id="_plugin_search2_msg_prev_results" value="{$h_msg_prev_results}">
-  <input type="hidden" id="_plugin_search2_search_wait_milliseconds" value="{$_search2_search_wait_milliseconds}">
-  <input type="hidden" id="_plugin_search2_max_results" value="{$max_results}">
-  <input type="hidden" id="_plugin_search2_offset" value="{$offset}">
-  <input type="hidden" id="_plugin_search2_prev_offset" value="{$prev_offset}">
-  <input type="hidden" id="_plugin_search2_msg_error" value="{$_msg_general_error}">
+	<input type="hidden" id="_plugin_search2_auth_user" value="{$h_auth_user}">
+	<input type="hidden" id="_plugin_search2_base_url" value="{$h_base_url}">
+	<input type="hidden" id="_plugin_search2_msg_searching" value="{$_search_searching}">
+	<input type="hidden" id="_plugin_search2_msg_showing_result" value="{$_search_showing_result}">
+	<input type="hidden" id="_plugin_search2_msg_result_notfound" value="{$_search2_result_notfound}">
+	<input type="hidden" id="_plugin_search2_msg_result_found" value="{$_search2_result_found}">
+	<input type="hidden" id="_plugin_search2_msg_more_results" value="{$h_msg_more_results}">
+	<input type="hidden" id="_plugin_search2_msg_prev_results" value="{$h_msg_prev_results}">
+	<input type="hidden" id="_plugin_search2_search_wait_milliseconds" value="{$_search2_search_wait_milliseconds}">
+	<input type="hidden" id="_plugin_search2_max_results" value="{$max_results}">
+	<input type="hidden" id="_plugin_search2_offset" value="{$offset}">
+	<input type="hidden" id="_plugin_search2_prev_offset" value="{$prev_offset}">
+	<input type="hidden" id="_plugin_search2_msg_error" value="{$_msg_general_error}">
 </div>
 EOD;
 
@@ -431,9 +430,7 @@ EOD;
 	}
 
 	return <<<EOD
-<noscript>
- <p>{$_msg_unsupported_webbrowser} {$alt_msg}</p>
-</noscript>
+<noscript><p>{$_msg_unsupported_webbrowser} {$alt_msg}</p></noscript>
 <style>
 input#_plugin_search2_detail:checked ~ ul > li > div.search-result-detail {
   display:block;
@@ -463,9 +460,7 @@ span.plugin-search2-progress3 {
   animation-delay: -0.6s;
 }
 </style>
-<p class="_plugin_search2_nosupport_message" style="display:none;">
-  {$_msg_unsupported_webbrowser} {$alt_msg}
-</p>
+<p class="_plugin_search2_nosupport_message" style="display:none;">{$_msg_unsupported_webbrowser} {$alt_msg}</p>
 {$search_props}
 {$form}
 <div class="_plugin_search2_search_status">{$status_span_text}</div>

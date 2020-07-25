@@ -73,12 +73,12 @@ function plugin_unfreeze_action() : array
 		$body .= <<<EOD
 <p>{$_msg_unfreezing}</p>
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden"   name="cmd"  value="unfreeze" />
-  <input type="hidden"   name="page" value="{$s_page}" />
-  <input type="password" name="pass" size="12" />
-  <input type="submit"   name="ok"   value="{$_btn_unfreeze}" />
- </div>
+	<div>
+		<input type="hidden" name="cmd" value="unfreeze" />
+		<input type="hidden" name="page" value="{$s_page}" />
+		<input type="password" name="pass" size="12" />
+		<input type="submit" name="ok" value="{$_btn_unfreeze}" />
+	</div>
 </form>
 EOD;
 	}

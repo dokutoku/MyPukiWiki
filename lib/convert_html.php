@@ -99,12 +99,12 @@ class Element
 
 	public function dump(int $indent = 0) : string
 	{
-		$ret = str_repeat(' ', $indent).get_class($this)."\n";
+		$ret = str_repeat("\t", $indent).get_class($this)."\n";
 		$indent += 2;
 
 		foreach (array_keys($this->elements) as $key) {
 			$ret .= (is_object($this->elements[$key])) ? ($this->elements[$key]->dump($indent)) : ('');
-			//str_repeat(' ', $indent) . $this->elements[$key];
+			//str_repeat("\t", $indent) . $this->elements[$key];
 		}
 
 		return $ret;
@@ -942,7 +942,7 @@ class Pre extends Element
 
 	public function toString() : string
 	{
-		return $this->wrap(implode("\n", $this->elements), 'pre');
+		return $this->wrap(implode('&NewLine;', $this->elements), 'pre');
 	}
 }
 

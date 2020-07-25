@@ -101,83 +101,82 @@ EOD;
 
 	$form .= <<<EOD
 <form action="{$self}" method="post">
- <div>
-  <input type="hidden" name="plugin" value="md5" />
-  <label for="_p_md5_phrase">Phrase:</label>
-  <input type="text" name="phrase"  id="_p_md5_phrase" size="60" {$value}/><br />
+	<div>
+		<input type="hidden" name="plugin" value="md5" />
+		<label for="_p_md5_phrase">Phrase:</label>
+		<input type="text" name="phrase" id="_p_md5_phrase" size="60" {$value}/><br />
 EOD;
 	$form .= <<<'EOD'
-  <input type="radio" name="scheme" id="_p_md5_md5"  value="x-php-md5" />
-  <label for="_p_md5_md5">PHP md5</label><br />
+		<input type="radio" name="scheme" id="_p_md5_md5" value="x-php-md5" />
+		<label for="_p_md5_md5">PHP md5</label><br />
 EOD;
 
 	if ($algos_enabled->sha1) {
 		$form .= <<<'EOD'
-  <input type="radio" name="scheme" id="_p_md5_sha1" value="x-php-sha1" />
-  <label for="_p_md5_sha1">PHP sha1</label><br />
+		<input type="radio" name="scheme" id="_p_md5_sha1" value="x-php-sha1" />
+		<label for="_p_md5_sha1">PHP sha1</label><br />
 EOD;
 	}
 
 	if ($algos_enabled->sha256) {
 		$form .= <<<'EOD'
-  <input type="radio" name="scheme" id="_p_md5_sha256" value="x-php-sha256" />
-  <label for="_p_md5_sha256">PHP sha256</label><br />
+		<input type="radio" name="scheme" id="_p_md5_sha256" value="x-php-sha256" />
+		<label for="_p_md5_sha256">PHP sha256</label><br />
 EOD;
 	}
 
 	if ($algos_enabled->sha512) {
 		$form .= <<<'EOD'
-  <input type="radio" name="scheme" id="_p_md5_sha512" value="x-php-sha512" />
-  <label for="_p_md5_sha512">PHP sha512</label><br />
+		<input type="radio" name="scheme" id="_p_md5_sha512" value="x-php-sha512" />
+		<label for="_p_md5_sha512">PHP sha512</label><br />
 EOD;
 	}
 
 	if ($algos_enabled->sha1) {
 		$form .= <<<EOD
-  <input type="radio" name="scheme" id="_p_md5_lssha" value="SSHA" {$sha1_checked}/>
-  <label for="_p_md5_lssha">LDAP SSHA (sha-1 with a seed) *</label><br />
-  <input type="radio" name="scheme" id="_p_md5_lsha" value="SHA" />
-  <label for="_p_md5_lsha">LDAP SHA (sha-1)</label><br />
+		<input type="radio" name="scheme" id="_p_md5_lssha" value="SSHA" {$sha1_checked}/>
+		<label for="_p_md5_lssha">LDAP SSHA (sha-1 with a seed) *</label><br />
+		<input type="radio" name="scheme" id="_p_md5_lsha" value="SHA" />
+		<label for="_p_md5_lsha">LDAP SHA (sha-1)</label><br />
 EOD;
 	}
 
 	$form .= <<<EOD
-  <input type="radio" name="scheme" id="_p_md5_lsmd5" value="SMD5" {$md5_checked}/>
-  <label for="_p_md5_lsmd5">LDAP SMD5 (md5 with a seed) *</label><br />
-  <input type="radio" name="scheme" id="_p_md5_lmd5" value="MD5" />
-  <label for="_p_md5_lmd5">LDAP MD5</label><br />
+		<input type="radio" name="scheme" id="_p_md5_lsmd5" value="SMD5" {$md5_checked}/>
+		<label for="_p_md5_lsmd5">LDAP SMD5 (md5 with a seed) *</label><br />
+		<input type="radio" name="scheme" id="_p_md5_lmd5" value="MD5" />
+		<label for="_p_md5_lmd5">LDAP MD5</label><br />
 EOD;
 
 	if ($algos_enabled->sha256) {
 		$form .= <<<'EOD'
-  <input type="radio" name="scheme" id="_p_md5_lssha256" value="SSHA256"/>
-  <label for="_p_md5_lssha256">LDAP SSHA256 (sha256 with a seed) *</label><br />
-  <input type="radio" name="scheme" id="_p_md5_lsha256" value="SHA256" />
-  <label for="_p_md5_lsha256">LDAP SHA256</label><br />
+		<input type="radio" name="scheme" id="_p_md5_lssha256" value="SSHA256"/>
+		<label for="_p_md5_lssha256">LDAP SSHA256 (sha256 with a seed) *</label><br />
+		<input type="radio" name="scheme" id="_p_md5_lsha256" value="SHA256" />
+		<label for="_p_md5_lsha256">LDAP SHA256</label><br />
 EOD;
 	}
 
 	if ($algos_enabled->sha512) {
 		$form .= <<<'EOD'
-  <input type="radio" name="scheme" id="_p_md5_lssha512" value="SSHA512"/>
-  <label for="_p_md5_lssha512">LDAP SSHA512 (sha512 with a seed) *</label><br />
-  <input type="radio" name="scheme" id="_p_md5_lsha512" value="SHA512" />
-  <label for="_p_md5_lsha512">LDAP SHA512</label><br />
+		<input type="radio" name="scheme" id="_p_md5_lssha512" value="SSHA512"/>
+		<label for="_p_md5_lssha512">LDAP SSHA512 (sha512 with a seed) *</label><br />
+		<input type="radio" name="scheme" id="_p_md5_lsha512" value="SHA512" />
+		<label for="_p_md5_lsha512">LDAP SHA512</label><br />
 EOD;
 	}
 
 	$form .= <<<'EOD'
-  <input type="checkbox" name="prefix" id="_p_md5_prefix" checked="checked" />
-  <label for="_p_md5_prefix">Add scheme prefix (RFC2307, Using LDAP as NIS)</label><br />
+		<input type="checkbox" name="prefix" id="_p_md5_prefix" checked="checked" />
+		<label for="_p_md5_prefix">Add scheme prefix (RFC2307, Using LDAP as NIS)</label><br />
 
-  <label for="_p_md5_salt">Salt:</label>
-  <input type="text" name="salt" id="_p_md5_salt" size="60" /><br />
+		<label for="_p_md5_salt">Salt:</label>
+		<input type="text" name="salt" id="_p_md5_salt" size="60" /><br />
 
-  <input type="submit" value="Compute" /><br />
-
-  <hr>
-  <p>* = Salt enabled<p/>
- </div>
+		<input type="submit" value="Compute" /><br />
+		<hr>
+		<p>* = Salt enabled<p/>
+	</div>
 </form>
 EOD;
 

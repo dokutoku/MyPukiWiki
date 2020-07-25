@@ -224,13 +224,13 @@ function plugin_dump_upload() : array
 		return ['code'=>false, 'msg'=>'<p>展開できるファイルがありませんでした。</p>'];
 	}
 
-	$msg = '<p><strong>展開したファイル一覧</strong><ul>';
+	$msg = '<p><strong>展開したファイル一覧</strong>'."\n\t".'<ul>'."\n";
 
 	foreach ($files as $name) {
-		$msg .= "<li>{$name}</li>\n";
+		$msg .= "\t\t<li>{$name}</li>\n";
 	}
 
-	$msg .= '</ul></p>';
+	$msg .= "\t".'</ul>'."\n".'</p>';
 
 	$tar->close();
 	@unlink($uploadfile);
@@ -282,38 +282,45 @@ function plugin_dump_disp_form() : string
 </span>
 <h3>データのダウンロード</h3>
 <form action="{$script}" method="post">
- <div>
-  <input type="hidden" name="cmd"  value="dump" />
-  <input type="hidden" name="page" value="{$defaultpage}" />
-  <input type="hidden" name="act"  value="{$act_down}" />
+	<div>
+		<input type="hidden" name="cmd" value="dump" />
+		<input type="hidden" name="page" value="{$defaultpage}" />
+		<input type="hidden" name="act" value="{$act_down}" />
 
-<p><strong>アーカイブの形式</strong>
-<br />
-  <input type="radio" name="pcmd" id="_p_dump_tgz" value="tgz" checked="checked" />
-  <label for="_p_dump_tgz"> ～.tar.gz 形式</label><br />
-  <input type="radio" name="pcmd" id="_p_dump_tar" value="tar" />
-  <label for="_p_dump_tar">～.tar 形式</label>
-</p>
-<p><strong>バックアップディレクトリ</strong>
-<br />
-  <input type="checkbox" name="bk_wiki" id="_p_dump_d_wiki" checked="checked" />
-  <label for="_p_dump_d_wiki">wiki</label><br />
-  <input type="checkbox" name="bk_attach" id="_p_dump_d_attach" />
-  <label for="_p_dump_d_attach">attach</label><br />
-  <input type="checkbox" name="bk_backup" id="_p_dump_d_backup" />
-  <label for="_p_dump_d_backup">backup</label><br />
-</p>
-<p><strong>オプション</strong>
-<br />
-  <input type="checkbox" name="namedecode" id="_p_dump_namedecode" />
-  <label for="_p_dump_namedecode">エンコードされているページ名をディレクトリ階層つきのファイルにデコード
-  (※リストアに使うことはできなくなります。また、一部の文字は '_' に置換されます)</label><br />
-</p>
-<p><label for="_p_dump_adminpass_dump"><strong>管理者パスワード</strong></label>
-  <input type="password" name="pass" id="_p_dump_adminpass_dump" size="12" />
-  <input type="submit"   name="ok"   value="OK" />
-</p>
- </div>
+		<p>
+			<strong>アーカイブの形式</strong>
+			<br />
+			<input type="radio" name="pcmd" id="_p_dump_tgz" value="tgz" checked="checked" />
+			<label for="_p_dump_tgz"> ～.tar.gz 形式</label><br />
+			<input type="radio" name="pcmd" id="_p_dump_tar" value="tar" />
+			<label for="_p_dump_tar">～.tar 形式</label>
+		</p>
+
+		<p>
+			<strong>バックアップディレクトリ</strong>
+			<br />
+			<input type="checkbox" name="bk_wiki" id="_p_dump_d_wiki" checked="checked" />
+			<label for="_p_dump_d_wiki">wiki</label><br />
+			<input type="checkbox" name="bk_attach" id="_p_dump_d_attach" />
+			<label for="_p_dump_d_attach">attach</label><br />
+			<input type="checkbox" name="bk_backup" id="_p_dump_d_backup" />
+			<label for="_p_dump_d_backup">backup</label><br />
+		</p>
+
+		<p>
+			<strong>オプション</strong>
+			<br />
+			<input type="checkbox" name="namedecode" id="_p_dump_namedecode" />
+			<label for="_p_dump_namedecode">エンコードされているページ名をディレクトリ階層つきのファイルにデコード
+			(※リストアに使うことはできなくなります。また、一部の文字は '_' に置換されます)</label><br />
+		</p>
+
+		<p>
+			<label for="_p_dump_adminpass_dump"><strong>管理者パスワード</strong></label>
+			<input type="password" name="pass" id="_p_dump_adminpass_dump" size="12" />
+			<input type="submit" name="ok" value="OK" />
+		</p>
+	</div>
 </form>
 EOD;
 
@@ -321,22 +328,24 @@ EOD;
 		$data .= <<<EOD
 <h3>データのリストア (*.tar, *.tar.gz)</h3>
 <form enctype="multipart/form-data" action="{$script}" method="post">
- <div>
-  <input type="hidden" name="cmd"  value="dump" />
-  <input type="hidden" name="page" value="{$defaultpage}" />
-  <input type="hidden" name="act"  value="{$act_up}" />
-<p><strong>[重要] 同じ名前のデータファイルは上書きされますので、十分ご注意ください。</strong></p>
-<p><span class="small">
-アップロード可能な最大ファイルサイズは、{$maxsize} KByte までです。<br />
-</span>
-  <label for="_p_dump_upload_file">ファイル:</label>
-  <input type="file" name="upload_file" id="_p_dump_upload_file" size="40" />
-</p>
-<p><label for="_p_dump_adminpass_restore"><strong>管理者パスワード</strong></label>
-  <input type="password" name="pass" id="_p_dump_adminpass_restore" size="12" />
-  <input type="submit"   name="ok"   value="OK" />
-</p>
- </div>
+	<div>
+		<input type="hidden" name="cmd" value="dump" />
+		<input type="hidden" name="page" value="{$defaultpage}" />
+		<input type="hidden" name="act" value="{$act_up}" />
+		<p><strong>[重要] 同じ名前のデータファイルは上書きされますので、十分ご注意ください。</strong></p>
+
+		<p>
+			<span class="small">アップロード可能な最大ファイルサイズは、{$maxsize} KByte までです。<br /></span>
+			<label for="_p_dump_upload_file">ファイル:</label>
+			<input type="file" name="upload_file" id="_p_dump_upload_file" size="40" />
+		</p>
+
+		<p>
+			<label for="_p_dump_adminpass_restore"><strong>管理者パスワード</strong></label>
+			<input type="password" name="pass" id="_p_dump_adminpass_restore" size="12" />
+			<input type="submit" name="ok" value="OK" />
+		</p>
+	</div>
 </form>
 EOD;
 	}
