@@ -10,7 +10,7 @@ declare(strict_types=1);
 function plugin_rss10_action() : void
 {
 	pkwk_headers_sent();
-	header('Status: 301 Moved Permanently');
+	http_response_code(301);
 
 	// HTTP
 	header('Location: '.get_base_uri(PKWK_URI_ROOT).'?cmd=rss&ver=1.0');

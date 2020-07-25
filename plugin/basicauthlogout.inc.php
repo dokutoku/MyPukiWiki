@@ -29,7 +29,7 @@ function plugin_basicauthlogout_action() : array
 
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
 		header('WWW-Authenticate: Basic realm="Please cancel to log out"');
-		header('HTTP/1.0 401 Unauthorized');
+		http_response_code(401);
 	}
 
 	return ['msg'=>'Log out', 'body'=>'Logged out completely'];

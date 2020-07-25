@@ -421,7 +421,7 @@ function basic_auth(string $page, bool $auth_enabled, bool $exit_on_fail, array 
 		if (($auth_enabled) && (!$auth_user)) {
 			if (AUTH_TYPE_BASIC === $auth_type) {
 				header('WWW-Authenticate: Basic realm="'.$_msg_auth.'"');
-				header('HTTP/1.0 401 Unauthorized');
+				http_response_code(401);
 			} elseif (AUTH_TYPE_FORM === $auth_type) {
 				if ($g_query_string === null) {
 					$url_after_login = get_base_uri();
@@ -430,7 +430,7 @@ function basic_auth(string $page, bool $auth_enabled, bool $exit_on_fail, array 
 				}
 
 				$loginurl = get_base_uri().'?plugin=loginform&page='.rawurlencode($page).'&url_after_login='.rawurlencode($url_after_login);
-				header('HTTP/1.0 302 Found');
+				http_response_code(302);
 				header('Location: '.$loginurl);
 			} elseif ((AUTH_TYPE_EXTERNAL === $auth_type) || (AUTH_TYPE_SAML === $auth_type)) {
 				if ($g_query_string === null) {
@@ -440,7 +440,7 @@ function basic_auth(string $page, bool $auth_enabled, bool $exit_on_fail, array 
 				}
 
 				$loginurl = get_auth_external_login_url($page, $url_after_login);
-				header('HTTP/1.0 302 Found');
+				http_response_code(302);
 				header('Location: '.$loginurl);
 			}
 		}
@@ -512,7 +512,7 @@ function ensure_valid_auth_user() : bool
 				}
 
 				header('WWW-Authenticate: Basic realm="'.$_msg_auth.'"');
-				header('HTTP/1.0 401 Unauthorized');
+				http_response_code(401);
 			}
 
 			$auth_user = '';
@@ -841,7 +841,7 @@ function get_ldap_user_info($ldapconn, string $username, string $base_dn)
  */
 function form_auth_redirect(string $location, string $page) : void
 {
-	header('HTTP/1.0 302 Found');
+	http_response_code(302);
 
 	if ($location) {
 		header('Location: '.$location);

@@ -52,7 +52,7 @@ function plugin_loginform_action() : array
 		switch ($auth_type) {
 			case AUTH_TYPE_BASIC:
 				header('WWW-Authenticate: Basic realm="Please cancel to log out"');
-				header('HTTP/1.0 401 Unauthorized');
+				http_response_code(401);
 
 				break;
 

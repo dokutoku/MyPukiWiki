@@ -40,7 +40,7 @@ function plugin_read_action() : array
 					$uri = get_base_uri(PKWK_URI_ROOT).'?cmd=edit&page='.rawurlencode($real);
 				}
 
-				header('HTTP/1.0 302 Found');
+				http_response_code(302);
 				header('Location: '.$uri);
 
 				return [];
