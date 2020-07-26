@@ -94,9 +94,6 @@ switch (LANG) {
 	case 'ko':
 		define('MB_LANGUAGE', 'Korean');
 
-		//UTF-8 only
-		// See BugTrack2/13 for all hack about Korean support, //UTF-8 only
-		// and give us your report!                            //UTF-8 only
 		break;
 
 	default:
@@ -105,31 +102,11 @@ switch (LANG) {
 
 //UTF-8 only
 define('PKWK_UTF8_ENABLE', 1);
-
-if (defined('PKWK_UTF8_ENABLE')) {
-	define('SOURCE_ENCODING', 'UTF-8');
-	define('CONTENT_CHARSET', 'UTF-8');
-} else {
-	switch (LANG) {
-		case 'en':
-			define('SOURCE_ENCODING', 'ASCII');
-			define('CONTENT_CHARSET', 'iso-8859-1');
-
-			break;
-
-		case 'ja':
-			define('SOURCE_ENCODING', 'EUC-JP');
-			define('CONTENT_CHARSET', 'EUC-JP');
-
-			break;
-
-		default:
-			break;
-	}
-}
+define('SOURCE_ENCODING', 'UTF-8');
+define('CONTENT_CHARSET', 'UTF-8');
 
 mb_language(MB_LANGUAGE);
-mb_internal_encoding(SOURCE_ENCODING);
+mb_internal_encoding('UTF-8');
 mb_http_output('pass');
 mb_detect_order('auto');
 
@@ -322,12 +299,12 @@ if ((isset($_POST['encode_hint'])) && ($_POST['encode_hint'] != '')) {
 } elseif ((isset($_POST['charset'])) && ($_POST['charset'] != '')) {
 	// TrackBack Ping で指定されていることがある
 	// うまくいかない場合は自動検出に切り替え
-	if (mb_convert_variables(SOURCE_ENCODING, $_POST['charset'], $_POST) !== $_POST['charset']) {
-		mb_convert_variables(SOURCE_ENCODING, 'auto', $_POST);
+	if (mb_convert_variables('UTF-8', $_POST['charset'], $_POST) !== $_POST['charset']) {
+		mb_convert_variables('UTF-8', 'auto', $_POST);
 	}
 } elseif (!empty($_POST)) {
 	// 全部まとめて、自動検出／変換
-	mb_convert_variables(SOURCE_ENCODING, 'auto', $_POST);
+	mb_convert_variables('UTF-8', 'UTF-8', $_POST);
 }
 
 // 文字コード変換 ($_GET)
@@ -382,7 +359,7 @@ unset($REQUEST_URI, $HTTP_SERVER_VARS['REQUEST_URI']);
 
 // mb_convert_variablesのバグ(?)対策: 配列で渡さないと落ちる
 $arg = [$arg];
-mb_convert_variables(SOURCE_ENCODING, 'auto', $arg);
+mb_convert_variables('UTF-8', 'auto', $arg);
 $arg = $arg[0];
 
 /////////////////////////////////////////////////
