@@ -289,14 +289,7 @@ $_COOKIE = input_filter($_COOKIE);
 // <form> で送信された文字 (ブラウザがエンコードしたデータ) のコードを変換
 // POST method は常に form 経由なので、必ず変換する
 //
-if ((isset($_POST['encode_hint'])) && ($_POST['encode_hint'] != '')) {
-	// do_plugin_xxx() の中で、<form> に encode_hint を仕込んでいるので、
-	// encode_hint を用いてコード検出する。
-	// 全体を見てコード検出すると、機種依存文字や、妙なバイナリ
-	// コードが混入した場合に、コード検出に失敗する恐れがある。
-	$encode = mb_detect_encoding($_POST['encode_hint'], mb_detect_order(), true);
-	mb_convert_variables(SOURCE_ENCODING, $encode, $_POST);
-} elseif ((isset($_POST['charset'])) && ($_POST['charset'] != '')) {
+if ((isset($_POST['charset'])) && ($_POST['charset'] != '')) {
 	// TrackBack Ping で指定されていることがある
 	// うまくいかない場合は自動検出に切り替え
 	if (mb_convert_variables('UTF-8', $_POST['charset'], $_POST) !== $_POST['charset']) {
@@ -305,17 +298,6 @@ if ((isset($_POST['encode_hint'])) && ($_POST['encode_hint'] != '')) {
 } elseif (!empty($_POST)) {
 	// 全部まとめて、自動検出／変換
 	mb_convert_variables('UTF-8', 'UTF-8', $_POST);
-}
-
-// 文字コード変換 ($_GET)
-// GET method は form からの場合と、<a href="http://script/?key=value> の場合がある
-// <a href...> の場合は、サーバーが rawurlencode しているので、コード変換は不要
-if ((isset($_GET['encode_hint'])) && ($_GET['encode_hint'] != '')) {
-	// form 経由の場合は、ブラウザがエンコードしているので、コード検出・変換が必要。
-	// encode_hint が含まれているはずなので、それを見て、コード検出した後、変換する。
-	// 理由は、post と同様
-	$encode = mb_detect_encoding($_GET['encode_hint'], mb_detect_order(), true);
-	mb_convert_variables(SOURCE_ENCODING, $encode, $_GET);
 }
 
 /////////////////////////////////////////////////

@@ -71,15 +71,7 @@ function plugin_search2_get_base_url(string $search_text) : string
 
 	$params = [];
 
-	if (!defined('PKWK_UTF8_ENABLE')) {
-		$params[] = 'encode_hint='.rawurlencode($vars['encode_hint']);
-	}
-
 	$params[] = 'cmd=search2';
-
-	if ((isset($vars['encode_hint'])) && ($vars['encode_hint'])) {
-		$params[] = 'encode_hint='.rawurlencode($vars['encode_hint']);
-	}
 
 	if ($search_text) {
 		$params[] = 'q='.plugin_search2_urlencode_searchtext($search_text);
