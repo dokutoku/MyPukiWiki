@@ -130,7 +130,6 @@ EOD;
 		<title>{$page_title_utf8}</title>
 		<link>{$self}?{$r_whatsnew}</link>
 		<description>PukiWiki RecentChanges</description>
-		<language>{$lang}</language>
 		{$items}
 	</channel>
 </rss>

@@ -928,15 +928,6 @@ function pkwk_output_dtd(int $pkwk_dtd = PKWK_DTD_XHTML_1_1, string $charset = C
 
 	if ($type == PKWK_DTD_TYPE_XHTML) {
 		echo ' xmlns="http://www.w3.org/1999/xhtml"'; // dir="ltr" /* LeftToRight */
-
-		echo ' xml:lang="'.LANG.'"';
-
-		if ($version == '1.0') {
-			echo ' lang="'.LANG.'"';
-		} // Only XHTML 1.0
-	} else {
-		// HTML
-		echo ' lang="'.LANG.'"';
 	}
 
 	// <html>

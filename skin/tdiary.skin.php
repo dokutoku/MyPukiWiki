@@ -612,7 +612,7 @@ header('Content-Type: text/html; charset='.CONTENT_CHARSET);
 
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo LANG; ?>">
+<html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=<?php echo CONTENT_CHARSET; ?>" /><?php
 
