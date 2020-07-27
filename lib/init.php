@@ -74,8 +74,6 @@ if ($die) {
 
 // MB_LANGUAGE: mb_language (for mbstring extension)
 //   'uni'(means UTF-8), 'English', or 'Japanese'
-// SOURCE_ENCODING: Internal content encoding (for mbstring extension) 'UTF-8'
-// CONTENT_CHARSET: Internal content encoding = Output content charset 'UTF-8'
 
 switch (LANG) {
 	case 'en':
@@ -96,11 +94,6 @@ switch (LANG) {
 	default:
 		die_message('No such language "'.LANG.'"');
 }
-
-//UTF-8 only
-define('PKWK_UTF8_ENABLE', 1);
-define('SOURCE_ENCODING', 'UTF-8');
-define('CONTENT_CHARSET', 'UTF-8');
 
 mb_language(MB_LANGUAGE);
 mb_internal_encoding('UTF-8');

@@ -25,6 +25,7 @@ assert(version_compare(PHP_VERSION, '7.2.0') >= 0);
 assert(extension_loaded('mbstring'));
 
 require LIB_DIR.'func.php';
+require LIB_DIR.'deprecated.php';
 require LIB_DIR.'file.php';
 require LIB_DIR.'plugin.php';
 require LIB_DIR.'html.php';
