@@ -61,7 +61,7 @@ function plugin_paint_action() : array
 		$vars['page'] = decode($vars['refer']);
 
 		$filename = $vars['filename'];
-		$filename = mb_convert_encoding($filename, SOURCE_ENCODING, 'auto');
+		$filename = mb_convert_encoding($filename, 'UTF-8', 'auto');
 
 		//ファイル名置換
 		$attachname = preg_replace('/^[^\.]+/', $filename, $file['name']);
@@ -89,7 +89,7 @@ function plugin_paint_action() : array
 
 		if (array_key_exists('refer', $vars)) {
 			$page_uri = get_page_uri($vars['refer']);
-			$s_refer = htmlsc($vars['refer']);
+			$s_refer = htmlspecialchars($vars['refer'], ENT_COMPAT, 'UTF-8');
 		}
 
 		$link = '<p><a href="'.$page_uri.'">'.$s_refer.'</a></p>';
@@ -117,7 +117,7 @@ function plugin_paint_action() : array
 		// BBSPainter.jarがshift-jisに変換するのを回避
 		$f_refer = (array_key_exists('refer', $vars)) ? (encode($vars['refer'])) : ('');
 
-		$f_digest = (array_key_exists('digest', $vars)) ? (htmlsc($vars['digest'])) : ('');
+		$f_digest = (array_key_exists('digest', $vars)) ? (htmlspecialchars($vars['digest'], ENT_COMPAT, 'UTF-8')) : ('');
 		$f_no = ((array_key_exists('paint_no', $vars)) && (is_numeric($vars['paint_no']))) ? ($vars['paint_no'] + 0) : (0);
 
 		if ($f_w > PAINT_MAX_WIDTH) {
@@ -195,7 +195,7 @@ function plugin_paint_convert(string ...$args) : string
 	}
 
 	//XSS脆弱性問題 - 外部から来た変数をエスケープ
-	$f_page = htmlsc($vars['page']);
+	$f_page = htmlspecialchars($vars['page'], ENT_COMPAT, 'UTF-8');
 
 	$max = sprintf($_paint_messages['msg_max'], PAINT_MAX_WIDTH, PAINT_MAX_HEIGHT);
 
@@ -228,8 +228,8 @@ function paint_insert_ref(string $filename) : array
 
 	$ret['msg'] = $_paint_messages['msg_title'];
 
-	$msg = mb_convert_encoding(rtrim($vars['msg']), SOURCE_ENCODING, 'auto');
-	$name = mb_convert_encoding($vars['yourname'], SOURCE_ENCODING, 'auto');
+	$msg = mb_convert_encoding(rtrim($vars['msg']), 'UTF-8', 'auto');
+	$name = mb_convert_encoding($vars['yourname'], 'UTF-8', 'auto');
 
 	$msg = str_replace('$msg', $msg, PAINT_MSG_FORMAT);
 	$name = ($name == '') ? ($_no_name) : ($vars['yourname']);

@@ -61,7 +61,7 @@ function plugin_tracker_convert(string ...$args) : string
 	$config = new Config('plugin/tracker/'.$config_name);
 
 	if (!$config->read()) {
-		return '<p>config file \''.htmlsc($config_name).'\' not found.</p>';
+		return '<p>config file \''.htmlspecialchars($config_name, ENT_COMPAT, 'UTF-8').'\' not found.</p>';
 	}
 
 	$config->config_name = $config_name;
@@ -113,7 +113,7 @@ function plugin_tracker_action() : array
 	$config = new Config('plugin/tracker/'.$config_name);
 
 	if (!$config->read()) {
-		return ['msg'=>'cannot write', 'body'=>'config file \''.htmlsc($config_name).'\' not found.'];
+		return ['msg'=>'cannot write', 'body'=>'config file \''.htmlspecialchars($config_name, ENT_COMPAT, 'UTF-8').'\' not found.'];
 	}
 
 	$config->config_name = $config_name;
@@ -122,18 +122,18 @@ function plugin_tracker_action() : array
 	$refer = (array_key_exists('_refer', $post)) ? ($post['_refer']) : ($post['_base']);
 
 	if (!is_pagename($refer)) {
-		return ['msg'=>'cannot write', 'body'=>'page name ('.htmlsc($refer).') is not valid.'];
+		return ['msg'=>'cannot write', 'body'=>'page name ('.htmlspecialchars($refer, ENT_COMPAT, 'UTF-8').') is not valid.'];
 	}
 
 	if (!is_page($source)) {
-		return ['msg'=>'cannot write', 'body'=>'page template ('.htmlsc($source).') is not exist.'];
+		return ['msg'=>'cannot write', 'body'=>'page template ('.htmlspecialchars($source, ENT_COMPAT, 'UTF-8').') is not exist.'];
 	}
 
 	// ページ名を決定
 	$base = $post['_base'];
 
 	if (!is_pagename($base)) {
-		return ['msg'=>'cannot write', 'body'=>'page name ('.htmlsc($base).') is not valid.'];
+		return ['msg'=>'cannot write', 'body'=>'page name ('.htmlspecialchars($base, ENT_COMPAT, 'UTF-8').') is not valid.'];
 	}
 
 	$name = (array_key_exists('_name', $post)) ? ($post['_name']) : ('');
@@ -223,7 +223,7 @@ function plugin_tracker_get_page_list(string $page, bool $needs_filetime) : arra
 	$pattern_len = strlen($pattern);
 
 	foreach (get_existpages() as $p) {
-		if ((strncmp($p, $pattern, $pattern_len) === 0) && (pkwk_ctype_digit(substr($p, $pattern_len)))) {
+		if ((strncmp($p, $pattern, $pattern_len) === 0) && (ctype_digit(substr($p, $pattern_len)))) {
 			if ($needs_filetime) {
 				$page_list[] = ['name'=>$p, 'filetime'=>get_filetime($p)];
 			} else {
@@ -369,9 +369,9 @@ class Tracker_field_text extends Tracker_field
 
 	public function get_tag() : string
 	{
-		$s_name = htmlsc($this->name);
-		$s_size = htmlsc($this->values[0]);
-		$s_value = htmlsc($this->default_value);
+		$s_name = htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8');
+		$s_size = htmlspecialchars($this->values[0], ENT_COMPAT, 'UTF-8');
+		$s_value = htmlspecialchars($this->default_value, ENT_COMPAT, 'UTF-8');
 
 		return '<input type="text" name="'.$s_name.'" size="'.$s_size.'" value="'.$s_value.'" />';
 	}
@@ -418,10 +418,10 @@ class Tracker_field_textarea extends Tracker_field
 
 	public function get_tag() : string
 	{
-		$s_name = htmlsc($this->name);
-		$s_cols = htmlsc($this->values[0]);
-		$s_rows = htmlsc($this->values[1]);
-		$s_value = htmlsc($this->default_value);
+		$s_name = htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8');
+		$s_cols = htmlspecialchars($this->values[0], ENT_COMPAT, 'UTF-8');
+		$s_rows = htmlspecialchars($this->values[1], ENT_COMPAT, 'UTF-8');
+		$s_value = htmlspecialchars($this->default_value, ENT_COMPAT, 'UTF-8');
 		$s_value = str_replace("\n", '&NewLine;', $s_value);
 
 		return '<textarea name="'.$s_name.'" cols="'.$s_cols.'" rows="'.$s_rows.'">'.$s_value.'</textarea>';
@@ -471,8 +471,8 @@ class Tracker_field_format extends Tracker_field
 
 	public function get_tag() : string
 	{
-		$s_name = htmlsc($this->name);
-		$s_size = htmlsc($this->values[0]);
+		$s_name = htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8');
+		$s_size = htmlspecialchars($this->values[0], ENT_COMPAT, 'UTF-8');
 
 		return '<input type="text" name="'.$s_name.'" size="'.$s_size.'" />';
 	}
@@ -507,8 +507,8 @@ class Tracker_field_file extends Tracker_field_format
 
 	public function get_tag() : string
 	{
-		$s_name = htmlsc($this->name);
-		$s_size = htmlsc($this->values[0]);
+		$s_name = htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8');
+		$s_size = htmlspecialchars($this->values[0], ENT_COMPAT, 'UTF-8');
 
 		return '<input type="file" name="'.$s_name.'" size="'.$s_size.'" />';
 	}
@@ -536,12 +536,12 @@ class Tracker_field_radio extends Tracker_field_format
 
 	public function get_tag() : string
 	{
-		$s_name = htmlsc($this->name);
+		$s_name = htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8');
 		$retval = '';
 		$id = 0;
 
 		foreach ($this->config->get($this->name) as $option) {
-			$s_option = htmlsc($option[0]);
+			$s_option = htmlspecialchars($option[0], ENT_COMPAT, 'UTF-8');
 			$checked = (trim($option[0]) == trim($this->default_value)) ? (' checked="checked"') : ('');
 			$id++;
 			$s_id = '_p_tracker_'.$s_name.'_'.$this->id.'_'.$id;
@@ -575,8 +575,8 @@ class Tracker_field_select extends Tracker_field_radio
 
 	public function get_tag(bool $empty = false) : string
 	{
-		$s_name = htmlsc($this->name);
-		$s_size = ((array_key_exists(0, $this->values)) && (is_numeric($this->values[0]))) ? (' size="'.htmlsc($this->values[0]).'"') : ('');
+		$s_name = htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8');
+		$s_size = ((array_key_exists(0, $this->values)) && (is_numeric($this->values[0]))) ? (' size="'.htmlspecialchars($this->values[0], ENT_COMPAT, 'UTF-8').'"') : ('');
 		$s_multiple = ((array_key_exists(1, $this->values)) && (strtolower($this->values[1]) == 'multiple')) ? (' multiple="multiple"') : ('');
 		$retval = '<select name="'.$s_name.'[]"'.$s_size.$s_multiple.'>'."\n";
 
@@ -587,7 +587,7 @@ class Tracker_field_select extends Tracker_field_radio
 		$defaults = array_flip(preg_split('/\s*,\s*/', $this->default_value, -1, PREG_SPLIT_NO_EMPTY));
 
 		foreach ($this->config->get($this->name) as $option) {
-			$s_option = htmlsc($option[0]);
+			$s_option = htmlspecialchars($option[0], ENT_COMPAT, 'UTF-8');
 			$selected = (array_key_exists(trim($option[0]), $defaults)) ? (' selected="selected"') : ('');
 			$retval .= "\t".'<option value="'.$s_option.'"'.$selected.'>'.$s_option.'</option>'."\n";
 		}
@@ -604,13 +604,13 @@ class Tracker_field_checkbox extends Tracker_field_radio
 
 	public function get_tag(bool $empty = false) : string
 	{
-		$s_name = htmlsc($this->name);
+		$s_name = htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8');
 		$defaults = array_flip(preg_split('/\s*,\s*/', $this->default_value, -1, PREG_SPLIT_NO_EMPTY));
 		$retval = '';
 		$id = 0;
 
 		foreach ($this->config->get($this->name) as $option) {
-			$s_option = htmlsc($option[0]);
+			$s_option = htmlspecialchars($option[0], ENT_COMPAT, 'UTF-8');
 			$checked = (array_key_exists(trim($option[0]), $defaults)) ? (' checked="checked"') : ('');
 			$id++;
 			$s_id = '_p_tracker_'.$s_name.'_'.$this->id.'_'.$id;
@@ -627,8 +627,8 @@ class Tracker_field_hidden extends Tracker_field_radio
 
 	public function get_tag(bool $empty = false) : string
 	{
-		$s_name = htmlsc($this->name);
-		$s_default = htmlsc($this->default_value);
+		$s_name = htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8');
+		$s_default = htmlspecialchars($this->default_value, ENT_COMPAT, 'UTF-8');
 
 		return '<input type="hidden" name="'.$s_name.'" value="'.$s_default.'" />'."\n";
 	}
@@ -638,10 +638,10 @@ class Tracker_field_submit extends Tracker_field
 {
 	public function get_tag() : string
 	{
-		$s_title = htmlsc($this->title);
-		$s_page = htmlsc($this->page);
-		$s_refer = htmlsc($this->refer);
-		$s_config = htmlsc($this->config->config_name);
+		$s_title = htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8');
+		$s_page = htmlspecialchars($this->page, ENT_COMPAT, 'UTF-8');
+		$s_refer = htmlspecialchars($this->refer, ENT_COMPAT, 'UTF-8');
+		$s_config = htmlspecialchars($this->config->config_name, ENT_COMPAT, 'UTF-8');
 
 		return <<<EOD
 <input type="submit" value="{$s_title}" />
@@ -730,7 +730,7 @@ function plugin_tracker_list_convert(string ...$args) : string
 	}
 
 	if (!is_page_readable($page)) {
-		$body = str_replace('$1', htmlsc($page), $_title_cannotread);
+		$body = str_replace('$1', htmlspecialchars($page, ENT_COMPAT, 'UTF-8'), $_title_cannotread);
 
 		return $body;
 	}
@@ -752,7 +752,7 @@ function plugin_tracker_list_action() : array
 	$order = (array_key_exists('order', $vars)) ? ($vars['order']) : ('_real:SORT_DESC');
 
 	if (!is_page_readable($page)) {
-		$body = str_replace('$1', htmlsc($page), $_title_cannotread);
+		$body = str_replace('$1', htmlspecialchars($page, ENT_COMPAT, 'UTF-8'), $_title_cannotread);
 
 		return ['msg'=>$body, 'body'=>$body];
 	}
@@ -767,7 +767,7 @@ function plugin_tracker_getlist(string $page, $refer, string $config_name, strin
 	$config = new Config('plugin/tracker/'.$config_name);
 
 	if (!$config->read()) {
-		return '<p>config file \''.htmlsc($config_name).'\' is not exist.</p>';
+		return '<p>config file \''.htmlspecialchars($config_name, ENT_COMPAT, 'UTF-8').'\' is not exist.</p>';
 	}
 
 	$config->config_name = $config_name;
@@ -776,11 +776,11 @@ function plugin_tracker_getlist(string $page, $refer, string $config_name, strin
 		return '<p>config file \''.make_pagelink($config->page.'/'.$list).'\' not found.</p>';
 	}
 
-	$cache_enabled = (defined('TRACKER_LIST_USE_CACHE')) && (TRACKER_LIST_USE_CACHE) && (defined('JSON_UNESCAPED_UNICODE')) && (defined('PKWK_UTF8_ENABLE'));
+	$cache_enabled = (defined('TRACKER_LIST_USE_CACHE')) && (TRACKER_LIST_USE_CACHE);
 
 	if (($limit === null) && ($start_n === null)) {
 		$cache_filepath = CACHE_DIR.encode($page).'.tracker';
-	} elseif ((pkwk_ctype_digit($limit)) && ($limit > 0) && ($limit <= 1000)) {
+	} elseif ((ctype_digit($limit)) && ($limit > 0) && ($limit <= 1000)) {
 		$cache_filepath = CACHE_DIR.encode($page).'.'.$limit.'.tracker';
 	} elseif (($start_n !== null) && ($last_n !== null)) {
 		$cache_filepath = CACHE_DIR.encode($page).'.'.$start_n.'-'.$last_n.'.tracker';

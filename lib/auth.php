@@ -240,7 +240,7 @@ function check_editable(string $page, bool $auth_enabled = true, bool $exit_on_f
 			return false;
 		} else {
 			// With exit
-			$title = str_replace('$1', htmlsc(strip_bracket($page)), $_title_cannotedit);
+			$title = str_replace('$1', htmlspecialchars(strip_bracket($page), ENT_COMPAT, 'UTF-8'), $_title_cannotedit);
 			$body = $title;
 
 			if (is_freeze($page)) {
@@ -446,7 +446,7 @@ function basic_auth(string $page, bool $auth_enabled, bool $exit_on_fail, array 
 		}
 
 		if ($exit_on_fail) {
-			$title = str_replace('$1', htmlsc(strip_bracket($page)), $title_cannot);
+			$title = str_replace('$1', htmlspecialchars(strip_bracket($page), ENT_COMPAT, 'UTF-8'), $title_cannot);
 			$body = $title;
 			$page = str_replace('$1', make_search($page), $title_cannot);
 			catbody($title, $page, $body);
@@ -667,10 +667,7 @@ function form_auth(string $username, string $password)
 		if (in_array($user, array_keys($auth_users), true)) {
 			if (pkwk_hash_compute($password, $auth_users[$user]) === $auth_users[$user]) {
 				session_start();
-
-				// require: PHP5.1+
 				session_regenerate_id(true);
-
 				$_SESSION['authenticated_user'] = $user;
 				$_SESSION['authenticated_user_fullname'] = $user;
 
@@ -706,10 +703,7 @@ function ldap_auth(string $username, string $password) : bool
 
 				if ($user_info) {
 					$ldap_groups = get_ldap_groups_with_user($ldapconn, $username, $user_info['is_ad']);
-
-					// require: PHP5.1+
 					session_regenerate_id(true);
-
 					$_SESSION['authenticated_user'] = $user_info['uid'];
 					$_SESSION['authenticated_user_fullname'] = $user_info['fullname'];
 					$_SESSION['dynamic_member_groups'] = $ldap_groups;
@@ -729,10 +723,7 @@ function ldap_auth(string $username, string $password) : bool
 
 					if ($ldap_bind_user2) {
 						$ldap_groups = get_ldap_groups_with_user($ldapconn, $username, $user_info['is_ad']);
-
-						// require: PHP5.1+
 						session_regenerate_id(true);
-
 						$_SESSION['authenticated_user'] = $user_info['uid'];
 						$_SESSION['authenticated_user_fullname'] = $user_info['fullname'];
 						$_SESSION['dynamic_member_groups'] = $ldap_groups;

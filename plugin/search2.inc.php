@@ -32,7 +32,7 @@ function plugin_search2_action() : array
 	$action = (isset($vars['action'])) ? ($vars['action']) : ('');
 	$base = (isset($vars['base'])) ? ($vars['base']) : ('');
 	$start_s = (isset($vars['start'])) ? ($vars['start']) : ('');
-	$start_index = (pkwk_ctype_digit($start_s)) ? ((int) ($start_s)) : (0);
+	$start_index = (ctype_digit($start_s)) ? ((int) ($start_s)) : (0);
 	$bases = [];
 
 	if ($base !== '') {
@@ -42,13 +42,13 @@ function plugin_search2_action() : array
 	if ($action === '') {
 		$q = trim((isset($vars['q'])) ? ($vars['q']) : (''));
 		$offset_s = (isset($vars['offset'])) ? ($vars['offset']) : ('');
-		$offset = (pkwk_ctype_digit($offset_s)) ? ((int) ($offset_s)) : (0);
+		$offset = (ctype_digit($offset_s)) ? ((int) ($offset_s)) : (0);
 		$prev_offset_s = (isset($vars['prev_offset'])) ? ($vars['prev_offset']) : ('');
 
 		if ($q === '') {
 			return ['msg'=>$_title_search, 'body'=>'<br>'.$_msg_searching."\n".plugin_search2_search_form($q, $bases, $offset)];
 		} else {
-			$msg = str_replace('$1', htmlsc($q), $_title_result);
+			$msg = str_replace('$1', htmlspecialchars($q, ENT_COMPAT, 'UTF-8'), $_title_result);
 
 			return ['msg'=>$msg, 'body'=>plugin_search2_search_form($q, $bases, $offset, $prev_offset_s)];
 		}
@@ -271,7 +271,7 @@ function plugin_search2_do_search(string $query_text, string $base, int $start_i
 		}
 	}
 
-	$message = str_replace('$1', htmlsc($query_text), str_replace('$2', count($found_pages), str_replace('$3', count($page_names), (($b_type_and) ? ($_msg_andresult) : ($_msg_orresult)))));
+	$message = str_replace('$1', htmlspecialchars($query_text, ENT_COMPAT, 'UTF-8'), str_replace('$2', count($found_pages), str_replace('$3', count($page_names), (($b_type_and) ? ($_msg_andresult) : ($_msg_orresult)))));
 	$search_done = (bool) (($scan_page_index + 1) === count($page_names));
 
 	$result_obj =
@@ -292,14 +292,6 @@ function plugin_search2_do_search(string $query_text, string $base, int $start_i
 	];
 
 	$obj = $result_obj;
-
-	if (!defined('PKWK_UTF8_ENABLE')) {
-		if (SOURCE_ENCODING === 'EUC-JP') {
-			mb_convert_variables('UTF-8', 'CP51932', $obj);
-		} else {
-			mb_convert_variables('UTF-8', SOURCE_ENCODING, $obj);
-		}
-	}
 
 	echo json_encode($obj, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 }
@@ -325,7 +317,7 @@ function plugin_search2_search_form(string $search_text, array $bases, int $offs
 
 	$search2_form_total_count++;
 	$script = get_base_uri();
-	$h_search_text = htmlsc($search_text);
+	$h_search_text = htmlspecialchars($search_text, ENT_COMPAT, 'UTF-8');
 
 	$base_option = '';
 
@@ -341,7 +333,7 @@ function plugin_search2_search_form(string $search_text, array $bases, int $offs
 				break;
 			}
 
-			$s_base = htmlsc($base);
+			$s_base = htmlspecialchars($base, ENT_COMPAT, 'UTF-8');
 			$base_str = '<strong>'.$s_base.'</strong>';
 			$base_label = str_replace('$1', $base_str, $_search_pages);
 			$base_msg .= <<<EOD
@@ -360,8 +352,8 @@ EOD;
 		$base_option = "\n\t".'<div class="small">'."\n".$base_msg."\n\t".'</div>';
 	}
 
-	$_search2_result_notfound = htmlsc($_msg_notfoundresult);
-	$_search2_result_found = htmlsc($_msg_andresult);
+	$_search2_result_notfound = htmlspecialchars($_msg_notfoundresult, ENT_COMPAT, 'UTF-8');
+	$_search2_result_found = htmlspecialchars($_msg_andresult, ENT_COMPAT, 'UTF-8');
 	$_search2_search_wait_milliseconds = PLUGIN_SEARCH2_SEARCH_WAIT_MILLISECONDS;
 	$result_page_panel = <<<EOD
 <input type="checkbox" id="_plugin_search2_detail" checked><label for="_plugin_search2_detail">{$_search_detail}</label>
@@ -373,7 +365,7 @@ EOD;
 		$result_page_panel = '';
 	}
 
-	$plain_search_link = '<a href="'.$script.'?cmd=search">'.htmlsc($_btn_search).'</a>';
+	$plain_search_link = '<a href="'.$script.'?cmd=search">'.htmlspecialchars($_btn_search, ENT_COMPAT, 'UTF-8').'</a>';
 	$alt_msg = str_replace('$1', $plain_search_link, $_msg_use_alternative_link);
 	$status_span_text = '<span class="_plugin_search2_search_status_text1"></span><span class="_plugin_search2_search_status_text2"></span>';
 	$form = <<<EOD
@@ -393,12 +385,12 @@ EOD;
 </div>
 EOD;
 
-	$h_auth_user = htmlsc($auth_user);
-	$h_base_url = htmlsc(plugin_search2_get_base_url($search_text));
-	$h_msg_more_results = htmlsc($_msg_more_results);
-	$h_msg_prev_results = htmlsc($_msg_prev_results);
+	$h_auth_user = htmlspecialchars($auth_user, ENT_COMPAT, 'UTF-8');
+	$h_base_url = htmlspecialchars(plugin_search2_get_base_url($search_text), ENT_COMPAT, 'UTF-8');
+	$h_msg_more_results = htmlspecialchars($_msg_more_results, ENT_COMPAT, 'UTF-8');
+	$h_msg_prev_results = htmlspecialchars($_msg_prev_results, ENT_COMPAT, 'UTF-8');
 	$max_results = PLUGIN_SEARCH2_SEARCH_MAX_RESULTS;
-	$prev_offset = (pkwk_ctype_digit($prev_offset_s)) ? ($prev_offset_s) : ('');
+	$prev_offset = (ctype_digit($prev_offset_s)) ? ($prev_offset_s) : ('');
 	$search_props = <<<EOD
 <div style="display:none;">
 	<input type="hidden" id="_plugin_search2_auth_user" value="{$h_auth_user}">

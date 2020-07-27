@@ -84,7 +84,7 @@ function plugin_template_action()
 	$begin_select = '';
 
 	for ($i = 0; $i < count($lines); $i++) {
-		$line = htmlsc(mb_strimwidth($lines[$i], 0, MAX_LEN, '...'));
+		$line = htmlspecialchars(mb_strimwidth($lines[$i], 0, MAX_LEN, '...'), ENT_COMPAT, 'UTF-8');
 
 		$tag = ($i == $begin) ? (' selected="selected"') : ('');
 		$begin_select .= '<option value="'.$i.'"'.$tag.'>'.$line.'</option>'."\n";
@@ -93,7 +93,7 @@ function plugin_template_action()
 		$end_select .= '<option value="'.$i.'"'.$tag.'>'.$line.'</option>'."\n";
 	}
 
-	$_page = htmlsc($page);
+	$_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 	$tag = '';
 	$msg = '';
 
@@ -104,7 +104,7 @@ function plugin_template_action()
 		$msg = str_replace('$1', $_page, $_err_template_invalid);
 	}
 
-	$s_refer = htmlsc($vars['refer']);
+	$s_refer = htmlspecialchars($vars['refer'], ENT_COMPAT, 'UTF-8');
 	$s_page = ($page == '') ? (str_replace('$1', $s_refer, $_msg_template_page)) : ($_page);
 	$ret = <<<EOD
 <form action="{$script}" method="post">
@@ -131,14 +131,6 @@ function plugin_template_output_list() : void
 	$template_page_key = 'template_pages';
 	$empty_result = '{"'.$template_page_key.'":[]}';
 	header('Content-Type: application/json; charset=UTF-8');
-	// PHP 5.4+
-	$enabled = (defined('JSON_UNESCAPED_UNICODE')) && (defined('PKWK_UTF8_ENABLE'));
-
-	if (!$enabled) {
-		echo $empty_result;
-
-		exit;
-	}
 
 	$template_pages = array_values(get_template_page_list());
 	$ar = [$template_page_key=>$template_pages];

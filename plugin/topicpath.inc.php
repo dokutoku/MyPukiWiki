@@ -93,7 +93,7 @@ function plugin_topicpath_inline() : string
 	foreach ($parents as $p) {
 		if ((PKWK_READONLY) && (!is_page($p['page']))) {
 			// Page not exists
-			$topic_path[] = htmlsc($p['leaf']);
+			$topic_path[] = htmlspecialchars($p['leaf'], ENT_COMPAT, 'UTF-8');
 		} else {
 			// Page exists or not exists
 			$topic_path[] = '<a href="'.$p['uri'].'">'.$p['leaf'].'</a>';
@@ -107,7 +107,7 @@ function plugin_topicpath_inline() : string
 		if (PLUGIN_TOPICPATH_THIS_PAGE_LINK) {
 			$topic_path[] = '<a href="'.get_page_uri($page).'">'.$leaf_name.'</a>';
 		} else {
-			$topic_path[] = htmlsc($leaf_name);
+			$topic_path[] = htmlspecialchars($leaf_name, ENT_COMPAT, 'UTF-8');
 		}
 	}
 

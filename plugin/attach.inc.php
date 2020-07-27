@@ -456,7 +456,7 @@ function attach_form(string $page) : string
 
 	$script = get_base_uri();
 	$r_page = rawurlencode($page);
-	$s_page = htmlsc($page);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 	$navi = <<<EOD
 		<span class="small">[<a href="{$script}?plugin=attach&amp;pcmd=list&amp;refer={$r_page}">{$_attach_messages['msg_list']}</a>] [<a href="{$script}?plugin=attach&amp;pcmd=list">{$_attach_messages['msg_listall']}</a>] </span><br />
 EOD;
@@ -610,7 +610,7 @@ class AttachFile
 		$this->getstatus();
 		$param = '&amp;file='.rawurlencode($this->file).'&amp;refer='.rawurlencode($this->page).(($this->age) ? ('&amp;age='.$this->age) : (''));
 		$title = $this->time_str.' '.$this->size_str;
-		$label = (($showicon) ? (PLUGIN_ATTACH_FILE_ICON) : ('')).htmlsc($this->file);
+		$label = (($showicon) ? (PLUGIN_ATTACH_FILE_ICON) : ('')).htmlspecialchars($this->file, ENT_COMPAT, 'UTF-8');
 
 		if ($this->age) {
 			$label .= ' (backup No.'.$this->age.')';
@@ -635,8 +635,8 @@ class AttachFile
 
 		$script = get_base_uri();
 		$r_page = rawurlencode($this->page);
-		$s_page = htmlsc($this->page);
-		$s_file = htmlsc($this->file);
+		$s_page = htmlspecialchars($this->page, ENT_COMPAT, 'UTF-8');
+		$s_file = htmlspecialchars($this->file, ENT_COMPAT, 'UTF-8');
 		$s_err = ($err === '') ? ('') : ('<p style="font-weight:bold">'.$_attach_messages[$err].'</p>');
 
 		$msg_rename = '';
@@ -670,7 +670,7 @@ class AttachFile
 		$info = $this->toString(true, false);
 		$hash = $this->gethash();
 
-		$retval = ['msg'=>sprintf($_attach_messages['msg_info'], htmlsc($this->file))];
+		$retval = ['msg'=>sprintf($_attach_messages['msg_info'], htmlspecialchars($this->file, ENT_COMPAT, 'UTF-8'))];
 		$retval['body'] = <<< EOD
 <p class="small"> [<a href="{$script}?plugin=attach&amp;pcmd=list&amp;refer={$r_page}">{$_attach_messages['msg_list']}</a>]  [<a href="{$script}?plugin=attach&amp;pcmd=list">{$_attach_messages['msg_listall']}</a>] </p>
 <dl>
@@ -853,12 +853,12 @@ EOD;
 		$filename = $this->file;
 
 		// Care for Japanese-character-included file name
-		$legacy_filename = mb_convert_encoding($filename, 'UTF-8', SOURCE_ENCODING);
+		$legacy_filename = mb_convert_encoding($filename, 'UTF-8', 'UTF-8');
 
 		if (LANG == 'ja') {
 			switch (UA_NAME.'/'.UA_PROFILE) {
 				case 'MSIE/default':
-					$legacy_filename = mb_convert_encoding($filename, 'SJIS', SOURCE_ENCODING);
+					$legacy_filename = mb_convert_encoding($filename, 'SJIS', 'UTF-8');
 
 					break;
 
@@ -867,7 +867,7 @@ EOD;
 			}
 		}
 
-		$utf8filename = mb_convert_encoding($filename, 'UTF-8', SOURCE_ENCODING);
+		$utf8filename = mb_convert_encoding($filename, 'UTF-8', 'UTF-8');
 
 		ini_set('default_charset', '');
 		mb_http_output('pass');
@@ -933,7 +933,7 @@ class AttachFiles
 			}
 
 			if (!isset($_files[0])) {
-				$_files[0] = htmlsc($file);
+				$_files[0] = htmlspecialchars($file, ENT_COMPAT, 'UTF-8');
 			}
 
 			ksort($_files, SORT_NUMERIC);

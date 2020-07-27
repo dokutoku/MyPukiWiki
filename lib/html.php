@@ -127,7 +127,7 @@ function catbody(string $title, string $page, string $body) : void
 			break;
 	}
 
-	$_LINK['login'] = htmlsc($login_link);
+	$_LINK['login'] = htmlspecialchars($login_link, ENT_COMPAT, 'UTF-8');
 	$_LINK['logout'] = $script.'?plugin=loginform&amp;pcmd=logout&amp;page='.$r_page;
 
 	// Compat: Skins for 1.4.4 and before
@@ -210,7 +210,7 @@ function catbody(string $title, string $page, string $body) : void
 
 	// Search words
 	if (($search_word_color) && (isset($vars['word']))) {
-		$body = '<div class="small">'.$_msg_word.htmlsc($vars['word']).'</div>'."\n".$hr."\n".$body;
+		$body = '<div class="small">'.$_msg_word.htmlspecialchars($vars['word'], ENT_COMPAT, 'UTF-8').'</div>'."\n".$hr."\n".$body;
 
 		// BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
 		// with array_splice(), array_flip()
@@ -312,46 +312,32 @@ function get_html_scripting_data(string $page, bool $in_editing) : string
 		return '';
 	}
 
-	$is_utf8 = (bool) (defined('PKWK_UTF8_ENABLE'));
-
-	// Require: PHP 5.4+
-	$json_enabled = defined('JSON_UNESCAPED_UNICODE');
 	$data = '<div id="pukiwiki-site-properties" style="display:none;">'."\n";
-
-	if (!$json_enabled) {
-		$empty_data = <<<'EOS'
-<div id="pukiwiki-site-properties" style="display:none;">
-</div>
-EOS;
-
-		return $empty_data;
-	}
-
 	$is_show_passage = (bool) ($show_passage !== 0);
 
 	// Site basic Properties
 	$props =
 	[
-		'is_utf8'=>$is_utf8,
-		'json_enabled'=>$json_enabled,
+		'is_utf8'=>true,
+		'json_enabled'=>true,
 		'show_passage'=>$is_show_passage,
 		'base_uri_pathname'=>get_base_uri(PKWK_URI_ROOT),
 		'base_uri_absolute'=>get_base_uri(PKWK_URI_ABSOLUTE),
 	];
 
-	$h_props = htmlsc_json($props);
+	$h_props = htmlspecialchars(json_encode($props, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES), ENT_COMPAT, 'UTF-8');
 	$data .= <<<EOS
 	<input type="hidden" class="site-props" value="{$h_props}" />
 
 EOS;
-	$h_plugin = htmlsc($plugin);
+	$h_plugin = htmlspecialchars($plugin, ENT_COMPAT, 'UTF-8');
 	$data .= <<<EOS
 	<input type="hidden" class="plugin-name" value="{$h_plugin}" />
 
 EOS;
 
 	// Page name
-	$h_page_name = htmlsc($page);
+	$h_page_name = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 	$data .= <<<EOS
 	<input type="hidden" class="page-name" value="{$h_page_name}" />
 
@@ -373,7 +359,7 @@ EOS;
 		array_push($filtered_ticket_link_sites, $s);
 	}
 
-	$h_ticket_link_sites = htmlsc_json($filtered_ticket_link_sites);
+	$h_ticket_link_sites = htmlspecialchars(json_encode($filtered_ticket_link_sites, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES), ENT_COMPAT, 'UTF-8');
 	$data .= <<<EOS
 	<input type="hidden" class="ticketlink-def" value="{$h_ticket_link_sites}" />
 
@@ -383,7 +369,7 @@ EOS;
 	$ticket_jira_projects = get_ticketlink_jira_projects();
 
 	if (count($ticket_jira_projects) > 0) {
-		$h_ticket_jira_projects = htmlsc_json($ticket_jira_projects);
+		$h_ticket_jira_projects = htmlspecialchars(json_encode($ticket_jira_projects, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES), ENT_COMPAT, 'UTF-8');
 		$data .= <<<EOS
 	<input type="hidden" class="ticketlink-jira-def" value="{$h_ticket_jira_projects}" />
 
@@ -391,7 +377,7 @@ EOS;
 	}
 
 	if ((isset($ticket_jira_default_site)) && (is_array($ticket_jira_default_site))) {
-		$h_ticket_jira_default_site = htmlsc_json($ticket_jira_default_site);
+		$h_ticket_jira_default_site = htmlspecialchars(json_encode($ticket_jira_default_site, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES), ENT_COMPAT, 'UTF-8');
 		$data .= <<<EOS
 	<input type="hidden" class="ticketlink-jira-default-def" value="{$h_ticket_jira_default_site}" />
 
@@ -400,7 +386,7 @@ EOS;
 
 	// External link cushion page
 	if ($external_link_cushion_page) {
-		$h_cushion = htmlsc_json($external_link_cushion);
+		$h_cushion = htmlspecialchars(json_encode($external_link_cushion, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES), ENT_COMPAT, 'UTF-8');
 		$data .= <<<EOS
 	<input type="hidden" class="external-link-cushion" value="{$h_cushion}" />
 
@@ -410,7 +396,7 @@ EOS;
 	// Topicpath title
 	if (($topicpath_title) && (exist_plugin('topicpath')) && (function_exists('plugin_topicpath_parent_links'))) {
 		$parents = plugin_topicpath_parent_links($page);
-		$h_topicpath = htmlsc_json($parents);
+		$h_topicpath = htmlspecialchars(json_encode($parents, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES), ENT_COMPAT, 'UTF-8');
 		$data .= <<<EOS
 	<input type="hidden" class="topicpath-links" value="{$h_topicpath}" />
 
@@ -468,7 +454,7 @@ function edit_form(string $page, string $postdata, $digest = false, bool $b_temp
 		$tpages = [];
 
 		foreach ($template_page_list as $p) {
-			$ps = htmlsc($p);
+			$ps = htmlspecialchars($p, ENT_COMPAT, 'UTF-8');
 			$tpages[] = "\t\t\t".'<option value="'.$ps.'">'.$ps.'</option>';
 		}
 
@@ -493,10 +479,10 @@ EOD;
 	}
 
 	$r_page = rawurlencode($page);
-	$s_page = htmlsc($page);
-	$s_digest = htmlsc($digest);
-	$s_postdata = htmlsc($refer.$postdata);
-	$s_original = (isset($vars['original'])) ? (htmlsc($vars['original'])) : ($s_postdata);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
+	$s_digest = htmlspecialchars($digest, ENT_COMPAT, 'UTF-8');
+	$s_postdata = htmlspecialchars($refer.$postdata, ENT_COMPAT, 'UTF-8');
+	$s_original = (isset($vars['original'])) ? (htmlspecialchars($vars['original'], ENT_COMPAT, 'UTF-8')) : ($s_postdata);
 
 	// true when preview
 	$b_preview = isset($vars['preview']);
@@ -520,8 +506,8 @@ EOD;
 
 	// 'margin-bottom', 'float:left', and 'margin-top'
 	// are for layout of 'cancel button'
-	$h_msg_edit_cancel_confirm = htmlsc($_msg_edit_cancel_confirm);
-	$h_msg_edit_unloadbefore_message = htmlsc($_msg_edit_unloadbefore_message);
+	$h_msg_edit_cancel_confirm = htmlspecialchars($_msg_edit_cancel_confirm, ENT_COMPAT, 'UTF-8');
+	$h_msg_edit_unloadbefore_message = htmlspecialchars($_msg_edit_unloadbefore_message, ENT_COMPAT, 'UTF-8');
 	$s_postdata = str_replace("\n", '&NewLine;', $s_postdata);
 	$s_original = str_replace("\n", '&NewLine;', $s_original);
 
@@ -644,7 +630,7 @@ function make_related(string $page, string $tag = '') : string
 		}
 
 		$page_uri = get_page_uri($page);
-		$s_page = htmlsc($page);
+		$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 
 		if ($tag) {
 			$attrs = get_page_link_a_attrs($page);
@@ -731,7 +717,7 @@ function strip_autolink(string $str) : string
 // Make a backlink. searching-link of the page name, by the page name, for the page name
 function make_search(string $page) : string
 {
-	$s_page = htmlsc($page);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 	$r_page = rawurlencode($page);
 
 	return '<a href="'.get_base_uri().'?plugin=related&amp;page='.$r_page.'">'.$s_page.'</a> ';
@@ -804,7 +790,7 @@ function pkwk_headers_sent() : void
 
 	if (version_compare(PHP_VERSION, '4.3.0', '>=')) {
 		if (headers_sent($file, $line)) {
-			die('Headers already sent at '.htmlsc($file).' line '.$line.'.');
+			die('Headers already sent at '.htmlspecialchars($file, ENT_COMPAT, 'UTF-8').' line '.$line.'.');
 		}
 	} else {
 		if (headers_sent()) {
@@ -861,7 +847,7 @@ define('PKWK_DTD_TYPE_XHTML', 1);
 define('PKWK_DTD_TYPE_HTML', 0);
 
 // Output HTML DTD, <html> start tag. Return content-type.
-function pkwk_output_dtd(int $pkwk_dtd = PKWK_DTD_XHTML_1_1, string $charset = CONTENT_CHARSET) : string
+function pkwk_output_dtd(int $pkwk_dtd = PKWK_DTD_XHTML_1_1, string $charset = 'UTF-8') : string
 {
 	static $called;
 
@@ -913,7 +899,7 @@ function pkwk_output_dtd(int $pkwk_dtd = PKWK_DTD_XHTML_1_1, string $charset = C
 			die('DTD not specified or invalid DTD');
 	}
 
-	$charset = htmlsc($charset);
+	$charset = htmlspecialchars($charset, ENT_COMPAT, 'UTF-8');
 
 	// Output XML or not
 	if ($type == PKWK_DTD_TYPE_XHTML) {

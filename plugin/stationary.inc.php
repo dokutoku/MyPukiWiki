@@ -53,7 +53,7 @@ function plugin_stationary_convert(string ...$args) : string
 		$result = implode(',', $args);
 	}
 
-	return '#stationary('.htmlsc($result).')<br />';
+	return '#stationary('.htmlspecialchars($result, ENT_COMPAT, 'UTF-8').')<br />';
 }
 
 // In-line type plugin: &stationary; or &stationary(foo); , or &stationary(foo){bar};
@@ -74,7 +74,7 @@ function plugin_stationary_inline(string ...$args) : string
 
 	$result = implode(',', $args);
 
-	return '&amp;stationary('.htmlsc($result).'){'.$body.'};';
+	return '&amp;stationary('.htmlspecialchars($result, ENT_COMPAT, 'UTF-8').'){'.$body.'};';
 }
 
 // Action-type plugin: ?plugin=stationary&foo=bar
@@ -88,5 +88,5 @@ function plugin_stationary_action() : array
 	$msg = 'Message';
 	$body = 'Message body';
 
-	return ['msg'=>htmlsc($msg), 'body'=>htmlsc($body)];
+	return ['msg'=>htmlspecialchars($msg, ENT_COMPAT, 'UTF-8'), 'body'=>htmlspecialchars($body, ENT_COMPAT, 'UTF-8')];
 }

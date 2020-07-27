@@ -139,7 +139,7 @@ function plugin_calendar_viewer_convert(string ...$func_args) : string
 	$show_count[$pagename]++;
 
 	if ($show_count[$pagename] > PLUGIN_CALENDAR_VIEWER_MAX_SHOW_COUNT) {
-		$s_page = htmlsc($pagename);
+		$s_page = htmlspecialchars($pagename, ENT_COMPAT, 'UTF-8');
 
 		return '#calendar_viewer(): Exceeded the limit of show count: '.$s_page.'<br />';
 	}
@@ -220,13 +220,13 @@ function plugin_calendar_viewer_convert(string ...$func_args) : string
 
 			if (($time === false) || ($time === -1)) {
 				// Failed. Why?
-				$s_page = htmlsc($page);
+				$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 			} else {
 				$week = $weeklabels[date('w', $time)];
-				$s_page = htmlsc(str_replace(['$w'], [$week], date(PLUGIN_CALENDAR_VIEWER_DATE_FORMAT, $time)));
+				$s_page = htmlspecialchars(str_replace(['$w'], [$week], date(PLUGIN_CALENDAR_VIEWER_DATE_FORMAT, $time)), ENT_COMPAT, 'UTF-8');
 			}
 		} else {
-			$s_page = htmlsc($page);
+			$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 		}
 
 		if (PKWK_READONLY) {
@@ -315,7 +315,7 @@ function plugin_calendar_viewer_convert(string ...$func_args) : string
 
 	// ナビゲート用のリンクを末尾に追加
 	if (($left_YM != '') || ($right_YM != '')) {
-		$s_date_sep = htmlsc($date_sep);
+		$s_date_sep = htmlspecialchars($date_sep, ENT_COMPAT, 'UTF-8');
 		$right_link = '';
 		$left_link = '';
 		$link = $script.'?plugin=calendar_viewer&amp;mode='.$mode.'&amp;file='.rawurlencode($simple_pagename).'&amp;date_sep='.$s_date_sep.'&amp;';
@@ -371,7 +371,7 @@ function plugin_calendar_viewer_action() : array
 	$return_vars_array['body'] = call_user_func_array('plugin_calendar_viewer_convert', $args_array);
 
 	//$return_vars_array['msg'] = 'calendar_viewer ' . $vars['page'] . '/' . $page_YM;
-	$return_vars_array['msg'] = 'calendar_viewer '.htmlsc($vars['page']);
+	$return_vars_array['msg'] = 'calendar_viewer '.htmlspecialchars($vars['page'], ENT_COMPAT, 'UTF-8');
 
 	if ($vars['page'] != '') {
 		$return_vars_array['msg'] .= '/';
@@ -380,7 +380,7 @@ function plugin_calendar_viewer_action() : array
 	if (preg_match('/\*/', $page_YM)) {
 		// うーん、n件表示の時はなんてページ名にしたらいい？
 	} else {
-		$return_vars_array['msg'] .= htmlsc($page_YM);
+		$return_vars_array['msg'] .= htmlspecialchars($page_YM, ENT_COMPAT, 'UTF-8');
 	}
 
 	$vars['page'] = $page;

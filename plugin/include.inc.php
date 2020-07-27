@@ -101,7 +101,7 @@ function plugin_include_convert(string ...$args) : string
 		}
 	}
 
-	$s_page = htmlsc($page);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 	$r_page = pagename_urlencode($page);
 
 	// Read link

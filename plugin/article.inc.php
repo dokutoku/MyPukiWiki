@@ -146,9 +146,9 @@ function plugin_article_action() : array
 
 		$body = $_msg_collided."\n";
 
-		$s_refer = htmlsc($post['refer']);
-		$s_digest = htmlsc($post['digest']);
-		$s_postdata = htmlsc($postdata_input);
+		$s_refer = htmlspecialchars($post['refer'], ENT_COMPAT, 'UTF-8');
+		$s_digest = htmlspecialchars($post['digest'], ENT_COMPAT, 'UTF-8');
+		$s_postdata = htmlspecialchars($postdata_input, ENT_COMPAT, 'UTF-8');
 		$s_postdata = str_replace("\n", '&NewLine;', $s_postdata);
 		$body .= <<<EOD
 <form action="{$script}?cmd=preview" method="post">
@@ -219,8 +219,8 @@ function plugin_article_convert() : string
 
 	$article_no = $numbers[$vars['page']]++;
 
-	$s_page = htmlsc($vars['page']);
-	$s_digest = htmlsc($digest);
+	$s_page = htmlspecialchars($vars['page'], ENT_COMPAT, 'UTF-8');
+	$s_digest = htmlspecialchars($digest, ENT_COMPAT, 'UTF-8');
 	$name_cols = PLUGIN_ARTICLE_NAME_COLS;
 	$subject_cols = PLUGIN_ARTICLE_SUBJECT_COLS;
 	$article_rows = PLUGIN_ARTICLE_ROWS;

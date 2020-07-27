@@ -53,6 +53,6 @@ function plugin_read_action() : array
 		return do_plugin_action('edit');
 	} else {
 		// Invalid page name
-		return ['msg'=>$_title_invalidwn, 'body'=>str_replace('$1', htmlsc($page), str_replace('$2', 'WikiName', $_msg_invalidiwn))];
+		return ['msg'=>$_title_invalidwn, 'body'=>str_replace('$1', htmlspecialchars($page, ENT_COMPAT, 'UTF-8'), str_replace('$2', 'WikiName', $_msg_invalidiwn))];
 	}
 }

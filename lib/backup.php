@@ -106,7 +106,7 @@ function make_backup(string $page, bool $is_delete, string $wikitext) : void
 		}
 
 		if (!($fp = _backup_fopen($page, 'wb'))) {
-			die_message('Cannot open '.htmlsc(_backup_get_filename($page)).'<br />Maybe permission is not writable or filename is too long');
+			die_message('Cannot open '.htmlspecialchars(_backup_get_filename($page), ENT_COMPAT, 'UTF-8').'<br />Maybe permission is not writable or filename is too long');
 		}
 
 		_backup_fputs($fp, $strout);

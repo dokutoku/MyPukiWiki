@@ -174,12 +174,12 @@ function plugin_edit_inline(string ...$args) : string
 	$ispage = is_page($s_page);
 
 	// Paragraph edit enabled or not
-	$short = htmlsc('Edit');
+	$short = htmlspecialchars('Edit', ENT_COMPAT, 'UTF-8');
 
 	if (($fixed_heading_anchor_edit) && ($editable) && ($ispage) && (!$isfreeze)) {
 		// Paragraph editing
 		$id = rawurlencode($id);
-		$title = htmlsc(sprintf('Edit %s', $page));
+		$title = htmlspecialchars(sprintf('Edit %s', $page), ENT_COMPAT, 'UTF-8');
 		$icon = '<img src="'.IMAGE_DIR.'paraedit.png" width="9" height="9" alt="'.$short.'" title="'.$title.'" /> ';
 		$class = ' class="anchor_super"';
 	} else {
@@ -194,7 +194,7 @@ function plugin_edit_inline(string ...$args) : string
 			$icon = 'edit.png';
 		}
 
-		$title = htmlsc(sprintf($title, $s_page));
+		$title = htmlspecialchars(sprintf($title, $s_page), ENT_COMPAT, 'UTF-8');
 		$icon = '<img src="'.IMAGE_DIR.$icon.'" width="20" height="20" alt="'.$short.'" title="'.$title.'" />';
 		$class = '';
 	}
@@ -302,7 +302,7 @@ function plugin_edit_write() : array
 	if ($postdata === '') {
 		page_write($page, $postdata);
 		$retvars['msg'] = $_title_deleted;
-		$retvars['body'] = str_replace('$1', htmlsc($page), $_title_deleted);
+		$retvars['body'] = str_replace('$1', htmlspecialchars($page, ENT_COMPAT, 'UTF-8'), $_title_deleted);
 
 		return $retvars;
 	}

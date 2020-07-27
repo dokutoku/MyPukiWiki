@@ -55,12 +55,12 @@ function plugin_versionlist_convert() : string
 			}
 
 			$data = implode('', file($sdir.$file));
-			$comment = ['file'=>htmlsc($sdir.$file), 'rev'=>'', 'date'=>''];
+			$comment = ['file'=>htmlspecialchars($sdir.$file, ENT_COMPAT, 'UTF-8'), 'rev'=>'', 'date'=>''];
 
 			if (preg_match('/\$Id: (.+),v (\d+\.\d+) (\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2})/', $data, $matches)) {
-//				$comment['file'] = htmlsc($sdir.$matches[1]);
-				$comment['rev'] = htmlsc($matches[2]);
-				$comment['date'] = htmlsc($matches[3]);
+//				$comment['file'] = htmlspecialchars($sdir.$matches[1], ENT_COMPAT, 'UTF-8');
+				$comment['rev'] = htmlspecialchars($matches[2], ENT_COMPAT, 'UTF-8');
+				$comment['date'] = htmlspecialchars($matches[3], ENT_COMPAT, 'UTF-8');
 			}
 
 			$comments[$sdir.$file] = $comment;

@@ -49,9 +49,9 @@ function plugin_calendar2_convert(string ...$args) : string
 	}
 
 	$r_base = rawurlencode($base);
-	$s_base = htmlsc($base);
+	$s_base = htmlspecialchars($base, ENT_COMPAT, 'UTF-8');
 	$r_prefix = rawurlencode($prefix);
-	$s_prefix = htmlsc($prefix);
+	$s_prefix = htmlspecialchars($prefix, ENT_COMPAT, 'UTF-8');
 
 	$yr = substr($date_str, 0, 4);
 	$mon = substr($date_str, 4, 2);
@@ -118,7 +118,7 @@ EOD;
 		$dt = sprintf('%4d-%02d-%02d', $year, $m_num, $day);
 		$page = $prefix.$dt;
 		$r_page = pagename_urlencode($page);
-		$s_page = htmlsc($page);
+		$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 
 		if (($wday == 0) && ($day > 1)) {
 			$ret .= "\t\t\t\t".'</tr>'."\n\t\t\t\t".'<tr>'."\n";
@@ -208,7 +208,7 @@ function plugin_calendar2_action() : array
 	$yy = sprintf('%04d.%02d', substr($date, 0, 4), substr($date, 4, 2));
 
 	$aryargs = [$vars['page'], $date];
-	$s_page = htmlsc($vars['page']);
+	$s_page = htmlspecialchars($vars['page'], ENT_COMPAT, 'UTF-8');
 
 	$ret['msg'] = 'calendar '.$s_page.'/'.$yy;
 	$ret['body'] = call_user_func_array('plugin_calendar2_convert', $aryargs);

@@ -56,7 +56,7 @@ function plugin_includesubmenu_convert(string ...$aryargs) : string
 
 	if ($ShowPageName) {
 		$r_page = rawurlencode($SubMenuPageName);
-		$s_page = htmlsc($SubMenuPageName);
+		$s_page = htmlspecialchars($SubMenuPageName, ENT_COMPAT, 'UTF-8');
 		$link = '<a href="'.$script.'?cmd=edit&amp;page='.$r_page.'">'.$s_page.'</a>';
 		$body = '<h1>'.$link.'</h1>'."\n".$body;
 	}

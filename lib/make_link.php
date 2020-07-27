@@ -170,7 +170,7 @@ class InlineConverter
 
 		$string = preg_replace_callback('/'.$this->pattern.'/x', [$this, 'replace'], $string);
 
-		$arr = explode("\x08", make_line_rules(htmlsc($string)));
+		$arr = explode("\x08", make_line_rules(htmlspecialchars($string, ENT_COMPAT, 'UTF-8')));
 		$retval = '';
 
 		while (!empty($arr)) {
@@ -184,7 +184,7 @@ class InlineConverter
 	{
 		$obj = $this->get_converter($arr);
 
-		$this->result[] = (($obj !== null) && ($obj->set($arr, $this->page) !== false)) ? ($obj->toString()) : (make_line_rules(htmlsc($arr[0])));
+		$this->result[] = (($obj !== null) && ($obj->set($arr, $this->page) !== false)) ? ($obj->toString()) : (make_line_rules(htmlspecialchars($arr[0], ENT_COMPAT, 'UTF-8')));
 
 		// Add a mark into latest processed part
 		return "\x08";
@@ -300,7 +300,7 @@ class Link
 		$this->type = $type;
 
 		if ((!PKWK_DISABLE_INLINE_IMAGE_FROM_URI) && (is_url($alias)) && (preg_match('/\.(gif|png|jpe?g)$/i', $alias))) {
-			$alias = '<img src="'.htmlsc($alias).'" alt="'.$name.'" />';
+			$alias = '<img src="'.htmlspecialchars($alias, ENT_COMPAT, 'UTF-8').'" alt="'.$name.'" />';
 		} elseif ($alias !== '') {
 			if ($converter === null) {
 				$converter = new InlineConverter(['plugin']);
@@ -398,7 +398,7 @@ EOD;
 			// No such plugin, or Failed
 			$body = (($body == '') ? ('') : ('{'.$body.'}')).';';
 
-			return make_line_rules(htmlsc('&'.$this->plain).$body);
+			return make_line_rules(htmlspecialchars('&'.$this->plain, ENT_COMPAT, 'UTF-8').$body);
 		}
 	}
 }
@@ -455,8 +455,8 @@ EOD;
 			$title = '';
 		} else {
 			$title = strip_tags($note);
-			$count = mb_strlen($title, SOURCE_ENCODING);
-			$title = mb_substr($title, 0, PKWK_FOOTNOTE_TITLE_MAX, SOURCE_ENCODING);
+			$count = mb_strlen($title, 'UTF-8');
+			$title = mb_substr($title, 0, PKWK_FOOTNOTE_TITLE_MAX, 'UTF-8');
 			$abbr = (PKWK_FOOTNOTE_TITLE_MAX < $count) ? ('...') : ('');
 			$title = ' title="'.$title.$abbr.'"';
 		}
@@ -511,7 +511,7 @@ EOD;
 	{
 		[, , , $alias, $name] = $this->splice($arr);
 
-		return parent::setParam($page, htmlsc($name), '', 'url', (($alias == '') ? ($name) : ($alias)));
+		return parent::setParam($page, htmlspecialchars($name, ENT_COMPAT, 'UTF-8'), '', 'url', (($alias == '') ? ($name) : ($alias)));
 	}
 
 	public function toString() : string
@@ -561,7 +561,7 @@ EOD;
 	{
 		[, $name, $alias] = $this->splice($arr);
 
-		return parent::setParam($page, htmlsc($name), '', 'url', $alias);
+		return parent::setParam($page, htmlspecialchars($name, ENT_COMPAT, 'UTF-8'), '', 'url', $alias);
 	}
 
 	public function toString() : string
@@ -678,9 +678,9 @@ EOD;
 		}
 
 		$url = get_interwiki_url($name, $this->param);
-		$this->url = ($url === false) ? (get_base_uri().'?'.pagename_urlencode('[['.$name.':'.$this->param.']]')) : (htmlsc($url));
+		$this->url = ($url === false) ? (get_base_uri().'?'.pagename_urlencode('[['.$name.':'.$this->param.']]')) : (htmlspecialchars($url, ENT_COMPAT, 'UTF-8'));
 
-		return parent::setParam($page, htmlsc($name.':'.$this->param), '', 'InterWikiName', (($alias == '') ? ($name.':'.$this->param) : ($alias)));
+		return parent::setParam($page, htmlspecialchars($name.':'.$this->param, ENT_COMPAT, 'UTF-8'), '', 'InterWikiName', (($alias == '') ? ($name.':'.$this->param) : ($alias)));
 	}
 
 	public function toString() : string
@@ -980,7 +980,7 @@ function make_pagelink(string $page, string $alias = '', string $anchor = '', st
 	global $_symbol_noexists;
 
 	$script = get_base_uri();
-	$s_page = htmlsc(strip_bracket($page));
+	$s_page = htmlspecialchars(strip_bracket($page), ENT_COMPAT, 'UTF-8');
 	$s_alias = ($alias == '') ? ($s_page) : ($alias);
 
 	if ($page == '') {
@@ -1034,7 +1034,7 @@ function make_pagelink(string $page, string $alias = '', string $anchor = '', st
 		$symbol_html = '';
 
 		if ($_symbol_noexists !== '') {
-			$symbol_html = '<span style="user-select:none;">'.htmlsc($_symbol_noexists).'</span>';
+			$symbol_html = '<span style="user-select:none;">'.htmlspecialchars($_symbol_noexists, ENT_COMPAT, 'UTF-8').'</span>';
 		}
 
 		$href = $script.'?cmd=edit&amp;page='.$r_page.$r_refer;
@@ -1131,7 +1131,7 @@ function get_interwiki_url(string $name, string $param)
 
 		case 'yw': // YukiWiki
 			if (!preg_match('/'.$WikiName.'/', $param)) {
-				$param = '[['.mb_convert_encoding($param, 'SJIS', SOURCE_ENCODING).']]';
+				$param = '[['.mb_convert_encoding($param, 'SJIS', 'UTF-8').']]';
 			}
 
 			break;
@@ -1150,9 +1150,9 @@ function get_interwiki_url(string $name, string $param)
 			// Encoding conversion into specified encode, and URLencode
 			if ((strpos($url, '$1') === false) && (substr($url, -1) === '?')) {
 				// PukiWiki site
-				$param = pagename_urlencode(mb_convert_encoding($param, $opt, SOURCE_ENCODING));
+				$param = pagename_urlencode(mb_convert_encoding($param, $opt, 'UTF-8'));
 			} else {
-				$param = rawurlencode(mb_convert_encoding($param, $opt, SOURCE_ENCODING));
+				$param = rawurlencode(mb_convert_encoding($param, $opt, 'UTF-8'));
 			}
 
 			break;

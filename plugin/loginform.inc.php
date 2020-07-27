@@ -11,7 +11,7 @@ function plugin_loginform_inline() : string
 {
 	$logout_param = '?plugin=basicauthlogout';
 
-	return '<a href="'.htmlsc(get_base_uri().$logout_param).'">Log out</a>';
+	return '<a href="'.htmlspecialchars(get_base_uri().$logout_param, ENT_COMPAT, 'UTF-8').'">Log out</a>';
 }
 
 function plugin_loginform_convert() : string
@@ -61,10 +61,7 @@ function plugin_loginform_action() : array
 			case AUTH_TYPE_SAML:
 			default:
 				$_SESSION = [];
-
-				// require: PHP5.1+
 				session_regenerate_id(true);
-
 				session_destroy();
 
 				break;
@@ -102,16 +99,16 @@ function plugin_loginform_action() : array
   }
 </style>
 <div class="loginformcontainer">
-	<form name="loginform" class="loginform" action="<?php echo htmlsc($action_url); ?>" method="post">
+	<form name="loginform" class="loginform" action="<?php echo htmlspecialchars($action_url, ENT_COMPAT, 'UTF-8'); ?>" method="post">
 		<div>
 			<table style="border:0">
 				<tbody>
 					<tr>
-						<td class="label"><label for="_plugin_loginform_username"><?php echo htmlsc($_loginform_messages['username']); ?></label></td>
-						<td><input type="text" name="username" value="<?php echo htmlsc($username); ?>" id="_plugin_loginform_username"></td>
+						<td class="label"><label for="_plugin_loginform_username"><?php echo htmlspecialchars($_loginform_messages['username'], ENT_COMPAT, 'UTF-8'); ?></label></td>
+						<td><input type="text" name="username" value="<?php echo htmlspecialchars($username, ENT_COMPAT, 'UTF-8'); ?>" id="_plugin_loginform_username"></td>
 					</tr>
 					<tr>
-						<td class="label"><label for="_plugin_loginform_password"><?php echo htmlsc($_loginform_messages['password']); ?></label></td>
+						<td class="label"><label for="_plugin_loginform_password"><?php echo htmlspecialchars($_loginform_messages['password'], ENT_COMPAT, 'UTF-8'); ?></label></td>
 						<td><input type="password" name="password" id="_plugin_loginform_password"></td>
 					</tr>
 <?php if ($isset_user_credential) { ?>
@@ -123,7 +120,7 @@ function plugin_loginform_action() : array
 <?php } ?>
 					<tr>
 						<td></td>
-						<td class="login-button-container"><input type="submit" value="<?php echo htmlsc($_loginform_messages['login']); ?>" class="loginbutton"></td>
+						<td class="login-button-container"><input type="submit" value="<?php echo htmlspecialchars($_loginform_messages['login'], ENT_COMPAT, 'UTF-8'); ?>" class="loginbutton"></td>
 					</tr>
 				</tbody>
 			</table>

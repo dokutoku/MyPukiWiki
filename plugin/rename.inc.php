@@ -97,7 +97,7 @@ function plugin_rename_err(string $err, string $page = '') : string
 	}
 
 	if ($page != '') {
-		$body = sprintf($body, htmlsc($page));
+		$body = sprintf($body, htmlspecialchars($page, ENT_COMPAT, 'UTF-8'));
 	}
 
 	$msg = sprintf($_rename_messages['err'], $body);
@@ -126,8 +126,8 @@ function plugin_rename_phase1(string $err = '', string $page = '') : array
 
 	$select_refer = plugin_rename_getselecttag($refer);
 
-	$s_src = htmlsc(plugin_rename_getvar('src'));
-	$s_dst = htmlsc(plugin_rename_getvar('dst'));
+	$s_src = htmlspecialchars(plugin_rename_getvar('src'), ENT_COMPAT, 'UTF-8');
+	$s_dst = htmlspecialchars(plugin_rename_getvar('dst'), ENT_COMPAT, 'UTF-8');
 
 	$ret = [];
 	$ret['msg'] = $_rename_messages['msg_title'];
@@ -174,8 +174,8 @@ function plugin_rename_phase2(string $err = '') : array
 	}
 
 	$msg_rename = sprintf($_rename_messages['msg_rename'], make_pagelink($refer));
-	$s_page = htmlsc($page);
-	$s_refer = htmlsc($refer);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
+	$s_refer = htmlspecialchars($refer, ENT_COMPAT, 'UTF-8');
 
 	$ret = [];
 	$ret['msg'] = $_rename_messages['msg_title'];
@@ -282,16 +282,16 @@ function plugin_rename_phase3(array $pages) : array
 	$method = plugin_rename_getvar('method');
 
 	if ($method == 'regex') {
-		$s_src = htmlsc(plugin_rename_getvar('src'));
-		$s_dst = htmlsc(plugin_rename_getvar('dst'));
+		$s_src = htmlspecialchars(plugin_rename_getvar('src'), ENT_COMPAT, 'UTF-8');
+		$s_dst = htmlspecialchars(plugin_rename_getvar('dst'), ENT_COMPAT, 'UTF-8');
 		$msg .= $_rename_messages['msg_regex'].'<br />'."\n";
 		$input .= '<input type="hidden" name="method" value="regex" />'."\n";
 		$input .= '<input type="hidden" name="src" value="'.$s_src.'" />'."\n";
 		$input .= '<input type="hidden" name="dst" value="'.$s_dst.'" />'."\n";
 	} else {
-		$s_refer = htmlsc(plugin_rename_getvar('refer'));
-		$s_page = htmlsc(plugin_rename_getvar('page'));
-		$s_related = htmlsc(plugin_rename_getvar('related'));
+		$s_refer = htmlspecialchars(plugin_rename_getvar('refer'), ENT_COMPAT, 'UTF-8');
+		$s_page = htmlspecialchars(plugin_rename_getvar('page'), ENT_COMPAT, 'UTF-8');
+		$s_related = htmlspecialchars(plugin_rename_getvar('related'), ENT_COMPAT, 'UTF-8');
 		$msg .= $_rename_messages['msg_page'].'<br />'."\n";
 		$input .= '<input type="hidden" name="method" value="page" />'."\n";
 		$input .= '<input type="hidden" name="refer" value="'.$s_refer.'" />'."\n";
@@ -305,7 +305,7 @@ function plugin_rename_phase3(array $pages) : array
 		foreach ($exists as $page=>$arr) {
 			$msg .= "\t".'<li>'.make_pagelink(decode($page));
 			$msg .= $_rename_messages['msg_arrow'];
-			$msg .= htmlsc(decode($pages[$page]));
+			$msg .= htmlspecialchars(decode($pages[$page]), ENT_COMPAT, 'UTF-8');
 
 			if (!empty($arr)) {
 				$msg .= "\n\t\t".'<ul>'."\n";
@@ -346,7 +346,7 @@ EOD;
 	$ret['body'] .= '<ul>'."\n";
 
 	foreach ($pages as $old=>$new) {
-		$ret['body'] .= "\t".'<li>'.make_pagelink(decode($old)).$_rename_messages['msg_arrow'].htmlsc(decode($new)).'</li>'."\n";
+		$ret['body'] .= "\t".'<li>'.make_pagelink(decode($old)).$_rename_messages['msg_arrow'].htmlspecialchars(decode($new), ENT_COMPAT, 'UTF-8').'</li>'."\n";
 	}
 
 	$ret['body'] .= '</ul>'."\n";
@@ -521,7 +521,7 @@ function plugin_rename_getselecttag(string $page) : string
 		}
 
 		$selected = ($_page === $page) ? (' selected') : ('');
-		$s_page = htmlsc($_page);
+		$s_page = htmlspecialchars($_page, ENT_COMPAT, 'UTF-8');
 		$pages[$_page] = '<option value="'.$s_page.'"'.$selected.'>'.$s_page.'</option>';
 	}
 

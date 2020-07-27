@@ -23,5 +23,5 @@ function plugin_source_action() : array
 		return ['msg'=>$_source_messages['msg_notfound'], 'body'=>$_source_messages['err_notfound']];
 	}
 
-	return ['msg'=>$_source_messages['msg_title'], 'body'=>'<pre id="source">'.str_replace("\n", '&NewLine;', htmlsc(implode('', get_source($page)))).'</pre>'];
+	return ['msg'=>$_source_messages['msg_title'], 'body'=>'<pre id="source">'.str_replace("\n", '&NewLine;', htmlspecialchars(implode('', get_source($page)), ENT_COMPAT, 'UTF-8')).'</pre>'];
 }

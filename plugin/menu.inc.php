@@ -29,11 +29,11 @@ function plugin_menu_convert(string ...$args) : string
 		}
 
 		if ($menu !== null) {
-			return '#menu(): Already set: '.htmlsc($menu);
+			return '#menu(): Already set: '.htmlspecialchars($menu, ENT_COMPAT, 'UTF-8');
 		}
 
 		if (!is_page($args[0])) {
-			return '#menu(): No such page: '.htmlsc($args[0]);
+			return '#menu(): No such page: '.htmlspecialchars($args[0], ENT_COMPAT, 'UTF-8');
 		} else {
 			// Set
 			$menu = $args[0];
@@ -63,9 +63,9 @@ function plugin_menu_convert(string ...$args) : string
 		if (!is_page($page)) {
 			return '';
 		} elseif ($vars['page'] === $page) {
-			return '<!-- #menu(): You already view '.htmlsc($page).' -->';
+			return '<!-- #menu(): You already view '.htmlspecialchars($page, ENT_COMPAT, 'UTF-8').' -->';
 		} elseif (!is_page_readable($page)) {
-			return '#menu(): '.htmlsc($page).' is not readable';
+			return '#menu(): '.htmlspecialchars($page, ENT_COMPAT, 'UTF-8').' is not readable';
 		} else {
 			// Cut fixed anchors
 			$menutext = preg_replace('/^(\*{1,3}.*)\[#[A-Za-z][\w-]+\](.*)$/m', '$1$2', get_source($page));

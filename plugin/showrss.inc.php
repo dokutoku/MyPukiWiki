@@ -85,11 +85,11 @@ function plugin_showrss_convert(string ...$argv) : string
 	}
 
 	if (!is_numeric($cachehour)) {
-		return '#showrss: Cache-lifetime seems not numeric: '.htmlsc($cachehour).'<br />'."\n";
+		return '#showrss: Cache-lifetime seems not numeric: '.htmlspecialchars($cachehour, ENT_COMPAT, 'UTF-8').'<br />'."\n";
 	}
 
 	if (!is_url($uri)) {
-		return '#showrss: Seems not URI: '.htmlsc($uri).'<br />'."\n";
+		return '#showrss: Seems not URI: '.htmlspecialchars($uri, ENT_COMPAT, 'UTF-8').'<br />'."\n";
 	}
 
 	// Remove old caches in 5% rate
@@ -105,7 +105,7 @@ function plugin_showrss_convert(string ...$argv) : string
 
 	if (!is_array($rss)) {
 		// Show XML error message
-		return '#showrss: Error - '.htmlsc($rss).'<br />'."\n";
+		return '#showrss: Error - '.htmlspecialchars($rss, ENT_COMPAT, 'UTF-8').'<br />'."\n";
 	}
 
 	$time_display = '';
@@ -347,12 +347,12 @@ class ShowRSS_XML
 
 	public function escape(string $str) : string
 	{
-		// Unescape already-escaped chars (&lt;, &gt;, &amp;, ...) in RSS body before htmlsc()
+		// Unescape already-escaped chars (&lt;, &gt;, &amp;, ...) in RSS body before htmlspecialchars()
 		$str = strtr($str, array_flip(get_html_translation_table(ENT_COMPAT)));
 		// Escape
-		$str = htmlsc($str, ENT_COMPAT, $this->encoding);
+		$str = htmlspecialchars($str, ENT_COMPAT, $this->encoding);
 		// Encoding conversion
-		$str = mb_convert_encoding($str, SOURCE_ENCODING, $this->encoding);
+		$str = mb_convert_encoding($str, 'UTF-8', $this->encoding);
 
 		return trim($str);
 	}

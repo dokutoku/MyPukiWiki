@@ -15,8 +15,7 @@ function plugin_external_link_action() : void
 	global $external_link_cushion;
 	global $_external_link_messages;
 
-	$charset = CONTENT_CHARSET;
-	header('Content-Type: text/html; charset='.$charset);
+	header('Content-Type: text/html; charset=utf-8');
 	$valid_url = false;
 
 	if (isset($vars['url'])) {
@@ -40,15 +39,15 @@ EOM;
 		exit;
 	}
 
-	$encoded_url = htmlsc($url);
+	$encoded_url = htmlspecialchars($url, ENT_COMPAT, 'UTF-8');
 	$refreshwait = $external_link_cushion['wait_seconds'];
-	$h_title = htmlsc(str_replace('%s', $url, $_external_link_messages['page_title']));
-	$h_desc = htmlsc($_external_link_messages['desc']);
-	$h_wait = htmlsc(str_replace('%s', (string) ($external_link_cushion['wait_seconds']), $_external_link_messages['wait_n_seconds']));
+	$h_title = htmlspecialchars(str_replace('%s', $url, $_external_link_messages['page_title']), ENT_COMPAT, 'UTF-8');
+	$h_desc = htmlspecialchars($_external_link_messages['desc'], ENT_COMPAT, 'UTF-8');
+	$h_wait = htmlspecialchars(str_replace('%s', (string) ($external_link_cushion['wait_seconds']), $_external_link_messages['wait_n_seconds']), ENT_COMPAT, 'UTF-8');
 	$body = <<< EOM
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta http-equiv="Refresh" content="{$refreshwait};URL={$encoded_url}" />
 		<title>{$h_title}</title>
 	</head>

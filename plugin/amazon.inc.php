@@ -137,7 +137,7 @@ function plugin_amazon_convert(string ...$aryargs)
 			return '';
 		}
 
-		$s_page = htmlsc($vars['page']);
+		$s_page = htmlspecialchars($vars['page'], ENT_COMPAT, 'UTF-8');
 
 		if ($s_page == '') {
 			$s_page = (isset($vars['refer'])) ? ($vars['refer']) : ('');
@@ -170,7 +170,7 @@ EOD;
 	} // 配置決定
 
 	// for XSS
-	$asin_all = htmlsc($aryargs[0]);
+	$asin_all = htmlspecialchars($aryargs[0], ENT_COMPAT, 'UTF-8');
 
 	if ((is_asin() == false) && ($align != 'clear')) {
 		return false;
@@ -180,7 +180,7 @@ EOD;
 		// タイトル指定
 
 		// for XSS
-		$alt = htmlsc($aryargs[2]);
+		$alt = htmlspecialchars($aryargs[2], ENT_COMPAT, 'UTF-8');
 
 		$title = $alt;
 
@@ -238,7 +238,7 @@ function plugin_amazon_action() : array
 	}
 
 	$s_page = (isset($vars['refer'])) ? ($vars['refer']) : ('');
-	$asin_all = (isset($vars['asin'])) ? (htmlsc(rawurlencode(strip_bracket($vars['asin'])))) : ('');
+	$asin_all = (isset($vars['asin'])) ? (htmlspecialchars(rawurlencode(strip_bracket($vars['asin'])), ENT_COMPAT, 'UTF-8')) : ('');
 
 	if (is_asin()) {
 		$r_page = $s_page.'/'.$asin;
@@ -284,7 +284,7 @@ function plugin_amazon_inline(string ...$args)
 	$asin_all = $args[0];
 
 	// for XSS
-	$asin_all = htmlsc($asin_all);
+	$asin_all = htmlspecialchars($asin_all, ENT_COMPAT, 'UTF-8');
 
 	if (!is_asin()) {
 		return false;
@@ -357,7 +357,7 @@ function plugin_amazon_get_asin_title() : string
 		$body = plugin_amazon_get_page($url);
 
 		$tmpary = [];
-		$body = mb_convert_encoding($body, SOURCE_ENCODING, 'UTF-8');
+		$body = mb_convert_encoding($body, 'UTF-8', 'UTF-8');
 		preg_match('/<ProductName>([^<]*)</', $body, $tmpary);
 		$title = trim($tmpary[1]);
 //		$tmpary[1] = '';

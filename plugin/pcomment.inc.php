@@ -126,7 +126,7 @@ function plugin_pcomment_convert(string ...$args) : string
 	$_page = get_fullname(strip_bracket($page), $vars_page);
 
 	if (!is_pagename($_page)) {
-		return sprintf($_pcmt_messages['err_pagename'], htmlsc($_page));
+		return sprintf($_pcmt_messages['err_pagename'], htmlspecialchars($_page, ENT_COMPAT, 'UTF-8'));
 	}
 
 	$dir = PLUGIN_PCOMMENT_DIRECTION_DEFAULT;
@@ -157,10 +157,10 @@ function plugin_pcomment_convert(string ...$args) : string
 		$radio = ($params['reply']) ? ('<input type="radio" name="reply" value="0" tabindex="0" checked="checked" />') : ('');
 		$comment = '<input type="text" name="msg" size="'.PLUGIN_PCOMMENT_SIZE_MSG.'" required />';
 
-		$s_page = htmlsc($page);
-		$s_refer = htmlsc($vars_page);
-		$s_nodate = htmlsc($params['nodate']);
-		$s_count = htmlsc((string) ($count));
+		$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
+		$s_refer = htmlspecialchars($vars_page, ENT_COMPAT, 'UTF-8');
+		$s_nodate = htmlspecialchars($params['nodate'], ENT_COMPAT, 'UTF-8');
+		$s_count = htmlspecialchars((string) ($count), ENT_COMPAT, 'UTF-8');
 
 		$form_start = '<form action="'.get_base_uri().'" method="post" class="_p_pcomment_form">';
 		$form = <<<EOD
@@ -241,7 +241,7 @@ function plugin_pcomment_insert() : array
 	$msg = rtrim($msg);
 
 	if (!is_page($page)) {
-		$postdata = '[['.htmlsc(strip_bracket($refer)).']]'."\n\n".'-'.$msg."\n";
+		$postdata = '[['.htmlspecialchars(strip_bracket($refer), ENT_COMPAT, 'UTF-8').']]'."\n\n".'-'.$msg."\n";
 	} else {
 		$postdata = get_source($page);
 		$count = count($postdata);

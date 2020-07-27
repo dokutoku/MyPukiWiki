@@ -101,7 +101,7 @@ EOD;
 		$dt = sprintf('%04d%02d%02d', $year, $m_num, $day);
 		$name = $prefix.$dt;
 		$r_page = rawurlencode($name);
-		$s_page = htmlsc($name);
+		$s_page = htmlspecialchars($name, ENT_COMPAT, 'UTF-8');
 
 		$refer = ($cmd == 'edit') ? ('&amp;refer='.rawurlencode($page)) : ('');
 

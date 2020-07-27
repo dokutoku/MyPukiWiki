@@ -39,7 +39,7 @@ function plugin_freeze_action() : array
 	if (is_freeze($page)) {
 		// Freezed already
 		$msg = &$_title_isfreezed;
-		$body = str_replace('$1', htmlsc(strip_bracket($page)), $_title_isfreezed);
+		$body = str_replace('$1', htmlspecialchars(strip_bracket($page), ENT_COMPAT, 'UTF-8'), $_title_isfreezed);
 	} elseif (($pass !== null) && (pkwk_login($pass))) {
 		// Freeze
 		$postdata = get_source($page);
@@ -54,7 +54,7 @@ function plugin_freeze_action() : array
 	} else {
 		// Show a freeze form
 		$msg = &$_title_freeze;
-		$s_page = htmlsc($page);
+		$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 		$body = ($pass === null) ? ('') : ('<p><strong>'.$_msg_invalidpass.'</strong></p>'."\n");
 		$body .= <<<EOD
 <p>{$_msg_freezing}</p>

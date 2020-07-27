@@ -54,7 +54,7 @@ function plugin_md5_action() : array
 		}
 
 		if (!in_array($scheme, $scheme_list, true)) {
-			return ['msg'=>'Error', 'body'=>'Invalid scheme: '.htmlsc($scheme)];
+			return ['msg'=>'Error', 'body'=>'Invalid scheme: '.htmlspecialchars($scheme, ENT_COMPAT, 'UTF-8')];
 		}
 
 		$scheme_with_salt = '{'.$scheme.'}'.$salt;
@@ -76,7 +76,7 @@ function plugin_md5_show_form(bool $nophrase = false, string $value = '') : stri
 	}
 
 	if ($value != '') {
-		$value = 'value="'.htmlsc($value).'" ';
+		$value = 'value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" ';
 	}
 
 	$algos_enabled = plugin_md5_get_algos_enabled();

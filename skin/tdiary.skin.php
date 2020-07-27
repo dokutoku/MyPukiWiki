@@ -78,7 +78,7 @@ if ((!defined('TDIARY_THEME')) || (TDIARY_THEME == '')) {
 
 	if (!file_exists($theme_css)) {
 		echo 'tDiary theme wrapper: ';
-		echo 'Theme not found: '.htmlsc($theme_css).'<br />';
+		echo 'Theme not found: '.htmlspecialchars($theme_css, ENT_COMPAT, 'UTF-8').'<br />';
 		echo 'You can get tdiary-theme from: ';
 		echo 'http://www.tdiary.org/';
 
@@ -608,20 +608,20 @@ $rw = !PKWK_READONLY;
 pkwk_common_headers();
 header('Cache-control: no-cache');
 header('Pragma: no-cache');
-header('Content-Type: text/html; charset='.CONTENT_CHARSET);
+header('Content-Type: text/html; charset=utf-8');
 
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=<?php echo CONTENT_CHARSET; ?>" /><?php
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><?php
 
 if (($nofollow) || (!$is_read)) {
 	echo "\n\t\t".'<meta name="robots" content="NOINDEX,NOFOLLOW" />';
 }
 
 if ($html_meta_referrer_policy) {
-	echo "\n\t\t".'<meta name="referrer" content="'.htmlsc(html_meta_referrer_policy).'" />';
+	echo "\n\t\t".'<meta name="referrer" content="'.htmlspecialchars(html_meta_referrer_policy, ENT_COMPAT, 'UTF-8').'" />';
 } ?>
 
 		<title><?php echo $title; ?> - <?php echo $page_title; ?></title>
@@ -637,7 +637,7 @@ if ($css_theme === 'black') {
 		<link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo $link['rss']; ?>" /><?php echo (!empty($head_tag)) ? ("\n\t\t".$head_tag."\n") : ("\n"); ?>
 	</head>
 	<body><?php echo "\n".((!empty($html_scripting_data)) ? ("\t\t".str_replace("\n", "\n\t\t", $html_scripting_data)."\n\n") : ('')); ?>
-		<!-- Theme:<?php echo htmlsc($theme).' Sidebar:'.$sidebar; ?> -->
+		<!-- Theme:<?php echo htmlspecialchars($theme, ENT_COMPAT, 'UTF-8').' Sidebar:'.$sidebar; ?> -->
 
 <?php
 if (($menu) && ($sidebar == 'strict')) {
@@ -813,7 +813,7 @@ $title = '';
 
 if ($disable_backlink) {
 	if ($_page != '') {
-		$title = htmlsc($_page);
+		$title = htmlspecialchars($_page, ENT_COMPAT, 'UTF-8');
 	} else {
 		// Search, or something message
 		$title = $page;
@@ -822,7 +822,7 @@ if ($disable_backlink) {
 	if ($page != '') {
 		$title = $page;
 	} else {
-		$title = htmlsc($_page);
+		$title = htmlspecialchars($_page, ENT_COMPAT, 'UTF-8');
 	}
 }
 

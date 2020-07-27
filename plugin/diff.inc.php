@@ -47,7 +47,7 @@ function plugin_diff_view(string $page) : array
 
 	$script = get_base_uri();
 	$r_page = pagename_urlencode($page);
-	$s_page = htmlsc($page);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 
 	$menu =
 	[
@@ -70,9 +70,9 @@ function plugin_diff_view(string $page) : array
 			$menu[] = '<li><a href="'.$script.'?cmd=diff&amp;action=delete&amp;page='.$r_page.'">'.str_replace('$1', $s_page, $_title_diff_delete).'</a></li>';
 		}
 
-		$msg = '<pre>'.str_replace("\n", '&NewLine;', diff_style_to_css(htmlsc(implode('', file($filename))))).'</pre>'."\n";
+		$msg = '<pre>'.str_replace("\n", '&NewLine;', diff_style_to_css(htmlspecialchars(implode('', file($filename)), ENT_COMPAT, 'UTF-8'))).'</pre>'."\n";
 	} elseif ($is_page) {
-		$diffdata = trim(htmlsc(implode('', get_source($page))));
+		$diffdata = trim(htmlspecialchars(implode('', get_source($page)), ENT_COMPAT, 'UTF-8'));
 		$msg = '<pre><span class="diff_added">'.str_replace("\n", '&NewLine;', $diffdata).'</span></pre>'."\n";
 	} else {
 		return ['msg'=>$_title_diff, 'body'=>$_msg_notfound];
@@ -124,7 +124,7 @@ function plugin_diff_delete(string $page) : array
 		}
 	}
 
-	$s_page = htmlsc($page);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 	$body .= <<<EOD
 <p>{$_msg_diff_adminpass}</p>
 <form action="{$script}" method="post">

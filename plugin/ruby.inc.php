@@ -29,5 +29,5 @@ function plugin_ruby_inline(string ...$args) : string
 		return PLUGIN_RUBY_USAGE;
 	}
 
-	return '<ruby><rb>'.$body.'</rb><rp>(</rp><rt>'.htmlsc($ruby).'</rt><rp>)</rp></ruby>';
+	return '<ruby><rb>'.$body.'</rb><rp>(</rp><rt>'.htmlspecialchars($ruby, ENT_COMPAT, 'UTF-8').'</rt><rp>)</rp></ruby>';
 }

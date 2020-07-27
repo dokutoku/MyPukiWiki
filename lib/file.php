@@ -446,14 +446,14 @@ function file_write(string $dir, string $page, string $str, bool $notimestamp = 
 	// File replacement (Edit)
 
 	if (!is_pagename($page)) {
-		die_message(str_replace('$1', htmlsc($page), str_replace('$2', 'WikiName', $_msg_invalidiwn)));
+		die_message(str_replace('$1', htmlspecialchars($page, ENT_COMPAT, 'UTF-8'), str_replace('$2', 'WikiName', $_msg_invalidiwn)));
 	}
 
 	$str = rtrim(preg_replace('/'."\r".'/', '', $str))."\n";
 	$timestamp = (($file_exists) && ($notimestamp)) ? (filemtime($file)) : (false);
 
 	if (!($fp = fopen($file, 'a'))) {
-		die('fopen() failed: '.htmlsc(basename($dir).'/'.encode($page).'.txt').'<br />'."\n".'Maybe permission is not writable or filename is too long');
+		die('fopen() failed: '.htmlspecialchars(basename($dir).'/'.encode($page).'.txt', ENT_COMPAT, 'UTF-8').'<br />'."\n".'Maybe permission is not writable or filename is too long');
 	}
 
 	set_file_buffer($fp, 0);
@@ -528,14 +528,14 @@ function add_recent(string $page, string $recentpage, string $subject = '', int 
 	}
 
 	// Add
-	array_unshift($lines, '-'.format_date(UTIME).' - '.$_page.htmlsc($subject)."\n");
+	array_unshift($lines, '-'.format_date(UTIME).' - '.$_page.htmlspecialchars($subject, ENT_COMPAT, 'UTF-8')."\n");
 
 	// Get latest $limit reports
 	$lines = array_splice($lines, 0, $limit);
 
 	// Update
 	if (!($fp = fopen(get_filename($recentpage), 'w'))) {
-		die_message('Cannot write page file '.htmlsc($recentpage).'<br />Maybe permission is not writable or filename is too long');
+		die_message('Cannot write page file '.htmlspecialchars($recentpage, ENT_COMPAT, 'UTF-8').'<br />Maybe permission is not writable or filename is too long');
 	}
 
 	set_file_buffer($fp, 0);
@@ -648,7 +648,7 @@ function lastmodified_add(string $update = '', string $remove = '') : void
 	pkwk_touch_file($file);
 
 	if (!($fp = fopen($file, 'r+'))) {
-		die_message('Cannot open '.htmlsc($whatsnew));
+		die_message('Cannot open '.htmlspecialchars($whatsnew, ENT_COMPAT, 'UTF-8'));
 	}
 
 	set_file_buffer($fp, 0);
@@ -659,7 +659,7 @@ function lastmodified_add(string $update = '', string $remove = '') : void
 	rewind($fp);
 
 	foreach ($recent_pages as $_page=>$time) {
-		fwrite($fp, '-'.htmlsc(format_date((int) ($time))).' - [['.htmlsc($_page).']]'."\n");
+		fwrite($fp, '-'.htmlspecialchars(format_date((int) ($time)), ENT_COMPAT, 'UTF-8').' - [['.htmlspecialchars($_page, ENT_COMPAT, 'UTF-8').']]'."\n");
 	}
 
 	// :)
@@ -737,7 +737,7 @@ function put_lastmodified() : void
 	pkwk_touch_file($file);
 
 	if (!($fp = fopen($file, 'r+'))) {
-		die_message('Cannot open '.htmlsc($whatsnew));
+		die_message('Cannot open '.htmlspecialchars($whatsnew, ENT_COMPAT, 'UTF-8'));
 	}
 
 	set_file_buffer($fp, 0);
@@ -747,8 +747,8 @@ function put_lastmodified() : void
 
 	foreach (array_keys($recent_pages) as $page) {
 		$time = $recent_pages[$page];
-		$s_lastmod = htmlsc(format_date($time));
-		$s_page = htmlsc($page);
+		$s_lastmod = htmlspecialchars(format_date($time), ENT_COMPAT, 'UTF-8');
+		$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 		fwrite($fp, '-'.$s_lastmod.' - [['.$s_page.']]'."\n");
 	}
 
@@ -1014,7 +1014,7 @@ function get_readings() : array
 							continue;
 						}
 
-						fwrite($fp, mb_convert_encoding($page."\n", $pagereading_kanji2kana_encoding, SOURCE_ENCODING));
+						fwrite($fp, mb_convert_encoding($page."\n", $pagereading_kanji2kana_encoding, 'UTF-8'));
 					}
 
 					fclose($fp);
@@ -1033,7 +1033,7 @@ function get_readings() : array
 						}
 
 						$line = fgets($fp);
-						$line = mb_convert_encoding($line, SOURCE_ENCODING, $pagereading_kanji2kana_encoding);
+						$line = mb_convert_encoding($line, 'UTF-8', $pagereading_kanji2kana_encoding);
 						$line = rtrim($line);
 						$readings[$page] = $line;
 					}
@@ -1063,7 +1063,7 @@ function get_readings() : array
 							continue;
 						}
 
-						fwrite($fp, mb_convert_encoding($page."\n", $pagereading_kanji2kana_encoding, SOURCE_ENCODING));
+						fwrite($fp, mb_convert_encoding($page."\n", $pagereading_kanji2kana_encoding, 'UTF-8'));
 					}
 
 					fclose($fp);
@@ -1082,7 +1082,7 @@ function get_readings() : array
 						}
 
 						$line = fgets($fp);
-						$line = mb_convert_encoding($line, SOURCE_ENCODING, $pagereading_kanji2kana_encoding);
+						$line = mb_convert_encoding($line, 'UTF-8', $pagereading_kanji2kana_encoding);
 						$line = rtrim($line);
 						$readings[$page] = $line;
 					}
@@ -1195,7 +1195,7 @@ function pkwk_chown(string $filename, bool $preserve_time = true) : bool
 	$lockfile = CACHE_DIR.'pkwk_chown.lock';
 
 	if (!($flock = fopen($lockfile, 'a'))) {
-		die('pkwk_chown(): fopen() failed for: CACHEDIR/'.basename(htmlsc($lockfile)));
+		die('pkwk_chown(): fopen() failed for: CACHEDIR/'.basename(htmlspecialchars($lockfile, ENT_COMPAT, 'UTF-8')));
 	}
 
 	if (!flock($flock, LOCK_EX)) {
@@ -1204,7 +1204,7 @@ function pkwk_chown(string $filename, bool $preserve_time = true) : bool
 
 	// Check owner
 	if (!($stat = stat($filename))) {
-		die('pkwk_chown(): stat() failed for: '.basename(htmlsc($filename)));
+		die('pkwk_chown(): stat() failed for: '.basename(htmlspecialchars($filename, ENT_COMPAT, 'UTF-8')));
 	}
 
 	if ($stat[4] === $php_uid) {
@@ -1218,7 +1218,7 @@ function pkwk_chown(string $filename, bool $preserve_time = true) : bool
 		// Lock source $filename to avoid file corruption
 		// NOTE: Not 'r+'. Don't check write permission here
 		if (!($ffile = fopen($filename, 'r'))) {
-			die('pkwk_chown(): fopen() failed for: '.basename(htmlsc($filename)));
+			die('pkwk_chown(): fopen() failed for: '.basename(htmlspecialchars($filename, ENT_COMPAT, 'UTF-8')));
 		}
 
 		// Try to chown by re-creating files
@@ -1272,14 +1272,12 @@ function pkwk_touch_file(string $filename, $time = false, $atime = false) : bool
 
 		return $result;
 	} else {
-		die('pkwk_touch_file(): Invalid UID and (not writable for the directory or not a flie): '.htmlsc(basename($filename)));
+		die('pkwk_touch_file(): Invalid UID and (not writable for the directory or not a flie): '.htmlspecialchars(basename($filename), ENT_COMPAT, 'UTF-8'));
 	}
 }
 
 /**
  * Lock-enabled file_get_contents.
- *
- * Require: PHP5+
  */
 function pkwk_file_get_contents(string $filename) : string
 {

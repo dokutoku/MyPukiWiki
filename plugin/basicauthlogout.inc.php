@@ -12,7 +12,7 @@ function plugin_basicauthlogout_inline() : string
 {
 	$logout_param = '?plugin=basicauthlogout';
 
-	return '<a href="'.htmlsc(get_base_uri().$logout_param).'">Log out</a>';
+	return '<a href="'.htmlspecialchars(get_base_uri().$logout_param, ENT_COMPAT, 'UTF-8').'">Log out</a>';
 }
 
 function plugin_basicauthlogout_convert() : string

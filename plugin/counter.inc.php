@@ -107,10 +107,6 @@ function plugin_counter_get_count(string $page) :array
 	$c = &$counters[$page];
 
 	if (PLUGIN_COUNTER_USE_DB) {
-		if (SOURCE_ENCODING !== 'UTF-8') {
-			die('counter.inc.php: Database counter is only available in UTF-8 mode');
-		}
-
 		$is_new_page = false;
 
 		try {

@@ -55,13 +55,13 @@ function plugin_yetlist_action() : array
 
 			foreach ($refer as $_refer) {
 				$r_refer = pagename_urlencode($_refer);
-				$link_refs[] = '<a href="'.get_page_uri($_refer).'">'.htmlsc($_refer).'</a>';
+				$link_refs[] = '<a href="'.get_page_uri($_refer).'">'.htmlspecialchars($_refer, ENT_COMPAT, 'UTF-8').'</a>';
 			}
 
 			$link_ref = implode(' ', $link_refs);
 			unset($link_refs);
 
-			$s_page = htmlsc($page);
+			$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 
 			if (PKWK_READONLY) {
 				$href = $s_page;
@@ -70,7 +70,7 @@ function plugin_yetlist_action() : array
 				$symbol_html = '';
 
 				if ($_symbol_noexists !== '') {
-					$symbol_html = '<span style="user-select:none;">'.htmlsc($_symbol_noexists).'</span>';
+					$symbol_html = '<span style="user-select:none;">'.htmlspecialchars($_symbol_noexists, ENT_COMPAT, 'UTF-8').'</span>';
 				}
 
 				$href = '<span class="noexists"><a href="'.$script.'?cmd=edit&amp;page='.rawurlencode($page).'&amp;refer='.$r_refer.'">'.$s_page.'</a>'.$symbol_html.'</span>';

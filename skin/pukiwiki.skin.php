@@ -79,13 +79,13 @@ if ((arg_check('read')) && (exist_plugin_convert('rightbar'))) {
 pkwk_common_headers();
 header('Cache-control: no-cache');
 header('Pragma: no-cache');
-header('Content-Type: text/html; charset='.CONTENT_CHARSET);
+header('Content-Type: text/html; charset=utf-8');
 
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=<?php echo CONTENT_CHARSET; ?>" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <?php
 if (($nofollow) || (!$is_read)) {
@@ -93,7 +93,7 @@ if (($nofollow) || (!$is_read)) {
 }
 
 if ($html_meta_referrer_policy) {
-	echo "\t\t".'<meta name="referrer" content="'.htmlsc(html_meta_referrer_policy).'" />'."\n";
+	echo "\t\t".'<meta name="referrer" content="'.htmlspecialchars(html_meta_referrer_policy, ENT_COMPAT, 'UTF-8').'" />'."\n";
 }
 ?>
 		<title><?php echo $title; ?> - <?php echo $page_title; ?></title>

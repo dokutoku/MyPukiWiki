@@ -33,8 +33,8 @@ function plugin_newpage_convert(string ...$args) : string
 		$newpage = '';
 	}
 
-	$s_page = htmlsc(isset($vars['refer']) ? ($vars['refer']) : ($vars['page']));
-	$s_newpage = htmlsc($newpage);
+	$s_page = htmlspecialchars(isset($vars['refer']) ? ($vars['refer']) : ($vars['page']), ENT_COMPAT, 'UTF-8');
+	$s_newpage = htmlspecialchars($newpage, ENT_COMPAT, 'UTF-8');
 	$id++;
 
 	$ret = <<<EOD

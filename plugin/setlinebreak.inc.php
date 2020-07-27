@@ -46,7 +46,7 @@ function plugin_setlinebreak_convert(string ...$args) : string
 				break;
 
 			default:
-				return '#setlinebreak: Invalid argument: '.htmlsc($args[0]).'<br />';
+				return '#setlinebreak: Invalid argument: '.htmlspecialchars($args[0], ENT_COMPAT, 'UTF-8').'<br />';
 		}
 	}
 

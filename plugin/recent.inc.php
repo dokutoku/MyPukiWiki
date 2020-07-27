@@ -84,7 +84,7 @@ function plugin_recent_convert(string ...$args) : string
 			$items .= "\t".'<strong>'.$date.'</strong>'."\n\t".'<ul class="recent_list">'."\n";
 		}
 
-		$s_page = htmlsc($page);
+		$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 
 		if ($page === $vars['page']) {
 			// No need to link to the page you just read, or notify where you just read

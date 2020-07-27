@@ -68,7 +68,7 @@ EOD;
 			$params = [$_obj->get('left'), $_obj->get('right'), $_obj->text()];
 
 			foreach ($params as $key=>$text) {
-				$text = htmlsc(rtrim($text));
+				$text = htmlspecialchars(rtrim($text), ENT_COMPAT, 'UTF-8');
 
 				if (empty($text)) {
 					$text = '&nbsp;';

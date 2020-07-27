@@ -77,7 +77,7 @@ function plugin_popular_convert(string ...$array) : string
 		foreach ($counters as $page=>$count) {
 			$page = substr($page, 1);
 
-			$s_page = htmlsc($page);
+			$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 
 			if ($page === $vars['page']) {
 				// No need to link itself, notifies where you just read

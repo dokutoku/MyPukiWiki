@@ -50,7 +50,7 @@ function plugin_ls2_action() : array
 	$prefix = (isset($vars['prefix'])) ? ($vars['prefix']) : ('');
 	$body = plugin_ls2_show_lists($prefix, $params);
 
-	return ['body'=>$body, 'msg'=>str_replace('$1', htmlsc($prefix), $_ls2_msg_title)];
+	return ['body'=>$body, 'msg'=>str_replace('$1', htmlspecialchars($prefix, ENT_COMPAT, 'UTF-8'), $_ls2_msg_title)];
 }
 
 function plugin_ls2_convert(string ...$args) : string
@@ -86,7 +86,7 @@ function plugin_ls2_convert(string ...$args) : string
 	$title =
 		(!empty($params['_args']))
 		? (implode(',', $params['_args'])) // Manual
-		: (str_replace('$1', htmlsc($prefix), $_ls2_msg_title)); // Auto
+		: (str_replace('$1', htmlspecialchars($prefix, ENT_COMPAT, 'UTF-8'), $_ls2_msg_title)); // Auto
 
 	if (!$params['link']) {
 		return plugin_ls2_show_lists($prefix, $params);
@@ -133,7 +133,7 @@ function plugin_ls2_show_lists(string $prefix, array &$params) : string
 	}
 
 	if (empty($pages)) {
-		return str_replace('$1', htmlsc($prefix), $_ls2_err_nopages);
+		return str_replace('$1', htmlspecialchars($prefix, ENT_COMPAT, 'UTF-8'), $_ls2_err_nopages);
 	} else {
 		$params['saved'] = [];
 		$params['result'] = [];
@@ -164,7 +164,7 @@ function plugin_ls2_get_headings(string $page, array &$params, int $level, bool 
 		$params['page_'.$page] = ++$_ls2_anchor;
 	}
 
-	$s_page = htmlsc($page);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 	$attrs = get_page_link_a_attrs($page);
 	$href = get_page_uri($page);
 
@@ -291,5 +291,5 @@ function plugin_ls2_check_arg(string $value, array &$params) : void
 	}
 
 	// Link title
-	$params['_args'][] = htmlsc($value);
+	$params['_args'][] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 }

@@ -153,7 +153,7 @@ function plugin_comment_convert(string ...$options) : string
 	$above = (in_array('above', $options, true)) ? ('1') : ((in_array('below', $options, true)) ? ('0') : (PLUGIN_COMMENT_DIRECTION_DEFAULT));
 
 	$script = get_page_uri($page);
-	$s_page = htmlsc($page);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 	$string = <<<EOD
 <br />
 <form action="{$script}" method="post" class="_p_comment_form">

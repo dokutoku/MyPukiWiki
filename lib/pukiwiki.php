@@ -87,13 +87,13 @@ if ($plugin != '') {
 		}
 	} else {
 		// Not found
-		$msg = 'plugin='.htmlsc($plugin).' is not implemented.';
+		$msg = 'plugin='.htmlspecialchars($plugin, ENT_COMPAT, 'UTF-8').' is not implemented.';
 		$retvars = ['msg'=>$msg, 'body'=>$msg];
 		$base = &$defaultpage;
 	}
 }
 
-$title = htmlsc(strip_bracket($base));
+$title = htmlspecialchars(strip_bracket($base), ENT_COMPAT, 'UTF-8');
 $page = make_search($base);
 
 if ((isset($retvars['msg'])) && ($retvars['msg'] != '')) {
@@ -107,7 +107,7 @@ if ((isset($retvars['body'])) && ($retvars['body'] != '')) {
 	if (($base == '') || (!is_page($base))) {
 		check_readable($defaultpage, true, true);
 		$base = &$defaultpage;
-		$title = htmlsc(strip_bracket($base));
+		$title = htmlspecialchars(strip_bracket($base), ENT_COMPAT, 'UTF-8');
 		$page = make_search($base);
 	}
 

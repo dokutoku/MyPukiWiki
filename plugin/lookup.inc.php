@@ -23,11 +23,11 @@ function plugin_lookup_convert(string ...$args) : string
 		return PLUGIN_LOOKUP_USAGE;
 	}
 
-	$interwiki = htmlsc(trim($args[0]));
+	$interwiki = htmlspecialchars(trim($args[0]), ENT_COMPAT, 'UTF-8');
 	$button = (isset($args[1])) ? (trim($args[1])) : ('');
-	$button = ($button != '') ? (htmlsc($button)) : ('lookup');
-	$default = ($num > 2) ? (htmlsc(trim($args[2]))) : ('');
-	$s_page = htmlsc($vars['page']);
+	$button = ($button != '') ? (htmlspecialchars($button, ENT_COMPAT, 'UTF-8')) : ('lookup');
+	$default = ($num > 2) ? (htmlspecialchars(trim($args[2]), ENT_COMPAT, 'UTF-8')) : ('');
+	$s_page = htmlspecialchars($vars['page'], ENT_COMPAT, 'UTF-8');
 	$id++;
 
 	$script = get_base_uri();
@@ -68,7 +68,7 @@ function plugin_lookup_action() : array
 
 	if ($url === false) {
 		$msg = sprintf('InterWikiName "%s" not found', $inter);
-		$msg = htmlsc($msg);
+		$msg = htmlspecialchars($msg, ENT_COMPAT, 'UTF-8');
 
 		return ['msg'=>'Not found', 'body'=>$msg];
 	}

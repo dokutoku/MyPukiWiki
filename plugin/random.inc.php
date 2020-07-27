@@ -34,7 +34,7 @@ function plugin_random_convert(string ...$args) : string
 		$title = $args[0];
 	}
 
-	return '<p><a href="'.$script.'?plugin=random&amp;refer='.pagename_urlencode($vars['page']).'">'.htmlsc($title).'</a></p>';
+	return '<p><a href="'.$script.'?plugin=random&amp;refer='.pagename_urlencode($vars['page']).'">'.htmlspecialchars($title, ENT_COMPAT, 'UTF-8').'</a></p>';
 }
 
 function plugin_random_action() : array

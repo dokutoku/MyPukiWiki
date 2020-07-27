@@ -70,9 +70,9 @@ function plugin_navi_convert(string ...$args) : string
 		$is_home = ($home == $current);
 
 		if (!is_page($home)) {
-			return '#navi(contents-page-name): No such page: '.htmlsc($home).'<br />';
+			return '#navi(contents-page-name): No such page: '.htmlspecialchars($home, ENT_COMPAT, 'UTF-8').'<br />';
 		} elseif ((!$is_home) && (!preg_match('/^'.preg_quote($home, '/').'/', $current))) {
-			return '#navi('.htmlsc($home).'): Not a child page like: '.htmlsc($home.'/'.basename($current)).'<br />';
+			return '#navi('.htmlspecialchars($home, ENT_COMPAT, 'UTF-8').'): Not a child page like: '.htmlspecialchars($home.'/'.basename($current), ENT_COMPAT, 'UTF-8').'<br />';
 		}
 
 		$reverse = (strtolower($reverse) == 'reverse');
@@ -161,7 +161,7 @@ function plugin_navi_convert(string ...$args) : string
 		if (PLUGIN_NAVI_LINK_TAGS) {
 			foreach (['start'=>$home, 'next'=>$next, 'prev'=>$prev, 'up'=>$up] as $rel=>$_page) {
 				if ($_page != '') {
-					$s_page = htmlsc($_page);
+					$s_page = htmlspecialchars($_page, ENT_COMPAT, 'UTF-8');
 					$r_page = pagename_urlencode($_page);
 					$head_tags[] = "\t".'<link rel="'.$rel.'" href="'.$script.'?'.$r_page.'" title="'.$s_page.'" />';
 				}
@@ -179,7 +179,7 @@ function plugin_navi_convert(string ...$args) : string
 			return '#navi(contents-page-name): You already view the result<br />';
 		} elseif ($count == 1) {
 			// Sentinel only: Show usage and warning
-			$home = htmlsc($home);
+			$home = htmlspecialchars($home, ENT_COMPAT, 'UTF-8');
 			$ret .= '#navi('.$home.'): No child page like: '.$home.'/Foo';
 		} else {
 			$ret .= '<ul>'."\n";

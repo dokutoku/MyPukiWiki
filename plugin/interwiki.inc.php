@@ -42,5 +42,5 @@ function plugin_interwiki_invalid(string $page) : array
 	global $_msg_invalidiwn;
 	global $interwiki;
 
-	return ['msg'=>$_title_invalidiwn, 'body'=>str_replace(['$1', '$2'], [htmlsc($page), make_pagelink($interwiki, 'InterWikiName')], $_msg_invalidiwn)];
+	return ['msg'=>$_title_invalidiwn, 'body'=>str_replace(['$1', '$2'], [htmlspecialchars($page, ENT_COMPAT, 'UTF-8'), make_pagelink($interwiki, 'InterWikiName')], $_msg_invalidiwn)];
 }

@@ -69,9 +69,9 @@ function plugin_vote_action() : array
 	if (md5(get_source($vars['refer'], true, true)) !== $vars['digest']) {
 		$title = $_title_collided;
 
-		$s_refer = htmlsc($vars['refer']);
-		$s_digest = htmlsc($vars['digest']);
-		$s_postdata_input = htmlsc($postdata_input);
+		$s_refer = htmlspecialchars($vars['refer'], ENT_COMPAT, 'UTF-8');
+		$s_digest = htmlspecialchars($vars['digest'], ENT_COMPAT, 'UTF-8');
+		$s_postdata_input = htmlspecialchars($postdata_input, ENT_COMPAT, 'UTF-8');
 		$s_postdata_input = str_replace("\n", '&NewLine;', $s_postdata_input);
 		$body = <<<EOD
 {$_msg_collided}
@@ -124,8 +124,8 @@ function plugin_vote_convert(string ...$args) : string
 		$_submit = 'submit';
 	}
 
-	$s_page = htmlsc($page);
-	$s_digest = htmlsc($digest);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
+	$s_digest = htmlspecialchars($digest, ENT_COMPAT, 'UTF-8');
 
 	$body = <<<EOD
 <form action="{$_script}" method="post">

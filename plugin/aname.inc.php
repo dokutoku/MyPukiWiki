@@ -123,7 +123,7 @@ function plugin_aname_tag(array $args = [], bool $convert = true) : string
 		}
 
 		if (!preg_match(PLUGIN_ANAME_ID_REGEX, $id)) {
-			return plugin_aname_usage($convert, 'Invalid ID string: '.htmlsc($id));
+			return plugin_aname_usage($convert, 'Invalid ID string: '.htmlspecialchars($id, ENT_COMPAT, 'UTF-8'));
 		}
 
 		// Set
@@ -131,11 +131,11 @@ function plugin_aname_tag(array $args = [], bool $convert = true) : string
 	}
 
 	if ($convert) {
-		$body = htmlsc($body);
+		$body = htmlspecialchars($body, ENT_COMPAT, 'UTF-8');
 	}
 
 	// Insurance
-	$id = htmlsc($id);
+	$id = htmlspecialchars($id, ENT_COMPAT, 'UTF-8');
 
 	$class = ($f_super) ? ('anchor_super') : ('anchor');
 	$attr_id = ($f_noid) ? ('') : (' id="'.$id.'"');

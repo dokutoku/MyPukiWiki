@@ -67,9 +67,9 @@ function plugin_memo_action() : array
 		$title = $_title_collided;
 		$body = $_msg_collided."\n";
 
-		$s_refer = htmlsc($vars['refer']);
-		$s_digest = htmlsc($vars['digest']);
-		$s_postdata_input = htmlsc($postdata_input);
+		$s_refer = htmlspecialchars($vars['refer'], ENT_COMPAT, 'UTF-8');
+		$s_digest = htmlspecialchars($vars['digest'], ENT_COMPAT, 'UTF-8');
+		$s_postdata_input = htmlspecialchars($postdata_input, ENT_COMPAT, 'UTF-8');
 		$s_postdata_input = str_replace("\n", '&NewLine;', $s_postdata_input);
 
 		$body .= <<<EOD
@@ -117,7 +117,7 @@ function plugin_memo_convert(string ...$data) : string
 	// Unescape double quotes
 	$data = str_replace('&#x22;', '"', $data);
 
-	$data = htmlsc(str_replace('\n', "\n", $data));
+	$data = htmlspecialchars(str_replace('\n', "\n", $data), ENT_COMPAT, 'UTF-8');
 
 	if (PKWK_READONLY) {
 		$_script = '';
@@ -127,8 +127,8 @@ function plugin_memo_convert(string ...$data) : string
 		$_submit = '<input type="submit" name="memo" value="'.$_btn_memo_update.'" />';
 	}
 
-	$s_page = htmlsc($vars['page']);
-	$s_digest = htmlsc($digest);
+	$s_page = htmlspecialchars($vars['page'], ENT_COMPAT, 'UTF-8');
+	$s_digest = htmlspecialchars($digest, ENT_COMPAT, 'UTF-8');
 	$s_cols = MEMO_COLS;
 	$s_rows = MEMO_ROWS;
 	$data = str_replace("\n", '&NewLine;', $data);

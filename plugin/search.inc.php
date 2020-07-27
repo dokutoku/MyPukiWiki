@@ -34,9 +34,9 @@ function plugin_search_action() : array
 	global $_msg_searching;
 
 	if (PLUGIN_SEARCH_DISABLE_GET_ACCESS) {
-		$s_word = (isset($post['word'])) ? (htmlsc($post['word'])) : ('');
+		$s_word = (isset($post['word'])) ? (htmlspecialchars($post['word'], ENT_COMPAT, 'UTF-8')) : ('');
 	} else {
-		$s_word = (isset($vars['word'])) ? (htmlsc($vars['word'])) : ('');
+		$s_word = (isset($vars['word'])) ? (htmlspecialchars($vars['word'], ENT_COMPAT, 'UTF-8')) : ('');
 	}
 
 	if (strlen($s_word) > PLUGIN_SEARCH_MAX_LENGTH) {
@@ -102,7 +102,7 @@ function plugin_search_search_form(string $s_word = '', string $type = '', array
 				break;
 			}
 
-			$s_base = htmlsc($base);
+			$s_base = htmlspecialchars($base, ENT_COMPAT, 'UTF-8');
 			$base_str = '<strong>'.$s_base.'</strong>';
 			$base_label = str_replace('$1', $base_str, $_search_pages);
 			$base_msg .= <<<EOD

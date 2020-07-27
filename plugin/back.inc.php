@@ -33,7 +33,7 @@ function plugin_back_convert(string ...$args) : string
 	[$word, $align, $hr, $href] = array_pad($args, 4, '');
 
 	$word = trim($word);
-	$word = ($word == '') ? ($_msg_back_word) : (htmlsc($word));
+	$word = ($word == '') ? ($_msg_back_word) : (htmlspecialchars($word, ENT_COMPAT, 'UTF-8'));
 
 	$align = strtolower(trim($align));
 
@@ -59,7 +59,7 @@ function plugin_back_convert(string ...$args) : string
 	if ($href != '') {
 		if (PLUGIN_BACK_ALLOW_PAGELINK) {
 			if (is_url($href)) {
-				$href = htmlsc($href);
+				$href = htmlspecialchars($href, ENT_COMPAT, 'UTF-8');
 			} else {
 				$refer = (isset($vars['page'])) ? ($vars['page']) : ('');
 				$array = anchor_explode($href);
@@ -75,7 +75,7 @@ function plugin_back_convert(string ...$args) : string
 			}
 		} else {
 			if (is_url($href)) {
-				$href = htmlsc($href);
+				$href = htmlspecialchars($href, ENT_COMPAT, 'UTF-8');
 			} else {
 				return PLUGIN_BACK_USAGE.': Set a page name or an URI';
 			}

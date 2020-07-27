@@ -120,7 +120,7 @@ function links_update(string $page) : void
 		// ページが存在している
 		if (!empty($rel_new)) {
 			if (!($fp = fopen($rel_file, 'w'))) {
-				die_message('cannot write '.htmlsc($rel_file));
+				die_message('cannot write '.htmlspecialchars($rel_file, ENT_COMPAT, 'UTF-8'));
 			}
 
 			fwrite($fp, implode("\t", $rel_new));
@@ -232,7 +232,7 @@ function links_init() : void
 
 		if (!empty($rel)) {
 			if (!($fp = fopen(CACHE_DIR.encode($page).'.rel', 'w'))) {
-				die_message('cannot write '.htmlsc(CACHE_DIR.encode($page).'.rel'));
+				die_message('cannot write '.htmlspecialchars(CACHE_DIR.encode($page).'.rel', ENT_COMPAT, 'UTF-8'));
 			}
 
 			fwrite($fp, implode("\t", $rel));
@@ -242,7 +242,7 @@ function links_init() : void
 
 	foreach ($ref as $page=>$arr) {
 		if (!($fp = fopen(CACHE_DIR.encode($page).'.ref', 'w'))) {
-			die_message('cannot write '.htmlsc(CACHE_DIR.encode($page).'.ref'));
+			die_message('cannot write '.htmlspecialchars(CACHE_DIR.encode($page).'.ref', ENT_COMPAT, 'UTF-8'));
 		}
 
 		foreach ($arr as $ref_page=>$ref_auto) {
@@ -287,7 +287,7 @@ function links_add(string $page, array $add, array $rel_auto) : void
 
 		if (($is_page) || (!$all_auto)) {
 			if (!($fp = fopen($ref_file, 'w'))) {
-				die_message('cannot write '.htmlsc($ref_file));
+				die_message('cannot write '.htmlspecialchars($ref_file, ENT_COMPAT, 'UTF-8'));
 			}
 
 			fwrite($fp, $ref);
@@ -331,7 +331,7 @@ function links_delete(string $page, array $del) : void
 
 		if ((($is_page) || (!$all_auto)) && ($ref != '')) {
 			if (!($fp = fopen($ref_file, 'w'))) {
-				die_message('cannot write '.htmlsc($ref_file));
+				die_message('cannot write '.htmlspecialchars($ref_file, ENT_COMPAT, 'UTF-8'));
 			}
 
 			fwrite($fp, $ref);

@@ -20,14 +20,14 @@ define('PLUGIN_COLOR_REGEX', '/^(#[0-9a-f]{3}|#[0-9a-f]{6}|[a-z-]+)$/i');
 
 function plugin_color_inline(string ...$args) : string
 {
-	// Already htmlsc(text)
+	// Already htmlspecialchars(text, ENT_COMPAT, 'UTF-8')
 	$text = strip_autolink(array_pop($args));
 
 	[$color, $bgcolor] = array_pad($args, 2, '');
 
 	if (($color != '') && ($bgcolor != '') && ($text == '')) {
 		// Maybe the old style: '&color(foreground,text);'
-		$text = htmlsc($bgcolor);
+		$text = htmlspecialchars($bgcolor, ENT_COMPAT, 'UTF-8');
 		$bgcolor = '';
 	}
 
@@ -38,7 +38,7 @@ function plugin_color_inline(string ...$args) : string
 	// Invalid color
 	foreach ([$color, $bgcolor] as $col) {
 		if (($col != '') && (!preg_match(PLUGIN_COLOR_REGEX, $col))) {
-			return '&color():Invalid color: '.htmlsc($col).';';
+			return '&color():Invalid color: '.htmlspecialchars($col, ENT_COMPAT, 'UTF-8').';';
 		}
 	}
 

@@ -30,11 +30,11 @@ function plugin_rightbar_convert(string ...$args) : string
 		}
 
 		if ($menu !== null) {
-			return '#rightbar(): Already set: '.htmlsc($menu);
+			return '#rightbar(): Already set: '.htmlspecialchars($menu, ENT_COMPAT, 'UTF-8');
 		}
 
 		if (!is_page($args[0])) {
-			return '#rightbar(): No such page: '.htmlsc($args[0]);
+			return '#rightbar(): No such page: '.htmlspecialchars($args[0], ENT_COMPAT, 'UTF-8');
 		} else {
 			// Set
 			$menu = $args[0];
@@ -65,9 +65,9 @@ function plugin_rightbar_convert(string ...$args) : string
 	if (!is_page($page)) {
 		return '';
 	} elseif ($vars['page'] === $page) {
-		return '<!-- #rightbar(): You already view '.htmlsc($page).' -->';
+		return '<!-- #rightbar(): You already view '.htmlspecialchars($page, ENT_COMPAT, 'UTF-8').' -->';
 	} elseif (!is_page_readable($page)) {
-		return '#rightbar(): '.htmlsc($page).' is not readable';
+		return '#rightbar(): '.htmlspecialchars($page, ENT_COMPAT, 'UTF-8').' is not readable';
 	} else {
 		// Cut fixed anchors
 		$menutext = preg_replace('/^(\*{1,3}.*)\[#[A-Za-z][\w-]+\](.*)$/m', '$1$2', get_source($page));

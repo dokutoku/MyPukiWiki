@@ -111,7 +111,7 @@ function plugin_img_get_props(array $args) : object
 		}
 	}
 
-	$h_url = htmlsc($url);
+	$h_url = htmlspecialchars($url, ENT_COMPAT, 'UTF-8');
 	$style = plugin_img_get_style($args);
 	$a_begin = '';
 	$a_end = '';
@@ -139,17 +139,17 @@ function plugin_img_inline(string ...$args) : string
 
 	if (!PLUGIN_IMG_SHOW_IMAGE) {
 		if ($p->is_url) {
-			$h_url = htmlsc($p->url);
+			$h_url = htmlspecialchars($p->url, ENT_COMPAT, 'UTF-8');
 			$title = '&amp;img(): PLUGIN_IMG_SHOW_IMAGE prohibits this';
 
 			return '<a href="'.$h_url.'" title="'.$title.'">'.$h_url.'</a>';
 		}
 
-		return '&amp;img(): File not found: '.htmlsc($p->file_path)."\n";
+		return '&amp;img(): File not found: '.htmlspecialchars($p->file_path, ENT_COMPAT, 'UTF-8')."\n";
 	}
 
 	if ($p->is_url) {
-		$h_url = htmlsc($p->url);
+		$h_url = htmlspecialchars($p->url, ENT_COMPAT, 'UTF-8');
 		$style = $p->style;
 		$a_begin = $p->a_begin;
 		$a_end = $p->a_end;
@@ -159,7 +159,7 @@ function plugin_img_inline(string ...$args) : string
 EOD;
 	}
 
-	return '&amp;img(): File not found: '.htmlsc($p->file_path)."\n";
+	return '&amp;img(): File not found: '.htmlspecialchars($p->file_path, ENT_COMPAT, 'UTF-8')."\n";
 }
 
 function plugin_img_convert(string ...$args) : string
@@ -186,17 +186,17 @@ function plugin_img_convert(string ...$args) : string
 
 	if (!PLUGIN_IMG_SHOW_IMAGE) {
 		if ($p->is_url) {
-			$h_url = htmlsc($p->url);
+			$h_url = htmlspecialchars($p->url, ENT_COMPAT, 'UTF-8');
 			$title = '#img(): PLUGIN_IMG_SHOW_IMAGE prohibits this';
 
 			return '<div><a href="'.$h_url.'" title="'.$title.'">'.$h_url.'</a></div>';
 		}
 
-		return '#img(): File not found: '.htmlsc($p->file_path)."\n";
+		return '#img(): File not found: '.htmlspecialchars($p->file_path, ENT_COMPAT, 'UTF-8')."\n";
 	}
 
 	if ($p->is_url) {
-		$h_url = htmlsc($p->url);
+		$h_url = htmlspecialchars($p->url, ENT_COMPAT, 'UTF-8');
 		$style = $p->style;
 		$a_begin = $p->a_begin;
 		$a_end = $p->a_end;
@@ -206,5 +206,5 @@ function plugin_img_convert(string ...$args) : string
 EOD;
 	}
 
-	return '#img(): File not found: '.htmlsc($p->file_path)."\n";
+	return '#img(): File not found: '.htmlspecialchars($p->file_path, ENT_COMPAT, 'UTF-8')."\n";
 }

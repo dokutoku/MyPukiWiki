@@ -44,7 +44,7 @@ function plugin_backup_action() : array
 	}
 
 	check_readable($page, true, true);
-	$s_page = htmlsc($page);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 	$r_page = rawurlencode($page);
 
 	$action = (isset($vars['action'])) ? ($vars['action']) : ('');
@@ -57,7 +57,7 @@ function plugin_backup_action() : array
 	$s_action = '';
 
 	if ($action != '') {
-		$s_action = htmlsc($action);
+		$s_action = htmlspecialchars($action, ENT_COMPAT, 'UTF-8');
 		$r_action = rawurlencode($action);
 	}
 
@@ -130,7 +130,7 @@ function plugin_backup_action() : array
 		$body .= plugin_backup_diff(do_diff($old, $cur));
 	} elseif ($s_action == 'source') {
 		$title = &$_title_backupsource;
-		$body .= '<pre>'.str_replace("\n", '&NewLine;', htmlsc(implode('', $backups[$s_age]['data']))).'</pre>'."\n";
+		$body .= '<pre>'.str_replace("\n", '&NewLine;', htmlspecialchars(implode('', $backups[$s_age]['data']), ENT_COMPAT, 'UTF-8')).'</pre>'."\n";
 	} else {
 		if (PLUGIN_BACKUP_DISABLE_BACKUP_RENDERING) {
 			die_message('This feature is prohibited');
@@ -172,7 +172,7 @@ function plugin_backup_delete(string $page) : array
 	}
 
 	$script = get_base_uri();
-	$s_page = htmlsc($page);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 	$body .= <<<EOD
 <p>{$_msg_backup_adminpass}</p>
 <form action="{$script}" method="post">
@@ -203,7 +203,7 @@ function plugin_backup_diff(string $str) : string
 </ul>
 EOD;
 
-	return $ul.'<pre>'.str_replace("\n", '&NewLine;', diff_style_to_css(htmlsc($str))).'</pre>'."\n";
+	return $ul.'<pre>'.str_replace("\n", '&NewLine;', diff_style_to_css(htmlspecialchars($str, ENT_COMPAT, 'UTF-8'))).'</pre>'."\n";
 }
 
 function plugin_backup_get_list(string $page) : string
@@ -217,7 +217,7 @@ function plugin_backup_get_list(string $page) : string
 
 	$script = get_base_uri();
 	$r_page = rawurlencode($page);
-	$s_page = htmlsc($page);
+	$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 	$retval = [];
 	$retval[0] = <<<EOD
 <ul>
@@ -260,7 +260,7 @@ EOD;
 		$author_info = '';
 
 		if (isset($data['author'])) {
-			$author_info = htmlsc('by '.$data['author_fullname'].'('.$data['author'].')');
+			$author_info = htmlspecialchars('by '.$data['author_fullname'].'('.$data['author'].')', ENT_COMPAT, 'UTF-8');
 		}
 
 		$retval[1] .= <<<EOD

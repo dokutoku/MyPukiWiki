@@ -64,7 +64,7 @@ function plugin_new_inline(string ...$args) : string
 
 		$timestamp -= ZONETIME;
 
-		$retval = (in_array('nodate', $args, true)) ? ('') : (htmlsc($date));
+		$retval = (in_array('nodate', $args, true)) ? ('') : (htmlspecialchars($date, ENT_COMPAT, 'UTF-8'));
 	} else {
 		// Show 'New!' message by the timestamp of the page
 		if (func_num_args() > 3) {

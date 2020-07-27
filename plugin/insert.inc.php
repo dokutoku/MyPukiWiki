@@ -69,9 +69,9 @@ function plugin_insert_action() : array
 		$title = $_title_collided;
 		$body = $_msg_collided."\n";
 
-		$s_refer = htmlsc($vars['refer']);
-		$s_digest = htmlsc($vars['digest']);
-		$s_postdata_input = htmlsc($postdata_input);
+		$s_refer = htmlspecialchars($vars['refer'], ENT_COMPAT, 'UTF-8');
+		$s_digest = htmlspecialchars($vars['digest'], ENT_COMPAT, 'UTF-8');
+		$s_postdata_input = htmlspecialchars($postdata_input, ENT_COMPAT, 'UTF-8');
 		$s_postdata_input = str_replace("\n", '&NewLine;', $s_postdata_input);
 
 		$body .= <<<EOD
@@ -117,8 +117,8 @@ function plugin_insert_convert() : string
 
 	$insert_no = $numbers[$vars['page']]++;
 
-	$s_page = htmlsc($vars['page']);
-	$s_digest = htmlsc($digest);
+	$s_page = htmlspecialchars($vars['page'], ENT_COMPAT, 'UTF-8');
+	$s_digest = htmlspecialchars($digest, ENT_COMPAT, 'UTF-8');
 	$s_cols = INSERT_COLS;
 	$s_rows = INSERT_ROWS;
 	$string = <<<EOD

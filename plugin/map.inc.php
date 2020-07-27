@@ -97,7 +97,7 @@ function plugin_map_action() : array
 	} else {
 		$nodes[$refer]->chain($nodes);
 		$retval['body'] .= '<ul>'."\n".$nodes[$refer]->toString($nodes).'</ul>'."\n";
-		$retval['body'] .= '<hr />'."\n".'<p>Not related from '.htmlsc($refer).'</p>'."\n";
+		$retval['body'] .= '<hr />'."\n".'<p>Not related from '.htmlspecialchars($refer, ENT_COMPAT, 'UTF-8').'</p>'."\n";
 		$keys = array_keys($nodes);
 		sort($keys, SORT_STRING);
 		$retval['body'] .= '<ul>'."\n";

@@ -41,7 +41,7 @@ function plugin_related_action() : array
 	}
 
 	// Result
-	$s_word = htmlsc($_page);
+	$s_word = htmlspecialchars($_page, ENT_COMPAT, 'UTF-8');
 	$msg = 'Backlinks for: '.$s_word;
 	$retval = '<a href="'.get_page_uri($_page).'">Return to '.$s_word.'</a><br />'."\n";
 
@@ -53,7 +53,7 @@ function plugin_related_action() : array
 		$retval .= '<ul>'."\n";
 
 		foreach ($data as $page=>$time) {
-			$s_page = htmlsc($page);
+			$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 			$mtime_span = get_passage_mtime_html_span($time + LOCALZONE);
 			$retval .= "\t".'<li><a href="'.get_page_uri($page).'">'.$s_page.'</a>'.$mtime_span.'</li>'."\n";
 		}

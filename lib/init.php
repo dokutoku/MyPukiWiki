@@ -74,11 +74,8 @@ if ($die) {
 
 // MB_LANGUAGE: mb_language (for mbstring extension)
 //   'uni'(means UTF-8), 'English', or 'Japanese'
-// SOURCE_ENCODING: Internal content encoding (for mbstring extension)
-//   'UTF-8', 'ASCII', or 'EUC-JP'
-// CONTENT_CHARSET: Internal content encoding = Output content charset
-//    (for DTD, htmlsc())
-//   'UTF-8', 'iso-8859-1', 'EUC-JP' or ...
+// SOURCE_ENCODING: Internal content encoding (for mbstring extension) 'UTF-8'
+// CONTENT_CHARSET: Internal content encoding = Output content charset 'UTF-8'
 
 switch (LANG) {
 	case 'en':

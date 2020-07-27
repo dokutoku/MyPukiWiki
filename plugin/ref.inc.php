@@ -238,7 +238,7 @@ function plugin_ref_body(array $args) : array
 				// Promote new design
 				if (($is_file_default) && ($is_file_second)) {
 					// Because of race condition NOW
-					$params['_error'] = htmlsc('The same file name "'.$name.'" at both page: "'.$page.'" and "'.$_arg.'". Try ref(pagename/filename) to specify one of them');
+					$params['_error'] = htmlspecialchars('The same file name "'.$name.'" at both page: "'.$page.'" and "'.$_arg.'". Try ref(pagename/filename) to specify one of them', ENT_COMPAT, 'UTF-8');
 				} else {
 					// Because of possibility of race condition, in the future
 					$params['_error'] = 'The style ref(filename,pagename) is ambiguous and become obsolete. Please try ref(pagename/filename)';
@@ -253,7 +253,7 @@ function plugin_ref_body(array $args) : array
 		}
 
 		if (!$is_file) {
-			$params['_error'] = htmlsc('File not found: "'.$name.'" at page "'.$page.'"');
+			$params['_error'] = htmlspecialchars('File not found: "'.$name.'" at page "'.$page.'"', ENT_COMPAT, 'UTF-8');
 
 			return $params;
 		}
@@ -289,15 +289,15 @@ function plugin_ref_body(array $args) : array
 		if (PKWK_DISABLE_INLINE_IMAGE_FROM_URI) {
 			//$params['_error'] = 'PKWK_DISABLE_INLINE_IMAGE_FROM_URI prohibits this';
 			//return $params;
-			$url = htmlsc($name);
+			$url = htmlspecialchars($name, ENT_COMPAT, 'UTF-8');
 			$params['_body'] = '<a href="'.$url.'">'.$url.'</a>';
 
 			return $params;
 		}
 
-		$url2 = htmlsc($name);
+		$url2 = htmlspecialchars($name, ENT_COMPAT, 'UTF-8');
 		$url = $url2;
-		$title = (htmlsc(preg_match('/([^\/]+)$/', $name, $matches)) ? ($matches[1]) : ($url));
+		$title = (htmlspecialchars(preg_match('/([^\/]+)$/', $name, $matches), ENT_COMPAT, 'UTF-8') ? ($matches[1]) : ($url));
 
 		$is_image = (!$params['noimg']) && (preg_match(PLUGIN_REF_IMAGE, $name));
 
@@ -313,7 +313,7 @@ function plugin_ref_body(array $args) : array
 	} else {
 		// 添付ファイル
 
-		$title = htmlsc($name);
+		$title = htmlspecialchars($name, ENT_COMPAT, 'UTF-8');
 
 		$is_image = (!$params['noimg']) && (preg_match(PLUGIN_REF_IMAGE, $name));
 
@@ -365,7 +365,7 @@ function plugin_ref_body(array $args) : array
 		}
 
 		if (!empty($_title)) {
-			$title = htmlsc(implode(',', $_title));
+			$title = htmlspecialchars(implode(',', $_title), ENT_COMPAT, 'UTF-8');
 
 			if ($is_image) {
 				$title = make_line_rules($title);
@@ -513,12 +513,12 @@ function plugin_ref_action() : array
 	}
 
 	// Care for Japanese-character-included file name
-	$legacy_filename = mb_convert_encoding($filename, 'UTF-8', SOURCE_ENCODING);
+	$legacy_filename = mb_convert_encoding($filename, 'UTF-8', 'UTF-8');
 
 	if (LANG == 'ja') {
 		switch (UA_NAME.'/'.UA_PROFILE) {
 			case 'MSIE/default':
-				$legacy_filename = mb_convert_encoding($filename, 'SJIS', SOURCE_ENCODING);
+				$legacy_filename = mb_convert_encoding($filename, 'SJIS', 'UTF-8');
 
 				break;
 
@@ -527,7 +527,7 @@ function plugin_ref_action() : array
 		}
 	}
 
-	$utf8filename = mb_convert_encoding($filename, 'UTF-8', SOURCE_ENCODING);
+	$utf8filename = mb_convert_encoding($filename, 'UTF-8', 'UTF-8');
 	$size = filesize($ref);
 
 	// Output

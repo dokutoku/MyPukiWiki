@@ -23,22 +23,10 @@ define('PKWK_URI_ABSOLUTE', 2);
 
 function pkwk_log(string $message) : void
 {
-	static $dateTimeExists;
-
 	$log_filepath = 'log/error.log.php';
 
-	if (!isset($dateTimeExists)) {
-		$dateTimeExists = class_exists('DateTime');
-		error_log("<?php\n", 3, $log_filepath);
-	}
-
-	if ($dateTimeExists) {
-		// for PHP5.2+
-		$d = \DateTime::createFromFormat('U.u', sprintf('%6F', microtime(true)));
-		$timestamp = substr($d->format('Y-m-d H:i:s.u'), 0, 23);
-	} else {
-		$timestamp = date('Y-m-d H:i:s');
-	}
+	$d = \DateTime::createFromFormat('U.u', sprintf('%6F', microtime(true)));
+	$timestamp = substr($d->format('Y-m-d H:i:s.u'), 0, 23);
 
 	error_log($timestamp.' '.$message."\n", 3, $log_filepath);
 }
@@ -86,8 +74,7 @@ function pkwk_log_updates(string $page, string $diff_content) : void
 		'diff'=>$diff_content,
 	];
 
-	if ((file_exists($log_dir)) && (defined('JSON_UNESCAPED_UNICODE'))) {
-		// require: PHP5.4+
+	if (file_exists($log_dir)) {
 		$line = json_encode($d, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
 		file_put_contents($difflog_file, $line, FILE_APPEND|LOCK_EX);
 		$keys = ['time', 'uri', 'method', 'remote_addr', 'user_agent', 'page', 'user'];
@@ -110,17 +97,7 @@ function pkwk_log_updates(string $page, string $diff_content) : void
  */
 function pkwk_ctype_digit(?string $s) : bool
 {
-	static $ctype_digit_exists;
-
-	if (!isset($ctype_digit_exists)) {
-		$ctype_digit_exists = function_exists('ctype_digit');
-	}
-
-	if ($ctype_digit_exists) {
-		return ctype_digit($s);
-	}
-
-	return (preg_match('/^[0-9]+$/', $s)) ? (true) : (false);
+	return ctype_digit($s);
 }
 
 function is_interwiki(string $str)
@@ -134,30 +111,7 @@ function is_pagename(string $str) : bool
 {
 	global $BracketName;
 
-	$is_pagename = (!is_interwiki($str)) && (preg_match('/^(?!\/)'.$BracketName.'$(?<!\/$)/', $str)) && (!preg_match('#(^|/)\.{1,2}(/|$)#', $str));
-
-	if (defined('SOURCE_ENCODING')) {
-		switch (SOURCE_ENCODING) {
-			case 'UTF-8':
-				$pattern = '/^(?:[\x00-\x7F]|(?:[\xC0-\xDF][\x80-\xBF])|(?:[\xE0-\xEF][\x80-\xBF][\x80-\xBF]))+$/';
-
-				break;
-
-			case 'EUC-JP':
-				$pattern = '/^(?:[\x00-\x7F]|(?:[\x8E\xA1-\xFE][\xA1-\xFE])|(?:\x8F[\xA1-\xFE][\xA1-\xFE]))+$/';
-
-				break;
-
-			default:
-				break;
-		}
-
-		if ((isset($pattern)) && ($pattern != '')) {
-			$is_pagename = (($is_pagename) && (preg_match($pattern, $str)));
-		}
-	}
-
-	return $is_pagename;
+	return (((!is_interwiki($str)) && (preg_match('/^(?!\/)'.$BracketName.'$(?<!\/$)/', $str)) && (!preg_match('#(^|/)\.{1,2}(/|$)#', $str))) && (preg_match('/^(?:[\x00-\x7F]|(?:[\xC0-\xDF][\x80-\xBF])|(?:[\xE0-\xEF][\x80-\xBF][\x80-\xBF]))+$/', $str)));
 }
 
 function is_url(string $str, bool $only_http = false)
@@ -208,7 +162,7 @@ function is_freeze(string $page, bool $clearcache = false) : bool
 		return false;
 	} else {
 		if (!($fp = fopen(get_filename($page), 'rb'))) {
-			die('is_freeze(): fopen() failed: '.htmlsc($page));
+			die('is_freeze(): fopen() failed: '.htmlspecialchars($page, ENT_COMPAT, 'UTF-8'));
 		}
 
 		if (!flock($fp, LOCK_SH)) {
@@ -223,7 +177,7 @@ function is_freeze(string $page, bool $clearcache = false) : bool
 		}
 
 		if (!fclose($fp)) {
-			die('is_freeze(): fclose() failed: '.htmlsc($page));
+			die('is_freeze(): fclose() failed: '.htmlspecialchars($page, ENT_COMPAT, 'UTF-8'));
 		}
 
 		$is_freeze[$page] = (bool) (preg_match('/^#freeze$/m', $buffer));
@@ -294,7 +248,7 @@ function auto_template(string $page) : string
 
 function _mb_convert_kana__enable(string $str, string $option) : string
 {
-	return mb_convert_kana($str, $option, SOURCE_ENCODING);
+	return mb_convert_kana($str, $option, 'UTF-8');
 }
 
 function _mb_convert_kana__none(string $str, string $option) : string
@@ -305,33 +259,13 @@ function _mb_convert_kana__none(string $str, string $option) : string
 // Expand all search-words to regexes and push them into an array
 function get_search_words(array $words = [], bool $do_escape = false) : array
 {
-	static $init;
-	static $mb_convert_kana;
 	static $pre;
 	static $post;
 	static $quote = '/';
 
-	if (!isset($init)) {
-		// function: mb_convert_kana() is for Japanese code only
-		if ((LANG == 'ja') && (function_exists('mb_convert_kana'))) {
-			$mb_convert_kana = '_mb_convert_kana__enable';
-		} else {
-			$mb_convert_kana = '_mb_convert_kana__none';
-		}
-
-		if (SOURCE_ENCODING == 'EUC-JP') {
-			// Perl memo - Correct pattern-matching with EUC-JP
-			// http://www.din.or.jp/~ohzaki/perl.htm#JP_Match (Japanese)
-			$pre = '(?<!\x8F)';
-			$post = '(?=(?:[\xA1-\xFE][\xA1-\xFE])*'. // JIS X 0208
-				'(?:[\x00-\x7F\x8E\x8F]|\z))';     // ASCII, SS2, SS3, or the last
-		} else {
-			$post = '';
-			$pre = '';
-		}
-
-		$init = true;
-	}
+	$post = '';
+	$pre = '';
+	$init = true;
 
 	if (!is_array($words)) {
 		$words = [$words];
@@ -348,17 +282,17 @@ function get_search_words(array $words = [], bool $do_escape = false) : array
 		}
 
 		// Normalize: ASCII letters = to single-byte. Others = to Zenkaku and Katakana
-		$word_nm = $mb_convert_kana($word, 'aKCV');
-		$nmlen = mb_strlen($word_nm, SOURCE_ENCODING);
+		$word_nm = ((LANG == 'ja') ? (mb_convert_kana($word, 'aKCV')) : (''));
+		$nmlen = mb_strlen($word_nm, 'UTF-8');
 
 		// Each chars may be served ...
 		$chars = [];
 
 		for ($pos = 0; $pos < $nmlen; $pos++) {
-			$char = mb_substr($word_nm, $pos, 1, SOURCE_ENCODING);
+			$char = mb_substr($word_nm, $pos, 1, 'UTF-8');
 
 			// Just normalized one? (ASCII char or Zenkaku-Katakana?)
-			$or = [preg_quote((($do_escape) ? (htmlsc($char)) : ($char)), $quote)];
+			$or = [preg_quote((($do_escape) ? (htmlspecialchars($char, ENT_COMPAT, 'UTF-8')) : ($char)), $quote)];
 
 			if (strlen($char) == 1) {
 				// An ASCII (single-byte) character
@@ -372,17 +306,17 @@ function get_search_words(array $words = [], bool $do_escape = false) : array
 					$or[] = sprintf('&#(?:%d|x%x);', $ascii, $ascii);
 
 					// As Zenkaku?
-					$or[] = preg_quote($mb_convert_kana($_char, 'A'), $quote);
+					$or[] = preg_quote(((LANG == 'ja') ? (mb_convert_kana($_char, 'A')) : ('')), $quote);
 				}
 			} else {
 				// NEVER COME HERE with mb_substr(string, start, length, 'ASCII')
 				// A multi-byte character
 
 				// As Hiragana?
-				$or[] = preg_quote($mb_convert_kana($char, 'c'), $quote);
+				$or[] = preg_quote(((LANG == 'ja') ? (mb_convert_kana($char, 'c')) : ('')), $quote);
 
 				// As Hankaku-Katakana?
-				$or[] = preg_quote($mb_convert_kana($char, 'k'), $quote);
+				$or[] = preg_quote(((LANG == 'ja') ? (mb_convert_kana($char, 'k')) : ('')), $quote);
 			}
 
 			// Regex for the character
@@ -570,7 +504,7 @@ function do_search(string $word, string $type = 'AND', bool $non_format = false,
 	}
 
 	$r_word = rawurlencode($word);
-	$s_word = htmlsc($word);
+	$s_word = htmlspecialchars($word, ENT_COMPAT, 'UTF-8');
 
 	if (empty($pages)) {
 		return str_replace('$1', $s_word, str_replace('$3', $count, $_msg_notfoundresult));
@@ -582,7 +516,7 @@ function do_search(string $word, string $type = 'AND', bool $non_format = false,
 
 	foreach (array_keys($pages) as $page) {
 		$r_page = rawurlencode($page);
-		$s_page = htmlsc($page);
+		$s_page = htmlspecialchars($page, ENT_COMPAT, 'UTF-8');
 		$passage = ($show_passage) ? (' '.get_passage_html_span($page)) : ('');
 		$retval .= "\t".'<li><a href="'.get_base_uri().'?cmd=read&amp;page='.$r_page.'&amp;word='.$r_word.'">'.$s_page.'</a>'.$passage.'</li>'."\n";
 	}
@@ -665,7 +599,7 @@ function page_list(array $pages, string $cmd = 'read', bool $withfilename = fals
 	$retval = '';
 
 	if ($pagereading_enable) {
-		mb_regex_encoding(SOURCE_ENCODING);
+		mb_regex_encoding('UTF-8');
 		$readings = get_readings($pages);
 	}
 
@@ -683,11 +617,11 @@ function page_list(array $pages, string $cmd = 'read', bool $withfilename = fals
 
 	foreach ($pages as $file=>$page) {
 		$r_page = pagename_urlencode($page);
-		$s_page = htmlsc($page, ENT_QUOTES);
+		$s_page = htmlspecialchars($page, ENT_QUOTES, 'UTF-8');
 		$str = "\t\t\t".'<li><a href="'.$href.$r_page.'">'.$s_page.'</a> '.get_pg_passage($page);
 
 		if ($withfilename) {
-			$s_file = htmlsc($file);
+			$s_file = htmlspecialchars($file, ENT_COMPAT, 'UTF-8');
 			$str .= "\n\t\t\t\t".'<ul><li>'.$s_file.'</li></ul>'."\n\t\t\t";
 		}
 
@@ -758,7 +692,7 @@ function catrule() : string
 	global $rule_page;
 
 	if (!is_page($rule_page)) {
-		return '<p>Sorry, page \''.htmlsc($rule_page).'\' unavailable.</p>';
+		return '<p>Sorry, page \''.htmlspecialchars($rule_page, ENT_COMPAT, 'UTF-8').'\' unavailable.</p>';
 	} else {
 		return convert_html(get_source($rule_page));
 	}
@@ -779,18 +713,12 @@ EOD;
 	if ((defined('SKIN_FILE')) && (file_exists(SKIN_FILE)) && (is_readable(SKIN_FILE))) {
 		catbody($title, $page, $body);
 	} else {
-		$charset = 'utf-8';
-
-		if (defined('CONTENT_CHARSET')) {
-			$charset = CONTENT_CHARSET;
-		}
-
-		header("Content-Type: text/html; charset={$charset}");
+		header("Content-Type: text/html; charset=utf-8");
 		echo <<<EOD
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="content-type" content="text/html; charset={$charset}">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>{$title}</title>
 	</head>
 	<body>
@@ -1315,9 +1243,8 @@ function csv_implode(string $glue, array $pieces) : string
 }
 
 // Sugar with default settings
-function htmlsc(string $string = '', int $flags = ENT_COMPAT, string $charset = CONTENT_CHARSET) : string
+function htmlsc(string $string = '', int $flags = ENT_COMPAT, string $charset = 'UTF-8') : string
 {
-	// htmlsc()
 	return htmlspecialchars($string, $flags, $charset);
 }
 
@@ -1326,14 +1253,7 @@ function htmlsc(string $string = '', int $flags = ENT_COMPAT, string $charset = 
  */
 function htmlsc_json($obj) : string
 {
-	// json_encode: PHP 5.2+
-	// JSON_UNESCAPED_UNICODE: PHP 5.4+
-	// JSON_UNESCAPED_SLASHES: PHP 5.4+
-	if (defined('JSON_UNESCAPED_UNICODE')) {
-		return htmlsc(json_encode($obj, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
-	}
-
-	return '';
+	return htmlspecialchars(json_encode($obj, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES), ENT_COMPAT, 'UTF-8');
 }
 
 /**
@@ -1395,74 +1315,4 @@ function manage_page_redirect() : bool
 	}
 
 	return false;
-}
-
-//// Compat ////
-
-// is_a --  Returns true if the object is of this class or has this class as one of its parents
-// (PHP 4 >= 4.2.0)
-if (!function_exists('is_a')) {
-	function is_a(string $class, string $match) : bool
-	{
-		if (empty($class)) {
-			return false;
-		}
-
-		$class = (is_object($class)) ? (get_class($class)) : ($class);
-
-		if (strtolower($class) == strtolower($match)) {
-			return true;
-		} else {
-			// Recurse
-			return is_a(get_parent_class($class), $match);
-		}
-	}
-}
-
-// array_fill -- Fill an array with values
-// (PHP 4 >= 4.2.0)
-if (!function_exists('array_fill')) {
-	function array_fill(int $start_index, int $num, $value) : array
-	{
-		$ret = [];
-
-		while ($num-- > 0) {
-			$ret[$start_index++] = $value;
-		}
-
-		return $ret;
-	}
-}
-
-// md5_file -- Calculates the md5 hash of a given filename
-// (PHP 4 >= 4.2.0)
-if (!function_exists('md5_file')) {
-	function md5_file(string $filename)
-	{
-		if (!file_exists($filename)) {
-			return false;
-		}
-
-		$fd = fopen($filename, 'rb');
-
-		if ($fd === false) {
-			return false;
-		}
-
-		$data = fread($fd, filesize($filename));
-		fclose($fd);
-
-		return md5($data);
-	}
-}
-
-// sha1 -- Compute SHA-1 hash
-// (PHP 4 >= 4.3.0, PHP5)
-if (!function_exists('sha1')) {
-	if (extension_loaded('mhash')) {
-		function sha1(string $str) : string
-		{
-			return bin2hex(mhash(MHASH_SHA1, $str));
-		}
-	}
 }

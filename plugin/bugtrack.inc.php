@@ -104,14 +104,14 @@ function plugin_bugtrack_print_form(string $base, array $category) : string
 		if ($i == ($count - 1)) {
 			$selected = ' selected="selected"';
 		} // The last one
-		$priority_list = htmlsc($_plugin_bugtrack['priority_list'][$i]);
+		$priority_list = htmlspecialchars($_plugin_bugtrack['priority_list'][$i], ENT_COMPAT, 'UTF-8');
 		$select_priority .= "\t\t\t\t".'<option value="'.$priority_list.'"'.$selected.'>'.$priority_list.'</option>'."\n";
 	}
 
 	$select_state = "\n";
 
 	for ($i = 0; $i < count($_plugin_bugtrack['state_list']); $i++) {
-		$state_list = htmlsc($_plugin_bugtrack['state_list'][$i]);
+		$state_list = htmlspecialchars($_plugin_bugtrack['state_list'][$i], ENT_COMPAT, 'UTF-8');
 		$select_state .= "\t\t\t\t".'<option value="'.$state_list.'">'.$state_list.'</option>'."\n";
 	}
 
@@ -121,7 +121,7 @@ function plugin_bugtrack_print_form(string $base, array $category) : string
 		$encoded_category = '<select name="category" id="_p_bugtrack_category_'.$id.'">';
 
 		foreach ($category as $_category) {
-			$s_category = htmlsc($_category);
+			$s_category = htmlspecialchars($_category, ENT_COMPAT, 'UTF-8');
 			$encoded_category .= '<option value="'.$s_category.'">'.$s_category.'</option>'."\n";
 		}
 
@@ -129,18 +129,18 @@ function plugin_bugtrack_print_form(string $base, array $category) : string
 	}
 
 	$script = get_base_uri();
-	$s_base = htmlsc($base);
-	$s_name = htmlsc($_plugin_bugtrack['name']);
-	$s_category = htmlsc($_plugin_bugtrack['category']);
-	$s_priority = htmlsc($_plugin_bugtrack['priority']);
-	$s_state = htmlsc($_plugin_bugtrack['state']);
-	$s_pname = htmlsc($_plugin_bugtrack['pagename']);
-	$s_pnamec = htmlsc($_plugin_bugtrack['pagename_comment']);
-	$s_version = htmlsc($_plugin_bugtrack['version']);
-	$s_versionc = htmlsc($_plugin_bugtrack['version_comment']);
-	$s_summary = htmlsc($_plugin_bugtrack['summary']);
-	$s_body = htmlsc($_plugin_bugtrack['body']);
-	$s_submit = htmlsc($_plugin_bugtrack['submit']);
+	$s_base = htmlspecialchars($base, ENT_COMPAT, 'UTF-8');
+	$s_name = htmlspecialchars($_plugin_bugtrack['name'], ENT_COMPAT, 'UTF-8');
+	$s_category = htmlspecialchars($_plugin_bugtrack['category'], ENT_COMPAT, 'UTF-8');
+	$s_priority = htmlspecialchars($_plugin_bugtrack['priority'], ENT_COMPAT, 'UTF-8');
+	$s_state = htmlspecialchars($_plugin_bugtrack['state'], ENT_COMPAT, 'UTF-8');
+	$s_pname = htmlspecialchars($_plugin_bugtrack['pagename'], ENT_COMPAT, 'UTF-8');
+	$s_pnamec = htmlspecialchars($_plugin_bugtrack['pagename_comment'], ENT_COMPAT, 'UTF-8');
+	$s_version = htmlspecialchars($_plugin_bugtrack['version'], ENT_COMPAT, 'UTF-8');
+	$s_versionc = htmlspecialchars($_plugin_bugtrack['version_comment'], ENT_COMPAT, 'UTF-8');
+	$s_summary = htmlspecialchars($_plugin_bugtrack['summary'], ENT_COMPAT, 'UTF-8');
+	$s_body = htmlspecialchars($_plugin_bugtrack['body'], ENT_COMPAT, 'UTF-8');
+	$s_submit = htmlspecialchars($_plugin_bugtrack['submit'], ENT_COMPAT, 'UTF-8');
 	$body = <<<EOD
 <form action="{$script}" method="post" class="_p_bugtrack_form">
 	<table border="0">
@@ -312,7 +312,7 @@ function plugin_bugtrack_get_page_list(string $page, bool $needs_filetime) : arr
 	$pattern_len = strlen($pattern);
 
 	foreach (get_existpages() as $p) {
-		if ((strncmp($p, $pattern, $pattern_len) === 0) && (pkwk_ctype_digit(substr($p, $pattern_len)))) {
+		if ((strncmp($p, $pattern, $pattern_len) === 0) && (ctype_digit(substr($p, $pattern_len)))) {
 			if ($needs_filetime) {
 				$page_list[] = ['name'=>$p, 'filetime'=>get_filetime($p)];
 			} else {
@@ -338,16 +338,10 @@ function plugin_bugtrack_list_convert(string ...$args) : string
 	global $_plugin_bugtrack;
 	global $_title_cannotread;
 	global $whatsdeleted;
-	static $cache_enabled;
 
 	$cache_format_version = 1;
 	$cache_expire_time = 60 * 60 * 24;
 	$cache_refresh_time_prev;
-
-	if (!isset($cache_enabled)) {
-		// PHP 5.4+
-		$cache_enabled = defined('JSON_UNESCAPED_UNICODE');
-	}
 
 	$page = $vars['page'];
 
@@ -361,23 +355,21 @@ function plugin_bugtrack_list_convert(string ...$args) : string
 	}
 
 	if (!is_page_readable($page)) {
-		$body = str_replace('$1', htmlsc($page), $_title_cannotread);
+		$body = str_replace('$1', htmlspecialchars($page, ENT_COMPAT, 'UTF-8'), $_title_cannotread);
 
 		return $body;
 	}
 
-	if ($cache_enabled) {
-		$cache_filepath = CACHE_DIR.encode($page).'.bugtrack';
-		$json_cached = pkwk_file_get_contents($cache_filepath);
-		$wrapdata = json_decode($json_cached);
+	$cache_filepath = CACHE_DIR.encode($page).'.bugtrack';
+	$json_cached = pkwk_file_get_contents($cache_filepath);
+	$wrapdata = json_decode($json_cached);
 
-		if ((is_object($wrapdata)) && ($wrapdata)) {
-			$recent_deleted_filetime = get_filetime($whatsdeleted);
-			$recent_dat_filemtime = filemtime(CACHE_DIR.PKWK_MAXSHOW_CACHE);
+	if ((is_object($wrapdata)) && ($wrapdata)) {
+		$recent_deleted_filetime = get_filetime($whatsdeleted);
+		$recent_dat_filemtime = filemtime(CACHE_DIR.PKWK_MAXSHOW_CACHE);
 
-			if (($recent_deleted_filetime === $wrapdata->recent_deleted_filetime) && ($recent_dat_filemtime === $wrapdata->recent_dat_filemtime) && ($recent_dat_filemtime !== false) && ($recent_deleted_filetime !== 0)) {
-				return $wrapdata->html;
-			}
+		if (($recent_deleted_filetime === $wrapdata->recent_deleted_filetime) && ($recent_dat_filemtime === $wrapdata->recent_dat_filemtime) && ($recent_dat_filemtime !== false) && ($recent_deleted_filetime !== 0)) {
+			return $wrapdata->html;
 		}
 	}
 
@@ -388,48 +380,46 @@ function plugin_bugtrack_list_convert(string ...$args) : string
 	$count_list = count($_plugin_bugtrack['state_list']);
 	$data_map = [];
 
-	if ($cache_enabled) {
-		// Cache management
-		$data_updated = true;
-		$cache_filepath = CACHE_DIR.encode($page).'.bugtrack';
-		$json_cached = pkwk_file_get_contents($cache_filepath);
+	// Cache management
+	$data_updated = true;
+	$cache_filepath = CACHE_DIR.encode($page).'.bugtrack';
+	$json_cached = pkwk_file_get_contents($cache_filepath);
 
-		if ($json_cached) {
-			$wrapdata = json_decode($json_cached);
+	if ($json_cached) {
+		$wrapdata = json_decode($json_cached);
 
-			if (is_object($wrapdata)) {
-				if (isset($wrapdata->version, $wrapdata->pages, $wrapdata->refreshed_at)) {
-					$cache_time_prev = $wrapdata->refreshed_at;
+		if (is_object($wrapdata)) {
+			if (isset($wrapdata->version, $wrapdata->pages, $wrapdata->refreshed_at)) {
+				$cache_time_prev = $wrapdata->refreshed_at;
 
-					if (($cache_format_version == $wrapdata->version) && (time() < ($cache_time_prev + $cache_expire_time))) {
-						$data = $wrapdata->pages;
-						$cache_refresh_time_prev = $cache_time_prev;
-					}
+				if (($cache_format_version == $wrapdata->version) && (time() < ($cache_time_prev + $cache_expire_time))) {
+					$data = $wrapdata->pages;
+					$cache_refresh_time_prev = $cache_time_prev;
+				}
+			}
+		}
+
+		if ((is_array($data)) && (!empty($data))) {
+			$all_ok = true;
+
+			foreach ($page_list as $i=>$page_info) {
+				[$page_name, $no, $summary, $name, $priority, $state, $category, $filetime] = $data[$i];
+
+				if (($filetime !== $page_info['filetime']) || ($page_name !== $page_info['name'])) {
+					$all_ok = false;
+
+					break;
 				}
 			}
 
-			if ((is_array($data)) && (!empty($data))) {
-				$all_ok = true;
-
-				foreach ($page_list as $i=>$page_info) {
-					[$page_name, $no, $summary, $name, $priority, $state, $category, $filetime] = $data[$i];
-
-					if (($filetime !== $page_info['filetime']) || ($page_name !== $page_info['name'])) {
-						$all_ok = false;
-
-						break;
-					}
+			if (!$all_ok) {
+				// Clear cache
+				foreach ($data as $d) {
+					$page_name = $d[0];
+					$data_map[$page_name] = $d;
 				}
 
-				if (!$all_ok) {
-					// Clear cache
-					foreach ($data as $d) {
-						$page_name = $d[0];
-						$data_map[$page_name] = $d;
-					}
-
-					$data = [];
-				}
+				$data = [];
 			}
 		}
 	}
@@ -463,7 +453,7 @@ function plugin_bugtrack_list_convert(string ...$args) : string
 			}
 
 			foreach (['name', 'priority', 'state', 'category'] as $item) {
-				${$item} = htmlsc(${$item});
+				${$item} = htmlspecialchars(${$item}, ENT_COMPAT, 'UTF-8');
 			}
 
 			$page_link = make_pagelink($page_name);
@@ -474,7 +464,7 @@ function plugin_bugtrack_list_convert(string ...$args) : string
 				$state_no = $count_list;
 			}
 
-			$cssclass = htmlsc($_plugin_bugtrack['state_class'][$state_no]);
+			$cssclass = htmlspecialchars($_plugin_bugtrack['state_class'][$state_no], ENT_COMPAT, 'UTF-8');
 
 			$row = <<<EOD
 	<tr class="{$cssclass}">
@@ -499,16 +489,14 @@ EOD;
 			$rec[] = $row;
 		}
 
-		if ($cache_enabled) {
-			// Save cache
-			if (isset($cache_refresh_time_prev)) {
-				$refreshed_at = $cache_refresh_time_prev;
-			} else {
-				$refreshed_at = time();
-			}
-
-			$cache_data = ['refreshed_at'=>$refreshed_at, 'pages'=>$data, 'version'=>$cache_format_version];
+		// Save cache
+		if (isset($cache_refresh_time_prev)) {
+			$refreshed_at = $cache_refresh_time_prev;
+		} else {
+			$refreshed_at = time();
 		}
+
+		$cache_data = ['refreshed_at'=>$refreshed_at, 'pages'=>$data, 'version'=>$cache_format_version];
 	}
 
 	$table = [];
@@ -525,7 +513,7 @@ EOD;
 	$table_html = "\t".'<tr class="bugtrack_list_header">';
 
 	foreach (['pagename', 'state', 'priority', 'category', 'name', 'summary'] as $item) {
-		$table_html .= '<th>'.htmlsc($_plugin_bugtrack[$item]).'</th>';
+		$table_html .= '<th>'.htmlspecialchars($_plugin_bugtrack[$item], ENT_COMPAT, 'UTF-8').'</th>';
 	}
 
 	$table_html .= '</tr>'."\n";
@@ -537,13 +525,11 @@ EOD;
 
 	$result_html = '<table border="1" width="100%">'."\n".$table_html."\n".'</table>';
 
-	if ($cache_enabled) {
-		$cache_data['recent_deleted_filetime'] = get_filetime($whatsdeleted);
-		$cache_data['recent_dat_filemtime'] = filemtime(CACHE_DIR.PKWK_MAXSHOW_CACHE);
-		$cache_data['html'] = $result_html;
-		$cache_body = json_encode($cache_data, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES);
-		file_put_contents($cache_filepath, $cache_body, LOCK_EX);
-	}
+	$cache_data['recent_deleted_filetime'] = get_filetime($whatsdeleted);
+	$cache_data['recent_dat_filemtime'] = filemtime(CACHE_DIR.PKWK_MAXSHOW_CACHE);
+	$cache_data['html'] = $result_html;
+	$cache_body = json_encode($cache_data, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES);
+	file_put_contents($cache_filepath, $cache_body, LOCK_EX);
 
 	return $result_html;
 }

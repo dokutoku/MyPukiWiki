@@ -59,7 +59,7 @@ function plugin_rss_action() : void
 	}
 
 	$lang = LANG;
-	$page_title_utf8 = mb_convert_encoding($page_title, 'UTF-8', SOURCE_ENCODING);
+	$page_title_utf8 = mb_convert_encoding($page_title, 'UTF-8', 'UTF-8');
 	$self = get_base_uri(PKWK_URI_ABSOLUTE);
 
 	// Creating <item>
@@ -69,7 +69,7 @@ function plugin_rss_action() : void
 	foreach (file_head($recent, $rss_max) as $line) {
 		[$time, $page] = explode("\t", rtrim($line));
 		$r_page = pagename_urlencode($page);
-		$title = mb_convert_encoding($page, 'UTF-8', SOURCE_ENCODING);
+		$title = mb_convert_encoding($page, 'UTF-8', 'UTF-8');
 
 		switch ($version) {
 			case '0.91':

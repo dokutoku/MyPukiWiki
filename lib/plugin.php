@@ -33,7 +33,7 @@ function exist_plugin(string $name) : bool
 
 	if (isset($exist[$name])) {
 		if (++$count[$name] > PKWK_PLUGIN_CALL_TIME_LIMIT) {
-			die('Alert: plugin "'.htmlsc($name).'" was called over '.PKWK_PLUGIN_CALL_TIME_LIMIT.' times. SPAM or someting?<br />'."\n".'<a href="'.get_base_uri().'?cmd=edit&amp;page='.rawurlencode($vars['page']).'">Try to edit this page</a><br />'."\n".'<a href="'.get_base_uri().'">Return to frontpage</a>');
+			die('Alert: plugin "'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'" was called over '.PKWK_PLUGIN_CALL_TIME_LIMIT.' times. SPAM or someting?<br />'."\n".'<a href="'.get_base_uri().'?cmd=edit&amp;page='.rawurlencode($vars['page']).'">Try to edit this page</a><br />'."\n".'<a href="'.get_base_uri().'">Return to frontpage</a>');
 		}
 
 		return $exist[$name];
@@ -93,7 +93,7 @@ function do_plugin_action(string $name)
 	}
 
 	if (do_plugin_init($name) === false) {
-		die_message('Plugin init failed: '.htmlsc($name));
+		die_message('Plugin init failed: '.htmlspecialchars($name, ENT_COMPAT, 'UTF-8'));
 	}
 
 	$retvar = call_user_func('plugin_'.$name.'_action');
@@ -107,7 +107,7 @@ function do_plugin_convert(string $name, string $args = '') : string
 	global $digest;
 
 	if (do_plugin_init($name) === false) {
-		return '[Plugin init failed: '.htmlsc($name).']';
+		return '[Plugin init failed: '.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').']';
 	}
 
 	if (!PKWKEXP_DISABLE_MULTILINE_PLUGIN_HACK) {
@@ -143,7 +143,7 @@ function do_plugin_convert(string $name, string $args = '') : string
 	$digest = $_digest;
 
 	if ($retvar === false) {
-		return htmlsc('#'.$name.(($args != '') ? ('('.$args.')') : ('')));
+		return htmlspecialchars('#'.$name.(($args != '') ? ('('.$args.')') : ('')), ENT_COMPAT, 'UTF-8');
 	} else {
 		return $retvar;
 	}
@@ -155,7 +155,7 @@ function do_plugin_inline(string $name, string $args, string &$body) : string
 	global $digest;
 
 	if (do_plugin_init($name) === false) {
-		return '[Plugin init failed: '.htmlsc($name).']';
+		return '[Plugin init failed: '.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').']';
 	}
 
 	if ($args === '') {
@@ -177,7 +177,7 @@ function do_plugin_inline(string $name, string $args, string &$body) : string
 
 	if ($retvar === false) {
 		// Do nothing
-		return htmlsc('&'.$name.(($args) ? ('('.$args.')') : ('').';'));
+		return htmlspecialchars('&'.$name.(($args) ? ('('.$args.')') : ('').';'), ENT_COMPAT, 'UTF-8');
 	} else {
 		return $retvar;
 	}

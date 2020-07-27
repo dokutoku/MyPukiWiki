@@ -602,10 +602,10 @@ class TableCell extends Element
 				$text = $matches[5];
 			} elseif ($matches[3]) {
 				$name = ($matches[2]) ? ('background-color') : ('color');
-				$this->style[$name] = $name.':'.htmlsc($matches[3]).';';
+				$this->style[$name] = $name.':'.htmlspecialchars($matches[3], ENT_COMPAT, 'UTF-8').';';
 				$text = $matches[5];
 			} elseif ($matches[4]) {
-				$this->style['size'] = 'font-size:'.htmlsc($matches[4]).'px;';
+				$this->style['size'] = 'font-size:'.htmlspecialchars($matches[4], ENT_COMPAT, 'UTF-8').'px;';
 				$text = $matches[5];
 			}
 		}
@@ -925,7 +925,7 @@ class Pre extends Element
 		global $preformat_ltrim;
 
 		parent::__construct();
-		$this->elements[] = htmlsc(((!$preformat_ltrim) || ($text == '') || ($text[0] != ' ')) ? ($text) : (substr($text, 1)));
+		$this->elements[] = htmlspecialchars(((!$preformat_ltrim) || ($text == '') || ($text[0] != ' ')) ? ($text) : (substr($text, 1)), ENT_COMPAT, 'UTF-8');
 	}
 
 	public function canContain(object $obj) : bool

@@ -28,7 +28,7 @@ if (!function_exists('http_request')) {
  * $headers : Additional HTTP headers, ended with "\r\n"
  * $post    : An array of data to send via POST method ('key'=>'value')
  * $redirect_max : Max number of HTTP redirect
- * $content_charset : Content charset. Use '' or CONTENT_CHARSET
+ * $content_charset : Content charset. Use '' or 'UTF-8'
 */
 function pkwk_http_request(string $url, string $method = 'GET', string $headers = '', array $post = [], int $redirect_max = PKWK_HTTP_REQUEST_URL_REDIRECT_MAX, string $content_charset = '') : array
 {
