@@ -5,7 +5,7 @@ declare(strict_types=1);
 // $Id: touchgraph.inc.php,v 1.10 2005/12/18 15:28:55 henoheno Exp $
 //
 // Output an index for 'TouchGraph WikiBrowser'
-// http://www.touchgraph.com/
+// https://www.touchgraph.com/
 //
 // Usage: (Check also TGWikiBrowser's sample)
 //    java -Dfile.encoding=EUC-JP \

@@ -80,7 +80,7 @@ if ((!defined('TDIARY_THEME')) || (TDIARY_THEME == '')) {
 		echo 'tDiary theme wrapper: ';
 		echo 'Theme not found: '.htmlspecialchars($theme_css, ENT_COMPAT, 'UTF-8').'<br />';
 		echo 'You can get tdiary-theme from: ';
-		echo 'http://www.tdiary.org/';
+		echo 'https://www.tdiary.org/';
 
 		exit;
 	}

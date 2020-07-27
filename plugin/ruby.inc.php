@@ -5,7 +5,7 @@ declare(strict_types=1);
 // $Id: ruby.inc.php,v 1.8 2011/01/25 15:01:01 henoheno Exp $
 //
 // Ruby annotation plugin: Add a pronounciation into kanji-word or acronym(s)
-// See also about ruby: http://www.w3.org/TR/ruby/
+// See also about ruby: https://www.w3.org/TR/ruby/
 //
 // NOTE:
 //  Ruby tag works with MSIE only now,

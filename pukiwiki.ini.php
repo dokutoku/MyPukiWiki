@@ -732,7 +732,7 @@ $agents =
 	// Sample: "Mozilla/4.76 [en] (PalmOS; U; WebPro)"
 	['pattern'=>'#\b(WebPro)\b#',	'profile'=>'keitai'],
 
-	// ilinx "Palmscape" / "Xiino" http://www.ilinx.co.jp/
+	// ilinx "Palmscape" / "Xiino" https://www.ilinx.co.jp/
 	// Sample: "Xiino/2.1SJ [ja] (v. 4.1; 153x130; c16/d)"
 	['pattern'=>'#^(Palmscape)/([0-9\.]+)#',	'profile'=>'keitai'],
 	['pattern'=>'#^(Xiino)/([0-9\.]+)#',	'profile'=>'keitai'],

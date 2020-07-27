@@ -361,7 +361,7 @@ function plugin_amazon_get_asin_title() : string
 		preg_match('/<ProductName>([^<]*)</', $body, $tmpary);
 		$title = trim($tmpary[1]);
 //		$tmpary[1] = '';
-//		preg_match('#<ImageUrlMedium>http://images-jp.amazon.com/images/P/[^.]+\.(..)\.#',
+//		preg_match('#<ImageUrlMedium>https://images-na.ssl-images-amazon.com/images/P/[^.]+\.(..)\.#',
 //			$body, $tmpary);
 //		if ($tmpary[1] != '') {
 //			$asin_ext = $tmpary[1];
@@ -435,7 +435,7 @@ function plugin_amazon_cache_image_fetch(string $dir)
 	}
 
 	if ($get_img) {
-		$url = 'http://images-jp.amazon.com/images/P/'.$asin.'.'.$asin_ext.'.MZZZZZZZ.jpg';
+		$url = 'https://images-na.ssl-images-amazon.com/images/P/'.$asin.'.'.$asin_ext.'.MZZZZZZZ.jpg';
 
 		if (!is_url($url)) {
 			return false;
@@ -456,7 +456,7 @@ function plugin_amazon_cache_image_fetch(string $dir)
 		if (($body == '') || ($size[1] <= 1)) {
 			// キャッシュを PLUGIN_AMAZON_NO_IMAGE のコピーとする
 			if ($asin_ext == '09') {
-				$url = 'http://images-jp.amazon.com/images/P/'.$asin.'.01.MZZZZZZZ.jpg';
+				$url = 'https://images-na.ssl-images-amazon.com/images/P/'.$asin.'.01.MZZZZZZZ.jpg';
 				$body = plugin_amazon_get_page($url);
 
 				if ($body != '') {

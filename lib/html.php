@@ -817,7 +817,7 @@ function pkwk_common_headers() : void
 
 		if ((ini_get('zlib.output_compression')) && (preg_match('/\b(gzip|deflate)\b/i', $_SERVER['HTTP_ACCEPT_ENCODING'], $matches))) {
 			// Bug #29350 output_compression compresses everything _without header_ as loadable module
-			// http://bugs.php.net/bug.php?id=29350
+			// https://bugs.php.net/bug.php?id=29350
 			header('Content-Encoding: '.$matches[1]);
 			header('Vary: Accept-Encoding');
 		}
