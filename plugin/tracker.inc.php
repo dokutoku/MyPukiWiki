@@ -1282,7 +1282,7 @@ class Tracker_list
 					break;
 
 				default:
-					continue;
+					continue 2;
 			}
 
 			$this->order[$key] = $dir;
