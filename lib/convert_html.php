@@ -942,7 +942,7 @@ class Pre extends Element
 
 	public function toString() : string
 	{
-		return $this->wrap(implode('&NewLine;', $this->elements), 'pre');
+		return $this->wrap(implode('&NewLine;', $this->elements), 'pre', ' translate="no"');
 	}
 }
 

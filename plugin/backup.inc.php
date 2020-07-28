@@ -130,7 +130,7 @@ function plugin_backup_action() : array
 		$body .= plugin_backup_diff(do_diff($old, $cur));
 	} elseif ($s_action == 'source') {
 		$title = &$_title_backupsource;
-		$body .= '<pre>'.str_replace("\n", '&NewLine;', htmlspecialchars(implode('', $backups[$s_age]['data']), ENT_COMPAT, 'UTF-8')).'</pre>'."\n";
+		$body .= '<pre translate="no">'.str_replace("\n", '&NewLine;', htmlspecialchars(implode('', $backups[$s_age]['data']), ENT_COMPAT, 'UTF-8')).'</pre>'."\n";
 	} else {
 		if (PLUGIN_BACKUP_DISABLE_BACKUP_RENDERING) {
 			die_message('This feature is prohibited');
@@ -203,7 +203,7 @@ function plugin_backup_diff(string $str) : string
 </ul>
 EOD;
 
-	return $ul.'<pre>'.str_replace("\n", '&NewLine;', diff_style_to_css(htmlspecialchars($str, ENT_COMPAT, 'UTF-8'))).'</pre>'."\n";
+	return $ul.'<pre translate="no">'.str_replace("\n", '&NewLine;', diff_style_to_css(htmlspecialchars($str, ENT_COMPAT, 'UTF-8'))).'</pre>'."\n";
 }
 
 function plugin_backup_get_list(string $page) : string
