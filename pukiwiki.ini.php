@@ -686,64 +686,6 @@ $agents =
 	// Sample: "Mozilla/4.0 (PDA; SL-A300/1.0,Embedix/Qtopia/1.1.0) NetFront/3.0" (SHARP Zaurus)
 	['pattern'=>'#^(?:Mozilla/4).*\b(NetFront)/([0-9\.]+)#',	'profile'=>'default'],
 
-	// Embedded browsers (Non-rich)
-
-	// Windows CE (the others)
-	// Sample: "Mozilla/2.0 (compatible; MSIE 3.02; Windows CE; 240x320 )" (GFORT, NTT DoCoMo)
-	['pattern'=>'#\b(Windows CE)\b#', 'profile'=>'keitai'],
-
-	// ACCESS "NetFront" / "Compact NetFront" and thier OEM
-	// Sample: "Mozilla/3.0 (AveFront/2.6)" ("SUNTAC OnlineStation", USB-Modem for PlayStation 2)
-	// Sample: "Mozilla/3.0(DDIPOCKET;JRC/AH-J3001V,AH-J3002V/1.0/0100/c50)CNF/2.0" (DDI Pocket: AirH" Phone by JRC)
-	['pattern'=>'#\b(NetFront)/([0-9\.]+)#',	'profile'=>'keitai'],
-	['pattern'=>'#\b(CNF)/([0-9\.]+)#',	'profile'=>'keitai'],
-	['pattern'=>'#\b(AveFront)/([0-9\.]+)#',	'profile'=>'keitai'],
-
-	// The same?
-	['pattern'=>'#\b(AVE-Front)/([0-9\.]+)#',	'profile'=>'keitai'],
-
-	// NTT-DoCoMo, i-mode (embeded Compact NetFront) and FOMA (embedded NetFront) phones
-	// Sample: "DoCoMo/1.0/F501i", "DoCoMo/1.0/N504i/c10/TB/serXXXX" // c以降は可変
-	// Sample: "DoCoMo/2.0 MST_v_SH2101V(c100;TB;W22H12;serXXXX;iccxxxx)" // ()の中は可変
-	['pattern'=>'#^(DoCoMo)/([0-9\.]+)#',	'profile'=>'keitai'],
-
-	// Vodafone's embedded browser
-	// Sample: "J-PHONE/2.0/J-T03"	// 2.0は"ブラウザの"バージョン
-	// Sample: "J-PHONE/4.0/J-SH51/SNxxxx SH/0001a Profile/MIDP-1.0 Configuration/CLDC-1.0 Ext-Profile/JSCL-1.1.0"
-	['pattern'=>'#^(J-PHONE)/([0-9\.]+)#',	'profile'=>'keitai'],
-
-	// Openwave(R) Mobile Browser (EZweb, WAP phone, etc)
-	// Sample: "OPWV-SDK/62K UP.Browser/6.2.0.5.136 (GUI) MMP/2.0"
-	['pattern'=>'#\b(UP\.Browser)/([0-9\.]+)#',	'profile'=>'keitai'],
-
-	// Opera, dressing up as other embedded browsers
-	// Sample: "Mozilla/3.0(DDIPOCKET;KYOCERA/AH-K3001V/1.4.1.67.000000/0.1/C100) Opera 7.0" (Like CNF at 'keitai'-mode)
-	['pattern'=>'#\b(?:DDIPOCKET|WILLCOM)\b.+\b(Opera) ([0-9\.]+)\b#',	'profile'=>'keitai'],
-
-	// Planetweb http://www.planetweb.com/
-	// Sample: "Mozilla/3.0 (Planetweb/v1.07 Build 141; SPS JP)" ("EGBROWSER", Web browser for PlayStation 2)
-	['pattern'=>'#\b(Planetweb)/v([0-9\.]+)#', 'profile'=>'keitai'],
-
-	// DreamPassport, Web browser for SEGA DreamCast
-	// Sample: "Mozilla/3.0 (DreamPassport/3.0)"
-	['pattern'=>'#\b(DreamPassport)/([0-9\.]+)#',	'profile'=>'keitai'],
-
-	// Palm "Web Pro" http://www.palmone.com/us/support/accessories/webpro/
-	// Sample: "Mozilla/4.76 [en] (PalmOS; U; WebPro)"
-	['pattern'=>'#\b(WebPro)\b#',	'profile'=>'keitai'],
-
-	// ilinx "Palmscape" / "Xiino" https://www.ilinx.co.jp/
-	// Sample: "Xiino/2.1SJ [ja] (v. 4.1; 153x130; c16/d)"
-	['pattern'=>'#^(Palmscape)/([0-9\.]+)#',	'profile'=>'keitai'],
-	['pattern'=>'#^(Xiino)/([0-9\.]+)#',	'profile'=>'keitai'],
-
-	// SHARP PDA Browser (SHARP Zaurus)
-	// Sample: "sharp pda browser/6.1[ja](MI-E1/1.0) "
-	['pattern'=>'#^(sharp [a-z]+ browser)/([0-9\.]+)#',	'profile'=>'keitai'],
-
-	// WebTV
-	['pattern'=>'#^(WebTV)/([0-9\.]+)#',	'profile'=>'keitai'],
-
 	// Desktop-PC browsers
 
 	// Opera (for desktop PC, not embedded) -- See BugTrack/743 for detail
