@@ -46,7 +46,7 @@ function plugin_search2_action() : array
 		$prev_offset_s = (isset($vars['prev_offset'])) ? ($vars['prev_offset']) : ('');
 
 		if ($q === '') {
-			return ['msg'=>$_title_search, 'body'=>'<br>'.$_msg_searching."\n".plugin_search2_search_form($q, $bases, $offset)];
+			return ['msg'=>$_title_search, 'body'=>'<br />'.$_msg_searching."\n".plugin_search2_search_form($q, $bases, $offset)];
 		} else {
 			$msg = str_replace('$1', htmlspecialchars($q, ENT_COMPAT, 'UTF-8'), $_title_result);
 

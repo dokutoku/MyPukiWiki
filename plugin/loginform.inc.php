@@ -69,7 +69,7 @@ function plugin_loginform_action() : array
 
 		$auth_user = '';
 
-		return ['msg'=>'Log out', 'body'=>'Logged out completely<br><a href="'.get_page_uri($page).'">'.$page.'</a>'];
+		return ['msg'=>'Log out', 'body'=>'Logged out completely<br /><a href="'.get_page_uri($page).'">'.$page.'</a>'];
 	} else {
 		// login
 		ob_start(); ?>

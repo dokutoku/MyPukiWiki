@@ -92,7 +92,7 @@ function plugin_md5_show_form(bool $nophrase = false, string $value = '') : stri
 	$self = get_base_uri();
 	$form = <<<'EOD'
 <p><strong>NOTICE: Don't use this feature via untrustful or unsure network</strong></p>
-<hr>
+<hr />
 EOD;
 
 	if ($nophrase) {
@@ -150,7 +150,7 @@ EOD;
 
 	if ($algos_enabled->sha256) {
 		$form .= <<<'EOD'
-		<input type="radio" name="scheme" id="_p_md5_lssha256" value="SSHA256"/>
+		<input type="radio" name="scheme" id="_p_md5_lssha256" value="SSHA256" />
 		<label for="_p_md5_lssha256">LDAP SSHA256 (sha256 with a seed) *</label><br />
 		<input type="radio" name="scheme" id="_p_md5_lsha256" value="SHA256" />
 		<label for="_p_md5_lsha256">LDAP SHA256</label><br />
@@ -159,7 +159,7 @@ EOD;
 
 	if ($algos_enabled->sha512) {
 		$form .= <<<'EOD'
-		<input type="radio" name="scheme" id="_p_md5_lssha512" value="SSHA512"/>
+		<input type="radio" name="scheme" id="_p_md5_lssha512" value="SSHA512" />
 		<label for="_p_md5_lssha512">LDAP SSHA512 (sha512 with a seed) *</label><br />
 		<input type="radio" name="scheme" id="_p_md5_lsha512" value="SHA512" />
 		<label for="_p_md5_lsha512">LDAP SHA512</label><br />
@@ -174,8 +174,8 @@ EOD;
 		<input type="text" name="salt" id="_p_md5_salt" size="60" /><br />
 
 		<input type="submit" value="Compute" /><br />
-		<hr>
-		<p>* = Salt enabled<p/>
+		<hr />
+		<p>* = Salt enabled</p>
 	</div>
 </form>
 EOD;
