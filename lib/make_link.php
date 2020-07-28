@@ -300,7 +300,7 @@ class Link
 		$this->type = $type;
 
 		if ((!PKWK_DISABLE_INLINE_IMAGE_FROM_URI) && (is_url($alias)) && (preg_match('/\.(gif|png|jpe?g)$/i', $alias))) {
-			$alias = '<img src="'.htmlspecialchars($alias, ENT_COMPAT, 'UTF-8').'" alt="'.$name.'" />';
+			$alias = '<img src="'.htmlspecialchars($alias, ENT_COMPAT, 'UTF-8').'" alt="'.$name.'" decoding="async" />';
 		} elseif ($alias !== '') {
 			if ($converter === null) {
 				$converter = new InlineConverter(['plugin']);

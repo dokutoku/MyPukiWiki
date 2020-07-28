@@ -313,14 +313,14 @@ function plugin_amazon_print_object($align, $alt, $title) : string
 	if ($title == '') {
 		// Show image only
 		$div = '<div style="float:'.$align.';margin:16px 16px 16px 16px;'.$center.'">'."\n";
-		$div .= "\t".'<a href="'.$url_shop.'"><img src="'.$url.'" alt="'.$alt.'" /></a>'."\n";
+		$div .= "\t".'<a href="'.$url_shop.'"><img src="'.$url.'" alt="'.$alt.'" decoding="async" /></a>'."\n";
 		$div .= '</div>'."\n";
 	} else {
 		// Show image and title
 		$div = '<div style="float:'.$align.';padding:.5em 1.5em .5em 1.5em;'.$center.'">'."\n";
 		$div .= "\t".'<table style="width:110px;border:0;'.$center.'">'."\n";
 		$div .= "\t\t".'<tr><td style="'.$center.'">'."\n";
-		$div .= "\t\t\t".'<a href="'.$url_shop.'"><img src="'.$url.'" alt="'.$alt.'" /></a></td></tr>'."\n";
+		$div .= "\t\t\t".'<a href="'.$url_shop.'"><img src="'.$url.'" alt="'.$alt.'" decoding="async" /></a></td></tr>'."\n";
 		$div .= "\t\t".'<tr><td style="'.$center.'"><a href="'.$url_shop.'">'.$title.'</a></td></tr>'."\n";
 		$div .= "\t".'</table>'."\n";
 		$div .= '</div>'."\n";

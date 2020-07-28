@@ -105,7 +105,7 @@ if ($html_meta_referrer_policy) {
 	</head>
 	<body><?php echo "\n".((!empty($html_scripting_data)) ? ("\t\t".str_replace("\n", "\n\t\t", $html_scripting_data)."\n\n") : ('')); ?>
 		<div id="header">
-			<a href="<?php echo $link['top']; ?>"><img id="logo" src="<?php echo IMAGE_DIR.$image['logo']; ?>" width="80" height="80" alt="[PukiWiki]" title="[PukiWiki]" /></a>
+			<a href="<?php echo $link['top']; ?>"><img id="logo" src="<?php echo IMAGE_DIR.$image['logo']; ?>" width="80" height="80" alt="[PukiWiki]" title="[PukiWiki]" decoding="async" /></a>
 			<h1 class="title"><?php echo $page; ?></h1>
 <?php
 if ($is_page) {
@@ -302,7 +302,7 @@ if (PKWK_SKIN_SHOW_TOOLBAR) {
 			return false;
 		}
 
-		echo '<a href="'.$link[$key].'"><img src="'.IMAGE_DIR.$image[$key].'" width="'.((string) ($x)).'" height="'.((string) ($y)).'" alt="'.$lang[$key].'" title="'.$lang[$key].'" /></a>';
+		echo '<a href="'.$link[$key].'"><img src="'.IMAGE_DIR.$image[$key].'" width="'.((string) ($x)).'" height="'.((string) ($y)).'" alt="'.$lang[$key].'" title="'.$lang[$key].'" decoding="async" /></a>';
 
 		return true;
 	}

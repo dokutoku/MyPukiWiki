@@ -1033,7 +1033,7 @@ if (true || PKWK_SKIN_SHOW_TOOLBAR) {
 			return false;
 		}
 
-		echo '<a href="'.$link[$key].'"><img src="'.IMAGE_DIR.$image[$key].'" width="'.((string) ($x)).'" height="'.((string) ($y)).'" alt="'.$lang[$key].'" title="'.$lang[$key].'" /></a>';
+		echo '<a href="'.$link[$key].'"><img src="'.IMAGE_DIR.$image[$key].'" width="'.((string) ($x)).'" height="'.((string) ($y)).'" alt="'.$lang[$key].'" title="'.$lang[$key].'" decoding="async" /></a>';
 
 		return true;
 	}

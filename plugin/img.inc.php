@@ -155,7 +155,7 @@ function plugin_img_inline(string ...$args) : string
 		$a_end = $p->a_end;
 
 		return <<<EOD
-{$a_begin}<img class="plugin-img-inline" src="{$h_url}" style="{$style}" alt="" />{$a_end}
+{$a_begin}<img class="plugin-img-inline" src="{$h_url}" style="{$style}" alt="" decoding="async" />{$a_end}
 EOD;
 	}
 
@@ -202,7 +202,7 @@ function plugin_img_convert(string ...$args) : string
 		$a_end = $p->a_end;
 
 		return <<<EOD
-<div style="float:{$align};padding:.5em 1.5em .5em 1.5em;">{$a_begin}<img class="plugin-img-block" src="{$h_url}" style="{$style}" alt="" />{$a_end}</div>{$clear}
+<div style="float:{$align};padding:.5em 1.5em .5em 1.5em;">{$a_begin}<img class="plugin-img-block" src="{$h_url}" style="{$style}" alt="" decoding="async" />{$a_end}</div>{$clear}
 EOD;
 	}
 

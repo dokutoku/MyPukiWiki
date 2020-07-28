@@ -180,7 +180,7 @@ function plugin_edit_inline(string ...$args) : string
 		// Paragraph editing
 		$id = rawurlencode($id);
 		$title = htmlspecialchars(sprintf('Edit %s', $page), ENT_COMPAT, 'UTF-8');
-		$icon = '<img src="'.IMAGE_DIR.'paraedit.png" width="9" height="9" alt="'.$short.'" title="'.$title.'" /> ';
+		$icon = '<img src="'.IMAGE_DIR.'paraedit.png" width="9" height="9" alt="'.$short.'" title="'.$title.'" decoding="async" /> ';
 		$class = ' class="anchor_super"';
 	} else {
 		// Normal editing / unfreeze
@@ -195,7 +195,7 @@ function plugin_edit_inline(string ...$args) : string
 		}
 
 		$title = htmlspecialchars(sprintf($title, $s_page), ENT_COMPAT, 'UTF-8');
-		$icon = '<img src="'.IMAGE_DIR.$icon.'" width="20" height="20" alt="'.$short.'" title="'.$title.'" />';
+		$icon = '<img src="'.IMAGE_DIR.$icon.'" width="20" height="20" alt="'.$short.'" title="'.$title.'" decoding="async" />';
 		$class = '';
 	}
 

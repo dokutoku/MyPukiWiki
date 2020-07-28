@@ -50,7 +50,7 @@ define('PLUGIN_ATTACH_FILE_MODE', 0644);
 //define('PLUGIN_ATTACH_FILE_MODE', 0604);
 
 // File icon image
-define('PLUGIN_ATTACH_FILE_ICON', '<img src="'.IMAGE_DIR.'file.png" width="20" height="20" alt="file" style="border-width:0" />');
+define('PLUGIN_ATTACH_FILE_ICON', '<img src="'.IMAGE_DIR.'file.png" width="20" height="20" alt="file" style="border-width:0" decoding="async" />');
 
 // mime-typeを記述したページ
 define('PLUGIN_ATTACH_CONFIG_PAGE_MIME', 'plugin/attach/mime-type');
