@@ -1093,7 +1093,7 @@ if (true || PKWK_SKIN_SHOW_TOOLBAR) {
 
 					<!-- Copyright etc -->
 					Site admin: <a href="<?php echo $modifierlink; ?>"><?php echo $modifier; ?></a>
-					<p><?php echo S_COPYRIGHT; ?>. Powered by PHP <?php echo PHP_VERSION; ?><br /> HTML convert time: <?php echo elapsedtime(); ?> sec.</p>
+					<?php echo '<p>'.S_COPYRIGHT.'.'.(((defined('PKWK_OPTIMISE')) && (!PKWK_OPTIMISE)) ? (' Powered by PHP '.PHP_VERSION.'<br /> HTML convert time: '.elapsedtime().' sec.') : ('')).'</p>'."\n"; ?>
 				</div><!-- class="footer" -->
 
 <?php
