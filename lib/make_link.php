@@ -61,21 +61,7 @@ class InlineConverter
 
 	public function get_clone(object $obj) : object
 	{
-		static $clone_exists;
-
-		if (!isset($clone_exists)) {
-			if (version_compare(PHP_VERSION, '5.0.0', '<')) {
-				$clone_exists = false;
-			} else {
-				$clone_exists = true;
-			}
-		}
-
-		if ($clone_exists) {
-			return clone $obj;
-		}
-
-		return $obj;
+		return clone $obj;
 	}
 
 	public function __clone()

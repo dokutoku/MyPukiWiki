@@ -721,8 +721,6 @@ class Table extends Element
 
 	public function toString() : string
 	{
-		static $parts = ['h'=>'thead', 'f'=>'tfoot', ''=>'tbody'];
-
 		// Set rowspan (from bottom, to top)
 		for ($ncol = 0; $ncol < $this->col; $ncol++) {
 			$rowspan = 1;
@@ -782,7 +780,7 @@ class Table extends Element
 		// toString
 		$string = '';
 
-		foreach ($parts as $type=>$part) {
+		foreach (['h'=>'thead', 'f'=>'tfoot', ''=>'tbody'] as $type=>$part) {
 			$part_string = '';
 
 			foreach (array_keys($this->elements) as $nrow) {

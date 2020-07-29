@@ -238,14 +238,6 @@ function auto_template(string $page) : string
 // Expand all search-words to regexes and push them into an array
 function get_search_words(array $words = [], bool $do_escape = false) : array
 {
-	static $pre;
-	static $post;
-	static $quote = '/';
-
-	$post = '';
-	$pre = '';
-	$init = true;
-
 	if (!is_array($words)) {
 		$words = [$words];
 	}
@@ -271,13 +263,13 @@ function get_search_words(array $words = [], bool $do_escape = false) : array
 			$char = mb_substr($word_nm, $pos, 1, 'UTF-8');
 
 			// Just normalized one? (ASCII char or Zenkaku-Katakana?)
-			$or = [preg_quote((($do_escape) ? (htmlspecialchars($char, ENT_COMPAT, 'UTF-8')) : ($char)), $quote)];
+			$or = [preg_quote((($do_escape) ? (htmlspecialchars($char, ENT_COMPAT, 'UTF-8')) : ($char)), '/')];
 
 			if (strlen($char) == 1) {
 				// An ASCII (single-byte) character
 				foreach ([strtoupper($char), strtolower($char)] as $_char) {
 					if ($char != '&') {
-						$or[] = preg_quote($_char, $quote);
+						$or[] = preg_quote($_char, '/');
 					} // As-is?
 					$ascii = ord($_char);
 
@@ -285,17 +277,17 @@ function get_search_words(array $words = [], bool $do_escape = false) : array
 					$or[] = sprintf('&#(?:%d|x%x);', $ascii, $ascii);
 
 					// As Zenkaku?
-					$or[] = preg_quote(((LANG == 'ja') ? (mb_convert_kana($_char, 'A')) : ('')), $quote);
+					$or[] = preg_quote(((LANG == 'ja') ? (mb_convert_kana($_char, 'A')) : ('')), '/');
 				}
 			} else {
 				// NEVER COME HERE with mb_substr(string, start, length, 'ASCII')
 				// A multi-byte character
 
 				// As Hiragana?
-				$or[] = preg_quote(((LANG == 'ja') ? (mb_convert_kana($char, 'c')) : ('')), $quote);
+				$or[] = preg_quote(((LANG == 'ja') ? (mb_convert_kana($char, 'c')) : ('')), '/');
 
 				// As Hankaku-Katakana?
-				$or[] = preg_quote(((LANG == 'ja') ? (mb_convert_kana($char, 'k')) : ('')), $quote);
+				$or[] = preg_quote(((LANG == 'ja') ? (mb_convert_kana($char, 'k')) : ('')), '/');
 			}
 
 			// Regex for the character
@@ -303,7 +295,7 @@ function get_search_words(array $words = [], bool $do_escape = false) : array
 		}
 
 		// For the word
-		$regex[$word] = $pre.implode('', $chars).$post;
+		$regex[$word] = implode('', $chars);
 	}
 
 	// For all words
@@ -766,12 +758,10 @@ function get_date_atom(int $timestamp) : string
 // Get short string of the passage, 'N seconds/minutes/hours/days/years ago'
 function get_passage(int $time, bool $paren = true) : string
 {
-	static $units = ['m'=>60, 'h'=>24, 'd'=>1];
-
 	// minutes
 	$time = max(0, (UTIME - $time) / 60);
 
-	foreach ($units as $unit=>$card) {
+	foreach (['m'=>60, 'h'=>24, 'd'=>1] as $unit=>$card) {
 		if ($time < $card) {
 			break;
 		}

@@ -785,17 +785,11 @@ function pkwk_headers_sent() : void
 		return;
 	}
 
-	$line = '';
 	$file = '';
+	$line = 0;
 
-	if (version_compare(PHP_VERSION, '4.3.0', '>=')) {
-		if (headers_sent($file, $line)) {
-			die('Headers already sent at '.htmlspecialchars($file, ENT_COMPAT, 'UTF-8').' line '.$line.'.');
-		}
-	} else {
-		if (headers_sent()) {
-			die('Headers already sent.');
-		}
+	if (headers_sent($file, $line)) {
+		die('Headers already sent at '.htmlspecialchars($file, ENT_COMPAT, 'UTF-8').' line '.((string) ($line)).'.');
 	}
 }
 

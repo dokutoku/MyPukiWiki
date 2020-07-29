@@ -229,14 +229,13 @@ function plugin_edit_inline(string ...$args) : string
 	}
 
 	$atag = '<a'.$class.' href="'.$url.'" title="'.$title.'">';
-	static $atags = '</a>';
 
 	if ($ispage) {
 		// Normal edit link
-		return $atag.$icon.$s_label.$atags;
+		return $atag.$icon.$s_label.'</a>';
 	} else {
 		// Dangling edit link
-		return '<span class="noexists">'.$atag.$icon.$atags.$s_label.$atag.'?'.$atags.'</span>';
+		return '<span class="noexists">'.$atag.$icon.'</a>'.$s_label.$atag.'?'.'</a></span>';
 	}
 }
 

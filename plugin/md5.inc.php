@@ -188,26 +188,10 @@ EOD;
  */
 function plugin_md5_get_algos_enabled() : object
 {
-	$sha1_enabled = function_exists('sha1');
-	$sha256_enabled = false;
-	$sha512_enabled = false;
-
-	if ((function_exists('hash')) && (function_exists('hash_algos'))) {
-		$algos = hash_algos();
-
-		if (in_array('sha256', $algos, true)) {
-			$sha256_enabled = true;
-		}
-
-		if (in_array('sha512', $algos, true)) {
-			$sha512_enabled = true;
-		}
-	}
-
 	return (object)
 	[
-		'sha1'=>$sha1_enabled,
-		'sha256'=>$sha256_enabled,
-		'sha512'=>$sha512_enabled,
+		'sha1'=>true,
+		'sha256'=>true,
+		'sha512'=>true,
 	];
 }
