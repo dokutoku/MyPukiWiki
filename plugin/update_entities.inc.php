@@ -10,7 +10,7 @@ declare(strict_types=1);
 // (for admin)
 
 // DTDの場所
-define('W3C_XHTML_DTD_LOCATION', 'http://www.w3.org/TR/xhtml1/DTD/');
+define('W3C_XHTML_DTD_LOCATION', 'https://www.w3.org/TR/xhtml1/DTD/');
 
 // メッセージ設定
 function plugin_update_entities_init() : void
