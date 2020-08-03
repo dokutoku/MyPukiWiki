@@ -392,7 +392,7 @@ class ListContainer extends Element
 			return $this->last = $this->last->insert($obj);
 		}
 
-		// Break if no elements found (BugTrack/524)
+		// Break if no elements found
 		if ((count($obj->elements) == 1) && (empty($obj->elements[0]->elements))) {
 			// up to ListElement
 			return $this->last->parent;
@@ -536,7 +536,6 @@ class BQuote extends Element
 
 	public function insert(object $obj) : object
 	{
-		// BugTrack/521, BugTrack/545
 		if (is_a($obj, 'inline')) {
 			return parent::insert($obj->toPara(' class="quotation"'));
 		}

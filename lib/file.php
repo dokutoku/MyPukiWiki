@@ -697,7 +697,7 @@ function put_lastmodified() : void
 	arsort($recent_pages, SORT_NUMERIC);
 
 	// Cut unused lines
-	// BugTrack2/179: array_splice() will break integer keys in hashtable
+	//array_splice() will break integer keys in hashtable
 	$count = $maxshow + PKWK_MAXSHOW_ALLOWANCE;
 	$_recent = [];
 

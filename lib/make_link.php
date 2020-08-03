@@ -294,7 +294,7 @@ class Link
 
 			$alias = make_line_rules($converter->convert($alias, $page));
 
-			// BugTrack/669: A hack removing anchor tags added by AutoLink
+			// A hack removing anchor tags added by AutoLink
 			$alias = preg_replace('#</?a[^>]*>#i', '', $alias);
 		}
 

@@ -29,8 +29,6 @@ $datetime_rules =
 //  行末指定は $ を後ろに。
 //
 
-// BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
-
 // with array_pop()
 $page_array = explode('/', $vars['page']);
 

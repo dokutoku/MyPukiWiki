@@ -38,8 +38,6 @@ function plugin_counter_inline(string ...$args) : string
 {
 	global $vars;
 
-	// BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
-
 	// with array_shift()
 	$arg = strtolower(array_shift($args));
 
@@ -278,8 +276,6 @@ function plugin_counter_get_popular_list_file(string $today, string $except, int
 	}
 
 	asort($counters, SORT_NUMERIC);
-
-	// BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
 
 	// with array_splice()
 	$counters = array_reverse($counters, true);

@@ -479,7 +479,7 @@ if ((!isset($vars['cmd'])) && (!isset($vars['plugin']))) {
 // $WikiName = '(?<![[:alnum:]])(?:[[:upper:]][[:lower:]]+){2,}(?![[:alnum:]])';
 // $WikiName = '(?<!\w)(?:[A-Z][a-z]+){2,}(?!\w)';
 
-// BugTrack/304暫定対処
+// 暫定対処
 $WikiName = '(?:[A-Z][a-z]+){2,}(?!\w)';
 
 // $BracketName = ':?[^\s\]#&<>":]+:?';

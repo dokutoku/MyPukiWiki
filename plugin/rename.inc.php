@@ -421,7 +421,7 @@ function plugin_rename_proceed(array $pages, array $files, array $exists) : void
 			rename($old, $new);
 		}
 
-		// linkデータベースを更新する BugTrack/327 arino
+		// linkデータベースを更新する
 		$new_page = $pages[$page];
 		links_update(decode($page));
 		links_update(decode($new_page));

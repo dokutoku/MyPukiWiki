@@ -8,7 +8,7 @@ declare(strict_types=1);
 //
 // "Forcing one line-break" plugin
 
-// Escape using <br /> in <blockquote> (BugTrack/583)
+// Escape using <br /> in <blockquote>
 define('PLUGIN_BR_ESCAPE_BLOCKQUOTE', 1);
 
 // ----

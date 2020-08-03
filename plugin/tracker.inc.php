@@ -1346,8 +1346,6 @@ class Tracker_list
 		$order = $this->order;
 
 		if ((is_array($order)) && (isset($order[$sort]))) {
-			// BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
-
 			// with array_shift();
 			$order_keys = array_keys($order);
 

@@ -96,7 +96,6 @@ define('PKWK_FOOTNOTE_TITLE_MAX', 100);
 // 脚注のアンカーを相対パスで表示する (0 = 絶対パス)
 //  * 相対パスの場合、以前のバージョンのOperaで問題になることがあります
 //  * 絶対パスの場合、calendar_viewerなどで問題になることがあります
-// (詳しくは: BugTrack/698)
 define('PKWK_ALLOW_RELATIVE_FOOTNOTE_ANCHOR', 1);
 
 // 文末の脚注の直前に表示するタグ

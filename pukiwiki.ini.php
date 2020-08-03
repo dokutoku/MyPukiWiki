@@ -52,7 +52,7 @@ define('PKWK_QUERY_STRING_MAX', 640);
 /////////////////////////////////////////////////
 // Experimental features
 
-// Multiline plugin hack (See BugTrack2/84)
+// Multiline plugin hack
 // EXAMPLE(with a known BUG):
 //   #plugin(args1,args2,...,argsN){{
 //   argsN+1
@@ -688,7 +688,7 @@ $agents =
 
 	// Desktop-PC browsers
 
-	// Opera (for desktop PC, not embedded) -- See BugTrack/743 for detail
+	// Opera (for desktop PC, not embedded)
 	// NOTE: Keep this pattern above MSIE and Mozilla
 	// Sample: "Opera/7.0 (OS; U)" (not disguise)
 	// Sample: "Mozilla/4.0 (compatible; MSIE 5.0; OS) Opera 6.0" (disguise)

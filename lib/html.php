@@ -212,7 +212,6 @@ function catbody(string $title, string $page, string $body) : void
 	if (($search_word_color) && (isset($vars['word']))) {
 		$body = '<div class="small">'.$_msg_word.htmlspecialchars($vars['word'], ENT_COMPAT, 'UTF-8').'</div>'."\n".$hr."\n".$body;
 
-		// BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
 		// with array_splice(), array_flip()
 		$words = preg_split('/\s+/', $vars['word'], -1, PREG_SPLIT_NO_EMPTY);
 
