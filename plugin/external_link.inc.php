@@ -47,7 +47,7 @@ EOM;
 	$body = <<< EOM
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta charset="UTF-8" />
 		<meta http-equiv="Refresh" content="{$refreshwait};URL={$encoded_url}" />
 		<title>{$h_title}</title>
 	</head>

@@ -85,8 +85,8 @@ header('Content-Type: text/html; charset=utf-8');
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 <?php
 if (($nofollow) || (!$is_read)) {
 	echo "\t\t".'<meta name="robots" content="NOINDEX,NOFOLLOW" />'."\n";
@@ -97,11 +97,11 @@ if ($html_meta_referrer_policy) {
 }
 ?>
 		<title><?php echo $title; ?> - <?php echo $page_title; ?></title>
-		<link rel="SHORTCUT ICON" href="<?php echo $image['favicon']; ?>" />
-		<link rel="stylesheet" type="text/css" href="<?php echo SKIN_DIR; ?>pukiwiki.css" />
+		<link rel="icon" href="<?php echo $image['favicon']; ?>" />
+		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>pukiwiki.css" />
 		<link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo $link['rss']; /* RSS auto-discovery */ ?>" />
-		<script type="text/javascript" src="skin/main.js" defer></script>
-		<script type="text/javascript" src="skin/search2.js" defer></script><?php echo (!empty($head_tag)) ? ("\n\t\t".$head_tag."\n") : ("\n"); ?>
+		<script src="skin/main.js" defer></script>
+		<script src="skin/search2.js" defer></script><?php echo (!empty($head_tag)) ? ("\n\t\t".$head_tag."\n") : ("\n"); ?>
 	</head>
 	<body><?php echo "\n".((!empty($html_scripting_data)) ? ("\t\t".str_replace("\n", "\n\t\t", $html_scripting_data)."\n\n") : ('')); ?>
 		<div id="header">

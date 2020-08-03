@@ -917,7 +917,7 @@ function pkwk_output_dtd(int $pkwk_dtd = PKWK_DTD_XHTML_1_1, string $charset = '
 		// NOTE: XHTML 1.1 browser will ignore http-equiv
 		return '<meta http-equiv="content-type" content="application/xhtml+xml; charset='.$charset.'" />'."\n";
 	} else {
-		return '<meta http-equiv="content-type" content="text/html; charset='.$charset.'" />'."\n";
+		return '<meta charset="'.$charset.'" />'."\n";
 	}
 }
 

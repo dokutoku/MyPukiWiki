@@ -614,7 +614,7 @@ header('Content-Type: text/html; charset=utf-8');
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><?php
+		<meta charset="UTF-8" /><?php
 
 if (($nofollow) || (!$is_read)) {
 	echo "\n\t\t".'<meta name="robots" content="NOINDEX,NOFOLLOW" />';
@@ -625,12 +625,12 @@ if ($html_meta_referrer_policy) {
 } ?>
 
 		<title><?php echo $title; ?> - <?php echo $page_title; ?></title>
-		<link rel="SHORTCUT ICON" href="<?php echo $image['favicon']; ?>" />
-		<link rel="stylesheet" type="text/css" media="all" href="<?php echo SKIN_DIR; ?>theme/base.css" />
-		<link rel="stylesheet" type="text/css" media="all" href="<?php echo SKIN_DIR; ?>theme/<?php echo $theme; ?>/<?php echo $theme; ?>.css" />
-		<link rel="stylesheet" type="text/css" href="<?php echo SKIN_DIR; ?>tdiary.css" /><?php
+		<link rel="icon" href="<?php echo $image['favicon']; ?>" />
+		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>theme/base.css" />
+		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>theme/<?php echo $theme; ?>/<?php echo $theme; ?>.css" />
+		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>tdiary.css" /><?php
 if ($css_theme === 'black') {
-	echo "\n\t\t".'<link rel="stylesheet" type="text/css" href="'.SKIN_DIR.'tdiary_black.css" />';
+	echo "\n\t\t".'<link rel="stylesheet" href="'.SKIN_DIR.'tdiary_black.css" />';
 }
 ?>
 
