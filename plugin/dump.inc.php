@@ -506,7 +506,7 @@ class tarlib
 			return 0;
 		}
 
-		unset($files);
+		$files = [];
 
 		//  指定されたパスのファイルのリストを取得する
 		$dp = @opendir($dir);

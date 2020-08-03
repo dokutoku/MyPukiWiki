@@ -57,11 +57,12 @@ function plugin_edit_preview_with_template() : array
 
 	$msg = '';
 	$page = (isset($vars['page'])) ? ($vars['page']) : ('');
-	// Loading template
-	$template_page;
 
-	if ((isset($vars['template_page'])) && (is_page($template_page = $vars['template_page']))) {
-		if (is_page_readable($template_page)) {
+	if (isset($vars['template_page'])) {
+		// Loading template
+		$template_page = $vars['template_page'];
+
+		if ((is_page($template_page)) && (is_page_readable($template_page))) {
 			$msg = remove_author_info(get_source($vars['template_page'], true, true));
 			// Cut fixed anchors
 			$msg = preg_replace('/^(\*{1,3}.*)\[#[A-Za-z][\w-]+\](.*)$/m', '$1$2', $msg);

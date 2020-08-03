@@ -341,7 +341,7 @@ function plugin_bugtrack_list_convert(string ...$args) : string
 
 	$cache_format_version = 1;
 	$cache_expire_time = 60 * 60 * 24;
-	$cache_refresh_time_prev;
+	$cache_refresh_time_prev = null;
 
 	$page = $vars['page'];
 
@@ -491,7 +491,7 @@ EOD;
 		}
 
 		// Save cache
-		if (isset($cache_refresh_time_prev)) {
+		if ($cache_refresh_time_prev !== null) {
 			$refreshed_at = $cache_refresh_time_prev;
 		} else {
 			$refreshed_at = time();

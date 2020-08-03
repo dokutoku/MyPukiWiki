@@ -80,6 +80,8 @@ function plugin_counter_get_count(string $page) :array
 	static $counters = [];
 	static $default;
 
+	$is_new_page = false;
+	$pdo = null;
 	$page_counter_t = PLUGIN_COUNTER_DB_TABLE_NAME_PREFIX.'page_counter';
 
 	if (!isset($default)) {
@@ -107,8 +109,6 @@ function plugin_counter_get_count(string $page) :array
 	$c = &$counters[$page];
 
 	if (PLUGIN_COUNTER_USE_DB) {
-		$is_new_page = false;
-
 		try {
 			$pdo = new PDO(PLUGIN_COUNTER_DB_CONNECT_STRING, PLUGIN_COUNTER_DB_USERNAME, PLUGIN_COUNTER_DB_PASSWORD, $plugin_counter_db_options);
 			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
