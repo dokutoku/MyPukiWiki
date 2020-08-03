@@ -452,9 +452,10 @@ function plugin_bugtrack_list_convert(string ...$args) : string
 				continue;
 			}
 
-			foreach (['name', 'priority', 'state', 'category'] as $item) {
-				${$item} = htmlspecialchars(${$item}, ENT_COMPAT, 'UTF-8');
-			}
+			$name = htmlspecialchars($name, ENT_COMPAT, 'UTF-8');
+			$priority = htmlspecialchars($priority, ENT_COMPAT, 'UTF-8');
+			$state = htmlspecialchars($state, ENT_COMPAT, 'UTF-8');
+			$category = htmlspecialchars($category, ENT_COMPAT, 'UTF-8');
 
 			$page_link = make_pagelink($page_name);
 
@@ -558,20 +559,11 @@ function plugin_bugtrack_list_pageinfo(string $page, ?int $no = null, $recurse =
 
 	$body = implode("\n", $source);
 
-	foreach (['summary', 'name', 'priority', 'state', 'category'] as $item) {
-		$regex = '/-\s*'.preg_quote($_plugin_bugtrack[$item], '/').'\s*:(.*)/';
-
-		if (preg_match($regex, $body, $matches)) {
-			if ($item == 'name') {
-				${$item} = strip_bracket(trim($matches[1]));
-			} else {
-				${$item} = trim($matches[1]);
-			}
-		} else {
-			// Data not found
-			${$item} = '';
-		}
-	}
+	$summary = (preg_match('/-\s*'.preg_quote($_plugin_bugtrack['summary'], '/').'\s*:(.*)/', $body, $matches)) ? (trim($matches[1])) : ('');
+	$name = (preg_match('/-\s*'.preg_quote($_plugin_bugtrack['name'], '/').'\s*:(.*)/', $body, $matches)) ? (strip_bracket(trim($matches[1]))) : ('');
+	$priority = (preg_match('/-\s*'.preg_quote($_plugin_bugtrack['priority'], '/').'\s*:(.*)/', $body, $matches)) ? (trim($matches[1])) : ('');
+	$state = (preg_match('/-\s*'.preg_quote($_plugin_bugtrack['state'], '/').'\s*:(.*)/', $body, $matches)) ? (trim($matches[1])) : ('');
+	$category = (preg_match('/-\s*'.preg_quote($_plugin_bugtrack['category'], '/').'\s*:(.*)/', $body, $matches)) ? (trim($matches[1])) : ('');
 
 	if (preg_match("/\\*([^\n]*)/", $body, $matches)) {
 		$summary = $matches[1];

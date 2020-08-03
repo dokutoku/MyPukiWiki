@@ -128,20 +128,27 @@ function pop_before_smtp(string $pop_userid = '', string $pop_passwd = '', strin
 	}
 
 	// Compat: GLOBALS > function arguments
-	foreach (['pop_userid', 'pop_passwd', 'pop_server', 'pop_port'] as $global) {
-		if ((isset($GLOBALS[$global])) && ($GLOBALS[$global] !== '')) {
-			${$global} = $GLOBALS[$global];
-		}
+	if ((isset($GLOBALS['pop_userid'])) && ($GLOBALS['pop_userid'] !== '')) {
+		$pop_userid = $GLOBALS['pop_userid'];
+	}
+
+	if ((isset($GLOBALS['pop_passwd'])) && ($GLOBALS['pop_passwd'] !== '')) {
+		$pop_passwd = $GLOBALS['pop_passwd'];
+	}
+
+	if ((isset($GLOBALS['pop_server'])) && ($GLOBALS['pop_server'] !== '')) {
+		$pop_server = $GLOBALS['pop_server'];
+	}
+
+	if ((isset($GLOBALS['pop_port'])) && ($GLOBALS['pop_port'] !== '')) {
+		$pop_port = $GLOBALS['pop_port'];
 	}
 
 	// Check
 	$die = '';
-
-	foreach (['pop_userid', 'pop_server', 'pop_port'] as $global) {
-		if (${$global} == '') {
-			$die .= 'pop_before_smtp(): $'.$global.' seems blank'."\n";
-		}
-	}
+	$die .= ($pop_userid == '') ? ('pop_before_smtp(): $pop_userid seems blank'."\n") : ('');
+	$die .= ($pop_server == '') ? ('pop_before_smtp(): $pop_server seems blank'."\n") : ('');
+	$die .= ($pop_port == '') ? ('pop_before_smtp(): $pop_port seems blank'."\n") : ('');
 
 	if ($die) {
 		return $die;

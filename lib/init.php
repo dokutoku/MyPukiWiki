@@ -29,10 +29,17 @@ if (!isset($HTTP_SERVER_VARS)) {
 	$HTTP_SERVER_VARS = [];
 }
 
-foreach (['SCRIPT_NAME', 'SERVER_ADMIN', 'SERVER_NAME', 'SERVER_PORT', 'SERVER_SOFTWARE'] as $key) {
-	define($key, (isset($_SERVER[$key])) ? ($_SERVER[$key]) : (''));
-	unset(${$key}, $_SERVER[$key], $HTTP_SERVER_VARS[$key]);
-}
+define('SCRIPT_NAME', (isset($_SERVER['SCRIPT_NAME'])) ? ($_SERVER['SCRIPT_NAME']) : (''));
+define('SERVER_ADMIN', (isset($_SERVER['SERVER_ADMIN'])) ? ($_SERVER['SERVER_ADMIN']) : (''));
+define('SERVER_NAME', (isset($_SERVER['SERVER_NAME'])) ? ($_SERVER['SERVER_NAME']) : (''));
+define('SERVER_PORT', (isset($_SERVER['SERVER_PORT'])) ? ($_SERVER['SERVER_PORT']) : (''));
+define('SERVER_SOFTWARE', (isset($_SERVER['SERVER_SOFTWARE'])) ? ($_SERVER['SERVER_SOFTWARE']) : (''));
+unset($SCRIPT_NAME, $_SERVER['SCRIPT_NAME'], $HTTP_SERVER_VARS['SCRIPT_NAME']);
+unset($SERVER_ADMIN, $_SERVER['SERVER_ADMIN'], $HTTP_SERVER_VARS['SERVER_ADMIN']);
+unset($SERVER_NAME, $_SERVER['SERVER_NAME'], $HTTP_SERVER_VARS['SERVER_NAME']);
+unset($SERVER_PORT, $_SERVER['SERVER_PORT'], $HTTP_SERVER_VARS['SERVER_PORT']);
+unset($SERVER_SOFTWARE, $_SERVER['SERVER_SOFTWARE'], $HTTP_SERVER_VARS['SERVER_SOFTWARE']);
+
 
 /////////////////////////////////////////////////
 // Init grobal variables
@@ -207,11 +214,13 @@ foreach (['DATA_DIR', 'DIFF_DIR', 'BACKUP_DIR', 'CACHE_DIR'] as $dir) {
 // 設定ファイルの変数チェック
 $temp = '';
 
-foreach (['rss_max', 'page_title', 'note_hr', 'related_link', 'show_passage', 'rule_related_str', 'load_template_func'] as $var) {
-	if (!isset(${$var})) {
-		$temp .= '$'.$var."\n";
-	}
-}
+$temp .= (!isset($rss_max)) ? ('$rss_max'."\n") : ('');
+$temp .= (!isset($page_title)) ? ('$page_title'."\n") : ('');
+$temp .= (!isset($note_hr)) ? ('$note_hr'."\n") : ('');
+$temp .= (!isset($related_link)) ? ('$related_link'."\n") : ('');
+$temp .= (!isset($show_passage)) ? ('$show_passage'."\n") : ('');
+$temp .= (!isset($rule_related_str)) ? ('$rule_related_str'."\n") : ('');
+$temp .= (!isset($load_template_func)) ? ('$load_template_func'."\n") : ('');
 
 if ($temp) {
 	if ($die) {
@@ -322,9 +331,9 @@ if ((PKWK_QUERY_STRING_MAX) && (strlen($arg) > PKWK_QUERY_STRING_MAX)) {
 $arg = input_filter($arg);
 
 // unset QUERY_STRINGs
-foreach (['QUERY_STRING', 'argv', 'argc'] as $key) {
-	unset(${$key}, $_SERVER[$key], $HTTP_SERVER_VARS[$key]);
-}
+unset($QUERY_STRING, $_SERVER['QUERY_STRING'], $HTTP_SERVER_VARS['QUERY_STRING']);
+unset($argv, $_SERVER['argv'], $HTTP_SERVER_VARS['argv']);
+unset($argc, $_SERVER['argc'], $HTTP_SERVER_VARS['argc']);
 
 // $_SERVER['REQUEST_URI'] is used at func.php NOW
 unset($REQUEST_URI, $HTTP_SERVER_VARS['REQUEST_URI']);
@@ -407,10 +416,12 @@ if ((isset($vars['cmd'])) && (isset($vars['plugin']))) {
 }
 
 // 入力チェック: cmd, plugin の文字列は英数字以外ありえない
-foreach (['cmd', 'plugin'] as $var) {
-	if ((isset($vars[$var])) && (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $vars[$var]))) {
-		unset($get[$var], $post[$var], $vars[$var]);
-	}
+if ((isset($vars['cmd'])) && (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $vars['cmd']))) {
+	unset($get['cmd'], $post['cmd'], $vars['cmd']);
+}
+
+if ((isset($vars['plugin'])) && (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $vars['plugin']))) {
+	unset($get['plugin'], $post['plugin'], $vars['plugin']);
 }
 
 // 整形: page, strip_bracket()

@@ -272,9 +272,9 @@ function attach_info(string $err = '') : array
 	global $vars;
 	global $_attach_messages;
 
-	foreach (['refer', 'file', 'age'] as $var) {
-		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
-	}
+	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
+	$file = (isset($vars['file'])) ? ($vars['file']) : ('');
+	$age = (isset($vars['age'])) ? ($vars['age']) : ('');
 
 	$obj = new AttachFile($refer, $file, (int) ($age));
 
@@ -287,9 +287,10 @@ function attach_delete() : array
 	global $vars;
 	global $_attach_messages;
 
-	foreach (['refer', 'file', 'age', 'pass'] as $var) {
-		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
-	}
+	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
+	$file = (isset($vars['file'])) ? ($vars['file']) : ('');
+	$age = (isset($vars['age'])) ? ($vars['age']) : ('');
+	$pass = (isset($vars['pass'])) ? ($vars['pass']) : ('');
 
 	if ((is_freeze($refer)) || (!is_editable($refer))) {
 		return ['msg'=>$_attach_messages['err_noparm']];
@@ -310,9 +311,10 @@ function attach_freeze(string $freeze) : array
 	global $vars;
 	global $_attach_messages;
 
-	foreach (['refer', 'file', 'age', 'pass'] as $var) {
-		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
-	}
+	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
+	$file = (isset($vars['file'])) ? ($vars['file']) : ('');
+	$age = (isset($vars['age'])) ? ($vars['age']) : ('');
+	$pass = (isset($vars['pass'])) ? ($vars['pass']) : ('');
 
 	if ((is_freeze($refer)) || (!is_editable($refer))) {
 		return ['msg'=>$_attach_messages['err_noparm']];
@@ -329,9 +331,11 @@ function attach_rename() : array
 	global $vars;
 	global $_attach_messages;
 
-	foreach (['refer', 'file', 'age', 'pass', 'newname'] as $var) {
-		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
-	}
+	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
+	$file = (isset($vars['file'])) ? ($vars['file']) : ('');
+	$age = (isset($vars['age'])) ? ($vars['age']) : ('');
+	$pass = (isset($vars['pass'])) ? ($vars['pass']) : ('');
+	$newname = (isset($vars['newname'])) ? ($vars['newname']) : ('');
 
 	if ((is_freeze($refer)) || (!is_editable($refer))) {
 		return ['msg'=>$_attach_messages['err_noparm']];
@@ -352,9 +356,9 @@ function attach_open() : array
 	global $vars;
 	global $_attach_messages;
 
-	foreach (['refer', 'file', 'age'] as $var) {
-		${$var} = (isset($vars[$var])) ? ($vars[$var]) : ('');
-	}
+	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
+	$file = (isset($vars['file'])) ? ($vars['file']) : ('');
+	$age = (isset($vars['age'])) ? ($vars['age']) : ('');
 
 	$obj = new AttachFile($refer, $file, (int) ($age));
 

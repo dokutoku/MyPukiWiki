@@ -24,11 +24,8 @@ function plugin_showrss_action() : array
 	}
 
 	$body = '';
-
-	foreach (['xml', 'mbstring'] as $extension) {
-		${$extension} = (extension_loaded($extension)) ? ('&color(green){Found};') : ('&color(red){Not found};');
-		$body .= '| '.$extension.' extension | '.${$extension}.' |'."\n";
-	}
+	$body .= '| xml extension | '.((extension_loaded('xml')) ? ('&color(green){Found};') : ('&color(red){Not found};')).' |'."\n";
+	$body .= '| mbstring extension | '.((extension_loaded('mbstring')) ? ('&color(green){Found};') : ('&color(red){Not found};')).' |'."\n";
 
 	return ['msg'=>'showrss_info', 'body'=>convert_html($body)];
 }
