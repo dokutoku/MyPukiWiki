@@ -826,7 +826,7 @@ function plugin_tracker_getlist(string $page, $refer, string $config_name, strin
 	if ($cachedata === null) {
 		$cachedata = [];
 	} else {
-		if ($recent_dat_filemtile !== false) {
+		if ($recent_dat_filemtime !== false) {
 			if (($recent_dat_filemtime === $cachedata['recent_dat_filemtime']) && ($recent_deleted_filetime === $cachedata['recent_deleted_filetime']) && ($order === $cachedata['order'])) {
 				// recent.dat is unchanged
 				// RecentDeleted is unchanged
