@@ -103,7 +103,7 @@ if ($html_meta_referrer_policy) {
 		<script src="skin/main.js" defer></script>
 		<script src="skin/search2.js" defer></script><?php echo (!empty($head_tag)) ? ("\n\t\t".$head_tag."\n") : ("\n"); ?>
 	</head>
-	<body><?php echo "\n".((!empty($html_scripting_data)) ? ("\t\t".str_replace("\n", "\n\t\t", $html_scripting_data)."\n\n") : ('')); ?>
+	<body><?php echo "\n".((!empty($html_scripting_data)) ? ("\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t", $html_scripting_data)."\n\n") : ('')); ?>
 		<div id="header">
 			<a href="<?php echo $link['top']; ?>"><img id="logo" src="<?php echo IMAGE_DIR.$image['logo']; ?>" width="80" height="80" alt="[PukiWiki]" title="[PukiWiki]" decoding="async" /></a>
 			<h1 class="title"><?php echo $page; ?></h1>
@@ -226,28 +226,28 @@ if (PKWK_SKIN_SHOW_NAVBAR) {
 		<div id="contents">
 <?php
 echo "\t\t\t".'<div id="body">'."\n";
-echo "\t\t\t\t".str_replace("\n", "\n\t\t\t\t", trim($body));
+echo "\t\t\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t", trim($body));
 echo "\n\t\t\t".'</div>'."\n";
 
 if ($menu !== false) {
-	echo "\t\t\t".'<div id="menubar">'."\n".("\t\t\t\t".str_replace("\n", "\n\t\t\t\t", rtrim($menu)))."\n\t\t\t".'</div>'."\n";
+	echo "\t\t\t".'<div id="menubar">'."\n".("\t\t\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t", rtrim($menu)))."\n\t\t\t".'</div>'."\n";
 }
 
 if ($rightbar) {
-	echo "\t\t\t".'<div id="rightbar">'."\n".("t\t\t\t".str_replace("\n", "\n\t\t\t\t", rtrim($rightbar)))."\n\t\t\t".'</div>'."\n";
+	echo "\t\t\t".'<div id="rightbar">'."\n".("t\t\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t", rtrim($rightbar)))."\n\t\t\t".'</div>'."\n";
 }
 ?>
 		</div>
 
 <?php
 if ($notes != '') {
-	echo "\t\t".'<div id="note">'."\n".("\t\t\t".str_replace("\n", "\n\t\t\t", rtrim($notes)))."\n\t\t".'</div>'."\n";
+	echo "\t\t".'<div id="note">'."\n".("\t\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t\t", rtrim($notes)))."\n\t\t".'</div>'."\n";
 }
 
 if ($attaches != '') {
 	echo "\t\t".'<div id="attach">'."\n";
 	echo "\t\t\t".$hr."\n";
-	echo "\t\t\t".str_replace("\n", "\n\t\t\t", $attaches);
+	echo "\t\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t\t", $attaches);
 	echo "\t\t\t".'</div>'."\n";
 }
 
@@ -366,7 +366,7 @@ if ($lastmodified != '') {
 }
 
 if ($related != '') {
-	echo "\t\t".'<div id="related">'."\n\t\t\t".'Link: '."\n\t\t\t".str_replace("\n", "\n\t\t\t", $related)."\n\t\t".'</div>'."\n";
+	echo "\t\t".'<div id="related">'."\n\t\t\t".'Link: '."\n\t\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t\t", $related)."\n\t\t".'</div>'."\n";
 }
 ?>
 

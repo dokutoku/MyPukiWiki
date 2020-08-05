@@ -636,7 +636,7 @@ if ($css_theme === 'black') {
 
 		<link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo $link['rss']; ?>" /><?php echo (!empty($head_tag)) ? ("\n\t\t".$head_tag."\n") : ("\n"); ?>
 	</head>
-	<body><?php echo "\n".((!empty($html_scripting_data)) ? ("\t\t".str_replace("\n", "\n\t\t", $html_scripting_data)."\n\n") : ('')); ?>
+	<body><?php echo "\n".((!empty($html_scripting_data)) ? ("\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t", $html_scripting_data)."\n\n") : ('')); ?>
 		<!-- Theme:<?php echo htmlspecialchars($theme, ENT_COMPAT, 'UTF-8').' Sidebar:'.$sidebar; ?> -->
 
 <?php
@@ -645,7 +645,7 @@ if (($menu) && ($sidebar == 'strict')) {
 		<!-- Sidebar top -->
 		<div class="sidebar">
 			<div id="menubar">
-				<?php echo str_replace("\n", "\n\t\t\t\t", rtrim($menu_body)); ?>
+				<?php echo preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t", rtrim($menu_body)); ?>
 
 			</div>
 		</div><!-- class="sidebar" -->
@@ -788,7 +788,7 @@ if (($menu) && ($sidebar == 'top')) {
 				<!-- Sidebar compat top -->
 				<div class="sidebar">
 					<div id="menubar">
-						<?php echo str_replace("\n", "\n\t\t\t\t\t\t", rtrim($menu_body)); ?>
+						<?php echo preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t\t\t", rtrim($menu_body)); ?>
 
 					</div>
 				</div><!-- class="sidebar" -->
@@ -862,10 +862,10 @@ switch ($title_design_date) {
 
 	if ($is_read) {
 		// Read
-		echo "\n\t\t\t\t\t\t\t".str_replace("\n", "\n\t\t\t\t\t\t\t", trim($body));
+		echo "\n\t\t\t\t\t\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t\t\t\t", trim($body));
 	} else {
 		// Edit, preview, search, etc
-		echo "\n\t\t\t\t\t\t\t".str_replace("\n", "\n\t\t\t\t\t\t\t", trim(preg_replace('/(<form) (action="'.preg_quote($script, '/').')/', '$1 class="update" $2', $body)));
+		echo "\n\t\t\t\t\t\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t\t\t\t", trim(preg_replace('/(<form) (action="'.preg_quote($script, '/').')/', '$1 class="update" $2', $body)));
 	}
 ?>
 
@@ -881,7 +881,7 @@ if ($notes != '') {
 						<div class="commentbody"><br />
 							<?php
 							$notes = preg_replace('#<span class="small">(.*?)</span>#', '<p>$1</p>', $notes);
-							echo str_replace("\n", "\n\t\t\t\t\t\t\t", preg_replace('#<a (id="notefoot_[^>]*)>(.*?)</a>#', '<div class="commentator"><a $1><span class="canchor"></span> <span class="commentator">$2</span></a><span class="commenttime"></span></div>', $notes));
+							echo preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t\t\t\t", preg_replace('#<a (id="notefoot_[^>]*)>(.*?)</a>#', '<div class="commentator"><a $1><span class="canchor"></span> <span class="commentator">$2</span></a><span class="commenttime"></span></div>', $notes));
 							?>
 
 						</div>
@@ -896,7 +896,7 @@ if ($attaches != '') {
 					<div class="comment">
 						<div class="caption">&nbsp;</div>
 						<div class="commentshort">
-							<?php echo str_replace("\n", "\n\t\t\t\t\t\t\t", rtrim($attaches)); ?>
+							<?php echo preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t\t\t\t", rtrim($attaches)); ?>
 
 						</div>
 					</div>
@@ -910,7 +910,7 @@ if ($related != '') {
 					<div class="comment">
 						<div class="caption">&nbsp;</div>
 						<div class="commentshort">
-							Link: <?php echo str_replace("\n", "\n\t\t\t\t\t\t\t", $related); ?>
+							Link: <?php echo preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t\t\t\t", $related); ?>
 						</div>
 					</div>
 <?php
@@ -942,7 +942,7 @@ if (($menu) && ($sidebar == 'another')) {
 				<h2><span class="date"></span><span class="title">&nbsp;</span></h2>
 				<div class="body">
 					<div class="section">
-						<?php echo str_replace("\n", "\n\t\t\t\t\t\t", rtrim($menu_body)); ?>
+						<?php echo preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t\t\t", rtrim($menu_body)); ?>
 
 					</div>
 				</div>
@@ -975,7 +975,7 @@ if (($menu) && ($sidebar == 'bottom')) {
 				<!-- Sidebar compat bottom -->
 				<div class="sidebar">
 					<div id="menubar">
-						<?php echo str_replace("\n", "\n\t\t\t\t\t\t", rtrim($menu_body)); ?>
+						<?php echo preg_replace("/\n(?!\n|\$)/", "\n\t\t\t\t\t\t", rtrim($menu_body)); ?>
 
 					</div>
 				</div><!-- class="sidebar" -->
