@@ -1092,7 +1092,15 @@ if (true || PKWK_SKIN_SHOW_TOOLBAR) {
 ?>
 
 					<!-- Copyright etc -->
-					Site admin: <a href="<?php echo $modifierlink; ?>"><?php echo $modifier; ?></a>
+<?php
+if (!empty($modifier)) {
+	if ((!empty($modifierlink)) && ($modifierlink !== 'http://pukiwiki.example.com/')) {
+		echo "\t\t\t\t\t".'Site admin: <a href="'.$modifierlink.'" rel="nofollow">'.$modifier.'</a>'."\n";
+	} else {
+		echo "\t\t\t\t\t".'Site admin: '.$modifier."\n";
+	}
+}
+?>
 					<?php echo '<p>'.S_COPYRIGHT.'.'.(((defined('PKWK_OPTIMISE')) && (!PKWK_OPTIMISE)) ? (' Powered by PHP '.PHP_VERSION.'<br /> HTML convert time: '.elapsedtime().' sec.') : ('')).'</p>'."\n"; ?>
 				</div><!-- class="footer" -->
 
