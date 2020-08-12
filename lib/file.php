@@ -353,7 +353,7 @@ function file_head(string $file, int $count = 1, bool $lock = true, int $buffer 
 {
 	$array = [];
 
-	$fp = @fopen($file, 'r');
+	$fp = @fopen($file, 'r+');
 
 	if ($fp === false) {
 		return false;
