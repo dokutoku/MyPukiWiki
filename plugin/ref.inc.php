@@ -297,7 +297,7 @@ function plugin_ref_body(array $args) : array
 
 		$url2 = htmlspecialchars($name, ENT_COMPAT, 'UTF-8');
 		$url = $url2;
-		$title = (htmlspecialchars(preg_match('/([^\/]+)$/', $name, $matches), ENT_COMPAT, 'UTF-8') ? ($matches[1]) : ($url));
+		$title = htmlspecialchars((preg_match('/([^\/]+)$/', $name, $matches)) ? ($matches[1]) : ($url), ENT_COMPAT, 'UTF-8');
 
 		$is_image = (!$params['noimg']) && (preg_match(PLUGIN_REF_IMAGE, $name));
 
