@@ -190,7 +190,7 @@ function catbody(string $title, string $page, string $body) : void
 	$notes = (!empty($foot_explain)) ? ($note_hr."\n".implode("\n", $foot_explain)) : ('');
 
 	// Tags will be inserted into <head></head>
-	$head_tag = (!empty($head_tags)) ? (implode("\n", $head_tags)."\n") : ('');
+	$head_tag = (!empty($head_tags)) ? (implode("\n", $head_tags)) : ('');
 
 	// 1.3.x compat
 	// Last modification date (UNIX timestamp) of the page

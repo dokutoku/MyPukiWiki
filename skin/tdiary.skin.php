@@ -634,7 +634,7 @@ if ($css_theme === 'black') {
 }
 ?>
 
-		<link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo $link['rss']; ?>" /><?php echo (!empty($head_tag)) ? ("\n\t\t".$head_tag."\n") : ("\n"); ?>
+		<link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo $link['rss']; ?>" /><?php echo (!empty($head_tag)) ? ("\n\t\t".str_replace("\n", "\n\t\t", $head_tag)."\n") : ("\n"); ?>
 	</head>
 	<body><?php echo "\n".((!empty($html_scripting_data)) ? ("\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t", $html_scripting_data)."\n\n") : ('')); ?>
 		<!-- Theme:<?php echo htmlspecialchars($theme, ENT_COMPAT, 'UTF-8').' Sidebar:'.$sidebar; ?> -->

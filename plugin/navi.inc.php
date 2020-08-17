@@ -163,7 +163,7 @@ function plugin_navi_convert(string ...$args) : string
 				if ($_page != '') {
 					$s_page = htmlspecialchars($_page, ENT_COMPAT, 'UTF-8');
 					$r_page = pagename_urlencode($_page);
-					$head_tags[] = "\t".'<link rel="'.$rel.'" href="'.$script.'?'.$r_page.'" title="'.$s_page.'" />';
+					$head_tags[] = '<link rel="'.$rel.'" href="'.$script.'?'.$r_page.'" title="'.$s_page.'" />';
 				}
 			}
 		}
