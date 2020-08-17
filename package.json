@@ -2,12 +2,12 @@
   "name": "pukiwiki",
   "version": "1.0.0",
   "description": "PukiWiki client JavaScript",
-  "main": "skin/main.js",
+  "main": "js/main.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "test": "eslint skin/main.js skin/search2.js"
+    "test": "eslint js/main.js js/search2.js"
   },
   "author": "umorigu",
   "license": "GPL-2.0",
