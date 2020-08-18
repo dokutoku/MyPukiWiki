@@ -39,12 +39,22 @@ function exist_plugin(string $name) : bool
 		return $exist[$name];
 	}
 
-	if ((preg_match('/^\w{1,64}$/', $name)) && (file_exists(PLUGIN_DIR.$name.'.inc.php'))) {
-		$exist[$name] = true;
-		$count[$name] = 1;
-		require_once PLUGIN_DIR.$name.'.inc.php';
+	if (preg_match('/^\w{1,64}$/', $name)) {
+		if (file_exists(PLUGIN_DIR.$name.'.inc.php')) {
+			$exist[$name] = true;
+			$count[$name] = 1;
+			require_once PLUGIN_DIR.$name.'.inc.php';
 
-		return true;
+			return true;
+		} else if (((file_exists(PLUGIN_DIR.$name)) && (is_dir(PLUGIN_DIR.$name))) && (file_exists(PLUGIN_DIR.$name.'/'.$name.'.inc.php'))) {
+			$exist[$name] = true;
+			$count[$name] = 1;
+			require_once PLUGIN_DIR.$name.'/'.$name.'.inc.php';
+
+			return true;
+		} else {
+			return false;
+		}
 	} else {
 		$exist[$name] = false;
 		$count[$name] = 1;
