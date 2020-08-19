@@ -98,10 +98,10 @@ if ($html_meta_referrer_policy) {
 ?>
 		<title><?php echo $title; ?> - <?php echo $page_title; ?></title>
 		<link rel="icon" href="<?php echo $image['favicon']; ?>" />
-		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>pukiwiki.css" />
+		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>pukiwiki/css/pukiwiki.css" />
 		<link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo $link['rss']; /* RSS auto-discovery */ ?>" />
-		<script src="skin/main.js" defer></script>
-		<script src="skin/search2.js" defer></script><?php echo (!empty($head_tag)) ? ("\n\t\t".str_replace("\n", "\n\t\t", $head_tag)."\n") : ("\n"); ?>
+		<script src="js/main.js" defer></script>
+		<script src="js/search2.js" defer></script><?php echo (!empty($head_tag)) ? ("\n\t\t".str_replace("\n", "\n\t\t", $head_tag)."\n") : ("\n"); ?>
 	</head>
 	<body><?php echo "\n".((!empty($html_scripting_data)) ? ("\t\t".preg_replace("/\n(?!\n|\$)/", "\n\t\t", $html_scripting_data)."\n\n") : ('')); ?>
 		<div id="header">

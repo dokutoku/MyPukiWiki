@@ -63,7 +63,7 @@ define('MUTIME', getmicrotime());
 /////////////////////////////////////////////////
 // Require INI_FILE
 
-define('INI_FILE', DATA_HOME.'pukiwiki.ini.php');
+define('INI_FILE', DATA_HOME.'config/pukiwiki.ini.php');
 $die = '';
 
 if ((!file_exists(INI_FILE)) || (!is_readable(INI_FILE))) {
@@ -111,10 +111,10 @@ mb_detect_order('auto');
 // INI_FILE: Require LANG_FILE
 
 // For encoding hint
-define('LANG_FILE_HINT', DATA_HOME.LANG.'.lng.php');
+define('LANG_FILE_HINT', DATA_HOME.'lang/'.LANG.'.lng.php');
 
 // For UI resource
-define('LANG_FILE', DATA_HOME.UI_LANG.'.lng.php');
+define('LANG_FILE', DATA_HOME.'lang/'.UI_LANG.'.lng.php');
 
 $die = '';
 
@@ -185,7 +185,7 @@ unset($agents, $matches);
 // Profile-related init and setting
 define('UA_PROFILE', (isset($user_agent['profile'])) ? ($user_agent['profile']) : (''));
 
-define('UA_INI_FILE', DATA_HOME.UA_PROFILE.'.ini.php');
+define('UA_INI_FILE', DATA_HOME.'config/user_agent/'.UA_PROFILE.'.ini.php');
 
 if ((!file_exists(UA_INI_FILE)) || (!is_readable(UA_INI_FILE))) {
 	die_message('UA_INI_FILE for "'.UA_PROFILE.'" not found.');
@@ -493,7 +493,7 @@ $NotePattern = '/\(\(((?:(?>(?:(?!\(\()(?!\)\)(?:[^\)]|$)).)+)|(?R))*)\)\)/x';
 
 /////////////////////////////////////////////////
 // 初期設定(ユーザ定義ルール読み込み)
-require DATA_HOME.'rules.ini.php';
+require DATA_HOME.'config/rules.ini.php';
 
 /////////////////////////////////////////////////
 // Load HTML Entity pattern

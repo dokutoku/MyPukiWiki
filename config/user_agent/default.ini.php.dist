@@ -14,9 +14,9 @@ declare(strict_types=1);
 // Skin file
 
 if (defined('TDIARY_THEME')) {
-	define('SKIN_FILE', DATA_HOME.SKIN_DIR.'tdiary.skin.php');
+	define('SKIN_FILE', DATA_HOME.SKIN_DIR.'tdiary/tdiary.skin.php');
 } else {
-	define('SKIN_FILE', DATA_HOME.SKIN_DIR.'pukiwiki.skin.php');
+	define('SKIN_FILE', DATA_HOME.SKIN_DIR.'pukiwiki/pukiwiki.skin.php');
 }
 
 /////////////////////////////////////////////////
