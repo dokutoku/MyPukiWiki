@@ -274,9 +274,9 @@ function attach_info(string $err = '') : array
 
 	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
 	$file = (isset($vars['file'])) ? ($vars['file']) : ('');
-	$age = (isset($vars['age'])) ? ($vars['age']) : ('');
+	$age = ((isset($vars['age'])) && (is_numeric($vars['age']))) ? ((int) ($vars['age'])) : (0);
 
-	$obj = new AttachFile($refer, $file, (int) ($age));
+	$obj = new AttachFile($refer, $file, $age);
 
 	return ($obj->getstatus()) ? ($obj->info($err)) : (['msg'=>$_attach_messages['err_notfound']]);
 }
@@ -289,14 +289,14 @@ function attach_delete() : array
 
 	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
 	$file = (isset($vars['file'])) ? ($vars['file']) : ('');
-	$age = (isset($vars['age'])) ? ($vars['age']) : ('');
+	$age = ((isset($vars['age'])) && (is_numeric($vars['age']))) ? ((int) ($vars['age'])) : (0);
 	$pass = (isset($vars['pass'])) ? ($vars['pass']) : ('');
 
 	if ((is_freeze($refer)) || (!is_editable($refer))) {
 		return ['msg'=>$_attach_messages['err_noparm']];
 	}
 
-	$obj = new AttachFile($refer, $file, (int) ($age));
+	$obj = new AttachFile($refer, $file, $age);
 
 	if (!$obj->getstatus()) {
 		return ['msg'=>$_attach_messages['err_notfound']];
@@ -313,13 +313,13 @@ function attach_freeze(string $freeze) : array
 
 	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
 	$file = (isset($vars['file'])) ? ($vars['file']) : ('');
-	$age = (isset($vars['age'])) ? ($vars['age']) : ('');
+	$age = ((isset($vars['age'])) && (is_numeric($vars['age']))) ? ((int) ($vars['age'])) : (0);
 	$pass = (isset($vars['pass'])) ? ($vars['pass']) : ('');
 
 	if ((is_freeze($refer)) || (!is_editable($refer))) {
 		return ['msg'=>$_attach_messages['err_noparm']];
 	} else {
-		$obj = new AttachFile($refer, $file, (int) ($age));
+		$obj = new AttachFile($refer, $file, $age);
 
 		return ($obj->getstatus()) ? ($obj->freeze($freeze, $pass)) : (['msg'=>$_attach_messages['err_notfound']]);
 	}
@@ -333,7 +333,7 @@ function attach_rename() : array
 
 	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
 	$file = (isset($vars['file'])) ? ($vars['file']) : ('');
-	$age = (isset($vars['age'])) ? ($vars['age']) : ('');
+	$age = ((isset($vars['age'])) && (is_numeric($vars['age']))) ? ((int) ($vars['age'])) : (0);
 	$pass = (isset($vars['pass'])) ? ($vars['pass']) : ('');
 	$newname = (isset($vars['newname'])) ? ($vars['newname']) : ('');
 
@@ -341,7 +341,7 @@ function attach_rename() : array
 		return ['msg'=>$_attach_messages['err_noparm']];
 	}
 
-	$obj = new AttachFile($refer, $file, (int) ($age));
+	$obj = new AttachFile($refer, $file, $age);
 
 	if (!$obj->getstatus()) {
 		return ['msg'=>$_attach_messages['err_notfound']];
@@ -358,9 +358,9 @@ function attach_open() : array
 
 	$refer = (isset($vars['refer'])) ? ($vars['refer']) : ('');
 	$file = (isset($vars['file'])) ? ($vars['file']) : ('');
-	$age = (isset($vars['age'])) ? ($vars['age']) : ('');
+	$age = ((isset($vars['age'])) && (is_numeric($vars['age']))) ? ((int) ($vars['age'])) : (0);
 
-	$obj = new AttachFile($refer, $file, (int) ($age));
+	$obj = new AttachFile($refer, $file, $age);
 
 	return ($obj->getstatus()) ? ($obj->open()) : (['msg'=>$_attach_messages['err_notfound']]);
 }
@@ -539,10 +539,10 @@ class AttachFile
 	{
 		$this->page = $page;
 		$this->file = preg_replace('#^.*/#', '', $file);
-		$this->age = (is_numeric($age)) ? ($age) : (0);
+		$this->age = $age;
 
 		$this->basename = UPLOAD_DIR.encode($page).'_'.encode($this->file);
-		$this->filename = $this->basename.(($age) ? ('.'.$age) : (''));
+		$this->filename = $this->basename.(($age) ? ('.'.((string) ($age))) : (''));
 		$this->logname = $this->basename.'.log';
 		$this->exist = file_exists($this->filename);
 		$this->time = ($this->exist) ? (filemtime($this->filename) - LOCALZONE) : (0);
@@ -612,12 +612,12 @@ class AttachFile
 
 		$script = get_base_uri();
 		$this->getstatus();
-		$param = '&amp;file='.rawurlencode($this->file).'&amp;refer='.rawurlencode($this->page).(($this->age) ? ('&amp;age='.$this->age) : (''));
+		$param = '&amp;file='.rawurlencode($this->file).'&amp;refer='.rawurlencode($this->page).(($this->age) ? ('&amp;age='.((string) ($this->age))) : (''));
 		$title = $this->time_str.' '.$this->size_str;
 		$label = (($showicon) ? (PLUGIN_ATTACH_FILE_ICON) : ('')).htmlspecialchars($this->file, ENT_COMPAT, 'UTF-8');
 
 		if ($this->age) {
-			$label .= ' (backup No.'.$this->age.')';
+			$label .= ' (backup No.'.((string) ($this->age)).')';
 		}
 
 		$count = '';
@@ -734,9 +734,9 @@ EOD;
 		} else {
 			do {
 				$age = ++$this->status['age'];
-			} while (file_exists($this->basename.'.'.$age));
+			} while (file_exists($this->basename.'.'.((string) ($age))));
 
-			if (!rename($this->basename, $this->basename.'.'.$age)) {
+			if (!rename($this->basename, $this->basename.'.'.((string) ($age)))) {
 				// 削除失敗 why?
 				return ['msg'=>$_attach_messages['err_delete']];
 			}
@@ -1006,7 +1006,7 @@ class AttachPages
 
 			$_page = decode($matches[1]);
 			$_file = decode($matches[2]);
-			$_age = (isset($matches[3])) ? ($matches[3]) : (0);
+			$_age = ((isset($matches[3])) && (is_numeric($matches[3]))) ? ((int) ($matches[3])) : (0);
 
 			if (!isset($this->pages[$_page])) {
 				$this->pages[$_page] = new AttachFiles($_page);
