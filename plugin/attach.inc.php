@@ -703,7 +703,7 @@ class AttachFile
 		<label for="_p_attach_password">{$_attach_messages['msg_password']}:</label>
 		<input type="password" name="pass" id="_p_attach_password" size="8" />
 		<input type="submit" value="{$_attach_messages['btn_submit']}" />
-	div>
+	<div>
 </form>
 EOD;
 
