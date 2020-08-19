@@ -74,7 +74,7 @@ if ((!defined('TDIARY_THEME')) || (TDIARY_THEME == '')) {
 	// Supress all nasty letters
 	$theme = rawurlencode(TDIARY_THEME);
 
-	$theme_css = SKIN_DIR.'theme/'.$theme.'/'.$theme.'.css';
+	$theme_css = SKIN_DIR.'tdiary/theme/'.$theme.'/'.$theme.'.css';
 
 	if (!file_exists($theme_css)) {
 		echo 'tDiary theme wrapper: ';
@@ -626,11 +626,11 @@ if ($html_meta_referrer_policy) {
 
 		<title><?php echo $title; ?> - <?php echo $page_title; ?></title>
 		<link rel="icon" href="<?php echo $image['favicon']; ?>" />
-		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>theme/base.css" />
-		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>theme/<?php echo $theme; ?>/<?php echo $theme; ?>.css" />
-		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>tdiary.css" /><?php
+		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>tdiary/theme/base.css" />
+		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>tdiary/theme/<?php echo $theme; ?>/<?php echo $theme; ?>.css" />
+		<link rel="stylesheet" href="<?php echo SKIN_DIR; ?>tdiary/css/tdiary.css" /><?php
 if ($css_theme === 'black') {
-	echo "\n\t\t".'<link rel="stylesheet" href="'.SKIN_DIR.'tdiary_black.css" />';
+	echo "\n\t\t".'<link rel="stylesheet" href="'.SKIN_DIR.'tdiary/css/tdiary_black.css" />';
 }
 ?>
 
