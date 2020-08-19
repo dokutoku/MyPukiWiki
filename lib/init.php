@@ -111,10 +111,10 @@ mb_detect_order('auto');
 // INI_FILE: Require LANG_FILE
 
 // For encoding hint
-define('LANG_FILE_HINT', DATA_HOME.LANG.'.lng.php');
+define('LANG_FILE_HINT', DATA_HOME.'lang/'.LANG.'.lng.php');
 
 // For UI resource
-define('LANG_FILE', DATA_HOME.UI_LANG.'.lng.php');
+define('LANG_FILE', DATA_HOME.'lang/'.UI_LANG.'.lng.php');
 
 $die = '';
 
