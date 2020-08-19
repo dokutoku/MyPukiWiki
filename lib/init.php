@@ -63,7 +63,7 @@ define('MUTIME', getmicrotime());
 /////////////////////////////////////////////////
 // Require INI_FILE
 
-define('INI_FILE', DATA_HOME.'pukiwiki.ini.php');
+define('INI_FILE', DATA_HOME.'config/pukiwiki.ini.php');
 $die = '';
 
 if ((!file_exists(INI_FILE)) || (!is_readable(INI_FILE))) {
@@ -185,7 +185,7 @@ unset($agents, $matches);
 // Profile-related init and setting
 define('UA_PROFILE', (isset($user_agent['profile'])) ? ($user_agent['profile']) : (''));
 
-define('UA_INI_FILE', DATA_HOME.UA_PROFILE.'.ini.php');
+define('UA_INI_FILE', DATA_HOME.'config/user_agent/'.UA_PROFILE.'.ini.php');
 
 if ((!file_exists(UA_INI_FILE)) || (!is_readable(UA_INI_FILE))) {
 	die_message('UA_INI_FILE for "'.UA_PROFILE.'" not found.');
@@ -493,7 +493,7 @@ $NotePattern = '/\(\(((?:(?>(?:(?!\(\()(?!\)\)(?:[^\)]|$)).)+)|(?R))*)\)\)/x';
 
 /////////////////////////////////////////////////
 // 初期設定(ユーザ定義ルール読み込み)
-require DATA_HOME.'rules.ini.php';
+require DATA_HOME.'config/rules.ini.php';
 
 /////////////////////////////////////////////////
 // Load HTML Entity pattern
