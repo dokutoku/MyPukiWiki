@@ -10,6 +10,45 @@ declare(strict_types=1);
 //
 // deprecated functions
 
+/////////////////////////////////////////////////
+// INI_FILE: $agents:  UserAgentの識別
+
+$ua = 'HTTP_USER_AGENT';
+$user_agent = [];
+
+// Profile-related init and setting
+if (isset($agents)) {
+	$matches = [];
+
+	$user_agent['agent'] = (isset($_SERVER['HTTP_USER_AGENT'])) ? ($_SERVER['HTTP_USER_AGENT']) : ('');
+
+	foreach ($agents as $agent) {
+		if (preg_match($agent['pattern'], $user_agent['agent'], $matches)) {
+			$user_agent['profile'] = (isset($agent['profile'])) ? ($agent['profile']) : ('');
+
+			// device or browser name
+			$user_agent['name'] = (isset($matches[1])) ? ($matches[1]) : ('');
+
+			// 's version
+			$user_agent['vers'] = (isset($matches[2])) ? ($matches[2]) : ('');
+
+			break;
+		}
+	}
+
+	unset($agents, $matches);
+
+	define('UA_PROFILE', (isset($user_agent['profile'])) ? ($user_agent['profile']) : (''));
+	define('UA_INI_FILE', DATA_HOME.'config/user_agent/'.UA_PROFILE.'.ini.php');
+} else {
+	define('UA_PROFILE', 'default');
+	define('UA_INI_FILE', DATA_HOME.'config/user_agent/default.ini.php');
+}
+
+//define('UA_NAME', (isset($user_agent['name'])) ? ($user_agent['name']) : (''));
+//define('UA_VERS', (isset($user_agent['vers'])) ? ($user_agent['vers']) : (''));
+
+/////////////////////////////////////////////////
 define('PKWK_UTF8_ENABLE', 1);
 
 /**

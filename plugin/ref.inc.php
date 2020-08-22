@@ -514,19 +514,6 @@ function plugin_ref_action() : array
 
 	// Care for Japanese-character-included file name
 	$legacy_filename = mb_convert_encoding($filename, 'UTF-8', 'UTF-8');
-
-	if (LANG == 'ja') {
-		switch (UA_NAME.'/'.UA_PROFILE) {
-			case 'MSIE/default':
-				$legacy_filename = mb_convert_encoding($filename, 'SJIS', 'UTF-8');
-
-				break;
-
-			default:
-				break;
-		}
-	}
-
 	$utf8filename = mb_convert_encoding($filename, 'UTF-8', 'UTF-8');
 	$size = filesize($ref);
 
