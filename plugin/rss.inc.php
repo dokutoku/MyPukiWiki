@@ -26,11 +26,6 @@ function plugin_rss_action() : void
 
 	switch ($version) {
 		case '':
-			$version = '0.91';
-
-			// Default
-			break;
-
 		case '1':
 			$version = '1.0';
 
