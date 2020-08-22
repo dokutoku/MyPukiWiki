@@ -379,7 +379,7 @@ if (!empty($modifier)) {
 	}
 }
 ?>
-			<?php echo '<p>'.S_COPYRIGHT.'.'.(((defined('PKWK_OPTIMISE')) && (!PKWK_OPTIMISE)) ? (' Powered by PHP '.PHP_VERSION.'. HTML convert time: '.elapsedtime().' sec.') : ('')).'</p>'."\n"; ?>
+			<?php echo '<p>'.S_COPYRIGHT.'.'.(((defined('PKWK_OPTIMISE')) && (!PKWK_OPTIMISE)) ? (' Powered by PHP '.PHP_VERSION.'. HTML convert time: '.elapsedtime().' sec. Memory: '.(memory_get_usage() / (1024 * 1024)).' MB') : ('')).'</p>'."\n"; ?>
 		</div>
 	</body>
 </html>
