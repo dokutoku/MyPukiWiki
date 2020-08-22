@@ -107,7 +107,7 @@ EOD;
 	// Feeding start
 	pkwk_common_headers();
 	header('Content-type: application/xml');
-	echo '<?xml version="1.0" encoding="UTF-8"?>'."\n\n";
+	echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 
 	$r_whatsnew = pagename_urlencode($whatsnew);
 	$items = rtrim($items);
