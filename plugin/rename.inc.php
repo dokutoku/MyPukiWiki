@@ -410,8 +410,6 @@ function plugin_rename_proceed(array $pages, array $files, array $exists) : void
 		}
 	}
 
-	set_time_limit(0);
-
 	foreach ($files as $page=>$arr) {
 		foreach ($arr as $old=>$new) {
 			if ((isset($exists[$page][$old])) && ($exists[$page][$old])) {

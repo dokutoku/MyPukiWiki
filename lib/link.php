@@ -61,10 +61,6 @@ function links_update(string $page) : void
 		return;
 	}
 
-	if (ini_get('safe_mode') == '0') {
-		set_time_limit(0);
-	}
-
 	$time = (is_page($page, true)) ? (get_filetime($page)) : (0);
 
 	$rel_old = [];
@@ -171,10 +167,6 @@ function links_init() : void
 	if (PKWK_READONLY) {
 		// Do nothing
 		return;
-	}
-
-	if (ini_get('safe_mode') == '0') {
-		set_time_limit(0);
 	}
 
 	// Init database
