@@ -106,7 +106,7 @@ function plugin_rename_err(string $err, string $page = '') : string
 }
 
 //第一段階:ページ名または正規表現の入力
-function plugin_rename_phase1(string $err = '', string $page = '') : array
+function plugin_rename_phase1(string $err = '', $page = '') : array
 {
 	global $_rename_messages;
 
